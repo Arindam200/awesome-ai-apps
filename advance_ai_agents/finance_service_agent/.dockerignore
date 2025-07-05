@@ -1,0 +1,55 @@
+# Environment files
+.env
+.env.*
+*.env
+
+# Version control
+.git
+.gitignore
+.svn
+.hg
+
+# Development files
+node_modules
+venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache
+.coverage
+coverage
+.tox
+
+# IDE specific files
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+
+# Build and dist directories
+dist
+build
+*.egg-info
+
+# Log files
+*.log
+logs
+npm-debug.log*
+
+# Docker specific
+Dockerfile
+docker-compose*.yml
+.docker
+
+# Documentation
+docs
+README.md
+CHANGELOG.md
+LICENSE
+
+# Test files
+test
+tests
