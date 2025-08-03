@@ -1,0 +1,21 @@
+[project]
+name = "doc-mcp"
+version = "0.1.0"
+description = "Transform GitHub documentation repositories into accessible MCP (Model Context Protocol) servers for AI agents. Upload documentation, generate vector embeddings, and query with intelligent context retrieval."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dotenv>=0.9.9",
+    "gradio[mcp]>=5.33.2",
+    "llama-index>=0.12.42",
+    "llama-index-embeddings-nebius>=0.3.1",
+    "llama-index-llms-nebius>=0.1.2",
+    "llama-index-vector-stores-mongodb>=0.6.1",
+    "pymongo>=4.13.1",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.1.0",
+    "isort>=6.0.1",
+]

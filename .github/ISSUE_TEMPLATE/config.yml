@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Bug Report
+    url: .github/ISSUE_TEMPLATE/bug_report.yml
+    about: Report a bug or issue
+  - name: Feature Request
+    url: .github/ISSUE_TEMPLATE/feature_request.yml
+    about: Suggest a new feature
+  - name: Question
+    url: .github/ISSUE_TEMPLATE/question.yml
+    about: Ask a question about the project

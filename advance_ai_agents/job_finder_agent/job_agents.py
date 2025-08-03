@@ -112,46 +112,6 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
         )
     )
 
-    url_parser_agent = Agent(
-        name="URL Parser",
-        instructions=f"""You are a URL parser that transforms Y Combinator authentication URLs into direct job URLs.
-
-        Input: Job listings with authentication URLs in format:
-        ## Job Matches for [Domain]
-        ### [Job Title]
-        - **Company:** [Company Name]
-        - **Type:** [Job Type]
-        - **Location:** [Location]
-        - **Apply:** [Auth URL]
-
-        Rules:
-        1. Extract job_id from the authentication URL
-           - Look for 'signup_job_id=' parameter
-           - Example: from '...signup_job_id=75187...' extract '75187'
-        
-        2. Create new direct URL format:
-           - Base URL: 'https://www.workatastartup.com/jobs/'
-           - Append job_id
-           - Example: 'https://www.workatastartup.com/jobs/75187'
-
-        3. Replace the Apply URL in each job listing with the new direct URL
-
-        Output format:
-        ## Job Matches for [Domain]
-        ### [Job Title]
-        - **Company:** [Company Name]
-        - **Type:** [Job Type]
-        - **Location:** [Location]
-        - **Apply:** [Direct URL]
-
-        Note: Keep all other information exactly the same, only transform the Apply URLs.
-        """,
-        model=OpenAIChatCompletionsModel(
-            model="meta-llama/Llama-3.3-70B-Instruct",
-            openai_client=client
-        )
-    )
-
     Job_search_agent = Agent(
         name="Job Finder",
         instructions=f"""You are a job finder that extracts job listings from Y Combinator's job board.
@@ -187,6 +147,46 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
         Note: No information should be added to the response that is not provided in the input. Don't make up any information.
         """,
         mcp_servers=[mcp_server],
+        model=OpenAIChatCompletionsModel(
+            model="meta-llama/Llama-3.3-70B-Instruct",
+            openai_client=client
+        )
+    )
+    
+    url_parser_agent = Agent(
+        name="URL Parser",
+        instructions=f"""You are a URL parser that transforms Y Combinator authentication URLs into direct job URLs.
+
+        Input: Job listings with authentication URLs in format:
+        ## Job Matches for [Domain]
+        ### [Job Title]
+        - **Company:** [Company Name]
+        - **Type:** [Job Type]
+        - **Location:** [Location]
+        - **Apply:** [Auth URL]
+
+        Rules:
+        1. Extract job_id from the authentication URL
+           - Look for 'signup_job_id=' parameter
+           - Example: from '...signup_job_id=75187...' extract '75187'
+        
+        2. Create new direct URL format:
+           - Base URL: 'https://www.workatastartup.com/jobs/'
+           - Append job_id
+           - Example: 'https://www.workatastartup.com/jobs/75187'
+
+        3. Replace the Apply URL in each job listing with the new direct URL
+
+        Output format:
+        ## Job Matches for [Domain]
+        ### [Job Title]
+        - **Company:** [Company Name]
+        - **Type:** [Job Type]
+        - **Location:** [Location]
+        - **Apply:** [Direct URL]
+
+        Note: Keep all other information exactly the same, only transform the Apply URLs.
+        """,
         model=OpenAIChatCompletionsModel(
             model="meta-llama/Llama-3.3-70B-Instruct",
             openai_client=client
@@ -259,10 +259,12 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
         logger.info("Job suggestions completed")
 
         # Get specific job matches
-        logger.info("Getting job matches")
+        logger.info("Getting job link")
         job_link_result = await Runner.run(starting_agent=url_generator_agent, input=suggestions_result.final_output)
         logger.info("Job link generation completed")
 
+        # Get job matches
+        logger.info("Getting job matches")
         job_search_result = await Runner.run(starting_agent=Job_search_agent, input=job_link_result.final_output)
         logger.info("Job search completed")
 

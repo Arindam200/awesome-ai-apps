@@ -1,0 +1,97 @@
+name: Feature Request
+description: Suggest an idea for this project
+title: "[FEATURE] "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new feature!
+        Please provide as much detail as possible to help us understand your request.
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: Provide a clear and concise description of the feature you want
+      placeholder: "Describe the feature in detail..."
+    validations:
+      required: true
+
+  - type: input
+    id: project-name
+    attributes:
+      label: Target Project
+      description: Name of the project where the feature will be added
+      placeholder: "e.g., job_searching_agent"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: project-directory
+    attributes:
+      label: Project Directory
+      description: Select the directory where the feature will be added
+      options:
+        - advance_ai_agents
+        - mcp_ai_agents
+        - rag_apps
+        - starter_ai_agents
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Explain why this feature is needed and what problem it solves
+      placeholder: "Why do you want this feature? What problem does it solve?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: Describe your proposed solution in detail
+      placeholder: "How would you implement this feature?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: user-impact
+    attributes:
+      label: User Impact
+      description: Describe how this feature will benefit users
+      placeholder: "How will this feature improve the user experience?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Describe any alternative solutions you've considered
+      placeholder: "What other approaches have you considered?"
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots/Mockups
+      description: If applicable, add screenshots or mockups of the feature
+      placeholder: "Add screenshots or mockups here..."
+
+  - type: checkboxes
+    id: implementation-checklist
+    attributes:
+      label: Implementation Checklist
+      description: Please check all that apply
+      options:
+        - label: I have searched for similar feature requests
+          required: true
+        - label: I have provided a detailed description of the feature
+          required: true
+        - label: I have explained the motivation and user impact
+          required: true
+        - label: I have considered alternative solutions
+          required: true

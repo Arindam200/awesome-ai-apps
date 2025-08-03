@@ -42,8 +42,6 @@ async def analyze_profile(linkedin_url: str):
 
 def main():
     # Load and encode images
-    # with open("./assets/linkedin.png", "rb") as linkedin_file:
-        # linkedin_base64 = base64.b64encode(linkedin_file.read()).decode()
     with open("./assets/bright-data-logo.png", "rb") as bright_data_file:
         bright_data_base64 = base64.b64encode(bright_data_file.read()).decode()       
     

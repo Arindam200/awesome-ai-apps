@@ -1,5 +1,4 @@
 import 'dotenv/config';
-import { openai } from '@ai-sdk/openai';
 import { createTool, Agent, Mastra } from '@mastra/core';
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { z } from 'zod';

@@ -1,0 +1,24 @@
+[project]
+name = "deep-researcher-agent"
+version = "0.1.0"
+description = "A multi-stage research workflow agent powered by Agno and Scrapegraph"
+authors = [
+    {name = "Arindam Majumder", email = "arindammajumder2020@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "agno",
+    "openai",
+    "scrapegraph-py",
+    "python-dotenv",
+    "mcp",
+    "streamlit",
+    "pydantic",
+]
+
+[project.urls]
+Homepage = "https://github.com/Arindam200/awesome-ai-apps"
+Repository = "https://github.com/Arindam200/awesome-ai-apps"
+Issues = "https://github.com/Arindam200/awesome-ai-apps/issues"
+

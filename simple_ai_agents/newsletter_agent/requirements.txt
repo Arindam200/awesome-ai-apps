@@ -1,0 +1,4 @@
+streamlit
+python-dotenv
+agno
+asyncio

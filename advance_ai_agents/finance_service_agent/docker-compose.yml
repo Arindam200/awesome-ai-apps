@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    ports:
+     - "4000:4000"
+    volumes:
+     - .:/app
+    env_file:
+      - .env
+    restart: always

@@ -1,0 +1,3 @@
+"""
+UI components module initialization.
+"""

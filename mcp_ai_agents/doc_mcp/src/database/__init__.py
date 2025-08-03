@@ -1,0 +1,3 @@
+"""
+Database module initialization.
+"""

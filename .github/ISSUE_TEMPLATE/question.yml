@@ -1,0 +1,81 @@
+name: Question
+description: Ask a question about the project
+title: "[QUESTION] "
+labels: [question]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to ask a question!
+        Please provide as much detail as possible to help us understand your question.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: Ask your question here
+      placeholder: "What would you like to know?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide any relevant context about your question
+      placeholder: "What led you to ask this question?"
+    validations:
+      required: true
+
+  - type: input
+    id: project-name
+    attributes:
+      label: Project Name
+      description: Name of the project you have a question about
+      placeholder: "e.g., job_searching_agent"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: project-directory
+    attributes:
+      label: Project Directory
+      description: Select the directory of the project
+      options:
+        - advance_ai_agents
+        - mcp_ai_agents
+        - rag_apps
+        - starter_ai_agents
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What I've Tried
+      description: Describe what you've already tried to find an answer
+      placeholder: "What steps have you taken to find the answer?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Add any other information that might be helpful
+      placeholder: "Any other details that might help us answer your question..."
+
+  - type: checkboxes
+    id: question-checklist
+    attributes:
+      label: Question Checklist
+      description: Please check all that apply
+      options:
+        - label: I have searched the documentation
+          required: true
+        - label: I have searched existing issues
+          required: true
+        - label: I have provided all necessary context
+          required: true
+        - label: I have explained what I've tried
+          required: true

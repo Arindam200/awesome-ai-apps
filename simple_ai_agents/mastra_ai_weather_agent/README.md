@@ -6,7 +6,6 @@ A simple example showing how to use a tool.
 
 - Node.js v20.0+
 - pnpm (recommended) or npm
-- OpenAI API key
 - Nebius AI Key
 
 ## Getting Started
@@ -20,7 +19,7 @@ A simple example showing how to use a tool.
    Then edit `.env` and add your OpenAI API key:
 
    ```env
-   OPENAI_API_KEY=sk-your-api-key-here
+   NEBIUS_API_KEY=your-api-key-here
    ```
 
 2. Install dependencies:

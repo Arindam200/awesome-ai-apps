@@ -1,0 +1,4 @@
+python-dotenv
+llama-index-llms-nebius
+llama-index
+llama-index-core

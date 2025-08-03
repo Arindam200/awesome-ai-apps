@@ -1,0 +1,12 @@
+[project]
+name = "aws-strands-starter"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "python-dotenv>=1.1.1",
+    "strands-agents-builder>=0.1.7",
+    "strands-agents-tools>=0.2.1",
+    "strands-agents[litellm]>=1.0.1",
+]

@@ -1,0 +1,3 @@
+google-adk
+resend
+python-dotenv 

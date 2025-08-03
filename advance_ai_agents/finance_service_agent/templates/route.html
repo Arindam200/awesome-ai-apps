@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investo API - {{ route_path }}</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #33ff33;
+            --highlight-color: #ff0000;
+            --secondary-color: #cccccc;
+            --border-color: #333333;
+            --font-family: 'Courier New', Courier, monospace;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        footer{
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: var(--bg-color);
+            /* padding; */
+            border-top: 1px solid var(--border-color);
+        }
+
+        .terminal {
+            max-width: 900px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+        }
+        
+        .terminal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .terminal-title {
+            font-size: 1.5em;
+            margin: 0;
+        }
+        
+        .terminal-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .terminal-button {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .button-red {
+            background-color: #ff5f56;
+        }
+        
+        .button-yellow {
+            background-color: #ffbd2e;
+        }
+        
+        .button-green {
+            background-color: #27c93f;
+        }
+        
+        .endpoint {
+            margin-bottom: 20px;
+            border-bottom: 1px dotted var(--border-color);
+            padding-bottom: 15px;
+        }
+        
+        .endpoint h2 {
+            color: var(--highlight-color);
+            margin-top: 0;
+        }
+        
+        .method {
+            background-color: #1e1e1e;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .get { color: #61affe; }
+        .post { color: #49cc90; }
+        .put { color: #fca130; }
+        .delete { color: #f93e3e; }
+        
+        pre {
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border-left: 3px solid var(--highlight-color);
+        }
+        
+        .param {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .param-name {
+            min-width: 130px;
+            color: var(--secondary-color);
+        }
+        
+        .param-type {
+            color: #ff8c00;
+            margin-right: 10px;
+            min-width: 80px;
+        }
+        
+        .blink {
+            animation: blink-animation 1s steps(2, start) infinite;
+        }
+        
+        @keyframes blink-animation {
+            to {
+                visibility: hidden;
+            }
+        }
+        
+        .terminal-input {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .prompt {
+            color: var(--highlight-color);
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.8em;
+            color: var(--secondary-color);
+        }
+        
+        a {
+            color: var(--highlight-color);
+            text-decoration: none;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+        }
+        
+        .response-container {
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .collapsible {
+            cursor: pointer;
+            padding: 5px;
+            background-color: #1a1a1a;
+            width: 100%;
+            text-align: left;
+            border: none;
+            color: var(--text-color);
+            font-family: var(--font-family);
+        }
+        
+        .collapsible:hover {
+            background-color: #2a2a2a;
+        }
+        
+        .content {
+            padding: 0 10px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            background-color: #1a1a1a;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <!-- <div class="terminal-header">
+            <h1 class="terminal-title">Investo API {{route_path}}</h1>
+            <div class="terminal-buttons">
+                <span class="terminal-button button-red"></span>
+                <span class="terminal-button button-yellow"></span>
+                <span class="terminal-button button-green"></span>
+            </div>
+        </div> -->
+        <div class="terminal-input">
+            <span class="prompt">investo@api:~$</span>
+            <span id="command-text">{{ route_path }} <span class="blink">_</span></span>
+        </div>
+        <div class="endpoint">
+            <h2>{{ route_path }}</h2>
+            <p><span class="method {{ method|lower }}">{{ method }}</span> {{ full_path }}</p>
+            <p>{{ description|default("Endpoint description not available") }}</p>
+            
+            {% if parameters %}
+            <h3>Parameters</h3>
+            <div class="params-container">
+                {% for param in parameters %}
+                <div class="param">
+                    <span class="param-name">{{ param.name }}</span>
+                    <span class="param-type">{{ param.type }}</span>
+                    <span class="param-desc">{{ param.description }}</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <h3>Example Request</h3>
+            <pre><code>curl -X {{ method }} {{ full_path }}{% if example_query %} -d '{{ example_query }}'{% endif %}</code></pre>
+            
+            <button class="collapsible">Example Response</button>
+            <div class="content">
+                <pre><code>{{ example_response|default("{}")|safe }}</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <footer style="font-size: large;">
+        <p>Investo API &copy; {{ current_year }} | <a href="/">Home</a> | <a href="/docs">Documentation</a></p>
+    </footer>
+    
+    
+    <script>
+        // Add interactivity to collapsible elements
+        document.addEventListener('DOMContentLoaded', function() {
+            var coll = document.getElementsByClassName("collapsible");
+            for (var i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function() {
+                    this.classList.toggle("active");
+                    var content = this.nextElementSibling;
+                    if (content.style.maxHeight) {
+                        content.style.maxHeight = null;
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+                
+                // Open the first collapsible by default
+                if (i === 0) {
+                    coll[i].click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
