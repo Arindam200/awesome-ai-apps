@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  couchbase:
+    image: couchbase/server:community-7.6.1
+    container_name: conference-couchbase
+    ports:
+      - "8091-8096:8091-8096"
+      - "11210-11211:11210-11211"
+    volumes:
+      - couchbase_data:/opt/couchbase/var
+    environment:
+      - CLUSTER_NAME=conference-cluster
+      - COUCHBASE_ADMINISTRATOR_USERNAME=<your-user-name>
+      - COUCHBASE_ADMINISTRATOR_PASSWORD=<your-password>
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://127.0.0.1:8091/pools/default || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+volumes:
+  couchbase_data:
+    driver: local

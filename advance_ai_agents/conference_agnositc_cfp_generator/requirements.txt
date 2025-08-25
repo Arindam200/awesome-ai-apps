@@ -1,0 +1,26 @@
+# Core Framework
+streamlit>=1.28.0
+python-dotenv>=1.0.0
+
+# Nebius AI (uses OpenAI-compatible API)
+openai>=1.0.0
+
+# Research APIs
+exa-py>=1.0.0
+tavily-python>=0.3.0
+
+# Web Scraping & Crawling
+aiohttp>=3.9.0
+beautifulsoup4>=4.12.0
+
+# Couchbase Cloud
+couchbase>=4.1.0
+
+# Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Utilities
+requests>=2.31.0
+urllib3>=2.0.0
+python-dateutil>=2.8.0
