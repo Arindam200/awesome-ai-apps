@@ -64,6 +64,7 @@ Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform fo
 
 **Retrieve-augmented generation examples:**
 
+- [ApeRAG](https://github.com/apecloud/ApeRAG) - Production-ready GraphRAG with multi-modal indexing, AI agents, MCP support, and scalable K8s deployment.
 - [Agentic RAG](rag_apps/agentic_rag) - Agentic RAG with Agno & GPT 5.
 - [Resume Optimizer](rag_apps/resume_optimizer) - Boost resumes with AI.
 - [LlamaIndex RAG Starter](rag_apps/llamaIndex_starter) - LlamaIndex + Nebius RAG starter.
