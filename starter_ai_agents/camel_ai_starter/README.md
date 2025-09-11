@@ -1,5 +1,3 @@
-![Banner](./assets/banner.png)
-
 # CAMEL-AI Starter Agent
 
 A benchmarking tool built with the CAMEL framework that compares the performance of various AI models, including OpenAI and Nebius models. This tool measures and visualizes the speed of different models in terms of tokens processed per second.
