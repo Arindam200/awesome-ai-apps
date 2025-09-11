@@ -79,6 +79,7 @@ Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform fo
 - [Qwen3 RAG Chat](rag_apps/qwen3_rag) - PDF chatbot with Streamlit.
 - [Chat with Code](rag_apps/chat_with_code) - Conversational code explorer.
 - [Gemma3 OCR](rag_apps/gemma_ocr/) - OCR-based document and image processor using Gemma3
+- [Contextual AI RAG](rag_apps/contextual_ai_rag) - Enterprise-level RAG with managed datastores and quality evaluation.
 
 ## 🔬 Advanced Agents
 
