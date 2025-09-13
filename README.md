@@ -67,7 +67,6 @@ Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform fo
 - [Blog Writing Agent](memory_agents/blog_writing_agent) - Personalized blog writing agent with memory.
 - [Social Media Agent](memory_agents/social_media_agent) - Social media automation agent with memory.
 
-
 ## 📚 RAG Applications
 
 **Retrieve-augmented generation examples:**
@@ -79,6 +78,7 @@ Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform fo
 - [Qwen3 RAG Chat](rag_apps/qwen3_rag) - PDF chatbot with Streamlit.
 - [Chat with Code](rag_apps/chat_with_code) - Conversational code explorer.
 - [Gemma3 OCR](rag_apps/gemma_ocr/) - OCR-based document and image processor using Gemma3
+- [Smart doc and chat](rag_apps/smart_doc) - Search doc, and chat using a web interface.
 
 ## 🔬 Advanced Agents
 
