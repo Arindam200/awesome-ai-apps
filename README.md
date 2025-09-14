@@ -73,6 +73,7 @@ Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform fo
 
 **Retrieve-augmented generation examples:**
 
+- [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bibinprathap/VeritasGraph) Graph RAG pipeline that runs locally with ollama and has full source attribution
 - [Agentic RAG](rag_apps/agentic_rag) - Agentic RAG with Agno & GPT 5.
 - [Agentic RAG with Web Search](rag_apps/agentic_rag_with_web_search) - Advanced RAG with CrewAI, Qdrant, and Exa for hybrid search.
 - [Resume Optimizer](rag_apps/resume_optimizer) - Boost resumes with AI.
