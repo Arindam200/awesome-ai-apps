@@ -1,0 +1,17 @@
+python-dotenv
+streamlit
+langchain
+langchain-groq
+pandas
+matplotlib
+faiss-cpu
+pypdf2
+langchain-community
+langchain-google-genai
+google-search-results
+groq
+plotly
+streamlit-mic-recorder
+deepgram-sdk
+nest-asyncio
+pysqlite3-binary

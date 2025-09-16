@@ -1,0 +1,6 @@
+agno==1.8.1
+streamlit
+groq
+google-genai
+streamlit-code-editor
+pysqlite3-binary

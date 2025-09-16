@@ -31,6 +31,8 @@ Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform fo
 - [LangChain-LangGraph Starter](starter_ai_agents/langchain_langgraph_starter) - LangChain + LangGraph starter.
 - [AWS Strands Agent Starter](starter_ai_agents/aws_strands_starter) - Weather report Agent.
 - [Camel AI Starter](starter_ai_agents/camel_ai_starter) - Performance benchmarking tool that compares the performance of various AI models.
+- [Career_Guidence](simple_ai_agents/Career_Guidence) - Gives the guidence and roadmap towards career based on the user selected options,it also supports Traditional Rag.
+- [Recruitify](simple_ai_agents/Recruitify) - A web app that analyse the resume based on the JobDescription,Interview Question,Enhance Resume,Practise interview based on the question generated.
 
 ## 🪶 Simple Agents
 
@@ -46,6 +48,7 @@ Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform fo
 - [Web Automation Agent](simple_ai_agents/browser_agent) - Simple Browser Agent implementation with Nebius & browser use.
 - [Nebius Chat](simple_ai_agents/nebius_chat) - Nebius AI Studio Chat interface.
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Talk to your Database with GibsonAI & Langchain
+
 
 ## 🗂️ MCP Agents
 
@@ -96,6 +99,8 @@ Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform fo
 - [Price Monitoring Agent](advance_ai_agents/price_monitoring_agent) - Price monitoring and alerting Agent powered by CrewAi, Twilio & Nebius.
 - [Startup Idea Validator Agent](advance_ai_agents/startup_idea_validator_agent) - Agentic Workflow to validate and analyze startup ideas.
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent) - Agentic Workflow that send meeting notes and creates task based on conversation.
+- [AlgoMentor](advance_ai_agents/AlgoMentor) - Agentic Workflow that give the BruteForce,SubOptimal & Optimal Approach and code of the Problem , and also supports the notes making .
+-[ScholaeLens](advance_ai_agents/ScholarLens) - Agentic Workflow for Find Research Paper,Summarizer,Agentic Rag With Pinecone and Agnno, and Companion of papers.
 
 ## 📺 Playlist of Demo Videos & Tutorials
 
