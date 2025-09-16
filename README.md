@@ -97,6 +97,10 @@ Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform fo
 - [Startup Idea Validator Agent](advance_ai_agents/startup_idea_validator_agent) - Agentic Workflow to validate and analyze startup ideas.
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent) - Agentic Workflow that send meeting notes and creates task based on conversation.
 
+## 🤖 Agent UI
+
+- [CopilotKit](https://go.copilotkit.ai/copilot) - Bridges your backend agents to an interactive frontend, streaming reasoning, tool calls, and structured outputs in real time.
+
 ## 📺 Playlist of Demo Videos & Tutorials
 
 - [Build with MCP](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lolxax4L2HS54Me8gn1gkz4)
