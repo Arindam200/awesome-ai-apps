@@ -99,7 +99,7 @@ Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform fo
 
 ## 🤖 Agent UI
 
-- [CopilotKit](https://go.copilotkit.ai/copilot) - Bridges your backend agents to an interactive frontend, streaming reasoning, tool calls, and structured outputs in real time.
+- [CopilotKit](https://github.com/CopilotKit/CopilotKit) - Bridges your backend agents to an interactive frontend - streaming, reasoning, tool calls, and structured outputs in real time.
 
 ## 📺 Playlist of Demo Videos & Tutorials
 
