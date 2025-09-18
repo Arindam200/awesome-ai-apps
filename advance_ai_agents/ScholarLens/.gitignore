@@ -1,0 +1,15 @@
+.venv
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+*.log
+*.env
+./research
+.research
+.__pycache__
+./__pycache__
+.temp_uploaded_file.pdf
+*research*

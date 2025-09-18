@@ -1,0 +1,48 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="60" cy="60" r="55" fill="url(#logoGradient)" stroke="#ffffff" stroke-width="3"/>
+  
+  <!-- Algorithm Symbol (Binary Tree) -->
+  <g fill="#ffffff" stroke="#ffffff" stroke-width="2">
+    <!-- Root Node -->
+    <circle cx="60" cy="35" r="6"/>
+    
+    <!-- Left Branch -->
+    <line x1="60" y1="41" x2="45" y2="55"/>
+    <circle cx="45" cy="60" r="5"/>
+    
+    <!-- Right Branch -->
+    <line x1="60" y1="41" x2="75" y2="55"/>
+    <circle cx="75" cy="60" r="5"/>
+    
+    <!-- Left Sub-branches -->
+    <line x1="45" y1="65" x2="35" y2="75"/>
+    <circle cx="35" cy="80" r="4"/>
+    <line x1="45" y1="65" x2="55" y2="75"/>
+    <circle cx="55" cy="80" r="4"/>
+    
+    <!-- Right Sub-branches -->
+    <line x1="75" y1="65" x2="65" y2="75"/>
+    <circle cx="65" cy="80" r="4"/>
+    <line x1="75" y1="65" x2="85" y2="75"/>
+    <circle cx="85" cy="80" r="4"/>
+  </g>
+  
+  <!-- Code Brackets -->
+  <g fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round">
+    <path d="M25 45 L20 50 L25 55"/>
+    <path d="M95 45 L100 50 L95 55"/>
+  </g>
+  
+  <!-- Mentor Star -->
+  <g fill="#ffd700" stroke="#ffffff" stroke-width="1">
+    <polygon points="60,15 62,21 68,21 63,25 65,31 60,27 55,31 57,25 52,21 58,21"/>
+  </g>
+</svg>
