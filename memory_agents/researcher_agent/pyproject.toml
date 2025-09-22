@@ -1,0 +1,21 @@
+[project]
+name = "researcher-agent"
+version = "0.1.0"
+description = "AI Research Assistant with Linkup and GibsonAI Memori"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "streamlit==1.49.1",
+    "pydantic-ai==1.0.10",
+    "pydantic==2.11.9",
+    "linkup-sdk==0.5.0",
+    "python-dotenv==1.1.1",
+    "memorisdk==2.0.1",
+    "openai==1.108.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
