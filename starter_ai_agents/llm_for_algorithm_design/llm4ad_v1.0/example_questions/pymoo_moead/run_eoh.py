@@ -1,10 +1,13 @@
-### Test Only ###
-# Set system path
-
+from __future__ import annotations
 import os
 import sys
+from pathlib import Path
 
-sys.path.append('../../../')  # This is for finding all the modules
+# Derive project root and ensure it's on sys.path before any llm4ad imports
+BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.append(str(PROJECT_ROOT))
 
 from llm4ad.task.optimization.pymoo_moead import MOEAD_PYMOO_Evaluation
 from llm4ad.tools.llm.llm_api_https import HttpsApi

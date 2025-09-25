@@ -1,8 +1,14 @@
-import sys
-
-sys.path.append('../../')  # This is for finding all the modules
-
+from __future__ import annotations
 import os
+import sys
+from pathlib import Path
+
+# Derive project root and ensure it's on sys.path before any llm4ad imports
+BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.append(str(PROJECT_ROOT))
+
 from evaluation import CirclePackingEvaluation
 from llm4ad.tools.llm.llm_api_https import HttpsApi
 from llm4ad.method.eoh import EoH,EoHProfiler
