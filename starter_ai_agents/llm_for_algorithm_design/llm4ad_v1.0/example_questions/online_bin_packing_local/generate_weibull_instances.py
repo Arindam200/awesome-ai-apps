@@ -1,7 +1,13 @@
 import numpy as np
 
 def generate_weibull_dataset(num_instances, num_items, capacity_limit):
-
+    """
+    Generate a dataset of Weibull instances with the specified number of instances, items, and capacity limit.
+    :param num_instances: The number of instances to generate.
+    :param num_items: The number of items in each instance.
+    :param capacity_limit: The capacity limit of each instance.
+    :return: A dictionary containing the generated instances.
+    """
     np.random.seed(2024)
     
     dataset = {}

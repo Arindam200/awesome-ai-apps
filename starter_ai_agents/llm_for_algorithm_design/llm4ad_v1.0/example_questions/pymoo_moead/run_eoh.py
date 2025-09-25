@@ -15,6 +15,9 @@ from llm4ad.method.eoh import EoH, EoHProfiler
 
 
 def main():
+    """
+    Run EoH method on pymoo MOEA/D algorithm
+    """
     llm = HttpsApi(host='xxx',  # your host endpoint, e.g., 'api.openai.com', 'api.deepseek.com'
                    key=os.getenv("LLM4AD_API_KEY"),  # your key, e.g., 'sk-abcdefghijklmn'
                    model='xxx',  # your llm, e.g., 'gpt-3.5-turbo'

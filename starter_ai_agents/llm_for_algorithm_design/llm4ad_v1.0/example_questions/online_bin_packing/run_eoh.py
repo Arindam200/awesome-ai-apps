@@ -16,7 +16,9 @@ from llm4ad.tools.profiler import ProfilerBase
 
 
 def main():
-
+    """
+    Run EoH method on online bin packing problem
+    """
     llm = HttpsApi(host='xxx',  # your host endpoint, e.g., 'api.openai.com', 'api.deepseek.com'
                    key=os.getenv("LLM4AD_API_KEY"),  # your key, e.g., 'sk-abcdefghijklmn'
                    model='xxx',  # your llm, e.g., 'gpt-3.5-turbo'

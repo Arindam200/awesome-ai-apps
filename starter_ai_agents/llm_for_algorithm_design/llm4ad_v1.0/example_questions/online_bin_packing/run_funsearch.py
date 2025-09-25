@@ -14,7 +14,10 @@ from llm4ad.tools.llm.llm_api_https import HttpsApi
 from llm4ad.method.funsearch import FunSearch
 from llm4ad.tools.profiler import ProfilerBase
 
-if __name__ == '__main__':
+def main():
+    """
+    Run FunSearch method on online bin packing problem
+    """
     llm = HttpsApi(host='xxx',  # your host endpoint, e.g., 'api.openai.com', 'api.deepseek.com'
                    key=os.getenv("LLM4AD_API_KEY"),  # your key, e.g., 'sk-abcdefghijklmn'
                    model='xxx',  # your llm, e.g., 'gpt-3.5-turbo'
@@ -32,3 +35,6 @@ if __name__ == '__main__':
     )
 
     method.run()
+
+if __name__ == '__main__':
+    main()

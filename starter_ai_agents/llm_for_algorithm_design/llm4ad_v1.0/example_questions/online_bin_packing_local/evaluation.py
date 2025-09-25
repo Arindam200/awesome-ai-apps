@@ -15,14 +15,28 @@ from generate_weibull_instances import generate_weibull_dataset
 __all__ = ['OBPEvaluation']
 
 def get_valid_bin_indices(item: float, bins: np.ndarray) -> np.ndarray:
-    """Returns indices of bins in which item can fit."""
+    """Returns indices of bins in which item can fit.
+    Args:
+        - 'item' (float): Item to be packed.
+        - 'bins' (np.ndarray): Array of capacities for each bin.
+    Returns:
+        - 'valid_bin_indices' (np.ndarray): Array of indices of bins in which item can fit.
+    """
     return np.nonzero((bins - item) >= 0)[0]
 
 
 def online_binpack(
         items: tuple[float, ...], bins: np.ndarray, priority: callable
 ) -> tuple[list[list[float, ...], ...], np.ndarray]:
-    """Performs online binpacking of `items` into `bins`."""
+    """Performs online binpacking of `items` into `bins`.
+    Args:
+        - 'items' (tuple[float, ...]): Items to be packed.
+        - 'bins' (np.ndarray): Array of capacities for each bin.
+        - 'priority' (callable): Function that returns priority with which we want to add item to each bin.
+    Returns:
+        - 'packing' (list[list[float, ...], ...]): List of lists of items packed into each bin.
+        - 'bins' (np.ndarray): Array of remaining capacities for each bin.
+    """
     # Track which items are added to each bin.
     packing = [[] for _ in bins]
     # Add items to bins.
@@ -41,7 +55,13 @@ def online_binpack(
 
 
 def evaluate(instances: dict, priority: callable) -> float:
-    """Evaluate heuristic function on a set of online binpacking instances."""
+    """Evaluate heuristic function on a set of online binpacking instances.\
+    Args:
+        - 'instances' (dict): Dictionary of instances.
+        - 'priority' (callable): Function that returns priority with which we want to add item to each bin.
+    Returns:
+        - 'score' (float): Score of heuristic function.
+    """
     # List storing number of bins used for each instance.
     num_bins = []
     # Perform online binpacking for each instance.

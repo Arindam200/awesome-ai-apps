@@ -15,6 +15,9 @@ from llm4ad.method.eoh import EoH,EoHProfiler
 
 
 def main():
+    """
+    Run EoH on CirclePackingEvaluation
+    """
     llm = HttpsApi(host='api.bltcy.ai',  # your host endpoint, e.g., 'api.openai.com', 'api.deepseek.com'
                    key=os.getenv("LLM4AD_API_KEY"),  # your key
                    model='deepseek-v3',  # your llm, e.g., 'gpt-3.5-turbo'
