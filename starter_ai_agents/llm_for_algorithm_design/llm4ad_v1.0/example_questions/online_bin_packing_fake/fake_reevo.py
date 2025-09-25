@@ -5,8 +5,6 @@ import random
 from typing import Any
 import sys
 
-from llm4ad.tools.llm.llm_api_https import HttpsApi
-
 sys.path.append('../../../')  # This is for finding all the modules
 
 from llm4ad.task.optimization.online_bin_packing import OBPEvaluation

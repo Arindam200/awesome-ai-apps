@@ -12,8 +12,6 @@ sys.path.append('../../../')  # This is for finding all the modules
 from llm4ad.task.optimization.online_bin_packing import OBPEvaluation
 from llm4ad.base import LLM
 from llm4ad.method.funsearch import FunSearch
-from llm4ad.tools.profiler import ProfilerBase
-
 
 class FakeLLM(LLM):
     """We select random functions from rand_function.pkl

@@ -6,7 +6,6 @@ import os
 from evaluation import CirclePackingEvaluation
 from llm4ad.tools.llm.llm_api_https import HttpsApi
 from llm4ad.method.eoh import EoH,EoHProfiler
-from llm4ad.tools.profiler import ProfilerBase
 
 
 def main():
