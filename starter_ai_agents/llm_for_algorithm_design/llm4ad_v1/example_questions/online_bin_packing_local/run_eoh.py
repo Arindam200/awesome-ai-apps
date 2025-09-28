@@ -9,31 +9,35 @@ PROJECT_ROOT = BASE_DIR.parents[2]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
 
-from llm4ad.task.optimization.tsp_construct import TSPEvaluation
-from llm4ad.tools.llm.llm_api_https import HttpsApi
-from llm4ad.tools.profiler import ProfilerBase
+import os
+from evaluation import OBPEvaluation
+# from llm4ad.tools.llm.llm_api_https import HttpsApi
+from starter_ai_agents.llm_for_algorithm_design.llm4ad_v1.llm_nebuis import NebuisLLM
 from llm4ad.method.eoh import EoH
+from llm4ad.tools.profiler import ProfilerBase
 
+from dotenv import load_dotenv
 
 def main():
     """
-    Run EoH method on TSP problem
+    Run EoH method on online bin packing problem
     """
-    llm = HttpsApi(host='xxx',  # your host endpoint, e.g., 'api.openai.com', 'api.deepseek.com'
+    llm = NebuisLLM(host='xxx',  # your host endpoint, e.g., 'api.openai.com', 'api.deepseek.com'
                    key=os.getenv("LLM4AD_API_KEY"),  # your key, e.g., 'sk-abcdefghijklmn'
                    model='xxx',  # your llm, e.g., 'gpt-3.5-turbo'
                    timeout=60)
 
-    task = TSPEvaluation()
+    task = OBPEvaluation()  # local
 
     method = EoH(llm=llm,
-                 profiler=ProfilerBase(log_dir='logs', log_style='complex'),
+                 profiler=ProfilerBase(log_dir='logs/eoh', log_style='simple'),
                  evaluation=task,
                  max_sample_nums=20,
-                 max_generations=5,
-                 pop_size=2,
+                 max_generations=10,
+                 pop_size=4,
                  num_samplers=1,
-                 num_evaluators=1)
+                 num_evaluators=1,
+                 debug_mode=False)
 
     method.run()
 

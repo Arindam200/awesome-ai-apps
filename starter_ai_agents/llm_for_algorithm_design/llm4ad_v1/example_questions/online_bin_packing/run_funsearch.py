@@ -10,15 +10,18 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
 
 from llm4ad.task.optimization.online_bin_packing import OBPEvaluation
-from llm4ad.tools.llm.llm_api_https import HttpsApi
+# from llm4ad.tools.llm.llm_api_https import HttpsApi
+from starter_ai_agents.llm_for_algorithm_design.llm4ad_v1.llm_nebuis import NebuisLLM
 from llm4ad.method.funsearch import FunSearch
 from llm4ad.tools.profiler import ProfilerBase
+
+from dotenv import load_dotenv
 
 def main():
     """
     Run FunSearch method on online bin packing problem
     """
-    llm = HttpsApi(host='xxx',  # your host endpoint, e.g., 'api.openai.com', 'api.deepseek.com'
+    llm = NebuisLLM(host='xxx',  # your host endpoint, e.g., 'api.openai.com', 'api.deepseek.com'
                    key=os.getenv("LLM4AD_API_KEY"),  # your key, e.g., 'sk-abcdefghijklmn'
                    model='xxx',  # your llm, e.g., 'gpt-3.5-turbo'
                    timeout=60)
