@@ -196,6 +196,10 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent) - Agentic Workflow that send meeting notes and creates task based on conversation.
 - [Ai Hedgefund](advance_ai_agents/ai-hedgefund) - Agentic Workflow for financial analysis
 
+## 🤖 Agent UI
+
+- [CopilotKit](https://github.com/CopilotKit/CopilotKit) - Bridges your backend agents to an interactive frontend - streaming, reasoning, tool calls, and structured outputs in real time.
+
 ## 📺 Playlist of Demo Videos & Tutorials
 
 - [Build with MCP](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lolxax4L2HS54Me8gn1gkz4)
