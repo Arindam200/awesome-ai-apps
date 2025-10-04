@@ -188,23 +188,23 @@ jobs:
         bandit -r . -f json -o bandit-report.json || echo "Security issues found"
         if [ -f bandit-report.json ]; then
           python3 -c "
-          import json
-          try:
-              with open('bandit-report.json', 'r') as f:
-                  report = json.load(f)
-              high_severity = len([issue for issue in report.get('results', []) if issue.get('issue_severity') == 'HIGH'])
-              medium_severity = len([issue for issue in report.get('results', []) if issue.get('issue_severity') == 'MEDIUM'])
-              print(f'Security scan: {high_severity} high, {medium_severity} medium severity issues')
-              if high_severity > 0:
-                  print('❌ High severity security issues found')
-                  for issue in report.get('results', []):
-                      if issue.get('issue_severity') == 'HIGH':
-                          print(f'  - {issue.get(\"test_name\")}: {issue.get(\"filename\")}:{issue.get(\"line_number\")}')
-              else:
-                  print('✓ No high severity security issues')
-          except:
-              print('Could not parse security report')
-          "
+import json
+try:
+    with open('bandit-report.json', 'r') as f:
+        report = json.load(f)
+    high_severity = len([issue for issue in report.get('results', []) if issue.get('issue_severity') == 'HIGH'])
+    medium_severity = len([issue for issue in report.get('results', []) if issue.get('issue_severity') == 'MEDIUM'])
+    print(f'Security scan: {high_severity} high, {medium_severity} medium severity issues')
+    if high_severity > 0:
+        print('❌ High severity security issues found')
+        for issue in report.get('results', []):
+            if issue.get('issue_severity') == 'HIGH':
+                print(f'  - {issue.get(\"test_name\")}: {issue.get(\"filename\")}:{issue.get(\"line_number\")}')
+    else:
+        print('✓ No high severity security issues')
+except:
+    print('Could not parse security report')
+"
         fi
     
     - name: Check for hardcoded secrets
