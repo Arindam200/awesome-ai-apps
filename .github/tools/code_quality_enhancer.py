@@ -7,18 +7,17 @@ error handling, and docstrings across projects in the awesome-ai-apps repository
 
 import ast
 import logging
-import os
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Any
 
 
 class CodeQualityEnhancer:
     """Main class for enhancing Python code quality."""
-    
+
     def __init__(self, project_path: str, dry_run: bool = False):
         """Initialize the code quality enhancer.
-        
+
         Args:
             project_path: Path to the project to enhance
             dry_run: If True, only analyze without making changes
@@ -26,7 +25,7 @@ class CodeQualityEnhancer:
         self.project_path = Path(project_path)
         self.dry_run = dry_run
         self.logger = self._setup_logging()
-        
+
     def _setup_logging(self) -> logging.Logger:
         """Setup logging configuration."""
         logging.basicConfig(
@@ -38,8 +37,8 @@ class CodeQualityEnhancer:
             ]
         )
         return logging.getLogger(__name__)
-    
-    def find_python_files(self) -> List[Path]:
+
+    def find_python_files(self) -> list[Path]:
         """Find all Python files in the project.
         
         Returns:
@@ -50,30 +49,30 @@ class CodeQualityEnhancer:
             # Skip test files and __init__ files for now
             if not py_file.name.startswith("test_") and py_file.name != "__init__.py":
                 python_files.append(py_file)
-        
+
         self.logger.info(f"Found {len(python_files)} Python files to process")
         return python_files
     
-    def analyze_file(self, file_path: Path) -> Dict[str, Any]:
+    def analyze_file(self, file_path: Path) -> dict[str, Any]:
         """Analyze a Python file for quality metrics.
-        
+
         Args:
             file_path: Path to the Python file
-            
+
         Returns:
             Dictionary with analysis results
         """
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             # Parse AST
             try:
                 tree = ast.parse(content)
             except SyntaxError as e:
                 self.logger.error(f"Syntax error in {file_path}: {e}")
                 return {"error": str(e)}
-            
+
             analysis = {
                 "file_path": str(file_path),
                 "has_typing_imports": "from typing import" in content or "import typing" in content,
@@ -86,18 +85,18 @@ class CodeQualityEnhancer:
                 "print_statements": len(re.findall(r'print\s*\(', content)),
                 "lines_of_code": len(content.splitlines())
             }
-            
+
             return analysis
-            
+
         except Exception as e:
             self.logger.error(f"Error analyzing {file_path}: {e}")
             return {"error": str(e)}
     
     def _has_module_docstring(self, tree: ast.Module) -> bool:
         """Check if module has a docstring."""
-        if (tree.body and 
-            isinstance(tree.body[0], ast.Expr) and 
-            isinstance(tree.body[0].value, ast.Constant) and 
+        if (tree.body and
+            isinstance(tree.body[0], ast.Expr) and
+            isinstance(tree.body[0].value, ast.Constant) and
             isinstance(tree.body[0].value.value, str)):
             return True
         return False
@@ -107,9 +106,9 @@ class CodeQualityEnhancer:
         count = 0
         for node in ast.walk(tree):
             if isinstance(node, ast.FunctionDef):
-                if (node.body and 
-                    isinstance(node.body[0], ast.Expr) and 
-                    isinstance(node.body[0].value, ast.Constant) and 
+                if (node.body and
+                    isinstance(node.body[0], ast.Expr) and
+                    isinstance(node.body[0].value, ast.Constant) and
                     isinstance(node.body[0].value.value, str)):
                     count += 1
         return count
@@ -128,22 +127,22 @@ class CodeQualityEnhancer:
                     count += 1
         return count
     
-    def enhance_file(self, file_path: Path) -> Dict[str, Any]:
+    def enhance_file(self, file_path: Path) -> dict[str, Any]:
         """Enhance a single Python file.
-        
+
         Args:
             file_path: Path to the Python file
-            
+
         Returns:
             Dictionary with enhancement results
         """
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 original_content = f.read()
-            
+
             enhanced_content = original_content
             changes_made = []
-            
+
             # Add typing imports if needed
             if not re.search(r'from typing import|import typing', enhanced_content):
                 typing_import = "from typing import List, Dict, Optional, Union, Any\n"
@@ -219,7 +218,7 @@ logger = logging.getLogger(__name__)
                 "success": False
             }
     
-    def generate_quality_report(self, analyses: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def generate_quality_report(self, analyses: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate a quality report from file analyses.
         
         Args:
@@ -259,7 +258,7 @@ logger = logging.getLogger(__name__)
         
         return report
     
-    def run_enhancement(self) -> Dict[str, Any]:
+    def run_enhancement(self) -> dict[str, Any]:
         """Run the complete code enhancement process.
         
         Returns:
