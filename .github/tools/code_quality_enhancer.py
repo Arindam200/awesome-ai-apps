@@ -148,7 +148,7 @@ class CodeQualityEnhancer:
                 typing_import = "from typing import List, Dict, Optional, Union, Any\n"
                 enhanced_content = typing_import + enhanced_content
                 changes_made.append("Added typing imports")
-            
+
             # Add logging setup if needed
             if "import logging" not in enhanced_content:
                 logging_setup = '''import logging
