@@ -1,7 +1,29 @@
+"""
+Ask
+
+Module description goes here.
+"""
+
+from typing import List, Dict, Optional, Union, Any
 import os
 from dotenv import load_dotenv
 from agno.agent import Agent
 from agno.models.nebius import Nebius
+
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 
 load_dotenv()
 

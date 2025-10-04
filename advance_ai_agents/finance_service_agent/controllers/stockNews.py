@@ -1,8 +1,30 @@
+"""
+Stocknews
+
+Module description goes here.
+"""
+
+from typing import List, Dict, Optional, Union, Any
 import finnhub
 import time
 import requests
 import dotenv 
 import os
+
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 
 dotenv.load_dotenv()
 
@@ -24,7 +46,7 @@ def fetch_news():
         news_stack=[]
         for news in news_list[:10]:
             news_stack.append([news['headline'],news['url']])
-        print("✅ Data fetching done successfully!")   
+        logger.info("✅ Data fetching done successfully!")   
         return news_stack
     except Exception as e:
         print(f"❌ Error fetching news: {e}")

@@ -1,3 +1,10 @@
+"""
+Agentroutes
+
+Module description goes here.
+"""
+
+from typing import List, Dict, Optional, Union, Any
 import os
 import datetime
 import json
@@ -10,6 +17,21 @@ from agno.models.nebius import Nebius
 from controllers.agents import multi_ai
 import dotenv
 from controllers.ask import chat_agent
+
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 
 router = APIRouter()
 

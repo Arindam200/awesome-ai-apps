@@ -1,6 +1,28 @@
+"""
+Topstocks
+
+Module description goes here.
+"""
+
+from typing import List, Dict, Optional, Union, Any
 import yfinance as yf
 import requests 
 import time
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
+
 session = requests.Session()
 session.headers.update({
     "User-Agent": "Chrome/122.0.0.0"
@@ -44,7 +66,7 @@ def get_top_stock_info():
             except Exception as e:
                 print(f"⚠️ Could not fetch info for {stock}: {e}")
         
-        print("✅ Data fetching done successfully!")
+        logger.info("✅ Data fetching done successfully!")
         return stock_data
 
     except Exception as e:
@@ -62,7 +84,7 @@ def get_stock(symbol):
                 'previousClose': info.get('previousClose', 'N/A'),
                 'sector': info.get('sector', 'N/A')
             }
-        print("✅ Data fetching done successfully!")
+        logger.info("✅ Data fetching done successfully!")
         return stock_info
     except Exception as e:
         print(f"❌ Error fetching {symbol}: {e}")
