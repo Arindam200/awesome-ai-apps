@@ -40,7 +40,7 @@ class CodeQualityEnhancer:
 
     def find_python_files(self) -> list[Path]:
         """Find all Python files in the project.
-        
+
         Returns:
             List of Python file paths
         """
@@ -52,7 +52,7 @@ class CodeQualityEnhancer:
 
         self.logger.info(f"Found {len(python_files)} Python files to process")
         return python_files
-    
+
     def analyze_file(self, file_path: Path) -> dict[str, Any]:
         """Analyze a Python file for quality metrics.
 
@@ -91,7 +91,7 @@ class CodeQualityEnhancer:
         except Exception as e:
             self.logger.error(f"Error analyzing {file_path}: {e}")
             return {"error": str(e)}
-    
+
     def _has_module_docstring(self, tree: ast.Module) -> bool:
         """Check if module has a docstring."""
         if (tree.body and
@@ -100,7 +100,7 @@ class CodeQualityEnhancer:
             isinstance(tree.body[0].value.value, str)):
             return True
         return False
-    
+
     def _count_functions_with_docstrings(self, tree: ast.Module) -> int:
         """Count functions that have docstrings."""
         count = 0
@@ -112,7 +112,7 @@ class CodeQualityEnhancer:
                     isinstance(node.body[0].value.value, str)):
                     count += 1
         return count
-    
+
     def _count_functions_with_type_hints(self, tree: ast.Module) -> int:
         """Count functions that have type hints."""
         count = 0
@@ -126,7 +126,7 @@ class CodeQualityEnhancer:
                 if has_annotations:
                     count += 1
         return count
-    
+
     def enhance_file(self, file_path: Path) -> dict[str, Any]:
         """Enhance a single Python file.
 
@@ -174,28 +174,28 @@ logger = logging.getLogger(__name__)
                         import_end = i + 1
                     else:
                         break
-                
+
                 lines.insert(import_end, logging_setup)
                 enhanced_content = '\n'.join(lines)
                 changes_made.append("Added logging configuration")
-            
+
             # Replace simple print statements with logging
             print_pattern = r'print\s*\(\s*["\']([^"\']*)["\']?\s*\)'
             if re.search(print_pattern, enhanced_content):
                 enhanced_content = re.sub(
-                    print_pattern, 
-                    r'logger.info("\1")', 
+                    print_pattern,
+                    r'logger.info("\1")',
                     enhanced_content
                 )
                 changes_made.append("Replaced print statements with logging")
-            
+
             # Add module docstring if missing
             if not enhanced_content.strip().startswith('"""') and not enhanced_content.strip().startswith("'''"):
                 module_name = file_path.stem.replace('_', ' ').title()
                 docstring = f'"""\n{module_name}\n\nModule description goes here.\n"""\n\n'
                 enhanced_content = docstring + enhanced_content
                 changes_made.append("Added module docstring")
-            
+
             # Write enhanced content if not dry run
             if not self.dry_run and changes_made:
                 with open(file_path, 'w', encoding='utf-8') as f:
@@ -203,13 +203,13 @@ logger = logging.getLogger(__name__)
                 self.logger.info(f"Enhanced {file_path}: {', '.join(changes_made)}")
             elif changes_made:
                 self.logger.info(f"Would enhance {file_path}: {', '.join(changes_made)}")
-            
+
             return {
                 "file_path": str(file_path),
                 "changes_made": changes_made,
                 "success": True
             }
-            
+
         except Exception as e:
             self.logger.error(f"Error enhancing {file_path}: {e}")
             return {
@@ -217,33 +217,33 @@ logger = logging.getLogger(__name__)
                 "error": str(e),
                 "success": False
             }
-    
+
     def generate_quality_report(self, analyses: list[dict[str, Any]]) -> dict[str, Any]:
         """Generate a quality report from file analyses.
-        
+
         Args:
             analyses: List of file analysis results
-            
+
         Returns:
             Quality report dictionary
         """
         valid_analyses = [a for a in analyses if "error" not in a]
         total_files = len(valid_analyses)
-        
+
         if total_files == 0:
             return {"error": "No valid files to analyze"}
-        
+
         # Calculate metrics
         files_with_typing = sum(1 for a in valid_analyses if a.get("has_typing_imports", False))
         files_with_logging = sum(1 for a in valid_analyses if a.get("has_logging", False))
         files_with_docstrings = sum(1 for a in valid_analyses if a.get("has_docstring", False))
         files_with_error_handling = sum(1 for a in valid_analyses if a.get("has_error_handling", False))
-        
+
         total_functions = sum(a.get("function_count", 0) for a in valid_analyses)
         functions_with_docstrings = sum(a.get("functions_with_docstrings", 0) for a in valid_analyses)
         functions_with_type_hints = sum(a.get("functions_with_type_hints", 0) for a in valid_analyses)
         total_print_statements = sum(a.get("print_statements", 0) for a in valid_analyses)
-        
+
         report = {
             "total_files": total_files,
             "typing_coverage": round((files_with_typing / total_files) * 100, 2),
@@ -255,59 +255,59 @@ logger = logging.getLogger(__name__)
             "function_type_hint_coverage": round((functions_with_type_hints / total_functions) * 100, 2) if total_functions > 0 else 0,
             "print_statements_found": total_print_statements
         }
-        
+
         return report
-    
+
     def run_enhancement(self) -> dict[str, Any]:
         """Run the complete code enhancement process.
-        
+
         Returns:
             Results of the enhancement process
         """
         self.logger.info(f"Starting code quality enhancement for {self.project_path}")
         self.logger.info(f"Dry run mode: {self.dry_run}")
-        
+
         # Find Python files
         python_files = self.find_python_files()
-        
+
         if not python_files:
             self.logger.warning("No Python files found")
             return {"error": "No Python files found"}
-        
+
         # Analyze files before enhancement
         self.logger.info("Analyzing files for current quality metrics...")
         initial_analyses = [self.analyze_file(file_path) for file_path in python_files]
         initial_report = self.generate_quality_report(initial_analyses)
-        
+
         self.logger.info("Initial Quality Report:")
         for key, value in initial_report.items():
             if key != "error":
                 self.logger.info(f"  {key}: {value}")
-        
+
         # Enhance files
         self.logger.info("Enhancing files...")
         enhancement_results = [self.enhance_file(file_path) for file_path in python_files]
-        
+
         # Analyze files after enhancement
         if not self.dry_run:
             self.logger.info("Analyzing files after enhancement...")
             final_analyses = [self.analyze_file(file_path) for file_path in python_files]
             final_report = self.generate_quality_report(final_analyses)
-            
+
             self.logger.info("Final Quality Report:")
             for key, value in final_report.items():
                 if key != "error":
                     self.logger.info(f"  {key}: {value}")
         else:
             final_report = None
-        
+
         # Summary
         successful_enhancements = [r for r in enhancement_results if r.get("success", False)]
         total_changes = sum(len(r.get("changes_made", [])) for r in successful_enhancements)
-        
+
         self.logger.info(f"Enhancement complete: {len(successful_enhancements)}/{len(python_files)} files processed")
         self.logger.info(f"Total changes made: {total_changes}")
-        
+
         return {
             "initial_report": initial_report,
             "final_report": final_report,
@@ -321,48 +321,48 @@ logger = logging.getLogger(__name__)
 def main():
     """Main entry point for the code quality enhancement tool."""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Python Code Quality Enhancement Tool")
     parser.add_argument("project_path", help="Path to the project to enhance")
     parser.add_argument("--dry-run", action="store_true", help="Analyze only, don't make changes")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
-    
+
     args = parser.parse_args()
-    
+
     # Setup logging level
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
-    
+
     # Run enhancement
     enhancer = CodeQualityEnhancer(args.project_path, dry_run=args.dry_run)
     results = enhancer.run_enhancement()
-    
+
     if "error" in results:
         print(f"Error: {results['error']}")
         return 1
-    
+
     print("\n" + "="*50)
     print("CODE QUALITY ENHANCEMENT SUMMARY")
     print("="*50)
     print(f"Files processed: {results['files_processed']}")
     print(f"Successful enhancements: {results['successful_enhancements']}")
     print(f"Total changes made: {results['total_changes']}")
-    
+
     if results['final_report']:
         print("\nQuality Improvements:")
         initial = results['initial_report']
         final = results['final_report']
-        
+
         metrics = [
-            "typing_coverage", "logging_coverage", "docstring_coverage", 
+            "typing_coverage", "logging_coverage", "docstring_coverage",
             "error_handling_coverage", "function_type_hint_coverage"
         ]
-        
+
         for metric in metrics:
             if metric in initial and metric in final:
                 improvement = final[metric] - initial[metric]
                 print(f"  {metric}: {initial[metric]:.1f}% → {final[metric]:.1f}% (+{improvement:.1f}%)")
-    
+
     return 0
 
 
