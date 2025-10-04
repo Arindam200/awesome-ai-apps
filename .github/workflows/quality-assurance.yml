@@ -1,0 +1,357 @@
+name: Repository Quality Assurance
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run weekly quality checks on Mondays at 9 AM UTC
+    - cron: '0 9 * * 1'
+
+jobs:
+  documentation-quality:
+    name: Documentation Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js for markdown linting
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Install markdownlint
+      run: npm install -g markdownlint-cli
+    
+    - name: Check README files
+      run: |
+        echo "Checking README files for quality..."
+        find . -name "README.md" -not -path "./.git/*" | while read file; do
+          echo "Checking: $file"
+          markdownlint "$file" || echo "Issues found in $file"
+        done
+    
+    - name: Validate .env.example files
+      run: |
+        echo "Validating .env.example files..."
+        python3 -c "
+        import os
+        import glob
+        
+        def check_env_example(file_path):
+            with open(file_path, 'r') as f:
+                content = f.read()
+            
+            issues = []
+            if len(content) < 200:
+                issues.append('Too basic - needs more documentation')
+            if 'studio.nebius.ai' not in content:
+                issues.append('Missing Nebius API key link')
+            if '# Description:' not in content and '# Get your key:' not in content:
+                issues.append('Missing detailed comments')
+                
+            return issues
+        
+        env_files = glob.glob('**/.env.example', recursive=True)
+        total_issues = 0
+        
+        for env_file in env_files:
+            issues = check_env_example(env_file)
+            if issues:
+                print(f'Issues in {env_file}:')
+                for issue in issues:
+                    print(f'  - {issue}')
+                total_issues += len(issues)
+            else:
+                print(f'✓ {env_file} is well documented')
+        
+        if total_issues > 10:
+            print(f'Too many documentation issues ({total_issues})')
+            exit(1)
+        else:
+            print(f'Documentation quality acceptable ({total_issues} minor issues)')
+        "
+
+  dependency-analysis:
+    name: Dependency Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+    
+    - name: Check pyproject.toml coverage
+      run: |
+        echo "Analyzing dependency management..."
+        python3 -c "
+        import os
+        import glob
+        
+        # Find all Python projects
+        projects = []
+        for root, dirs, files in os.walk('.'):
+            if 'requirements.txt' in files or 'pyproject.toml' in files:
+                if not any(exclude in root for exclude in ['.git', '__pycache__', '.venv', 'node_modules']):
+                    projects.append(root)
+        
+        print(f'Found {len(projects)} Python projects')
+        
+        modern_projects = 0
+        legacy_projects = 0
+        
+        for project in projects:
+            pyproject_path = os.path.join(project, 'pyproject.toml')
+            requirements_path = os.path.join(project, 'requirements.txt')
+            
+            if os.path.exists(pyproject_path):
+                with open(pyproject_path, 'r') as f:
+                    content = f.read()
+                if 'requires-python' in content and 'hatchling' in content:
+                    print(f'✓ {project} - Modern pyproject.toml')
+                    modern_projects += 1
+                else:
+                    print(f'⚠ {project} - Basic pyproject.toml (needs enhancement)')
+            elif os.path.exists(requirements_path):
+                print(f'❌ {project} - Legacy requirements.txt only')
+                legacy_projects += 1
+        
+        modernization_rate = (modern_projects / len(projects)) * 100 if projects else 0
+        print(f'Modernization rate: {modernization_rate:.1f}% ({modern_projects}/{len(projects)})')
+        
+        if modernization_rate < 50:
+            print('⚠ Less than 50% of projects use modern dependency management')
+        else:
+            print('✓ Good adoption of modern dependency management')
+        "
+    
+    - name: Test key project installations
+      run: |
+        # Test a few key projects can be installed with uv
+        key_projects=(
+          "starter_ai_agents/agno_starter"
+          "starter_ai_agents/crewai_starter"
+          "simple_ai_agents/newsletter_agent"
+        )
+        
+        for project in "${key_projects[@]}"; do
+          if [ -d "$project" ]; then
+            echo "Testing installation: $project"
+            cd "$project"
+            
+            if [ -f "pyproject.toml" ]; then
+              echo "Testing uv sync..."
+              uv sync --dry-run || echo "uv sync failed for $project"
+            elif [ -f "requirements.txt" ]; then
+              echo "Testing pip install..."
+              python -m pip install --dry-run -r requirements.txt || echo "pip install failed for $project"
+            fi
+            
+            cd - > /dev/null
+          fi
+        done
+
+  code-quality:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install analysis tools
+      run: |
+        pip install ruff mypy bandit safety
+    
+    - name: Run Ruff linting
+      run: |
+        echo "Running Ruff linting on Python files..."
+        ruff check . --select E,W,F,I,B,C4,UP --ignore E501,B008,C901 || echo "Linting issues found"
+    
+    - name: Security scan with Bandit
+      run: |
+        echo "Running security analysis..."
+        bandit -r . -f json -o bandit-report.json || echo "Security issues found"
+        if [ -f bandit-report.json ]; then
+          python3 -c "
+          import json
+          try:
+              with open('bandit-report.json', 'r') as f:
+                  report = json.load(f)
+              high_severity = len([issue for issue in report.get('results', []) if issue.get('issue_severity') == 'HIGH'])
+              medium_severity = len([issue for issue in report.get('results', []) if issue.get('issue_severity') == 'MEDIUM'])
+              print(f'Security scan: {high_severity} high, {medium_severity} medium severity issues')
+              if high_severity > 0:
+                  print('❌ High severity security issues found')
+                  for issue in report.get('results', []):
+                      if issue.get('issue_severity') == 'HIGH':
+                          print(f'  - {issue.get(\"test_name\")}: {issue.get(\"filename\")}:{issue.get(\"line_number\")}')
+              else:
+                  print('✓ No high severity security issues')
+          except:
+              print('Could not parse security report')
+          "
+        fi
+    
+    - name: Check for hardcoded secrets
+      run: |
+        echo "Checking for potential hardcoded secrets..."
+        python3 -c "
+        import os
+        import re
+        import glob
+        
+        # Patterns for potential secrets
+        secret_patterns = [
+            r'api[_-]?key\s*=\s*[\"'\''][^\"'\'']+[\"'\'']',
+            r'password\s*=\s*[\"'\''][^\"'\'']+[\"'\'']',
+            r'secret\s*=\s*[\"'\''][^\"'\'']+[\"'\'']',
+            r'token\s*=\s*[\"'\''][^\"'\'']+[\"'\'']',
+        ]
+        
+        issues_found = 0
+        
+        for py_file in glob.glob('**/*.py', recursive=True):
+            if any(exclude in py_file for exclude in ['.git', '__pycache__', '.venv']):
+                continue
+                
+            try:
+                with open(py_file, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                
+                for pattern in secret_patterns:
+                    matches = re.finditer(pattern, content, re.IGNORECASE)
+                    for match in matches:
+                        if 'your_' not in match.group().lower() and 'example' not in match.group().lower():
+                            print(f'⚠ Potential hardcoded secret in {py_file}: {match.group()[:50]}...')
+                            issues_found += 1
+            except:
+                continue
+        
+        if issues_found == 0:
+            print('✓ No hardcoded secrets detected')
+        else:
+            print(f'Found {issues_found} potential hardcoded secrets')
+        "
+
+  project-structure:
+    name: Project Structure Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Validate project structures
+      run: |
+        echo "Validating project structures..."
+        python3 -c "
+        import os
+        import glob
+        
+        categories = {
+            'starter_ai_agents': 'Starter AI Agents',
+            'simple_ai_agents': 'Simple AI Agents', 
+            'rag_apps': 'RAG Applications',
+            'advance_ai_agents': 'Advanced AI Agents',
+            'mcp_ai_agents': 'MCP Agents',
+            'memory_agents': 'Memory Agents'
+        }
+        
+        required_files = ['README.md']
+        recommended_files = ['.env.example', 'requirements.txt', 'pyproject.toml']
+        
+        total_projects = 0
+        compliant_projects = 0
+        
+        for category, name in categories.items():
+            if not os.path.exists(category):
+                print(f'❌ Category missing: {category}')
+                continue
+                
+            projects = [d for d in os.listdir(category) if os.path.isdir(os.path.join(category, d))]
+            print(f'{name}: {len(projects)} projects')
+            
+            for project in projects:
+                project_path = os.path.join(category, project)
+                total_projects += 1
+                
+                missing_required = []
+                missing_recommended = []
+                
+                for file in required_files:
+                    if not os.path.exists(os.path.join(project_path, file)):
+                        missing_required.append(file)
+                
+                for file in recommended_files:
+                    if not os.path.exists(os.path.join(project_path, file)):
+                        missing_recommended.append(file)
+                
+                if not missing_required:
+                    compliant_projects += 1
+                    if not missing_recommended:
+                        print(f'  ✓ {project} - Complete')
+                    else:
+                        print(f'  ⚠ {project} - Missing: {missing_recommended}')
+                else:
+                    print(f'  ❌ {project} - Missing required: {missing_required}')
+        
+        compliance_rate = (compliant_projects / total_projects) * 100 if total_projects else 0
+        print(f'Overall compliance: {compliance_rate:.1f}% ({compliant_projects}/{total_projects})')
+        
+        if compliance_rate < 90:
+            print('❌ Project structure compliance below 90%')
+            exit(1)
+        else:
+            print('✓ Good project structure compliance')
+        "
+
+  generate-summary:
+    name: Generate Quality Report
+    runs-on: ubuntu-latest
+    needs: [documentation-quality, dependency-analysis, code-quality, project-structure]
+    if: always()
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Generate Quality Summary
+      run: |
+        echo "# Repository Quality Report" > quality-report.md
+        echo "Generated on: $(date)" >> quality-report.md
+        echo "" >> quality-report.md
+        
+        echo "## Status Summary" >> quality-report.md
+        echo "- Documentation Quality: ${{ needs.documentation-quality.result }}" >> quality-report.md
+        echo "- Dependency Analysis: ${{ needs.dependency-analysis.result }}" >> quality-report.md
+        echo "- Code Quality: ${{ needs.code-quality.result }}" >> quality-report.md
+        echo "- Project Structure: ${{ needs.project-structure.result }}" >> quality-report.md
+        echo "" >> quality-report.md
+        
+        echo "## Recommendations" >> quality-report.md
+        echo "1. Ensure all projects have comprehensive .env.example files" >> quality-report.md
+        echo "2. Migrate remaining projects to pyproject.toml" >> quality-report.md
+        echo "3. Add uv installation instructions to all READMEs" >> quality-report.md
+        echo "4. Address any security issues found in code scanning" >> quality-report.md
+        echo "5. Ensure consistent project structure across all categories" >> quality-report.md
+        
+        cat quality-report.md
+    
+    - name: Upload Quality Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: quality-report
+        path: quality-report.md
