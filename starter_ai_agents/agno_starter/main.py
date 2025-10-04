@@ -146,7 +146,7 @@ def main() -> None:
             
             if user_input.lower() == 'exit':
                 logger.info("User requested exit")
-                print("Goodbye! 👋")
+                logger.info("Goodbye! 👋")
                 break
             
             if not user_input:
@@ -167,7 +167,7 @@ def main() -> None:
             except Exception as e:
                 logger.error(f"Error processing user query: {e}")
                 print(f"Sorry, I encountered an error: {e}")
-                print("Please try again with a different question.")
+                logger.info("Please try again with a different question.")
                 
     except Exception as e:
         logger.error(f"Critical error in main application: {e}")
