@@ -3,17 +3,35 @@ HackerNews Tech News Analyst Agent
 
 A sophisticated AI agent that analyzes HackerNews content, tracks tech trends,
 and provides intelligent insights about technology discussions and patterns.
+
+Note: This application requires the 'agno' framework. Install with:
+    pip install agno
 """
 
 import logging
 import os
+import sys
 from datetime import datetime
 from typing import Optional
 
-from agno.agent import Agent
-from agno.tools.hackernews import HackerNewsTools
-from agno.models.nebius import Nebius
 from dotenv import load_dotenv
+
+# Check for required dependencies
+try:
+    from agno.agent import Agent
+    from agno.tools.hackernews import HackerNewsTools
+    from agno.models.nebius import Nebius
+    AGNO_AVAILABLE = True
+except ImportError as e:
+    AGNO_AVAILABLE = False
+    # Type stubs for when agno is not available
+    Agent = type(None)
+    HackerNewsTools = type(None)
+    Nebius = type(None)
+    logging.error(f"agno framework not available: {e}")
+    print("ERROR: agno framework is required but not installed.")
+    print("Please install it with: pip install agno")
+    print("Or check the project README for installation instructions.")
 
 # Configure logging
 logging.basicConfig(
@@ -57,15 +75,19 @@ INSTRUCTIONS = """You are an intelligent HackerNews analyst and tech news curato
 
 Always maintain a helpful and engaging tone while providing valuable insights."""
 
-def create_agent() -> Agent:
+def create_agent() -> Optional[object]:
     """Create and configure the HackerNews analyst agent.
     
     Returns:
-        Agent: Configured agent ready for tech news analysis
+        Agent: Configured agent ready for tech news analysis, or None if dependencies unavailable
         
     Raises:
         ValueError: If NEBIUS_API_KEY is not found in environment
+        RuntimeError: If agno framework is not available
     """
+    if not AGNO_AVAILABLE:
+        raise RuntimeError("agno framework is required but not available. Please install with: pip install agno")
+        
     api_key = os.getenv("NEBIUS_API_KEY")
     if not api_key:
         logger.error("NEBIUS_API_KEY not found in environment variables")
@@ -133,6 +155,11 @@ def main() -> None:
     """Main application entry point."""
     logger.info("Starting Tech News Analyst application")
     
+    if not AGNO_AVAILABLE:
+        print("❌ Cannot start application - agno framework is not available")
+        print("Please install with: pip install agno")
+        return
+    
     try:
         # Create agent
         agent = create_agent()
@@ -146,7 +173,7 @@ def main() -> None:
             
             if user_input.lower() == 'exit':
                 logger.info("User requested exit")
-                logger.info("Goodbye! 👋")
+                print("Goodbye! 👋")
                 break
             
             if not user_input:
@@ -161,13 +188,16 @@ def main() -> None:
                 logger.info(f"Processing user query: {user_input[:50]}...")
                 
                 # Get agent response
-                agent.print_response(user_input)
-                logger.info("Response generated successfully")
+                if agent is not None:
+                    agent.print_response(user_input)
+                    logger.info("Response generated successfully")
+                else:
+                    print("Agent is not available. Please check agno framework installation.")
                 
             except Exception as e:
                 logger.error(f"Error processing user query: {e}")
                 print(f"Sorry, I encountered an error: {e}")
-                logger.info("Please try again with a different question.")
+                print("Please try again with a different question.")
                 
     except Exception as e:
         logger.error(f"Critical error in main application: {e}")

@@ -5,8 +5,9 @@ This guide ensures all project READMEs follow consistent structure and quality s
 ## 📋 Required Sections Checklist
 
 ### ✅ Basic Requirements
+
 - [ ] **Project title** with descriptive H1 header
-- [ ] **Brief description** (1-2 sentences) 
+- [ ] **Brief description** (1-2 sentences)
 - [ ] **Features section** with bullet points using emojis
 - [ ] **Tech Stack section** with links to frameworks/libraries
 - [ ] **Prerequisites section** with version requirements
@@ -16,7 +17,8 @@ This guide ensures all project READMEs follow consistent structure and quality s
 - [ ] **Contributing** section linking to CONTRIBUTING.md
 - [ ] **License** section linking to LICENSE file
 
-### 🎯 Enhanced Requirements  
+### 🎯 Enhanced Requirements
+
 - [ ] **Banner/Demo GIF** at the top (optional but recommended)
 - [ ] **Workflow diagram** explaining the process
 - [ ] **Environment Variables** section with detailed explanations
@@ -28,18 +30,21 @@ This guide ensures all project READMEs follow consistent structure and quality s
 ## 📝 Style Guidelines
 
 ### Formatting Standards
+
 - Use **emojis** consistently for section headers (🚀 Features, 🛠️ Tech Stack, etc.)
 - Use **bold text** for emphasis on important points
 - Use **code blocks** with proper language highlighting
 - Use **tables** for comparison or structured data when appropriate
 
 ### Content Quality
+
 - **Clear, concise language** - avoid technical jargon where possible
 - **Step-by-step instructions** - numbered lists for processes
 - **Examples and screenshots** - visual aids when helpful
 - **Links to external resources** - don't assume prior knowledge
 
 ### Technical Accuracy
+
 - **Exact command syntax** for the user's OS (Windows PowerShell)
 - **Correct file paths** using forward slashes
 - **Version numbers** specified where critical
@@ -48,6 +53,7 @@ This guide ensures all project READMEs follow consistent structure and quality s
 ## 🔧 Template Sections
 
 ### Tech Stack Template
+
 ```markdown
 ## 🛠️ Tech Stack
 

@@ -1,6 +1,6 @@
-![Banner](./banner.png)
-
 # Agno Starter Agent 🚀
+
+![Banner](./banner.png)
 
 > A beginner-friendly AI agent built with Agno that analyzes HackerNews content and demonstrates core AI agent development patterns.
 
@@ -41,6 +41,7 @@ How the agent processes your requests:
 - **Git** - [Download here](https://git-scm.com/downloads)
 
 ### API Keys Required
+
 - **Nebius AI** - [Get your key](https://studio.nebius.ai/api-keys) (Free tier: 100 requests/minute)
 
 ## ⚙️ Installation
@@ -48,20 +49,26 @@ How the agent processes your requests:
 ### Using uv (Recommended)
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/Arindam200/awesome-ai-apps.git
    cd awesome-ai-apps/starter_ai_agents/agno_starter
+
    ```
 
 2. **Install dependencies:**
+
    ```bash
    uv sync
+
    ```
 
 3. **Set up environment:**
+
    ```bash
    cp .env.example .env
    # Edit .env file with your API keys
+
    ```
 
 ### Alternative: Using pip
@@ -82,6 +89,7 @@ NEBIUS_API_KEY="your_nebius_api_key_here"
 ```
 
 Get your Nebius API key:
+
 1. Visit [Nebius Studio](https://studio.nebius.ai/api-keys)
 2. Sign up for a free account  
 3. Generate a new API key
@@ -92,8 +100,10 @@ Get your Nebius API key:
 ### Basic Usage
 
 1. **Run the application:**
+
    ```bash
    uv run python main.py
+
    ```
 
 2. **Follow the prompts** to interact with the AI agent
@@ -112,7 +122,7 @@ Try these example queries to see the agent in action:
 
 ## 📂 Project Structure
 
-```
+```text
 agno_starter/
 ├── main.py              # Main application entry point
 ├── .env.example         # Environment template
@@ -160,6 +170,7 @@ agent_config = {
 
 **Issue**: `ModuleNotFoundError` after installation  
 **Solution**: Ensure you're in the right directory and dependencies are installed
+
 ```bash
 cd awesome-ai-apps/starter_ai_agents/agno_starter
 uv sync
@@ -167,6 +178,7 @@ uv sync
 
 **Issue**: API key error or authentication failure  
 **Solution**: Check your .env file and verify the API key is correct
+
 ```bash
 cat .env  # Check the file contents
 ```
@@ -198,21 +210,25 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md) for detailed guidelines.
 ## 📚 Next Steps
 
 ### Beginner Path
+
 - Try other starter projects to compare AI frameworks
 - Build a simple chatbot using the patterns learned
 - Experiment with different AI models and parameters
 
 ### Intermediate Path
+
 - Combine multiple frameworks in one project
 - Add memory and conversation state management
 - Build a web interface with Streamlit or FastAPI
 
 ### Advanced Path
+
 - Create multi-agent systems
 - Implement custom tools and functions
 - Build production-ready applications with monitoring
 
 ### Related Projects
+
 - [`simple_ai_agents/`](../../simple_ai_agents/) - More focused examples
 - [`rag_apps/`](../../rag_apps/) - Retrieval-augmented generation
 - [`advance_ai_agents/`](../../advance_ai_agents/) - Complex multi-agent systems

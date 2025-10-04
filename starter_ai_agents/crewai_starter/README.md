@@ -1,6 +1,6 @@
-![banner](./banner.png)
+# CrewAI Starter Agent 🤖
 
-# CrewAI Starter Agent 👥
+![banner](./banner.png)
 
 > A beginner-friendly multi-agent AI research crew built with CrewAI that demonstrates collaborative AI agent workflows.
 
@@ -41,6 +41,7 @@ How the multi-agent crew processes research tasks:
 - **Git** - [Download here](https://git-scm.com/downloads)
 
 ### API Keys Required
+
 - **Nebius AI** - [Get your key](https://studio.nebius.ai/api-keys) (Free tier available)
 
 ## ⚙️ Installation
@@ -48,20 +49,26 @@ How the multi-agent crew processes research tasks:
 ### Using uv (Recommended)
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/Arindam200/awesome-ai-apps.git
    cd awesome-ai-apps/starter_ai_agents/crewai_starter
+
    ```
 
 2. **Install dependencies:**
+
    ```bash
    uv sync
+
    ```
 
 3. **Set up environment:**
+
    ```bash
    cp .env.example .env
    # Edit .env file with your API keys
+
    ```
 
 ### Alternative: Using pip
@@ -82,6 +89,7 @@ NEBIUS_API_KEY="your_nebius_api_key_here"
 ```
 
 Get your Nebius API key:
+
 1. Visit [Nebius Studio](https://studio.nebius.ai/api-keys)
 2. Sign up for a free account
 3. Generate a new API key
@@ -92,8 +100,10 @@ Get your Nebius API key:
 ### Basic Usage
 
 1. **Run the research crew:**
+
    ```bash
    uv run python main.py
+
    ```
 
 2. **Follow the prompts** to specify your research topic
@@ -112,7 +122,7 @@ Try these example topics to see the multi-agent crew in action:
 
 ## 📂 Project Structure
 
-```
+```text
 crewai_starter/
 ├── main.py              # Main application entry point
 ├── crew.py              # CrewAI crew and agent definitions
@@ -172,6 +182,7 @@ analysis_task = Task(
 
 **Issue**: `ModuleNotFoundError` related to CrewAI
 **Solution**: Ensure all dependencies are installed correctly
+
 ```bash
 cd awesome-ai-apps/starter_ai_agents/crewai_starter
 uv sync
@@ -179,6 +190,7 @@ uv sync
 
 **Issue**: API key authentication failure
 **Solution**: Verify your Nebius API key and check network connectivity
+
 ```bash
 cat .env  # Check your API key configuration
 ```
@@ -211,22 +223,26 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md) for detailed guidelines.
 ## 📚 Next Steps
 
 ### Beginner Path
+
 - Try different research topics to understand agent behavior
 - Modify agent roles and backstories
 - Experiment with task sequencing and dependencies
 
 ### Intermediate Path
+
 - Add new specialized agents (data analyst, fact-checker, writer)
 - Implement conditional task execution
 - Create custom output formats and templates
 
 ### Advanced Path
+
 - Build industry-specific research crews
 - Integrate external APIs and data sources
 - Implement memory and learning capabilities
 - Create web interfaces for crew management
 
 ### Related Projects
+
 - [`simple_ai_agents/`](../../simple_ai_agents/) - Single-agent examples
 - [`advance_ai_agents/`](../../advance_ai_agents/) - Complex multi-agent systems
 - [`rag_apps/`](../../rag_apps/) - Knowledge-enhanced agents

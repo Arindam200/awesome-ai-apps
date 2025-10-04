@@ -93,7 +93,7 @@ class CodeQualityEnhancer:
             self.logger.error(f"Error analyzing {file_path}: {e}")
             return {"error": str(e)}
     
-    def _has_module_docstring(self, tree: ast.AST) -> bool:
+    def _has_module_docstring(self, tree: ast.Module) -> bool:
         """Check if module has a docstring."""
         if (tree.body and 
             isinstance(tree.body[0], ast.Expr) and 
@@ -102,7 +102,7 @@ class CodeQualityEnhancer:
             return True
         return False
     
-    def _count_functions_with_docstrings(self, tree: ast.AST) -> int:
+    def _count_functions_with_docstrings(self, tree: ast.Module) -> int:
         """Count functions that have docstrings."""
         count = 0
         for node in ast.walk(tree):
@@ -114,7 +114,7 @@ class CodeQualityEnhancer:
                     count += 1
         return count
     
-    def _count_functions_with_type_hints(self, tree: ast.AST) -> int:
+    def _count_functions_with_type_hints(self, tree: ast.Module) -> int:
         """Count functions that have type hints."""
         count = 0
         for node in ast.walk(tree):
