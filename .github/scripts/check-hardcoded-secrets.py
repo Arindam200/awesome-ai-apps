@@ -3,12 +3,12 @@
 
 import os
 import re
-import glob
 
+import glob
 def main():
     """Scan Python files for potential hardcoded secrets."""
     print("Checking for potential hardcoded secrets...")
-    
+
     # Patterns for potential secrets
     secret_patterns = [
         r'api[_-]?key\s*=\s*["\'][^"\']+["\']',
@@ -16,17 +16,17 @@ def main():
         r'secret\s*=\s*["\'][^"\']+["\']',
         r'token\s*=\s*["\'][^"\']+["\']',
     ]
-    
+
     issues_found = 0
-    
+
     for py_file in glob.glob('**/*.py', recursive=True):
         if any(exclude in py_file for exclude in ['.git', '__pycache__', '.venv']):
             continue
-            
+
         try:
             with open(py_file, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             for pattern in secret_patterns:
                 matches = re.finditer(pattern, content, re.IGNORECASE)
                 for match in matches:
@@ -36,7 +36,7 @@ def main():
                         issues_found += 1
         except Exception:
             continue
-    
+
     if issues_found == 0:
         print('✓ No hardcoded secrets detected')
     else:

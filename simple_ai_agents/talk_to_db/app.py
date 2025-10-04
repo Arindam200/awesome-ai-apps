@@ -1,14 +1,11 @@
-import streamlit as st
 import os
-import pandas as pd
+
+from ai_services import translate_to_sql, explain_results
+from database import parse_connection_string, execute_query
 from dotenv import load_dotenv
 import base64
-
-# Import functionality from separate modules
-from database import parse_connection_string, execute_query
-from ai_services import translate_to_sql, explain_results
-
-# Load environment variables
+import pandas as pd
+import streamlit as st
 load_dotenv()
 
 # Page configuration
@@ -46,7 +43,7 @@ def main():
     # Sidebar for configuration
     with st.sidebar:
         st.image("./assets/nebius.png", width=150)
- 
+
 
         # Nebius API Key input
         nebius_key = st.text_input(

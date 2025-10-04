@@ -1,14 +1,15 @@
-import asyncio
 import os
-import streamlit as st
-from textwrap import dedent
+
 from agno.agent import Agent
-from agno.tools.mcp import MCPTools
 from agno.models.nebius import Nebius
+from agno.tools.mcp import MCPTools
+from dotenv import load_dotenv
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
-from dotenv import load_dotenv
+from textwrap import dedent
+import asyncio
 import base64
+import streamlit as st
 load_dotenv()
 
 
@@ -27,8 +28,8 @@ except FileNotFoundError:
 title_html = f"""
 <div style="display: flex; align-items: center; gap: 0px; margin: 0; padding: 0;">
     <h1 style="margin: 0; padding: 0;">
-    GitHub MCP Agent with 
-    <img src="data:image/png;base64,{agno_base64}" style="height: 70px; margin: 0; padding: 0;color: #FF4500;"/> 
+    GitHub MCP Agent with
+    <img src="data:image/png;base64,{agno_base64}" style="height: 70px; margin: 0; padding: 0;color: #FF4500;"/>
     </h1>
 </div>
 """
@@ -39,18 +40,18 @@ st.markdown("Explore GitHub repositories with natural language using the Model C
 # Setup sidebar for API key
 with st.sidebar:
     st.image("./assets/Nebius.png", width=150)
-        
+
         # API key input
     api_key = st.text_input("Enter your Nebius API key", type="password")
 
     if api_key:
         os.environ["NEBIUS_API_KEY"] = api_key
-        
+
     st.divider()
 
     st.header("🔑 Authentication")
     github_token = st.text_input("GitHub Token", type="password", help="Create a token with repo scope at github.com/settings/tokens")
-    
+
     if github_token:
         os.environ["GITHUB_PERSONAL_ACCESS_TOKEN"] = github_token
     st.markdown("---")
@@ -78,7 +79,7 @@ elif query_type == "Repository Activity":
 else:
     query_template = ""
 
-query = st.text_area("Your Query", value=query_template, 
+query = st.text_area("Your Query", value=query_template,
                      placeholder="What would you like to know about this repository?")
 
 # Main function to run agent
@@ -87,7 +88,7 @@ async def run_github_agent(message):
         return "Error: GitHub token not provided"
     if not api_key:
         return "Error: Nebius API key not provided"
-    
+
     # …rest of your implementation…
     try:
         server_params = StdioServerParameters(
@@ -104,7 +105,7 @@ async def run_github_agent(message):
                 "GITHUB_PERSONAL_ACCESS_TOKEN": os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN")
             }
         )
-        
+
         # Create client session with proper error handling
         try:
             async with stdio_client(server_params) as (read, write):
@@ -114,7 +115,7 @@ async def run_github_agent(message):
                         mcp_tools = MCPTools(session=session)
                         try:
                             await mcp_tools.initialize()
-                            
+
                             # Create agent
                             agent = Agent(
                                 tools=[mcp_tools],
@@ -145,23 +146,23 @@ async def run_github_agent(message):
                                         api_key=api_key  # Explicitly pass the API key
                                 )
                             )
-                            
+
                             # Run agent with error handling
                             try:
                                 response = await agent.arun(message)
                                 return response.content
                             except Exception as agent_error:
                                 return f"Error running agent: {str(agent_error)}"
-                                
+
                         except Exception as init_error:
                             return f"Error initializing MCP tools: {str(init_error)}"
-                            
+
                 except Exception as session_error:
                     return f"Error creating client session: {str(session_error)}"
-                    
+
         except Exception as client_error:
             return f"Error creating stdio client: {str(client_error)}"
-            
+
     except Exception as e:
         return f"Error setting up server parameters: {str(e)}"
 
@@ -179,9 +180,9 @@ if st.button("Run Query", type="primary", use_container_width=True):
                     full_query = f"{query} in {repo}"
                 else:
                     full_query = query
-                    
+
                 result = asyncio.run(run_github_agent(full_query))
-                
+
                 # Display results in a nice container
                 st.markdown("### Results")
                 st.markdown(result)

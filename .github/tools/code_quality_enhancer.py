@@ -5,13 +5,11 @@ Automatically improves Python code quality by adding type hints, logging,
 error handling, and docstrings across projects in the awesome-ai-apps repository.
 """
 
+from pathlib import Path
+from typing import Any
 import ast
 import logging
 import re
-from pathlib import Path
-from typing import Any
-
-
 class CodeQualityEnhancer:
     """Main class for enhancing Python code quality."""
 

@@ -8,15 +8,13 @@ Note: This application requires the 'agno' framework. Install with:
     pip install agno
 """
 
+from typing import Optional
 import logging
 import os
 import sys
+
 from datetime import datetime
-from typing import Optional
-
 from dotenv import load_dotenv
-
-# Check for required dependencies
 try:
     from agno.agent import Agent
     from agno.tools.hackernews import HackerNewsTools
@@ -77,27 +75,27 @@ Always maintain a helpful and engaging tone while providing valuable insights.""
 
 def create_agent() -> Optional[object]:
     """Create and configure the HackerNews analyst agent.
-    
+
     Returns:
         Agent: Configured agent ready for tech news analysis, or None if dependencies unavailable
-        
+
     Raises:
         ValueError: If NEBIUS_API_KEY is not found in environment
         RuntimeError: If agno framework is not available
     """
     if not AGNO_AVAILABLE:
         raise RuntimeError("agno framework is required but not available. Please install with: pip install agno")
-        
+
     api_key = os.getenv("NEBIUS_API_KEY")
     if not api_key:
         logger.error("NEBIUS_API_KEY not found in environment variables")
         raise ValueError("NEBIUS_API_KEY is required but not found in environment")
-    
+
     try:
         # Initialize tools
         hackernews_tools = HackerNewsTools()
         logger.info("HackerNews tools initialized successfully")
-        
+
         # Create the agent with enhanced capabilities
         agent = Agent(
             name="Tech News Analyst",
@@ -111,10 +109,10 @@ def create_agent() -> Optional[object]:
             markdown=True,
             # memory=True,  # Enable memory for context retention
         )
-        
+
         logger.info("Tech News Analyst agent created successfully")
         return agent
-        
+
     except Exception as e:
         logger.error(f"Failed to create agent: {e}")
         raise
@@ -139,7 +137,7 @@ Type 'exit' to quit or ask me anything about tech news!
 
 def get_user_input() -> str:
     """Get user input with proper error handling.
-    
+
     Returns:
         str: User input string, or 'exit' if EOF encountered
     """
@@ -154,51 +152,51 @@ def get_user_input() -> str:
 def main() -> None:
     """Main application entry point."""
     logger.info("Starting Tech News Analyst application")
-    
+
     if not AGNO_AVAILABLE:
         print("❌ Cannot start application - agno framework is not available")
         print("Please install with: pip install agno")
         return
-    
+
     try:
         # Create agent
         agent = create_agent()
-        
+
         # Display welcome message
         display_welcome_message()
-        
+
         # Main interaction loop
         while True:
             user_input = get_user_input()
-            
+
             if user_input.lower() == 'exit':
                 logger.info("User requested exit")
                 print("Goodbye! 👋")
                 break
-            
+
             if not user_input:
                 logger.warning("Empty input received, prompting user again")
                 print("Please enter a question or 'exit' to quit.")
                 continue
-                
+
             try:
                 # Add timestamp to the response
                 timestamp = datetime.now().strftime('%H:%M:%S')
                 print(f"\n[{timestamp}]")
                 logger.info(f"Processing user query: {user_input[:50]}...")
-                
+
                 # Get agent response
                 if agent is not None:
                     agent.print_response(user_input)
                     logger.info("Response generated successfully")
                 else:
                     print("Agent is not available. Please check agno framework installation.")
-                
+
             except Exception as e:
                 logger.error(f"Error processing user query: {e}")
                 print(f"Sorry, I encountered an error: {e}")
                 print("Please try again with a different question.")
-                
+
     except Exception as e:
         logger.error(f"Critical error in main application: {e}")
         print(f"Application failed to start: {e}")

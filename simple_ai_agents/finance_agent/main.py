@@ -8,14 +8,12 @@ Note: This application requires the 'agno' framework. Install with:
     pip install agno
 """
 
+from typing import List, Optional, Any
 import logging
 import os
 import sys
-from typing import List, Optional, Any
 
 from dotenv import load_dotenv
-
-# Check for required dependencies
 try:
     from agno.agent import Agent
     from agno.models.nebius import Nebius
@@ -49,32 +47,32 @@ logger.info("Environment variables loaded successfully")
 
 def create_finance_agent() -> Optional[Any]:
     """Create and configure the AI finance agent.
-    
+
     Returns:
         Agent: Configured finance agent with tools and model, or None if dependencies unavailable
-        
+
     Raises:
         ValueError: If NEBIUS_API_KEY is not found in environment
         RuntimeError: If agno framework is not available
     """
     if not AGNO_AVAILABLE:
         raise RuntimeError("agno framework is required but not available. Please install with: pip install agno")
-    
+
     api_key = os.getenv("NEBIUS_API_KEY")
     if not api_key:
         logger.error("NEBIUS_API_KEY not found in environment variables")
         raise ValueError("NEBIUS_API_KEY is required but not found in environment")
-    
+
     try:
         # Initialize financial tools
         yfinance_tools = YFinanceTools(
-            stock_price=True, 
-            analyst_recommendations=True, 
+            stock_price=True,
+            analyst_recommendations=True,
             stock_fundamentals=True
         )
         duckduckgo_tools = DuckDuckGoTools()
         logger.info("Financial analysis tools initialized successfully")
-        
+
         # Create the finance agent
         agent = Agent(
             name="xAI Finance Agent",
@@ -92,10 +90,10 @@ def create_finance_agent() -> Optional[Any]:
             show_tool_calls=True,
             markdown=True,
         )
-        
+
         logger.info("xAI Finance Agent created successfully")
         return agent
-        
+
     except Exception as e:
         logger.error(f"Failed to create finance agent: {e}")
         raise
@@ -103,27 +101,27 @@ def create_finance_agent() -> Optional[Any]:
 
 def create_playground_app() -> Optional[Any]:
     """Create the Playground application for the finance agent.
-    
+
     Returns:
         FastAPI app: Configured playground application, or None if dependencies unavailable
-        
+
     Raises:
         RuntimeError: If agent creation fails or dependencies unavailable
     """
     if not AGNO_AVAILABLE:
         logger.error("Cannot create playground app: agno framework not available")
         return None
-        
+
     try:
         agent = create_finance_agent()
         if agent is None:
             return None
-            
+
         playground = Playground(agents=[agent])
         app = playground.get_app()
         logger.info("Playground application created successfully")
         return app
-        
+
     except Exception as e:
         logger.error(f"Failed to create playground application: {e}")
         raise RuntimeError(f"Could not initialize finance agent application: {e}")
@@ -148,11 +146,11 @@ def main() -> None:
         print("Cannot start server: agno framework is not available")
         print("Please install it with: pip install agno")
         sys.exit(1)
-        
+
     if app is None:
         print("Cannot start server: application initialization failed")
         sys.exit(1)
-        
+
     try:
         logger.info("Starting xAI Finance Agent server")
         serve_playground_app("xai_finance_agent:app", reload=True)

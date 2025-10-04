@@ -9,17 +9,15 @@ and ReasoningTools — enabling strict, professional-grade hiring decisions with
 """
 
 import re
-import yaml
-import streamlit as st
 
 from agno.agent import Agent
 from agno.models.nebius import Nebius
-from agno.tools.github import GithubTools
 from agno.tools.exa import ExaTools
-from agno.tools.thinking import ThinkingTools
+from agno.tools.github import GithubTools
 from agno.tools.reasoning import ReasoningTools
-
-# Set wide layout
+from agno.tools.thinking import ThinkingTools
+import streamlit as st
+import yaml
 st.set_page_config(layout="wide")
 
 # Load YAML prompts
@@ -188,4 +186,3 @@ elif page == "Single Candidate Analyzer":
             except Exception as e:
                 st.error("❌ Unexpected error occurred.")
                 st.exception(e)
-

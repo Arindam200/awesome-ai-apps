@@ -1,16 +1,16 @@
-import os
+from http.client import RemoteDisconnected
+from typing import Dict, Any, List
 import json
+import os
+
+from dotenv import load_dotenv
+from langchain_nebius import ChatNebius
+from langgraph.prebuilt import create_react_agent
+from pydantic import SecretStr
+from scrapegraph_py import Client
+from tenacity import retry, stop_after_attempt, wait_exponential
 import sqlite3
 import time
-from typing import Dict, Any, List
-from dotenv import load_dotenv
-from scrapegraph_py import Client
-from langgraph.prebuilt import create_react_agent
-from langchain_nebius import ChatNebius
-from http.client import RemoteDisconnected
-from tenacity import retry, stop_after_attempt, wait_exponential
-from pydantic import SecretStr
-
 load_dotenv("api.env")
 
 SMARTCRAWLER_KEY = os.getenv("SMARTCRAWLER_API_KEY")

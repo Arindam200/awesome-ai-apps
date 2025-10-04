@@ -1,24 +1,23 @@
-import asyncio
-from crawl4ai import AsyncWebCrawler
 import json
-from bs4 import BeautifulSoup
-import re
 import os
-from datetime import datetime
-from couchbase.cluster import Cluster
-from couchbase.options import ClusterOptions
-from couchbase.auth import PasswordAuthenticator
-from couchbase.exceptions import DocumentExistsException
-from dotenv import load_dotenv
+import re
 
-# Load environment variables from .env file
+from bs4 import BeautifulSoup
+from couchbase.auth import PasswordAuthenticator
+from couchbase.cluster import Cluster
+from couchbase.exceptions import DocumentExistsException
+from couchbase.options import ClusterOptions
+from crawl4ai import AsyncWebCrawler
+from datetime import datetime
+from dotenv import load_dotenv
+import asyncio
 load_dotenv()
 
 async def extract_talk_info(html_content):
     """Extract talk information from HTML content."""
     try:
         soup = BeautifulSoup(html_content, 'html.parser')
-        
+
         # Initialize talk info dictionary with default values
         talk_info = {
             'title': 'Unknown',
@@ -28,7 +27,7 @@ async def extract_talk_info(html_content):
             'date': 'Unknown',
             'location': 'Unknown'
         }
-        
+
         try:
             # Extract title - from the event name span
             title_elem = soup.find('span', class_='event')
@@ -38,7 +37,7 @@ async def extract_talk_info(html_content):
                     talk_info['title'] = name_elem.text.strip()
         except Exception as e:
             print(f"Error extracting title: {str(e)}")
-        
+
         try:
             # Extract description - from the tip-description div
             desc_elem = soup.find('div', class_='tip-description')
@@ -46,7 +45,7 @@ async def extract_talk_info(html_content):
                 talk_info['description'] = desc_elem.text.strip()
         except Exception as e:
             print(f"Error extracting description: {str(e)}")
-        
+
         try:
             # Extract speakers - from the sched-event-details-roles div
             speakers = []
@@ -60,7 +59,7 @@ async def extract_talk_info(html_content):
             talk_info['speaker'] = ' & '.join(speakers) if speakers else 'Unknown'
         except Exception as e:
             print(f"Error extracting speakers: {str(e)}")
-        
+
         try:
             # Extract category - from the sched-event-type div
             category_elem = soup.find('div', class_='sched-event-type')
@@ -70,7 +69,7 @@ async def extract_talk_info(html_content):
                     talk_info['category'] = category_link.text.strip()
         except Exception as e:
             print(f"Error extracting category: {str(e)}")
-        
+
         try:
             # Extract date and time
             date_elem = soup.find('div', class_='sched-event-details-timeandplace')
@@ -79,7 +78,7 @@ async def extract_talk_info(html_content):
                 talk_info['date'] = date_text
         except Exception as e:
             print(f"Error extracting date: {str(e)}")
-        
+
         try:
             # Extract location
             location_elem = soup.find('div', class_='sched-event-details-timeandplace')
@@ -89,7 +88,7 @@ async def extract_talk_info(html_content):
                     talk_info['location'] = location_link.text.strip()
         except Exception as e:
             print(f"Error extracting location: {str(e)}")
-        
+
         return talk_info
     except Exception as e:
         print(f"Error in extract_talk_info: {str(e)}")
@@ -115,16 +114,16 @@ async def crawl_talks():
         except Exception as e:
             print(f"Error reading event_urls.txt: {str(e)}")
             return
-        
+
         if not urls:
             print("No URLs found in event_urls.txt")
             return
-        
+
         # Initialize results list
         results = []
         successful_crawls = 0
         failed_crawls = 0
-        
+
         # Connect to Couchbase
         try:
             connection_string = os.getenv('CB_CONNECTION_STRING')
@@ -132,24 +131,24 @@ async def crawl_talks():
             password = os.getenv('CB_PASSWORD')
             bucket_name = os.getenv('CB_BUCKET')
             collection_name = os.getenv('CB_COLLECTION')
-            
+
             if not all([connection_string, username, password, bucket_name, collection_name]):
                 raise ValueError("Missing required Couchbase environment variables")
-            
+
             # Initialize Couchbase connection
             auth = PasswordAuthenticator(username, password)
             options = ClusterOptions(auth)
             cluster = Cluster(connection_string, options)
-            
+
             # Wait for the cluster to be ready
             cluster.ping()
-            
+
             bucket = cluster.bucket(bucket_name)
             collection = bucket.collection(collection_name)
         except Exception as e:
             print(f"Error connecting to Couchbase: {str(e)}")
             return
-        
+
         # Create crawler instance
         async with AsyncWebCrawler() as crawler:
             # Process URLs in batches to avoid overwhelming the server
@@ -157,10 +156,10 @@ async def crawl_talks():
             for i in range(0, len(urls), batch_size):
                 try:
                     batch_urls = urls[i:i + batch_size]
-                    
+
                     # Crawl batch of URLs
                     batch_results = await crawler.arun_many(batch_urls)
-                    
+
                     # Process results
                     for url, result in zip(batch_urls, batch_results):
                         try:
@@ -168,10 +167,10 @@ async def crawl_talks():
                                 talk_info = await extract_talk_info(result.html)
                                 talk_info['url'] = url
                                 talk_info['crawled_at'] = datetime.utcnow().isoformat()
-                                
+
                                 # Generate a unique document key based on the talk URL
                                 doc_key = f"talk_{url.split('/')[-1]}"
-                                
+
                                 try:
                                     # Insert the document into Couchbase
                                     collection.insert(doc_key, talk_info)
@@ -195,25 +194,25 @@ async def crawl_talks():
                         except Exception as e:
                             print(f"Error processing URL {url}: {str(e)}")
                             failed_crawls += 1
-                    
+
                     # Add a small delay between batches
                     await asyncio.sleep(1)
                 except Exception as e:
                     print(f"Error processing batch: {str(e)}")
                     continue
-        
+
         print(f"\nCrawling completed:")
         print(f"Successfully processed: {successful_crawls} talks")
         print(f"Failed to process: {failed_crawls} talks")
-        
+
         # Close Couchbase connection
         try:
             cluster.close()
         except Exception as e:
             print(f"Error closing Couchbase connection: {str(e)}")
-    
+
     except Exception as e:
         print(f"Unexpected error in crawl_talks: {str(e)}")
 
 if __name__ == "__main__":
-    asyncio.run(crawl_talks()) 
+    asyncio.run(crawl_talks())

@@ -1,12 +1,12 @@
 """
 Hybrid client for OpenRouter (Grok-4) and Together AI (embeddings)
 """
+from typing import List, Dict, Any
 import os
+
+from dotenv import load_dotenv
 from openai import OpenAI
 from together import Together
-from typing import List, Dict, Any
-from dotenv import load_dotenv
-
 load_dotenv()
 
 class OpenRouterClient:
@@ -39,7 +39,7 @@ class OpenRouterClient:
         except Exception as e:
             print(f"Error generating embedding: {str(e)}")
             raise
-    
+
     def chat_completion(self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 2048) -> str:
         """Generate chat completion using Grok-4 online via OpenRouter"""
         try:
@@ -54,7 +54,7 @@ class OpenRouterClient:
         except Exception as e:
             print(f"Error in chat completion: {str(e)}")
             raise
-    
+
     def batch_embeddings(self, texts: List[str]) -> List[List[float]]:
         """Generate embeddings for multiple texts using Together AI"""
         try:

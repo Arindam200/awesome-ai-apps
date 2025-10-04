@@ -8,7 +8,6 @@ from pymongo.operations import SearchIndexModel
 from ..core.config import settings
 from ..core.exceptions import VectorStoreError
 from .mongodb import mongodb_client
-
 logger = logging.getLogger(__name__)
 
 

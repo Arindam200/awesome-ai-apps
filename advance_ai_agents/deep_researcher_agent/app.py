@@ -1,9 +1,9 @@
-import streamlit as st
-from agents import DeepResearcherAgent
-import time
-import base64
 import re
 
+from agents import DeepResearcherAgent
+import base64
+import streamlit as st
+import time
 st.set_page_config(
     page_title="Deep Research Agent",
     page_icon="🔎",
@@ -16,8 +16,8 @@ with open("./assets/scrapegraph.png", "rb") as scrapegraph_file:
     title_html = f"""
     <div style="display: flex; justify-content: center; align-items: center; width: 100%; padding: 32px 0 24px 0;">
         <h1 style="margin: 0; padding: 0; font-size: 2.5rem; font-weight: bold;">
-            <span style="font-size:2.5rem;">🔎</span> Agentic Deep Searcher with 
-            <span style="color: #fb542c;">Agno</span> & 
+            <span style="font-size:2.5rem;">🔎</span> Agentic Deep Searcher with
+            <span style="color: #fb542c;">Agno</span> &
             <span style="color: #8564ff;">Scrapegraph</span>
             <img src="data:image/png;base64,{scrapegraph_base64}" style="height: 60px; margin-left: 12px; vertical-align: middle;"/>
         </h1>

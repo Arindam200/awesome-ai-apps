@@ -1,14 +1,13 @@
-from operator import le
 import os
-import uuid
-import pdfplumber
-from openai import OpenAI
-from dotenv import load_dotenv
+
 from crewai_tools import QdrantVectorSearchTool
+from dotenv import load_dotenv
+from openai import OpenAI
+from operator import le
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, Distance, VectorParams
-
-# Load environment variables
+import pdfplumber
+import uuid
 load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -49,7 +48,7 @@ def load_pdf_to_qdrant(pdf_path):
         raise FileNotFoundError(f"PDF file not found: {pdf_path}")
     # Extract text from PDF
     text_chunks = extract_text_from_pdf(pdf_path)
-    
+
     # Create Qdrant collection
     if qdrant.collection_exists(collection_name):
         qdrant.delete_collection(collection_name)
@@ -80,6 +79,6 @@ def get_qdrant_tool():
             score_threshold=0.35
         )
         print("Qdrant search tool initialized successfully.")
-        return qdrant_tool  
+        return qdrant_tool
     except Exception as e:
         print(f"Failed to initialize Qdrant search tool: {e}")

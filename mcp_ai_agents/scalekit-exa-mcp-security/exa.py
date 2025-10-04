@@ -14,17 +14,15 @@ Features:
 - Comprehensive error handling
 """
 
-import os
-import logging
 from typing import Optional, Literal, List, Dict, Any
+import httpx
+import logging
+import os
+
 from datetime import datetime
 from enum import Enum
-
-import httpx
-from pydantic import BaseModel, Field
 from mcp.server.fastmcp import FastMCP
-
-# Configure logging for STDIO transport (writes to stderr)
+from pydantic import BaseModel, Field
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -43,7 +41,7 @@ SEARCH_TYPES = ["neural", "keyword", "auto", "fast"]
 
 # Supported categories
 CATEGORIES = [
-    "company", "research paper", "news", "pdf", "github", 
+    "company", "research paper", "news", "pdf", "github",
     "tweet", "personal site", "linkedin profile", "financial report"
 ]
 
@@ -83,21 +81,21 @@ def get_api_key() -> str:
 async def make_exa_request(endpoint: str, payload: dict) -> dict:
     """Make a request to the Exa API"""
     api_key = get_api_key()
-    
+
     # Base URL for Exa API
     base_url = "https://api.exa.ai"
     url = f"{base_url}/{endpoint}"
-    
+
     headers = {
         "x-api-key": api_key,
         "Content-Type": "application/json"
     }
-    
+
     try:
         async with httpx.AsyncClient() as client:
             logger.info(f"Making request to {endpoint} with payload: {payload}")
             response = await client.post(url, json=payload, headers=headers)
-            
+
             if response.status_code == 200:
                 data = response.json()
                 logger.info(f"Successfully retrieved {len(data.get('results', []))} results")
@@ -112,10 +110,10 @@ async def make_exa_request(endpoint: str, payload: dict) -> dict:
                         error_msg += f" - {error_data['message']}"
                 except:
                     error_msg += f" - {response.text}"
-                
+
                 logger.error(error_msg)
                 raise Exception(error_msg)
-                
+
     except httpx.RequestError as e:
         error_msg = f"Network error connecting to Exa API: {str(e)}"
         logger.error(error_msg)
@@ -125,7 +123,7 @@ async def make_exa_request(endpoint: str, payload: dict) -> dict:
 async def exa_search(
     query: str = Field(description="The search query string"),
     search_type: Optional[Literal["neural", "keyword", "auto", "fast"]] = Field(
-        default="auto", 
+        default="auto",
         description="Type of search: 'neural' (embeddings-based), 'keyword' (traditional), 'auto' (intelligent mix), 'fast' (streamlined)"
     ),
     category: Optional[Literal["company", "research paper", "news", "pdf", "github", "tweet", "personal site", "linkedin profile", "financial report"]] = Field(
@@ -191,44 +189,44 @@ async def exa_search(
 ) -> dict:
     """
     Search the web using Exa AI's intelligent search capabilities.
-    
+
     This tool provides access to Exa's neural and keyword search engines,
     which can find relevant content based on meaning rather than just keywords.
-    
+
     Search Types:
     - neural: Uses embeddings to find semantically similar content
     - keyword: Traditional Google-like search
     - auto: Intelligently combines neural and keyword search
     - fast: Streamlined versions of neural and keyword models
-    
+
     The tool supports various filtering options including domains, dates,
     content types, and text requirements. Results can include full content,
     highlights, and AI-generated summaries.
     """
-    
+
     # Validate parameters
     if search_type and search_type not in SEARCH_TYPES:
         raise ValueError(f"Unsupported search type '{search_type}'. Supported types: {', '.join(SEARCH_TYPES)}")
-    
+
     if category and category not in CATEGORIES:
         raise ValueError(f"Unsupported category '{category}'. Supported categories: {', '.join(CATEGORIES)}")
-    
+
     if num_results and (num_results < 1 or num_results > 100):
         raise ValueError("Number of results must be between 1 and 100")
-    
+
     if include_text and len(include_text) > 1:
         raise ValueError("Only 1 string is supported for include_text, up to 5 words")
-    
+
     if exclude_text and len(exclude_text) > 1:
         raise ValueError("Only 1 string is supported for exclude_text, up to 5 words")
-    
+
     # Build request payload
     payload = {
         "query": query,
         "type": search_type,
         "numResults": num_results
     }
-    
+
     # Add optional parameters
     if category:
         payload["category"] = category
@@ -252,7 +250,7 @@ async def exa_search(
         payload["userLocation"] = user_location
     if use_context:
         payload["context"] = True
-    
+
     # Handle content options
     contents = {}
     if include_content:
@@ -261,10 +259,10 @@ async def exa_search(
         contents["highlights"] = True
     if include_summary:
         contents["summary"] = True
-    
+
     if contents:
         payload["contents"] = contents
-    
+
     try:
         result = await make_exa_request("search", payload)
         return {
@@ -298,23 +296,23 @@ async def exa_get_contents(
 ) -> dict:
     """
     Retrieve full content for specific Exa search results.
-    
+
     This tool allows you to get detailed content for specific search results
     identified by their Exa IDs. You can control what type of content to include
     and whether to use live crawling for the most current information.
-    
+
     The IDs can be obtained from previous search results and are used to fetch
     the complete content, highlights, and summaries for those specific pages.
     """
-    
+
     if not ids:
         raise ValueError("At least one ID must be provided")
-    
+
     # Build request payload
     payload = {
         "ids": ids
     }
-    
+
     # Handle content options
     contents = {}
     if include_text:
@@ -325,10 +323,10 @@ async def exa_get_contents(
         contents["summary"] = True
     if livecrawl:
         contents["livecrawl"] = True
-    
+
     if contents:
         payload["contents"] = contents
-    
+
     try:
         result = await make_exa_request("contents", payload)
         return {
@@ -363,28 +361,28 @@ async def exa_find_similar(
 ) -> dict:
     """
     Find links similar to a given URL using Exa's similarity search.
-    
+
     This tool finds web pages that are semantically similar to the provided URL.
     It's useful for discovering related content, research papers, or similar
     resources based on the content and topic of the reference URL.
-    
+
     The similarity is determined by Exa's neural understanding of content,
     not just keyword matching, making it effective for finding truly related
     content even when the exact terms differ.
     """
-    
+
     if not url:
         raise ValueError("URL parameter is required")
-    
+
     if num_results and (num_results < 1 or num_results > 100):
         raise ValueError("Number of results must be between 1 and 100")
-    
+
     # Build request payload
     payload = {
         "url": url,
         "numResults": num_results
     }
-    
+
     # Add optional parameters
     if include_domains:
         payload["includeDomains"] = include_domains
@@ -398,7 +396,7 @@ async def exa_find_similar(
         payload["startPublishedDate"] = start_published_date
     if end_published_date:
         payload["endPublishedDate"] = end_published_date
-    
+
     # Handle content options
     contents = {}
     if include_content:
@@ -407,10 +405,10 @@ async def exa_find_similar(
         contents["highlights"] = True
     if include_summary:
         contents["summary"] = True
-    
+
     if contents:
         payload["contents"] = contents
-    
+
     try:
         result = await make_exa_request("findSimilar", payload)
         return {

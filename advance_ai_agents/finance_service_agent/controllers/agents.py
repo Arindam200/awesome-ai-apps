@@ -5,12 +5,10 @@ Module description goes here.
 """
 
 from typing import List, Dict, Optional, Union, Any
-import os
-from dotenv import load_dotenv
-
 import logging
+import os
 
-# Configure logging
+from dotenv import load_dotenv
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -58,9 +56,9 @@ financial_agent = Agent(
     tools=[
         YFinanceTools(stock_price=True,
                     analyst_recommendations=True,
-                    stock_fundamentals=True, 
-                    company_info=True, 
-                    technical_indicators=True, 
+                    stock_fundamentals=True,
+                    company_info=True,
+                    technical_indicators=True,
                     historical_prices=True,
                     key_financial_ratios = True,
                     income_statements = True,

@@ -1,10 +1,10 @@
-from __future__ import annotations
-
-import asyncio
 import os
 import resend
-from openai import AsyncOpenAI
+
+from __future__ import annotations
 from agents import (
+from openai import AsyncOpenAI
+import asyncio
     Agent,
     Model,
     ModelProvider,
@@ -33,10 +33,10 @@ class CustomModelProvider(ModelProvider):
     def get_model(self, model_name: str | None) -> Model:
         """
         Returns an OpenAI chat completions model instance configured with the specified model name.
-        
+
         Args:
             model_name: The name of the model to use, or None to use the default.
-        
+
         Returns:
             An OpenAIChatCompletionsModel initialized with the given model name and OpenAI client.
         """
@@ -50,12 +50,12 @@ CUSTOM_MODEL_PROVIDER = CustomModelProvider()
 def send_email(to:str, subject:str, body:str):
     """
     Sends an email using the Resend API.
-    
+
     Args:
         to: Recipient email address.
         subject: Subject line of the email.
         body: HTML content of the email.
-    
+
     Returns:
         A dictionary with status "success" and the message ID if sent, or status "error" and an error message if sending fails.
     """
@@ -76,7 +76,7 @@ def send_email(to:str, subject:str, body:str):
 async def main():
     """
     Runs an example agent that sends an email using a haiku response style.
-    
+
     Creates an agent with haiku-only instructions and the email-sending tool, then executes a prompt to send a test email using a custom model provider. Prints the agent's final output.
     """
     agent = Agent(name="Assistant", instructions="You only respond in haikus.", tools=[send_email])
@@ -87,7 +87,7 @@ async def main():
         run_config=RunConfig(model_provider=CUSTOM_MODEL_PROVIDER),
     )
     print(result.final_output)
- 
+
 
 if __name__ == "__main__":
     asyncio.run(main())

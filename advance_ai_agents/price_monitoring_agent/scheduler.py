@@ -1,8 +1,8 @@
 import json
-from apscheduler.schedulers.blocking import BlockingScheduler
-from agents.crewai_agents import run_agents
 import os
 
+from agents.crewai_agents import run_agents
+from apscheduler.schedulers.blocking import BlockingScheduler
 TRACKED_URLS_FILE = "tracked_urls.json"
 PRODUCT_DATA_FILE = "product_data.json"
 
@@ -36,5 +36,3 @@ def check_prices():
 
 scheduler = BlockingScheduler()
 scheduler.add_job(check_prices, 'interval', minutes=30)
-
-

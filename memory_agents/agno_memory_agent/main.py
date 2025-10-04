@@ -1,12 +1,12 @@
+import os
+
 from agno.agent import Agent
 from agno.memory.v2.db.sqlite import SqliteMemoryDb
 from agno.memory.v2.memory import Memory
 from agno.models.nebius import Nebius
 from agno.storage.sqlite import SqliteStorage
-from rich.pretty import pprint
-import os
 from dotenv import load_dotenv
-
+from rich.pretty import pprint
 load_dotenv()
 
 

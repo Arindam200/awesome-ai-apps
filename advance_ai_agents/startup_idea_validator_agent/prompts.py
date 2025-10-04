@@ -49,7 +49,7 @@ COMPETITOR_ANALYSIS_PROMPT="""You are an expert in competitor analysis for start
         Your task is to analyze the competitive landscape for the given startup idea.
         Identify key competitors, their strengths and weaknesses, and potential market positioning.
         Provide insights into the competitive advantages of the startup.
-        
+
         Return your findings in the following structured format as a valid Python dictionary. Each value should be a markdown-formatted string (not a Python list or dict), using bullet points, headings, or emphasis where appropriate:
         Output Format:
         {
@@ -78,4 +78,3 @@ REPORT_PROMPT = """
         }
         For all values, use markdown formatting for lists, points, and emphasis. Do not use Python lists or dicts, and avoid extra brackets or quotes in the output values.
 """
-

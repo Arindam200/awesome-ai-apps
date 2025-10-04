@@ -1,8 +1,7 @@
-import streamlit as st
-import pymysql
 from urllib.parse import urlparse
 
-
+import pymysql
+import streamlit as st
 def parse_connection_string(connection_string):
     """Parse MySQL connection string and return database config"""
     try:

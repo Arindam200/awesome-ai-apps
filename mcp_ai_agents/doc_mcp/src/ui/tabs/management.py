@@ -1,13 +1,12 @@
 """Repository management tab implementation."""
 
-import logging
 from typing import Any, Dict, List, Tuple
+import logging
 
 import gradio as gr
 
 from ...core.config import settings
 from ...database.repository import repository_manager
-
 logger = logging.getLogger(__name__)
 
 

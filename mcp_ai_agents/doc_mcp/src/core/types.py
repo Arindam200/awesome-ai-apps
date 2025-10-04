@@ -1,10 +1,7 @@
 """Type definitions for Doc-MCP application."""
 
 from enum import Enum
-
 from pydantic import BaseModel
-
-
 class QueryMode(str, Enum):
     """Available query modes for document retrieval."""
 

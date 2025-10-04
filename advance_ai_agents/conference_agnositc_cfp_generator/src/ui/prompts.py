@@ -4,8 +4,6 @@ Contains all structured prompts for generating talk proposals
 """
 
 from typing import List, Dict, Any
-
-
 def create_talk_proposal_prompt(
     query: str,
     conference_info: Dict[str, Any],
@@ -14,17 +12,17 @@ def create_talk_proposal_prompt(
 ) -> str:
     """
     Create the structured prompt for generating talk proposals
-    
+
     Args:
         query: User's talk idea
         conference_info: Conference metadata (name, year, platform, etc.)
         similar_talks: List of similar talks from the database
         adk_research: Real-time research context
-    
+
     Returns:
         Formatted prompt string for the LLM
     """
-    
+
     # Prepare historical context in the structured format
     if similar_talks:
         historical_context = "\n\n".join([
@@ -76,7 +74,7 @@ Synthesize the information from ALL parts above (user idea, historical context, 
    2. Builds upon existing concepts rather than repeating them
    3. Follows a similar structure to successful conference talks
    4. Addresses current trends and gaps in the topic area*
-   **Note:** Maintain word limit should be 200-250 words   
+   **Note:** Maintain word limit should be 200-250 words
 
 **Key Learning Objectives:**
 *Provide 3-4 bullet points of what an attendee will learn.*
@@ -99,7 +97,7 @@ Synthesize the information from ALL parts above (user idea, historical context, 
 def get_system_message() -> str:
     """
     Get the system message for the LLM
-    
+
     Returns:
         System message string
     """
@@ -110,14 +108,14 @@ def get_system_message() -> str:
 def create_research_analysis_prompt(topic: str) -> str:
     """
     Create prompt for analyzing research results
-    
+
     Args:
         topic: The research topic
-    
+
     Returns:
         Formatted prompt for research analysis
     """
-    return f"""You are a meticulous research analyst using advanced AI capabilities. 
+    return f"""You are a meticulous research analyst using advanced AI capabilities.
 Analyze the provided search results and create a comprehensive research summary for the topic: "{topic}".
 
 Focus on extracting:

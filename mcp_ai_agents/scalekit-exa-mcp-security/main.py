@@ -1,14 +1,12 @@
-import contextlib
-import uvicorn
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+import json
 
 from auth import AuthMiddleware
 from config import settings
 from exa import mcp as exa_mcp_server
-import json
-
-# Create a combined lifespan to manage the MCP session manager
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+import contextlib
+import uvicorn
 @contextlib.asynccontextmanager
 async def lifespan(app: FastAPI):
     async with exa_mcp_server.session_manager.run():

@@ -5,22 +5,20 @@ Module description goes here.
 """
 
 from typing import List, Dict, Optional, Union, Any
-import os
-import datetime
 import json
+import logging
+import os
 import requests
-from fastapi import FastAPI, APIRouter, Request, Query
-from fastapi.responses import HTMLResponse, JSONResponse
-from fastapi.templating import Jinja2Templates
+
 from agno.agent import RunResponse, Agent
 from agno.models.nebius import Nebius
 from controllers.agents import multi_ai
-import dotenv
 from controllers.ask import chat_agent
-
-import logging
-
-# Configure logging
+from fastapi import FastAPI, APIRouter, Request, Query
+from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.templating import Jinja2Templates
+import datetime
+import dotenv
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -77,7 +75,7 @@ async def health_check(request: Request):
                     "current_year": current_year
                 }
             )
-        
+
         return JSONResponse(content=response_data)
 
     except Exception as e:
@@ -86,7 +84,7 @@ async def health_check(request: Request):
             "timestamp": datetime.datetime.now().isoformat(),
             "error": str(e)
         }
-        
+
         # Check if request is from a browser or format is explicitly set to html
         accept_header = request.headers.get("accept", "")
         if "text/html" in accept_header:
@@ -107,7 +105,7 @@ async def health_check(request: Request):
                     "current_year": current_year
                 }
             )
-            
+
         return JSONResponse(content=error_response)
 
 @router.get("/chat", response_class=HTMLResponse)
@@ -123,7 +121,7 @@ def chat(request: Request, query: str = None):
             "question": "What are good tech stocks to invest in?",
             "answer": "Some popular tech stocks to consider include Apple (AAPL), Microsoft (MSFT), Google (GOOGL), and Amazon (AMZN). However, you should always do your own research and consider your investment goals and risk tolerance before investing."
         }
-        
+
         return templates.TemplateResponse(
             "route.html",
             {
@@ -141,16 +139,16 @@ def chat(request: Request, query: str = None):
                 "current_year": current_year
             }
         )
-    
+
     # Handle regular API calls
     if not query:
         return JSONResponse(content={"error": "Query parameter is required"})
-    
+
     try:
         response = chat_agent.run(query)
         answer = response.content
         return JSONResponse(content={"question": query, "answer": answer})
-    
+
     except Exception as e:
         return JSONResponse(content={"error": str(e)})
 
@@ -167,7 +165,7 @@ def ask(request: Request, query: str = None):
             "question": "Should I invest in index funds?",
             "answer": "Index funds are often a good choice for passive investors looking for broad market exposure with low fees. They offer diversification and typically outperform actively managed funds in the long term. However, the suitability depends on your investment goals, time horizon, and risk tolerance."
         }
-        
+
         return templates.TemplateResponse(
             "route.html",
             {
@@ -185,16 +183,16 @@ def ask(request: Request, query: str = None):
                 "current_year": current_year
             }
         )
-    
+
     # Handle regular API calls
     if not query:
         return JSONResponse(content={"error": "Query parameter is required"})
-    
+
     try:
         response: RunResponse = multi_ai.run(query)
         answer = response.content
 
         return JSONResponse(content={"question": query, "answer": answer})
-    
+
     except Exception as e:
         return JSONResponse(content={"error": str(e)})

@@ -1,10 +1,10 @@
 """Repository update tab implementation for incremental ingestion."""
 
-import logging
-import time
 from typing import Dict, List, Tuple
+import logging
 
 import gradio as gr
+import time
 
 from ...core.types import ProcessingStatus
 from ...database.repository import repository_manager

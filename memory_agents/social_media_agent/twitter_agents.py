@@ -10,12 +10,11 @@ Requirements:
 - Set environment variables from env_template.txt
 """
 
-import os
-import json
 from typing import Dict, Any, List
-from dotenv import load_dotenv
+import json
+import os
 
-# Load environment variables
+from dotenv import load_dotenv
 load_dotenv()
 
 # Import required libraries
@@ -168,7 +167,7 @@ def analyze_tweeting_style(tweets: List[Dict[str, Any]]) -> Dict[str, Any]:
             tweets_text += f"Tweet {i}: {tweet.get('description', 'N/A')}\n"
 
         prompt = f"""
-        Analyze the following tweets and extract the author's tweeting style characteristics. 
+        Analyze the following tweets and extract the author's tweeting style characteristics.
         Focus on:
         1. Tone (casual, professional, humorous, serious, etc.)
         2. Language style (formal, informal, slang, technical, etc.)
@@ -178,10 +177,10 @@ def analyze_tweeting_style(tweets: List[Dict[str, Any]]) -> Dict[str, Any]:
         6. Topics and interests they tweet about
         7. Writing personality and voice
         8. Common phrases or expressions they use
-        
+
         Tweets to analyze:
         {tweets_text}
-        
+
         Provide your analysis in JSON format with these keys:
         - tone: string describing the tone
         - language_style: string describing language formality and style

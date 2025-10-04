@@ -5,14 +5,12 @@ Handles fetching and processing of top performing stocks data
 using yfinance API for real-time market information.
 """
 
-import logging
-import time
 from typing import List, Dict, Optional, Union, Any
-
-import yfinance as yf
+import logging
 import requests
 
-# Configure logging
+import time
+import yfinance as yf
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -33,23 +31,23 @@ session.headers.update({
 
 def get_top_stock_info() -> List[Dict[str, Any]]:
     """Get top performing stocks information.
-    
+
     Returns:
         List of dictionaries containing stock information including
         symbol, current price, and percentage change
-        
+
     Raises:
         Exception: If data fetching or processing fails
     """
     tickers_list = [
-        "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "TSLA", "META", "BRK-B", "JPM", 
+        "AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "TSLA", "META", "BRK-B", "JPM",
         "JNJ", "V", "PG", "UNH", "MA", "HD", "XOM", "PFE", "NFLX", "DIS", "PEP",
         "KO", "CSCO", "INTC", "ORCL", "CRM", "NKE", "WMT", "BA", "CVX", "T", "UL",
         "IBM", "AMD"
     ]
-    
+
     stock_data = []
-    
+
     try:
         data = yf.download(tickers_list, period="2d", interval="1d", group_by='ticker', auto_adjust=True)
         changes = []
@@ -66,7 +64,7 @@ def get_top_stock_info() -> List[Dict[str, Any]]:
         # Sort by absolute percent change and pick top 5
         top_5_tickers = [ticker for ticker, _ in sorted(changes, key=lambda x: abs(x[1]), reverse=True)[:5]]
         tickers = yf.Tickers(top_5_tickers)
-        
+
         for stock_symbol in top_5_tickers:
             try:
                 info = tickers.tickers[stock_symbol].info
@@ -80,7 +78,7 @@ def get_top_stock_info() -> List[Dict[str, Any]]:
                 stock_data.append(stock_info)
             except Exception as e:
                 logger.warning(f"⚠️ Could not fetch info for {stock_symbol}: {e}")
-        
+
         logger.info("✅ Data fetching done successfully!")
         return stock_data
 
@@ -91,13 +89,13 @@ def get_top_stock_info() -> List[Dict[str, Any]]:
 
 def get_stock(symbol: str) -> Dict[str, Any]:
     """Get detailed information for a specific stock symbol.
-    
+
     Args:
         symbol: Stock ticker symbol (e.g., 'AAPL', 'MSFT')
-        
+
     Returns:
         Dictionary containing stock information
-        
+
     Raises:
         Exception: If stock data fetching fails
     """
@@ -113,7 +111,7 @@ def get_stock(symbol: str) -> Dict[str, Any]:
         }
         logger.info(f"✅ Data fetching done successfully for {symbol}!")
         return stock_info
-        
+
     except Exception as e:
         logger.error(f"❌ Error fetching {symbol}: {e}")
         time.sleep(5)

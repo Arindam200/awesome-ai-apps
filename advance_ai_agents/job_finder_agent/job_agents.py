@@ -1,7 +1,8 @@
-import os
 import logging
-import asyncio
+import os
+
 from agents import (
+import asyncio
     Agent,
     OpenAIChatCompletionsModel,
     Runner,
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
     logger.info(f"Starting analysis for LinkedIn URL: {linkedin_url}")
     api_key = os.environ["NEBIUS_API_KEY"]
-    base_url = "https://api.studio.nebius.ai/v1" 
+    base_url = "https://api.studio.nebius.ai/v1"
     client = AsyncOpenAI(base_url=base_url, api_key=api_key)
     set_tracing_disabled(disabled=True)
 
@@ -23,16 +24,16 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
         name="LinkedIn Profile Analyzer",
         instructions=f"""You are a LinkedIn profile analyzer.
         Analyze profiles for:
-        
+
         - Professional experience and career progression
         - Education and certifications
         - Core skills and expertise
         - Current role and company
         - Previous roles and achievements
         - Industry reputation (recommendations/endorsements)
-        
+
         Provide a structured analysis with bullet points and a brief executive summary.
-        
+
         NOTE: If the user has no experience, just say "No experience found" and don't make up any information. Also if any of the information is not available, just say "Not available" and don't make up any information.
         DISCLAIMER: This Agent should call the tool to get the information. Once the tool is called, it will return the information in the response. It should not call the tool Multiple times after the tool is called.
         """,
@@ -152,7 +153,7 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
             openai_client=client
         )
     )
-    
+
     url_parser_agent = Agent(
         name="URL Parser",
         instructions=f"""You are a URL parser that transforms Y Combinator authentication URLs into direct job URLs.
@@ -169,7 +170,7 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
         1. Extract job_id from the authentication URL
            - Look for 'signup_job_id=' parameter
            - Example: from '...signup_job_id=75187...' extract '75187'
-        
+
         2. Create new direct URL format:
            - Base URL: 'https://www.workatastartup.com/jobs/'
            - Append job_id
@@ -192,7 +193,7 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
             openai_client=client
         )
     )
-    
+
     summary_agent = Agent(
         name="Summary Agent",
         instructions=f"""You are a summary agent that creates comprehensive career analysis reports.
@@ -206,7 +207,7 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
            - Current job matches with match scores
            - Skills to develop
            - Career development suggestions
-        
+
         Format your response in markdown with the following structure:
         ```markdown
         ## 👤 Profile Summary
@@ -233,7 +234,7 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
           - [Apply Here]([Job URL])
         ...
         ```
-        
+
         Note: No information should be added to the response that is not provided in the input. Don't make up any information.
         Ensure your response is well-formatted markdown that can be directly displayed.""",
         model=OpenAIChatCompletionsModel(
@@ -241,7 +242,7 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
             openai_client=client
         )
     )
-    
+
     query = f"""Analyze the LinkedIn profile at {linkedin_url}.
     Focus on gathering comprehensive information about the person's professional background.
     Then, find the best job for the user based on their profile.
@@ -285,7 +286,7 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
         {parsed_urls_result.final_output}
 
         Please analyze the above information and create a comprehensive career analysis report in markdown format."""
-        
+
         # Get final summary with a single call
         summary_result = await Runner.run(starting_agent=summary_agent, input=summary_input)
         logger.info("Summary generation completed")
@@ -293,4 +294,4 @@ async def run_analysis(mcp_server: MCPServer, linkedin_url: str):
 
     except Exception as e:
         logger.error(f"Error during analysis: {str(e)}")
-        raise e 
+        raise e

@@ -1,9 +1,8 @@
 import os
-from dotenv import load_dotenv
-from composio import Composio
-from openai import OpenAI
 
-# Load environment variables
+from composio import Composio
+from dotenv import load_dotenv
+from openai import OpenAI
 load_dotenv()
 
 

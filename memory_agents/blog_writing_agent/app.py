@@ -8,10 +8,11 @@ A Streamlit application featuring two AI agents:
 This file contains the Streamlit interface while the agent logic is in agents.py
 """
 
-import streamlit as st
-import base64
 import os
+
 from agents import (
+import base64
+import streamlit as st
     initialize_memori,
     create_memory_tool_instance,
     extract_text_from_pdf,
