@@ -1,11 +1,11 @@
-import os
 import json
-from dotenv import load_dotenv
-from crewai import Agent, Task, Crew
-import litellm
-from crewai_tools import ScrapegraphScrapeTool
-from tools.custom_tools import DecisionTool, NotifyTool
+import os
 
+from crewai import Agent, Task, Crew
+from crewai_tools import ScrapegraphScrapeTool
+from dotenv import load_dotenv
+from tools.custom_tools import DecisionTool, NotifyTool
+import litellm
 PRODUCT_DATA_FILE = "product_data.json"
 
 class NebiusLLM:

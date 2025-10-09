@@ -1,16 +1,15 @@
 """Interface to implement MCP tab (Hidden)"""
 
-import asyncio
-import logging
 from typing import Dict, List, Optional, Any, Union
+import logging
 
+import asyncio
 import gradio as gr
 
 from ...database.repository import repository_manager
 from ...github.client import github_client
 from ...github.file_loader import load_files_from_github
 from ...rag.query import create_query_retriever
-
 logger = logging.getLogger(__name__)
 
 

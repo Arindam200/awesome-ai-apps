@@ -5,8 +5,6 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 from ..core.types import QueryMode
-
-
 class SourceNode(BaseModel):
     """Source node with file information and relevance."""
 

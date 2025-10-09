@@ -1,11 +1,10 @@
-from llama_index.core.tools import FunctionTool
-from llama_index.core.agent import ReActAgent
-from llama_index.llms.nebius import NebiusLLM
-from dotenv import load_dotenv
 import os
-from datetime import datetime
 
-# Load environment variables
+from datetime import datetime
+from dotenv import load_dotenv
+from llama_index.core.agent import ReActAgent
+from llama_index.core.tools import FunctionTool
+from llama_index.llms.nebius import NebiusLLM
 load_dotenv()
 
 def calculate_task_duration(start_time: str, end_time: str) -> str:
@@ -39,7 +38,7 @@ def calculate_productivity(tasks_completed: int, total_time: int) -> str:
         return "Cannot calculate productivity with zero or negative time"
     if tasks_completed < 0:
         return "Cannot calculate productivity with negative tasks"
-    
+
     # Convert total_time to hours for the calculation
     hours = total_time / 60
     tasks_per_hour = tasks_completed / hours

@@ -1,19 +1,17 @@
-from google.adk.agents.sequential_agent import SequentialAgent
-from google.adk.agents.llm_agent import LlmAgent
-from google.adk.sessions import InMemorySessionService
-from google.adk.runners import Runner
-from google.adk.models.lite_llm import LiteLlm
-from google.adk.agents import Agent
-from datetime import datetime, timedelta
-from google.genai import types
-
-from exa_py import Exa
-from tavily import TavilyClient
-from firecrawl import FirecrawlApp
-from dotenv import load_dotenv
 import os
 
-# Load environment variables from .env file
+from datetime import datetime, timedelta
+from dotenv import load_dotenv
+from exa_py import Exa
+from firecrawl import FirecrawlApp
+from google.adk.agents import Agent
+from google.adk.agents.llm_agent import LlmAgent
+from google.adk.agents.sequential_agent import SequentialAgent
+from google.adk.models.lite_llm import LiteLlm
+from google.adk.runners import Runner
+from google.adk.sessions import InMemorySessionService
+from google.genai import types
+from tavily import TavilyClient
 load_dotenv()
 api_base = os.getenv("NEBIUS_API_BASE")
 api_key = os.getenv("NEBIUS_API_KEY")
@@ -78,7 +76,7 @@ def firecrawl_scrape_nebius(_: str) -> dict:
             formats=["markdown"],
             only_main_content=True
         )
-        
+
         if scrape_result.success:
             return {
                 "type": "firecrawl",
@@ -146,7 +144,7 @@ firecrawl_agent = LlmAgent(
     model=nebius_model,
     description="Scrapes Nebius Studio homepage using Firecrawl.",
     instruction="""
-    Use the firecrawl_scrape_nebius tool to fetch markdown content from Nebius Studio website in proper format. 
+    Use the firecrawl_scrape_nebius tool to fetch markdown content from Nebius Studio website in proper format.
     Prefix your response with "**🔥FirecrawlAgent:**"
     """,
     tools=[firecrawl_scrape_nebius],
@@ -154,7 +152,7 @@ firecrawl_agent = LlmAgent(
 )
 
 # --- Agent 5: Analysis & Stats ---
-analysis_agent = LlmAgent(  
+analysis_agent = LlmAgent(
     name="AnalysisAgent",
     model=LiteLlm(
         model="openai/nvidia/Llama-3_1-Nemotron-Ultra-253B-v1",  # New Nebius model

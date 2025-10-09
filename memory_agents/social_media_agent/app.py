@@ -8,9 +8,10 @@ A Streamlit application featuring two AI agents:
 This file contains the Streamlit interface while the agent logic is in twitter_agents.py
 """
 
-import streamlit as st
 import os
+
 from twitter_agents import (
+import streamlit as st
     initialize_memori,
     create_memory_tool_instance,
     scrape_user_tweets,
@@ -299,7 +300,7 @@ def tweet_generation_agent():
                                         st.error("❌ Failed to post tweet")
                                 except Exception as e:
                                     st.error(f"❌ Error posting tweet: {e}")
-                        
+
                     with col2:
                         # Copy to clipboard
                         if st.button("📋 Copy Tweet", use_container_width=True):
@@ -420,7 +421,7 @@ def main():
     title_html = f"""
     <div style='display:flex; align-items:center; width:100%; padding:24px 0;'>
       <h1 style='margin:0; padding:0; font-size:2.5rem; font-weight:bold; display:flex; align-items:center;'>
-        Social Media Agent with {gibson_svg_inline} 
+        Social Media Agent with {gibson_svg_inline}
          <span style="color:#c3f624; margin-right:4px;"> Memori </span> and {composio_svg_inline}
       </h1>
     </div>

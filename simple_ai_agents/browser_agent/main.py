@@ -1,11 +1,9 @@
-import asyncio
 import os
 
-from dotenv import load_dotenv
-from browser_use.llm import ChatOpenAI
 from browser_use import Agent
-
-# Load environment variables
+from browser_use.llm import ChatOpenAI
+from dotenv import load_dotenv
+import asyncio
 load_dotenv()
 
 api_key = os.getenv('NEBIUS_API_KEY')

@@ -1,10 +1,9 @@
 import os
+
+from dotenv import load_dotenv
 from strands import Agent
 from strands.models.litellm import LiteLLMModel
 from strands_tools import http_request
-from dotenv import load_dotenv
-
-# Define a weather-focused system prompt
 WEATHER_SYSTEM_PROMPT = """You are a weather assistant with HTTP capabilities. You can:
 
 1. Make HTTP requests to the National Weather Service API

@@ -1,0 +1,166 @@
+name: Repository Quality Assurance
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run weekly quality checks on Mondays at 9 AM UTC
+    - cron: '0 9 * * 1'
+
+jobs:
+  documentation-quality:
+    name: Documentation Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js for markdown linting
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Install markdownlint
+      run: npm install -g markdownlint-cli
+    
+    - name: Check README files
+      run: |
+        echo "Checking README files for quality..."
+        find . -name "README.md" -not -path "./.git/*" | while read file; do
+          echo "Checking: $file"
+          markdownlint "$file" || echo "Issues found in $file"
+        done
+    
+    - name: Validate .env.example files
+      run: |
+        python3 .github/scripts/validate-env-examples.py
+
+  dependency-analysis:
+    name: Dependency Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+    
+    - name: Check pyproject.toml coverage
+      run: |
+        python3 .github/scripts/analyze-dependencies.py
+    
+    - name: Test key project installations
+      run: |
+        # Test a few key projects can be installed with uv
+        key_projects=(
+          "starter_ai_agents/agno_starter"
+          "starter_ai_agents/crewai_starter"
+          "simple_ai_agents/newsletter_agent"
+        )
+        
+        for project in "${key_projects[@]}"; do
+          if [ -d "$project" ]; then
+            echo "Testing installation: $project"
+            cd "$project"
+            
+            if [ -f "pyproject.toml" ]; then
+              echo "Testing uv sync..."
+              uv sync --dry-run || echo "uv sync failed for $project"
+            elif [ -f "requirements.txt" ]; then
+              echo "Testing pip install..."
+              python -m pip install --dry-run -r requirements.txt || echo "pip install failed for $project"
+            fi
+            
+            cd - > /dev/null
+          fi
+        done
+
+  code-quality:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install analysis tools
+      run: |
+        pip install ruff mypy bandit safety
+    
+    - name: Run Ruff linting
+      run: |
+        echo "Running Ruff linting on Python files..."
+        ruff check . --select E,W,F,I,B,C4,UP --ignore E501,B008,C901 || echo "Linting issues found"
+    
+    - name: Security scan with Bandit
+      run: |
+        echo "Running security analysis..."
+        bandit -r . -f json -o bandit-report.json || echo "Security issues found"
+        if [ -f bandit-report.json ]; then
+          python3 .github/scripts/parse-bandit-report.py
+        fi
+    
+    - name: Check for hardcoded secrets
+      run: |
+        python3 .github/scripts/check-hardcoded-secrets.py
+
+  project-structure:
+    name: Project Structure Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Validate project structures
+      run: |
+        python3 .github/scripts/validate-project-structure.py
+
+  generate-summary:
+    name: Generate Quality Report
+    runs-on: ubuntu-latest
+    needs: [documentation-quality, dependency-analysis, code-quality, project-structure]
+    if: always()
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Generate Quality Summary
+      run: |
+        echo "# Repository Quality Report" > quality-report.md
+        echo "Generated on: $(date)" >> quality-report.md
+        echo "" >> quality-report.md
+        
+        echo "## Status Summary" >> quality-report.md
+        echo "- Documentation Quality: ${{ needs.documentation-quality.result }}" >> quality-report.md
+        echo "- Dependency Analysis: ${{ needs.dependency-analysis.result }}" >> quality-report.md
+        echo "- Code Quality: ${{ needs.code-quality.result }}" >> quality-report.md
+        echo "- Project Structure: ${{ needs.project-structure.result }}" >> quality-report.md
+        echo "" >> quality-report.md
+        
+        echo "## Recommendations" >> quality-report.md
+        echo "1. Ensure all projects have comprehensive .env.example files" >> quality-report.md
+        echo "2. Migrate remaining projects to pyproject.toml" >> quality-report.md
+        echo "3. Add uv installation instructions to all READMEs" >> quality-report.md
+        echo "4. Address any security issues found in code scanning" >> quality-report.md
+        echo "5. Ensure consistent project structure across all categories" >> quality-report.md
+        
+        cat quality-report.md
+    
+    - name: Upload Quality Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: quality-report
+        path: quality-report.md

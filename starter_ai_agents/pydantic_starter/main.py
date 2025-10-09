@@ -1,10 +1,10 @@
+import os
+
+from dotenv import load_dotenv
 from pydantic_ai import Agent
+from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
-from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
-import os
-from dotenv import load_dotenv
-
 load_dotenv()
 
 # Set up the model with the user-provided API key

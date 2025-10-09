@@ -2,16 +2,14 @@
 
 import logging
 
-import gradio as gr
 from dotenv import load_dotenv
+import gradio as gr
 
 from .tabs.ingestion import IngestionTab
 from .tabs.management import ManagementTab
 from .tabs.mcp import MCPTab
 from .tabs.query import QueryTab
 from .tabs.update import UpdateTab
-
-# Load environment variables
 load_dotenv()
 
 # Configure logging

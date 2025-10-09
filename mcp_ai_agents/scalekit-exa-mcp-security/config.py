@@ -1,6 +1,6 @@
 import os
-from dotenv import load_dotenv
 
+from dotenv import load_dotenv
 load_dotenv()
 
 class Settings:
@@ -11,7 +11,7 @@ class Settings:
     SCALEKIT_RESOURCE_METADATA_URL: str = os.environ.get("SCALEKIT_RESOURCE_METADATA_URL", "")
     SCALEKIT_AUDIENCE_NAME: str = os.environ.get("SCALEKIT_AUDIENCE_NAME", "")
     METADATA_JSON_RESPONSE: str = os.environ.get("METADATA_JSON_RESPONSE", "")
-    
+
     # Exa API Key
     EXA_API_KEY: str = os.environ.get("EXA_API_KEY", "")
 

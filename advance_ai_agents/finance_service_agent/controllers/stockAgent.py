@@ -1,12 +1,32 @@
+"""
+Stockagent
+
+Module description goes here.
+"""
+
+from typing import List, Dict, Optional, Union, Any
+import json
+import logging
+import os
+import re
+
+from agno.agent import Agent, RunResponse
+from agno.models.nebius import Nebius
+from agno.tools.yfinance import YFinanceTools
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.responses import JSONResponse
-from agno.agent import Agent, RunResponse
-from agno.tools.yfinance import YFinanceTools
-from agno.models.nebius import Nebius
-import json
-import re
-import os
 import dotenv
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 
 dotenv.load_dotenv()
 NEBIUS_API_KEY = os.getenv("NEBIUS_API_KEY")
@@ -64,9 +84,9 @@ stock_analyzer_agent = Agent(
         stock_price=True,
         company_info=True,
         analyst_recommendations=True,
-        stock_fundamentals=True, 
-        income_statements=True, 
-        historical_prices=True, 
+        stock_fundamentals=True,
+        income_statements=True,
+        historical_prices=True,
         key_financial_ratios=True,
         company_news=True,
         technical_indicators=True)],
@@ -77,11 +97,11 @@ def extract_json_from_response(response_content):
     """Extract JSON from response content, handling markdown code blocks."""
     if not response_content:
         return None
-    
+
     # If response is already a dict, return it
     if isinstance(response_content, dict):
         return response_content
-        
+
     # If response is a string, try to extract JSON
     if isinstance(response_content, str):
         # Case 1: Check if content is wrapped in markdown code block
@@ -92,13 +112,13 @@ def extract_json_from_response(response_content):
                 return json.loads(json_str)
             except json.JSONDecodeError:
                 print(f"Failed to parse JSON from markdown code block")
-        
+
         # Case 2: Check if the entire string is JSON
         try:
             return json.loads(response_content)
         except json.JSONDecodeError:
             pass
-            
+
         # Case 3: Look for JSON object pattern in text
         json_match = re.search(r'\{[\s\S]*\}', response_content)
         if json_match:
@@ -106,7 +126,7 @@ def extract_json_from_response(response_content):
                 return json.loads(json_match.group(0))
             except json.JSONDecodeError:
                 print(f"Failed to parse JSON from pattern match")
-                
+
     return None
 
 def create_default_stock_data(symbol):
@@ -144,14 +164,14 @@ def merge_stock_data(default_data, api_data):
     """Merge API data into default data structure, handling type conversions."""
     if not api_data:
         return default_data
-        
+
     result = default_data.copy()
-    
+
     # Update top-level fields
     for field in ["symbol", "company_name"]:
         if field in api_data:
             result[field] = api_data[field]
-    
+
     # Update numeric top-level fields with type conversion
     for field in ["current_price", "market_cap"]:
         if field in api_data:
@@ -163,7 +183,7 @@ def merge_stock_data(default_data, api_data):
                     result[field] = int(float(value)) if isinstance(value, (int, float, str)) else value
             except (ValueError, TypeError):
                 print(f"Failed to convert {field} value: {api_data[field]}")
-    
+
     # Update nested objects
     for section in ["financial_ratios", "financial_health", "per_share_metrics"]:
         if section in api_data and isinstance(api_data[section], dict):
@@ -173,5 +193,5 @@ def merge_stock_data(default_data, api_data):
                         result[section][key] = float(api_data[section][key])
                     except (ValueError, TypeError):
                         print(f"Failed to convert {section}.{key} value: {api_data[section][key]}")
-    
+
     return result

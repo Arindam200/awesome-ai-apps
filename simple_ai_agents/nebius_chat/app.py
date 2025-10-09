@@ -1,12 +1,12 @@
-import streamlit as st
-import os
-from datetime import datetime
 import json
-from dotenv import load_dotenv
-import requests
+import os
 import re
-import base64
+import requests
 
+from datetime import datetime
+from dotenv import load_dotenv
+import base64
+import streamlit as st
 load_dotenv()
 
 st.set_page_config(page_title="Nebius-chat", page_icon="🧠", layout="wide")

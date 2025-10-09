@@ -1,12 +1,12 @@
-import streamlit as st
 import os
-import asyncio
-from dotenv import load_dotenv
-import base64
-from main import workflow
-from agno.run.workflow import WorkflowRunEvent
-import nest_asyncio
 
+from agno.run.workflow import WorkflowRunEvent
+from dotenv import load_dotenv
+from main import workflow
+import asyncio
+import base64
+import nest_asyncio
+import streamlit as st
 nest_asyncio.apply()
 
 st.set_page_config(page_title="Meeting Assistant Agent", layout="wide")
@@ -129,7 +129,7 @@ if meet_processing:
             status.update(label="Processing complete!", state="complete")
         if summary:
             st.markdown(summary)
-            
+
     else:
         st.warning("Please enter your meeting notes before processing.")
 

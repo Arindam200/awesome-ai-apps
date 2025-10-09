@@ -1,7 +1,7 @@
 """File loading logic for GitHub repositories."""
 
-import logging
 from typing import Dict, List, Tuple
+import logging
 
 from llama_index.core import Document
 
@@ -9,7 +9,6 @@ from ..core.exceptions import GitHubError
 from ..core.types import DocumentMetadata, GitHubFileInfo
 from .client import github_client
 from .parser import build_github_web_url, parse_github_url
-
 logger = logging.getLogger(__name__)
 
 

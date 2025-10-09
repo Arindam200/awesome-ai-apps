@@ -1,21 +1,21 @@
 import os
-from openai import OpenAI
-import streamlit as st
 import os
-from dotenv import load_dotenv
-import tempfile
-import shutil
-import base64
-import io
+import os
 import re
-import mimetypes
+
+from PIL import Image
+from dotenv import load_dotenv
+from openai import OpenAI
 from openai import OpenAI
 import base64
-import os
-import tempfile
-from PIL import Image
+import base64
 import fitz  # PyMuPDF for PDF to image
-
+import io
+import mimetypes
+import shutil
+import streamlit as st
+import tempfile
+import tempfile
 load_dotenv()
 
 st.set_page_config(page_title="Gemma 3 OCR", layout="wide")

@@ -1,7 +1,7 @@
 """MongoDB client wrapper with connection management."""
 
-import logging
 from typing import Optional
+import logging
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
@@ -9,7 +9,6 @@ from pymongo.database import Database
 
 from ..core.config import settings
 from ..core.exceptions import VectorStoreError
-
 logger = logging.getLogger(__name__)
 
 

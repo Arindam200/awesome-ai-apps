@@ -1,10 +1,11 @@
-import os
 import json
-import streamlit as st
-from dotenv import load_dotenv
+import os
+
 from agents.crewai_agents import run_agents
 from datetime import datetime
+from dotenv import load_dotenv
 import base64
+import streamlit as st
 load_dotenv("api.env")
 
 # Page config
@@ -25,9 +26,9 @@ with open("./assets/twilio.png", "rb") as twilio_file:
     title_html = f"""
     <div style="display: flex;  width: 100%; ">
         <h1 style="margin: 0; padding: 0; font-size: 2.5rem; font-weight: bold;">
-            <span style="font-size:2.5rem;">💲</span> Price Monitoring Agent with 
+            <span style="font-size:2.5rem;">💲</span> Price Monitoring Agent with
             <img src="data:image/png;base64,{scrapegraph_base64}" style="height: 60px; vertical-align: middle;"/>
-            <span style="color: #8564ff;">Scrapegraph</span> & 
+            <span style="color: #8564ff;">Scrapegraph</span> &
             <img src="data:image/png;base64,{twilio_base64}" style="height: 60px; vertical-align: middle;"/>
         </h1>
     </div>
@@ -51,7 +52,7 @@ with st.sidebar:
         st.session_state["TWILIO_PHONE_NUMBER"] = os.getenv("TWILIO_PHONE_NUMBER","")
         st.session_state["TWILIO_WHATSAPP_NUMBER"] = os.getenv("TWILIO_WHATSAPP_NUMBER","")
         st.success("Keys saved for this session")
-    
+
     st.markdown("#### ⚙️ Configuration")
     max_products = st.slider("Max Products to Track", min_value=1, max_value=10, value=5, help="Maximum number of products you can track")
     notification_method = st.selectbox("Notification Method", ["None", "Twilio SMS", "Twilio WhatsApp"], help="How to receive price alerts")
@@ -190,4 +191,3 @@ if st.session_state["history"]:
                                 st.write(description)
 else:
     st.info("No products being tracked. Add products above.")
-

@@ -1,12 +1,12 @@
-from operator import ne
 import os
-import shutil
-from qdrant_tool import load_pdf_to_qdrant
+
 from crews import crew
-# from .crew import crew
-import streamlit as st
-import base64
 from dotenv import load_dotenv
+from operator import ne
+from qdrant_tool import load_pdf_to_qdrant
+import base64
+import shutil
+import streamlit as st
 import tempfile
 load_dotenv()
 
@@ -27,14 +27,14 @@ def display_pdf_preview(pdf_file):
     try:
         # Display PDF info
         st.sidebar.subheader("PDF Preview")
-        
+
         # Convert PDF to base64 for display
         base64_pdf = base64.b64encode(pdf_file.getvalue()).decode('utf-8')
-        
+
         # Display PDF using HTML iframe
         pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="500" type="application/pdf"></iframe>'
         st.sidebar.markdown(pdf_display, unsafe_allow_html=True)
-        
+
         return True
     except Exception as e:
         st.sidebar.error(f"Error previewing PDF: {str(e)}")
@@ -50,10 +50,10 @@ with col1:
 
     with open("./assets/exa-logo.png", "rb") as exa_file:
         exa_base64 = base64.b64encode(exa_file.read()).decode()
-    
+
     with open("./assets/crewai-logo.png", "rb") as crew_file:
         crew_base64 = base64.b64encode(crew_file.read()).decode()
-    
+
     with open("./assets/Nebius.png", "rb") as nebius_file:
         nebius_base64 = base64.b64encode(nebius_file.read()).decode()
 
@@ -136,7 +136,7 @@ with st.sidebar:
 
                 st.session_state.docs_loaded = True
                 st.session_state.current_file = uploaded_file
-                try: 
+                try:
                     print(f"Loading PDF to Qdrant: {file_path}")
                     load_pdf_to_qdrant(file_path)
                     print("PDF loaded to Qdrant")

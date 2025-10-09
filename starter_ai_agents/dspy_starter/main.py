@@ -1,7 +1,6 @@
-import dspy
 import os
 
-# Configure dspy with a LLM from Together AI
+import dspy
 lm = dspy.LM(
     "nebius/moonshotai/Kimi-K2-Instruct",
     api_key=os.environ.get("NEBIUS_API_KEY"),

@@ -1,18 +1,16 @@
-import json
-from textwrap import dedent
 from typing import Dict, AsyncIterator, Optional, List, Any
+import json
+import os
+
 from agno.agent import Agent
 from agno.models.nebius import Nebius
 from agno.storage.sqlite import SqliteStorage
+from agno.tools.firecrawl import FirecrawlTools
 from agno.utils.log import logger
-import os
 from agno.utils.pprint import pprint_run_response
 from dotenv import load_dotenv
+from textwrap import dedent
 import asyncio
-from agno.tools.firecrawl import FirecrawlTools
-
-
-# Load environment variables
 load_dotenv()
 
 # Get API keys from environment variables
@@ -105,7 +103,7 @@ newsletter_agent = Agent(
     - Add value through analysis and expert insights
     - Maintain journalistic integrity and ethical standards
     - STRICTLY follow the expected_output format
-                                       
+
     """),
     expected_output=dedent("""\
         # ${Compelling Subject Line}
@@ -148,15 +146,15 @@ newsletter_agent = Agent(
 def NewsletterGenerator(topic: str, search_limit: int = 5, time_range: str = "qdr:w") -> Dict[str, Any]:
     """
     Generate a newsletter based on the given topic and search parameters.
-    
+
     Args:
         topic (str): The topic to generate the newsletter about
         search_limit (int): Maximum number of articles to search and analyze
         time_range (str): Time range for article search (e.g., "qdr:w" for past week)
-    
+
     Returns:
         Dict[str, Any]: Processed newsletter content with structured metadata
-    
+
     Raises:
         ValueError: If configuration validation fails
         RuntimeError: If newsletter generation fails
@@ -167,7 +165,7 @@ def NewsletterGenerator(topic: str, search_limit: int = 5, time_range: str = "qd
             'limit': search_limit,
             'tbs': time_range
         })
-        
+
         response = newsletter_agent.run(topic)
         logger.info('Newsletter generated successfully')
         return response

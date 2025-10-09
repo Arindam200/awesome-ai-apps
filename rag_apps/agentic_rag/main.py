@@ -1,18 +1,16 @@
-import os
-import shutil
-from tkinter.ttk import Style
-from turtle import width
 from typing import Iterator
-from agno.agent import Agent, RunResponseEvent
-from agno.utils.pprint import pprint_run_response
-from agno.embedder.openai import OpenAIEmbedder
+import os
 
-# from agno.knowledge.pdf_url import PDFUrlKnowledgeBase
+from agno.agent import Agent, RunResponseEvent
+from agno.embedder.openai import OpenAIEmbedder
 from agno.knowledge.url import UrlKnowledge
 from agno.models.openai import OpenAIChat
+from agno.utils.pprint import pprint_run_response
 from agno.vectordb.lancedb import LanceDb, SearchType
 from dotenv import load_dotenv
-
+from tkinter.ttk import Style
+from turtle import width
+import shutil
 load_dotenv()
 import streamlit as st
 import base64
@@ -25,7 +23,7 @@ os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = "https://app.phoenix.arize.com"
 
 # Configure the Phoenix tracer
 tracer_provider = register(
-    project_name="default", 
+    project_name="default",
     auto_instrument=True,  # Automatically use the installed OpenInference instrumentation
 )
 
@@ -123,13 +121,13 @@ with st.sidebar:
                     st.session_state.docs_loaded = False
         else:
             st.warning("Please add at least one URL to the knowledge base.")
-    
+
     # Display currently loaded URLs if any
     if st.session_state.get('docs_loaded', False) and st.session_state.get('loaded_urls'):
         st.markdown("**📚 Currently Loaded URLs:**")
         for i, url in enumerate(st.session_state.loaded_urls, 1):
             st.markdown(f"{i}. {url}")
-    
+
     st.markdown("---")
 
 query = st.chat_input("Ask a question", width=1000)

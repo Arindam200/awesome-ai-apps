@@ -1,12 +1,11 @@
-from datetime import datetime, timedelta
 import os
-from agno.agent import Agent
-from agno.models.openai.like import OpenAILike
-from agno.models.nebius import Nebius
-from agno.tools.calcom import CalComTools
-from dotenv import load_dotenv
 
-# Load environment variables
+from agno.agent import Agent
+from agno.models.nebius import Nebius
+from agno.models.openai.like import OpenAILike
+from agno.tools.calcom import CalComTools
+from datetime import datetime, timedelta
+from dotenv import load_dotenv
 load_dotenv()
 
 """
@@ -81,13 +80,13 @@ def book_example_call():
     # Get today's date and tomorrow's date
     today = datetime.now().strftime("%Y-%m-%d")
     tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
-    
+
     # First, check available slots
     print("Checking available slots...")
     agent.print_response(f"""
     Please check available slots between {today} and {tomorrow}
     """)
-    
+
     # Then book a specific slot
     print("\nAttempting to book a call...")
     agent.print_response("""
@@ -95,7 +94,7 @@ def book_example_call():
     - Start Time: 2025-03-22T21:30:00+05:30
     - Name: Arindam Majumder
     - Email: studioone.tech@gmail.com
-    
+
     After booking, please verify the booking exists.
     """)
 

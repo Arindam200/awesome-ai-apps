@@ -1,7 +1,7 @@
 """Query interface tab implementation."""
 
-import logging
 from typing import Any, Dict, Tuple
+import logging
 
 import gradio as gr
 

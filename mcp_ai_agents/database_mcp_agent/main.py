@@ -1,11 +1,11 @@
-import asyncio
-from textwrap import dedent
 import os
-from dotenv import load_dotenv
+
 from agno.agent import Agent
 from agno.models.nebius import Nebius
 from agno.tools.mcp import MCPTools
-
+from dotenv import load_dotenv
+from textwrap import dedent
+import asyncio
 load_dotenv()
 async def run_gibsonai_agent(message: str):
     """Run the GibsonAI agent with the given message."""
@@ -22,7 +22,7 @@ async def run_gibsonai_agent(message: str):
         model=Nebius(
             id="meta-llama/Meta-Llama-3.1-70B-Instruct",
             api_key=os.getenv("NEBIUS_API_KEY")  # Explicitly pass the API key
-        ),  
+        ),
         tools=[mcp_tools],
         description="Agent for managing database projects and schemas",
         instructions=dedent("""\

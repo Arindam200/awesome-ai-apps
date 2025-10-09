@@ -1,17 +1,12 @@
 # Standard library imports
 import os
-import asyncio
 
-# Third-party imports
-import streamlit as st
-from dotenv import load_dotenv
-
-# Local imports
+from agno.agent import Agent
 from agno.models.nebius import Nebius
 from agno.tools.mcp import MCPTools
-from agno.agent import Agent
-
-# Load environment variables
+from dotenv import load_dotenv
+import asyncio
+import streamlit as st
 load_dotenv()
 
 DEFAULT_SERVER_URL = "https://docs.studio.nebius.com/mcp"

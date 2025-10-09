@@ -1,13 +1,13 @@
 """GitHub API client with authentication and error handling."""
 
+from typing import Dict, List, Optional, Tuple
+import logging
+import requests
+
+from aiohttp import ClientTimeout
+import aiohttp
 import asyncio
 import base64
-import logging
-from typing import Dict, List, Optional, Tuple
-
-import aiohttp
-import requests
-from aiohttp import ClientTimeout
 
 from ..core.config import settings
 from ..core.exceptions import (GitHubAuthenticationError, GitHubError,

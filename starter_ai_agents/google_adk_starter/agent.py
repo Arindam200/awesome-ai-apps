@@ -1,9 +1,7 @@
-from dotenv import load_dotenv
 import os
 import os
 
-# Load keys
-# Load keys
+from dotenv import load_dotenv
 load_dotenv()
 import resend
 import resend
@@ -54,4 +52,3 @@ root_agent = Agent(
 # Execute the email sending function
 result = send_email("")
 print(result)
-

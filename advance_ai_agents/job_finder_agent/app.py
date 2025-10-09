@@ -1,13 +1,13 @@
-import streamlit as st
-import asyncio
-import os
 import logging
-import nest_asyncio
-import base64
+import os
+
 from dotenv import load_dotenv
 from job_agents import run_analysis
 from mcp_server import wait_for_initialization, get_mcp_server
-
+import asyncio
+import base64
+import nest_asyncio
+import streamlit as st
 nest_asyncio.apply()
 load_dotenv()
 
@@ -31,7 +31,7 @@ async def analyze_profile(linkedin_url: str):
         if not await wait_for_initialization():
             st.error("Failed to initialize MCP server")
             return
-            
+
         result = await run_analysis(get_mcp_server(), linkedin_url)
         st.session_state.analysis_result = result
     except Exception as e:
@@ -43,13 +43,13 @@ async def analyze_profile(linkedin_url: str):
 def main():
     # Load and encode images
     with open("./assets/bright-data-logo.png", "rb") as bright_data_file:
-        bright_data_base64 = base64.b64encode(bright_data_file.read()).decode()       
-    
+        bright_data_base64 = base64.b64encode(bright_data_file.read()).decode()
+
     # Create title with embedded images
     title_html = f"""
     <div style="display: flex; align-items: center; gap: 0px; margin: 0; padding: 0;">
         <h1 style="margin: 0; padding: 0;">
-        Job Searcher Agent with 
+        Job Searcher Agent with
         <img src="data:image/png;base64,{bright_data_base64}" style="height: 110px; margin: 0; padding: 0;"/>
         </h1>
     </div>
@@ -62,10 +62,10 @@ def main():
         st.image("./assets/Nebius.png", width=150)
         api_key = st.text_input("Enter your API key", type="password")
         st.divider()
-        
+
         st.subheader("Enter LinkedIn Profile URL")
         linkedin_url = st.text_input("LinkedIn URL", placeholder="https://www.linkedin.com/in/username/")
-        
+
         if st.button("Analyze Profile", type="primary", disabled=st.session_state.is_analyzing):
             if not linkedin_url:
                 st.error("Please enter a LinkedIn profile URL")
@@ -76,7 +76,7 @@ def main():
 
             st.session_state.is_analyzing = True
             st.session_state.analysis_result = ""
-            
+
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:

@@ -1,24 +1,18 @@
 import os
-import io
-import asyncio
+
 from datetime import datetime, timedelta
-
-# Google ADK and LLM Imports
-from google.adk.models.lite_llm import LiteLlm
-from google.adk.agents.llm_agent import LlmAgent
-from google.adk.agents.sequential_agent import SequentialAgent
-from google.adk.agents.parallel_agent import ParallelAgent
-from google.adk.sessions import InMemorySessionService
-from google.adk.runners import Runner
-
-# Google GenAI types
-from google.genai import types
-
-# Tool client imports
 from exa_py import Exa
-from tavily import TavilyClient
+from google.adk.agents.llm_agent import LlmAgent
+from google.adk.agents.parallel_agent import ParallelAgent
+from google.adk.agents.sequential_agent import SequentialAgent
+from google.adk.models.lite_llm import LiteLlm
+from google.adk.runners import Runner
+from google.adk.sessions import InMemorySessionService
+from google.genai import types
 from linkup import LinkupClient
-
+from tavily import TavilyClient
+import asyncio
+import io
 nebius_model = LiteLlm(
     model="nebius/Qwen/Qwen3-235B-A22B",
     api_base=os.getenv("NEBIUS_API_BASE"),
@@ -113,8 +107,8 @@ def run_adk_research(topic: str) -> str:
     # # This agent synthesizes the parallel search results.
     # summary_agent = LlmAgent(
     #     name="SummaryAgent", model=nebius_base_model,
-    #     instruction="""You are a meticulous research summarizer. Combine the information from 'exa_results', 
-    #     'tavily_results', and 'linkup_results' into a single, coherent summary. Focus on the latest trends, 
+    #     instruction="""You are a meticulous research summarizer. Combine the information from 'exa_results',
+    #     'tavily_results', and 'linkup_results' into a single, coherent summary. Focus on the latest trends,
     #     key talking points, important code repositories, and any emerging technologies related to the topic.
     #     Use markdown for clear formatting.""",
     #     output_key="final_summary"
@@ -123,12 +117,12 @@ def run_adk_research(topic: str) -> str:
       # This agent synthesizes the parallel search results.
     summary_agent = LlmAgent(
         name="SummaryAgent", model=nebius_base_model,
-        instruction="""You are a meticulous research summarizer. Combine the information from 'exa_results' into a single, coherent summary. Focus on the latest trends, 
+        instruction="""You are a meticulous research summarizer. Combine the information from 'exa_results' into a single, coherent summary. Focus on the latest trends,
         key talking points, important code repositories, and any emerging technologies related to the topic.
         Use markdown for clear formatting.""",
         output_key="final_summary"
     )
-    
+
     # This final agent provides the actionable insights we need.
     analysis_agent = LlmAgent(
         name="AnalysisAgent", model=analysis_llm,
@@ -180,13 +174,13 @@ def run_adk_research(topic: str) -> str:
     except:
         # Fallback for synchronous session creation
         pass
-    
+
     runner = Runner(agent=pipeline, app_name=APP_NAME, session_service=session_service)
 
     content = types.Content(role="user", parts=[types.Part(text=f"Start analysis for {topic}")])
     # Note: If your ADK version uses async, you would 'await runner.run(...)'
     events = runner.run(user_id=USER_ID, session_id=SESSION_ID, new_message=content)
-    
+
     final_result = "ADK research agent failed to produce a final analysis."
     for event in events:
         if event.is_final_response():

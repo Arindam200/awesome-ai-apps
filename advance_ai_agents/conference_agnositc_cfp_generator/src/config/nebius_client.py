@@ -1,11 +1,11 @@
 """
 Clean Nebius AI client for both chat completions and embeddings
 """
-import os
-from openai import OpenAI
 from typing import List, Dict, Any
-from dotenv import load_dotenv
+import os
 
+from dotenv import load_dotenv
+from openai import OpenAI
 load_dotenv()
 
 class NebiusClient:
@@ -15,12 +15,12 @@ class NebiusClient:
             base_url="https://api.studio.nebius.com/v1/",
             api_key=os.getenv("NEBIUS_API_KEY")
         )
-        
+
         # Model configurations
         self.chat_model = "openai/gpt-oss-120b"
         self.embedding_model = "Qwen/Qwen3-Embedding-8B"
         self.embedding_dimensions = 4096
-    
+
     def generate_embedding(self, text: str) -> List[float]:
         """Generate embedding using Nebius AI"""
         try:
@@ -32,7 +32,7 @@ class NebiusClient:
         except Exception as e:
             print(f"Error generating embedding: {str(e)}")
             raise
-    
+
     def chat_completion(self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 2048) -> str:
         """Generate chat completion using Nebius AI"""
         try:
@@ -47,7 +47,7 @@ class NebiusClient:
         except Exception as e:
             print(f"Error in chat completion: {str(e)}")
             raise
-    
+
     def batch_embeddings(self, texts: List[str]) -> List[List[float]]:
         """Generate embeddings for multiple texts"""
         try:

@@ -1,5 +1,6 @@
-import os
 from typing import Iterator
+import os
+
 from agno.agent import Agent
 from agno.exceptions import RetryAgentRun, StopAgentRun
 from agno.models.nebius import Nebius
@@ -7,7 +8,6 @@ from agno.tools import FunctionCall, tool
 from dotenv import load_dotenv
 from rich.console import Console
 from rich.prompt import Prompt
-
 load_dotenv()
 console = Console()
 
@@ -41,7 +41,7 @@ def pre_hook(fc: FunctionCall):
             raise StopAgentRun("Too many retries", agent_message="Stopped after several retries.")
         console.print(f"🔄 [yellow]Retrying... (Attempt {retry_counter['count']} of {MAX_RETRIES})[/yellow]")
         raise RetryAgentRun("Retrying with new data", agent_message="Let me try again!")
-    
+
     # Reset retry counter when user chooses to continue
     retry_counter["count"] = 0
 

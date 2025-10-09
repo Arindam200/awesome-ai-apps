@@ -1,19 +1,18 @@
-import asyncio
-import prompts
 import os
+
 from IPython.display import display, Markdown
 from dotenv import load_dotenv
-from pydantic import BaseModel, Field
 from google.adk.agents.llm_agent import LlmAgent
 from google.adk.agents.sequential_agent import SequentialAgent
 from google.adk.models.lite_llm import LiteLlm
-from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
-from google.genai import types
+from google.adk.sessions import InMemorySessionService
 from google.adk.tools.langchain_tool import LangchainTool
+from google.genai import types
 from langchain_tavily import TavilySearch
-
-
+from pydantic import BaseModel, Field
+import asyncio
+import prompts
 load_dotenv()
 
 NEBIUS_LLM = LiteLlm(
@@ -102,7 +101,7 @@ async def run_validation(idea: str):
         app_name=APP_NAME,
         session_service=session_service
     )
-    
+
     content = types.Content(role="user", parts=[types.Part(text=idea)])
     events = runner.run(user_id=USER_ID, session_id=SESSION_ID, new_message=content )
     for event in events:
@@ -178,4 +177,3 @@ async def run_validation(idea: str):
 
 if __name__ == "__main__":
     asyncio.run(run_validation("A CodeReview Agent that reviews your code in each PR"))
-    

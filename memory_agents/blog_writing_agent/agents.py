@@ -10,23 +10,18 @@ Requirements:
 - Set DIGITAL_OCEAN_ENDPOINT and DIGITAL_OCEAN_AGENT_ACCESS_KEY in environment or .env file
 """
 
-import os
-import tempfile
 from pathlib import Path
-import json
 from typing import Dict, Any, List
-import openai
-from dotenv import load_dotenv
+import json
+import os
 
-# Document processing imports
-import pypdf
 from docx import Document
-import io
-
-# Memori imports
+from dotenv import load_dotenv
 from memori import Memori, create_memory_tool
-
-# Load environment variables
+import io
+import openai
+import pypdf
+import tempfile
 load_dotenv()
 
 # Check for required Digital Ocean credentials
@@ -111,7 +106,7 @@ def analyze_writing_style(text: str) -> Dict[str, Any]:
     """Analyze writing style using Digital Ocean AI"""
     try:
         prompt = f"""
-        Analyze the following text and extract the author's writing style characteristics. 
+        Analyze the following text and extract the author's writing style characteristics.
         Focus on:
         1. Tone (formal, casual, professional, friendly, etc.)
         2. Writing structure (how paragraphs are organized, transitions, etc.)
@@ -119,10 +114,10 @@ def analyze_writing_style(text: str) -> Dict[str, Any]:
         4. Sentence structure patterns
         5. Use of examples, analogies, or storytelling
         6. Overall voice and personality
-        
+
         Text to analyze:
         {text[:3000]}  # Limit to first 3000 characters for analysis
-        
+
         Provide your analysis in JSON format with these keys:
         - tone: string describing the tone
         - structure: string describing paragraph and content structure
