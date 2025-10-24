@@ -37,7 +37,7 @@ ai_workflow_visualizer/
 
 ```bash
 git clone https://github.com/Sanjana-m55/awesome-ai-apps.git
-cd awesome-ai-apps/advance_ai_agents/ai_workflow_visualizer
+cd awesome-ai-apps/advance_ai_agents/advance_ai_agents/ai_workflow_visualizer
 ```
 
 ### 2. Create and activate a virtual environment
@@ -69,7 +69,7 @@ NEBIUS_API_KEY=your_api_key_here
 ### Run the Visualizer
 
 ```bash
-python app.py
+streamlit run app.py
 ```
 
 ### Example Input
