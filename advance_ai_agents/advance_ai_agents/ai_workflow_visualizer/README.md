@@ -17,22 +17,23 @@ It leverages the **Nebius API** to generate structured, human-understandable vis
 
 ## 🧩 Project Structure
 
-```
+```bash
 ai_workflow_visualizer/
 │
-├── app.py                  # Main entry point for running the visualizer
-├── graph_builder.py        # Builds graph structure for workflow visualization
-├── nebius_client.py        # Handles interaction with Nebius API
-├── parser.py               # Parses and cleans agent logs
-├── requirements.txt        # Python dependencies
+├── assets
+|    └── IM_1.png
+|    └── IM_2.png
+|    └── IM_3.png
+├── app.py                 
+├── graph_builder.py        
+├── nebius_client.py        
+├── parser.py               
+├── requirements.txt        
 └── sample_logs/
-    └── agent_log.json      # Example agent workflow data
-```
-
----
+    └── agent_log.json      
+    
 
 ## ⚙️ Installation & Setup
-
 ### 1. Clone the repository
 
 ```bash
@@ -129,7 +130,7 @@ feat: implemented intelligent workflow summarization and visualization using Neb
 ## 🪪 License
 
 This project is licensed under the **MIT License**.
-See the [LICENSE](LICENSE) file for details.
+See the [LICENSE](../../LICENSE) file for details.
 
 ---
 
