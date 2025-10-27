@@ -34,6 +34,9 @@ st.set_page_config(
 try:
     with open("./assets/gibson.svg", encoding="utf-8") as gibson_file:
         gibson_svg = gibson_file.read()
+
+    with open("./assets/brightdata_logo.png", "rb") as brightdata_file:
+        brightdata_base64 = base64.b64encode(brightdata_file.read()).decode()
     gibson_svg_base64 = base64.b64encode(gibson_svg.encode("utf-8")).decode()
     gibson_svg_inline = (
         f'<img src="data:image/svg+xml;base64,{gibson_svg_base64}" '
@@ -48,6 +51,8 @@ title_html = f"""
     <span>Brand Reputation Monitor with</span>
     {gibson_svg_inline}
     <span style='color:#c3f624;'>Memori</span>
+    <span style='font-size:2rem'>&</span>
+    <img src="data:image/png;base64,{brightdata_base64}" style="height: 80px; width: auto; display:inline-block; vertical-align:middle; margin:0 6px;" alt="Bright Data Logo">
   </h1>
 </div>
 """
@@ -55,21 +60,20 @@ st.markdown(title_html, unsafe_allow_html=True)
 
 # Sidebar
 with st.sidebar:
-    st.subheader("🔑 API Keys")
-
-    st.image("./assets/brightdata_logo.png", width=200)
-    brightdata_api_key_input = st.text_input(
-        "Bright Data API Key",
-        value=os.getenv("BRIGHTDATA_API_KEY", ""),
-        type="password",
-        help="Your Bright Data API key for web scraping",
-    )
+    st.image("./assets/nebius.png", width=170)
 
     nebius_api_key_input = st.text_input(
         "Nebius AI API Key",
         value=os.getenv("NEBIUS_API_KEY", ""),
         type="password",
         help="Your Nebius AI API key for AI analysis",
+    )
+
+    brightdata_api_key_input = st.text_input(
+        "Bright Data API Key",
+        value=os.getenv("BRIGHTDATA_API_KEY", ""),
+        type="password",
+        help="Your Bright Data API key for web scraping",
     )
 
     if st.button("Save API Keys"):
@@ -95,12 +99,16 @@ with st.sidebar:
     st.markdown("### 💡 About")
     st.markdown(
         """
-    This AI assistant helps you monitor brand reputation using:
-    - **News Analysis**
-    - **Sentiment Tracking**  
-    - **Brand Insights**
+    This application is powered by a set of advanced AI agents for brand reputation monitoring and analysis:
+    - **News Analysis**: Analyzes news articles about the brand
+    - **Sentiment Tracking**: Tracks sentiment about the brand
+    - **Brand Insights**: Provides insights about the brand reputation
+
+    Each stage leverages state-of-the-art language models and tools to provide actionable, data-driven insights.
     
-    The conversation is tracked with Memori, so you can ask follow-up questions!
+    ---
+    
+    Made with ❤️ by [Studio1](https://www.Studio1hq.com) Team
     """
     )
 
