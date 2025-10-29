@@ -30,24 +30,33 @@ st.set_page_config(
     layout="wide",
 )
 
-# Inline title with Gibson SVG logo
+# Inline title with Memori and Nebius PNG logos
 try:
-    with open("./assets/gibson.svg", encoding="utf-8") as gibson_file:
-        gibson_svg = gibson_file.read()
-    gibson_svg_base64 = base64.b64encode(gibson_svg.encode("utf-8")).decode()
-    gibson_svg_inline = (
-        f'<img src="data:image/svg+xml;base64,{gibson_svg_base64}" '
-        f"style='height:40px; width:auto; display:inline-block; vertical-align:middle; margin:0 6px;' alt='GibsonAI Logo'>"
+    with open("./assets/Memori_Logo.png", "rb") as f:
+        memori_png_base64 = base64.b64encode(f.read()).decode()
+    memori_img_inline = (
+        f"<img src='data:image/png;base64,{memori_png_base64}' "
+        f"style='height:100px; width:auto; display:inline-block; vertical-align:middle; margin:0 8px;' alt='Memori Logo'>"
     )
 except Exception:
-    gibson_svg_inline = ""
+    memori_img_inline = ""
+
+try:
+    with open("./assets/Nebius_Logo.png", "rb") as f:
+        nebius_png_base64 = base64.b64encode(f.read()).decode()
+    nebius_img_inline = (
+        f"<img src='data:image/png;base64,{nebius_png_base64}' "
+        f"style='height:80px; width:auto; display:inline-block; vertical-align:middle; margin:0 8px;' alt='Nebius Logo'>"
+    )
+except Exception:
+    nebius_img_inline = ""
 
 title_html = f"""
-<div style='display:flex; align-items:center; width:100%; padding:8px 0;'>
-  <h1 style='margin:0; padding:0; font-size:2.5rem; font-weight:700; display:flex; align-items:center; gap:8px;'>
+<div style='display:flex; align-items:center; width:120%; padding:8px 0;'>
+  <h1 style='margin:0; padding:0; font-size:2.2rem; font-weight:800; display:flex; align-items:center; gap:10px;'>
     <span>Brand Reputation Monitor with</span>
-    {gibson_svg_inline}
-    <span style='color:#c3f624;'>Memori</span>
+    {memori_img_inline} and
+    {nebius_img_inline}
   </h1>
 </div>
 """
