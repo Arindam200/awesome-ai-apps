@@ -157,6 +157,239 @@ if not nebius_key or not brightdata_key:
     st.warning("⚠️ Please enter your API keys in the sidebar to start monitoring!")
     st.stop()
 
+# New fixed-box UI with Memory section (replaces free-form chat)
+# Initialize additional session state for Memory tab
+if "memory_messages" not in st.session_state:
+    st.session_state.memory_messages = []
+
+tab1, tab2 = st.tabs(["📈 Quick Analysis", "🧠 Memory"])
+
+with tab1:
+    st.markdown("#### Configure Analysis")
+
+    col1, col2 = st.columns([2, 1])
+    with col1:
+        st.session_state.user_company = st.text_input(
+            "Company Name",
+            value=st.session_state.user_company or "",
+            placeholder="e.g., Acme Corp",
+            help="Brand/company to monitor",
+        )
+    with col2:
+        num_news = st.slider(
+            "Number of Articles",
+            min_value=3,
+            max_value=20,
+            value=5,
+            help="How many top articles to analyze",
+        )
+
+    # Suggested keyword options based on company name
+    suggestions = []
+    if st.session_state.user_company:
+        brand = st.session_state.user_company.strip()
+        base_terms = [
+            "news",
+            "reviews",
+            "controversy",
+            "announcement",
+            "stock",
+            "earnings",
+            "product launch",
+            "customer feedback",
+            "complaints",
+            "success",
+        ]
+        suggestions = [f"{brand} {term}" for term in base_terms]
+
+    # Preselect any existing keywords that match suggestions
+    preselected = []
+    if st.session_state.search_queries and suggestions:
+        existing = set(st.session_state.search_queries)
+        preselected = [opt for opt in suggestions if opt in existing]
+
+    selected_suggestions = st.multiselect(
+        "Suggested Keywords",
+        options=suggestions,
+        default=preselected,
+        help="Pick from auto-generated keywords based on the company name",
+    )
+
+    run_analysis = st.button("🔍 Run Analysis", type="primary")
+
+    if run_analysis:
+        keywords = [*selected_suggestions]
+        st.session_state.search_queries = keywords
+
+        if not st.session_state.user_company:
+            st.error("Please enter a company name")
+        elif not keywords:
+            st.error("Please provide at least one keyword")
+        else:
+            config = Config(search_queries=keywords, num_news=num_news)
+            with st.spinner(
+                "🔍 Analyzing brand reputation... This may take a few minutes..."
+            ):
+                try:
+                    st.write("📰 Retrieving Google News page URLs…")
+                    google_news_page_urls = get_google_news_page_urls(
+                        config.search_queries
+                    )
+                    st.write(
+                        f"✅ Found {len(google_news_page_urls)} Google News page(s)"
+                    )
+
+                    st.write("🔍 Scraping news pages…")
+                    scraped_news_pages = scrape_news_pages(google_news_page_urls)
+                    st.write("✅ News pages scraped!")
+
+                    st.write("🎯 Extracting most relevant news…")
+                    news_urls = get_best_news_urls(scraped_news_pages, config.num_news)
+                    st.write(f"✅ Found {len(news_urls)} relevant articles")
+
+                    st.write("📄 Scraping news articles…")
+                    news_list = scrape_news_articles(news_urls)
+                    st.write("✅ Articles scraped!")
+
+                    st.write("🧠 Analyzing sentiment and insights…")
+                    news_analysis_list = process_news_list(news_list)
+                    st.write("✅ Analysis complete!")
+
+                    st.session_state.analysis_results = news_analysis_list
+
+                    st.markdown(
+                        f"## 📊 Brand Reputation Report for {st.session_state.user_company}"
+                    )
+                    st.markdown(f"**Search Keywords:** {', '.join(keywords)}")
+                    st.markdown("---")
+
+                    for i, analysis in enumerate(news_analysis_list, 1):
+                        sentiment_emoji = {
+                            "positive": "😊",
+                            "negative": "😞",
+                            "neutral": "😐",
+                        }.get(analysis.sentiment_analysis.lower(), "😐")
+
+                        st.markdown(f"### {i}. {analysis.title}")
+                        st.markdown(f"**URL:** {analysis.url}")
+                        st.markdown(f"**Summary:** {analysis.summary}")
+                        st.markdown(
+                            f"**Sentiment:** {sentiment_emoji} {analysis.sentiment_analysis.title()}"
+                        )
+                        st.markdown("**Key Insights:**")
+                        for insight in analysis.insights:
+                            st.markdown(f"- {insight}")
+                        st.markdown("\n---\n")
+
+                    # Ingest a concise summary of this run into Memori for Memory Q&A
+                    if st.session_state.memori_initialized:
+                        try:
+                            from memorisdk import MemoriContext
+
+                            summary_text = (
+                                f"Report for {st.session_state.user_company} with "
+                                f"{len(keywords)} keywords and {len(news_analysis_list)} articles."
+                            )
+                            st.session_state.memori.ingest(
+                                MemoriContext(
+                                    user_input=f"Run analysis for {st.session_state.user_company}: {', '.join(keywords)}",
+                                    assistant_output=summary_text,
+                                )
+                            )
+                        except Exception:
+                            pass
+                except Exception as e:
+                    st.error(f"❌ Error during analysis: {str(e)}")
+
+with tab2:
+    st.markdown("#### Ask about your analyses")
+
+    for message in st.session_state.memory_messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+
+    memory_prompt = st.chat_input("Ask about past analyses (Memori-powered)…")
+
+    if memory_prompt:
+        st.session_state.memory_messages.append(
+            {"role": "user", "content": memory_prompt}
+        )
+        with st.chat_message("user"):
+            st.markdown(memory_prompt)
+
+        with st.chat_message("assistant"):
+            with st.spinner("🤔 Thinking…"):
+                try:
+                    memori_context = ""
+                    if st.session_state.memori_initialized:
+                        try:
+                            memori_results = st.session_state.memori.search(
+                                memory_prompt, limit=5
+                            )
+                            if memori_results:
+                                memori_context = (
+                                    "\n\nMemori context from prior analyses:\n"
+                                    + "\n".join(f"- {r}" for r in memori_results)
+                                )
+                        except Exception:
+                            pass
+
+                    analysis_context = ""
+                    if st.session_state.analysis_results:
+                        analysis_context = f"\n\nLatest Analysis Results for {st.session_state.user_company}:\n"
+                        for i, analysis in enumerate(
+                            st.session_state.analysis_results, 1
+                        ):
+                            analysis_context += f"{i}. {analysis.title} - {analysis.sentiment_analysis} - {analysis.summary}\n"
+
+                    followup_agent = Agent(
+                        name="Brand Memory Assistant",
+                        description=f"""You answer questions strictly about prior analyses.
+
+Company: {st.session_state.user_company or 'Not specified'}
+Keywords: {', '.join(st.session_state.search_queries) if st.session_state.search_queries else 'Not specified'}
+{analysis_context}
+{memori_context}
+
+If asked outside scope, politely say you only answer about stored analyses.""",
+                        model=st.session_state.nebius_model,
+                        markdown=True,
+                    )
+
+                    response = followup_agent.run(memory_prompt)
+                    response_text = (
+                        str(response.content)
+                        if hasattr(response, "content")
+                        else str(response)
+                    )
+
+                    if st.session_state.memori_initialized:
+                        try:
+                            from memorisdk import MemoriContext
+
+                            st.session_state.memori.ingest(
+                                MemoriContext(
+                                    user_input=memory_prompt,
+                                    assistant_output=response_text,
+                                )
+                            )
+                        except Exception:
+                            pass
+
+                    st.session_state.memory_messages.append(
+                        {"role": "assistant", "content": response_text}
+                    )
+                    st.markdown(response_text)
+                except Exception as e:
+                    err = f"❌ Error: {str(e)}"
+                    st.session_state.memory_messages.append(
+                        {"role": "assistant", "content": err}
+                    )
+                    st.error(err)
+
+# Stop here to prevent legacy chat system from running
+st.stop()
+
 # Display chat messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
