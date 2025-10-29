@@ -189,6 +189,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Qwen3 RAG Chat](rag_apps/qwen3_rag) - PDF chatbot with Streamlit.
 - [Chat with Code](rag_apps/chat_with_code) - Conversational code explorer.
 - [Gemma3 OCR](rag_apps/gemma_ocr/) - OCR-based document and image processor using Gemma3
+- [Nvidia Nemotron OCR](rag_apps/nvidia_ocr/) - OCR-based Document and image parse using Nvidia Nemotron-Nano-V2-12b
 - [Contextual AI RAG](rag_apps/contextual_ai_rag) - Enterprise-level RAG with managed datastores and quality evaluation.
 <!-- - [Corrective RAG](rag_apps/corrective_rag) - Self-correcting RAG system with feedback loops.
 - [Self RAG](rag_apps/self_rag) - Self-reflective RAG with quality assessment.
