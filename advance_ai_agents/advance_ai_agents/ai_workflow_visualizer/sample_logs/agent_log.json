@@ -1,0 +1,8 @@
+{
+  "events": [
+    {"agent": "input_handler", "next_agent": "intent_classifier"},
+    {"agent": "intent_classifier", "next_agent": "memory_manager"},
+    {"agent": "memory_manager", "next_agent": "response_generator"},
+    {"agent": "response_generator", "next_agent": "output_handler"}
+  ]
+}

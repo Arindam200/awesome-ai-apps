@@ -1,0 +1,8 @@
+streamlit==1.38.0
+openai==1.52.0
+python-dotenv==1.0.1
+networkx==3.3
+plotly==5.24.1
+pandas==2.2.3
+numpy==1.26.4
+requests==2.32.3
