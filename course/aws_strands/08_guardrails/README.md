@@ -98,13 +98,7 @@ The system provides comprehensive monitoring:
 - **Safety Statistics**: Track violation rates and patterns
 - **Audit Logging**: Record all validation attempts
 - **Performance Metrics**: Monitor guardrails overhead
-- **Custom Dashboards**: Business-specific safety metrics
 
-![Safety Dashboard](assets/safety-dashboard.png)
-_Real-time safety monitoring showing blocked requests and violation patterns_
-
-![Validation Flow](assets/validation-flow.png)
-_Complete validation flow from input to output with safety checks_
 
 ### 🏷️ **Safety Rules Configuration**
 
