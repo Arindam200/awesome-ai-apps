@@ -36,15 +36,15 @@ This repository is a comprehensive collection of practical examples, tutorials, 
       </sub>
     </td>
     <td width="200" valign="middle" align="center">
-      <a href="https://dub.sh/nebius" target="_blank" title="Visit Nebius AI">
-        <img src="./assets/nebius.png" height="36" style="max-width:180px;" alt="Nebius AI - AI Platform">
+      <a href="https://dub.sh/nebius" target="_blank" title="Visit Nebius Token Factory">
+        <img src="./assets/nebius.png" height="36" style="max-width:180px;" alt="Nebius Token Factory">
       </a>
       <br>
       <sub>
         <span style="white-space:nowrap;">AI Inference Provider</span>
         <br>
         <a href="https://dub.sh/nebius" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Nebius AI website">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Nebius Token Factory">
         </a>
       </sub>
     </td>
