@@ -4,25 +4,25 @@ A powerful AI-powered competitive intelligence tool that analyzes competitor pro
 
 ## Features ✨
 
-🚀 **Product Launch Analysis**: Deep evaluation of competitor positioning, launch tactics, strengths, and weaknesses  
-💬 **Market Sentiment Analysis**: Real-time social media sentiment tracking and customer feedback analysis  
-📈 **Launch Metrics Analysis**: Track competitor KPIs, adoption rates, press coverage, and performance indicators  
-🤖 **Multi-Agent AI System**: Specialized AI agents coordinating for comprehensive competitive intelligence  
-💾 **Memory Integration**: Stores conversation context using Memori with MongoDB for long-term learning  
-🔍 **Real-Time Web Scraping**: Uses Bright Data to extract current competitor data from the web  
-🎯 **Competitor Relevance Validation**: Automatically verifies competitor relevance before analysis  
-📱 **Conversational Interface**: Natural chat experience with follow-up question support  
-🔄 **Context-Aware Responses**: Searches memori before answering for accurate, consistent insights  
-⚙️ **Easy Configuration**: Simple setup with API keys via intuitive sidebar  
-🔒 **Evidence-Based Analysis**: Only includes real URLs and sources from actual web research  
+**Product Launch Analysis**: Deep evaluation of competitor positioning, launch tactics, strengths, and weaknesses  
+**Market Sentiment Analysis**: Real-time social media sentiment tracking and customer feedback analysis  
+**Launch Metrics Analysis**: Track competitor KPIs, adoption rates, press coverage, and performance indicators  
+**Multi-Agent AI System**: Specialized AI agents coordinating for comprehensive competitive intelligence  
+**Memory Integration**: Stores conversation context using Memori with MongoDB for long-term learning  
+**Real-Time Web Scraping**: Uses Bright Data to extract current competitor data from the web  
+**Competitor Relevance Validation**: Automatically verifies competitor relevance before analysis  
+**Conversational Interface**: Natural chat experience with follow-up question support  
+**Context-Aware Responses**: Searches memori before answering for accurate, consistent insights  
+**Easy Configuration**: Simple setup with API keys via intuitive sidebar  
+**Evidence-Based Analysis**: Only includes real URLs and sources from actual web research  
 
 ## Prerequisites 🛠️
 
 - Python 3.10+
 - Nebius AI API key ([Get it here](https://studio.nebius.ai/))
+- [MemoriSDK](https://github.com/GibsonAI/memori) 
 - Bright Data API credentials
 - MongoDB (local or cloud instance)
-- MongoDB Compass (optional, for database visualization)
 
 ## Installation 📥
 
@@ -134,51 +134,6 @@ The application uses three specialized AI agents that coordinate to provide comp
 6. **Follow-Up**: Ask questions like "What were their main marketing channels?"
 7. **Next Analysis**: Request analysis of another competitor or different analysis type
 
-## Competitor Analysis 📊
-
-The AI agents analyze competitors across multiple dimensions:
-
-### Product Launch Analysis
-🎯 **Market Positioning**: How competitor positions in the market  
-🚀 **Launch Tactics**: Strategies and channels used for launch  
-💪 **Strengths**: What worked well and drove success  
-⚠️ **Weaknesses**: Execution gaps and missed opportunities  
-📚 **Actionable Insights**: What you can learn and apply
-
-### Market Sentiment Analysis
-😊 **Positive Sentiment**: What customers love  
-😞 **Negative Sentiment**: Pain points and complaints  
-🌐 **Platform Analysis**: Twitter/X, Reddit, G2, Trustpilot, Product Hunt  
-📈 **Trend Tracking**: Sentiment changes over time  
-💡 **Perception Insights**: Brand reputation and customer loyalty
-
-### Launch Metrics Analysis
-👥 **User Adoption**: Growth rates and user acquisition  
-💰 **Revenue Metrics**: Pricing, funding, and financial performance  
-📰 **Press Coverage**: Media mentions and PR reach  
-🔄 **Engagement**: Social media traction and virality  
-📊 **Market Share**: Competitive positioning and penetration
-
-## API Configuration 🔑
-
-### Nebius AI
-- **Model**: Qwen/Qwen3-Coder-480B-A35B-Instruct (via Nebius AI Studio)
-- **Purpose**: Multi-agent intelligence and conversation handling
-- **Temperature**: Configured per agent for optimal results
-- **Get API Key**: [Nebius AI Studio](https://studio.nebius.ai/)
-
-### Bright Data
-- **SERP Zone**: `sdk_serp` (for web searches)
-- **Web Unlocker Zone**: `unlocker` (for scraping)
-- **Purpose**: Real-time web data extraction
-- **Scope**: Competitor websites, news, reviews, social media
-
-### Memori with MongoDB
-- **Database**: MongoDB (local or Atlas)
-- **Connection**: `mongodb://localhost:27017/memori`
-- **Purpose**: Persistent conversation memory and context storage
-- **Features**: Automatic context search, conversation tracking
-
 ## Architecture 🏗️
 
 ### Modular Design
@@ -245,30 +200,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-## Troubleshooting 🔧
-
-### MongoDB Connection Issues
-- Ensure MongoDB is running: `mongod` or check MongoDB Compass
-- Verify connection string: `mongodb://localhost:27017/`
-- Database `memori` will be created automatically
-
-### API Key Errors
-- Check API keys are correctly entered in sidebar
-- Verify environment variables in `.env` file
-- Ensure both Nebius and Bright Data keys are valid
-- Get Nebius API key from [Nebius AI Studio](https://studio.nebius.ai/)
-
-### Memori Initialization
-- MongoDB must be running before starting the app
-- Check MongoDB connection in Compass
-- Database and collections created automatically on first use
-
-### Agent Performance
-- First analysis may take 2-5 minutes (web research)
-- Ensure Bright Data has sufficient credits
-- Check internet connection for web scraping
-
 
 ## License 📄
 
