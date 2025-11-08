@@ -1,10 +1,10 @@
 """Document ingestion pipeline for RAG system."""
 
-import logging
-import time
 from typing import Callable, List, Optional
+import logging
 
 from llama_index.core import (Document, Settings, StorageContext,
+import time
                               VectorStoreIndex)
 from llama_index.core.text_splitter import SentenceSplitter
 from llama_index.embeddings.nebius import NebiusEmbedding

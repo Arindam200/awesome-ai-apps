@@ -1,7 +1,7 @@
 import os
+
 from dotenv import load_dotenv
 from twilio.rest import Client as TwilioClient
-
 load_dotenv("api.env")
 
 MAX_TWILIO_LENGTH = 1600
@@ -67,4 +67,3 @@ def send_notification(subject, body, channels=["sms", "whatsapp"], recipient=Non
         "recipient": recipient,
         "status": send_results
     }
-

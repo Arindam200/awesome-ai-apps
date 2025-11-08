@@ -1,12 +1,10 @@
 """GitHub URL and repository parsing utilities."""
 
-import re
 from typing import Optional, Tuple
 from urllib.parse import urlparse
+import re
 
 from ..core.exceptions import GitHubError
-
-
 def parse_github_url(url: str) -> Tuple[str, str]:
     """
     Parse GitHub URL to extract owner and repository name.

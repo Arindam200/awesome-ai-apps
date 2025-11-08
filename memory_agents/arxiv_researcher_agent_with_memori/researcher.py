@@ -1,17 +1,14 @@
-import os
-import asyncio
-from datetime import datetime
 from pathlib import Path
-from textwrap import dedent
+import os
 
 from agents import Agent, Runner, function_tool,  AsyncOpenAI, OpenAIChatCompletionsModel
-from pydantic import BaseModel
+from datetime import datetime
 from dotenv import load_dotenv
-from tavily import TavilyClient
-
 from memori import Memori, create_memory_tool
-
-# Load environment variables
+from pydantic import BaseModel
+from tavily import TavilyClient
+from textwrap import dedent
+import asyncio
 load_dotenv()
 
 api_key = os.getenv("NEBIUS_API_KEY")
@@ -67,7 +64,7 @@ def search_memory(query: str) -> MemorySearchResult:
             results="Memory system not initialized",
             found_memories=False
         )
-    
+
     try:
         if not query.strip():
             return MemorySearchResult(
@@ -113,7 +110,7 @@ def search_arxiv(query: str) -> ArxivSearchResult:
             results="Research system not initialized",
             found_papers=False
         )
-    
+
     try:
         if not query.strip():
             return ArxivSearchResult(
@@ -124,7 +121,7 @@ def search_arxiv(query: str) -> ArxivSearchResult:
 
         # Use Tavily to search for arXiv papers on the topic
         search_query = f"arXiv research papers {query} latest developments academic research"
-        
+
         # Perform the search using Tavily
         search_result = _researcher_instance.tavily_client.search(
             query=search_query,
@@ -132,21 +129,21 @@ def search_arxiv(query: str) -> ArxivSearchResult:
             include_domains=["arxiv.org", "scholar.google.com", "researchgate.net"],
             max_results=10
         )
-        
+
         if not search_result.get("results"):
             return ArxivSearchResult(
                 query=query,
                 results=f"No arXiv papers found for: {query}",
                 found_papers=False
             )
-        
+
         # Process and format the results
         papers = []
         for result in search_result["results"][:5]:  # Limit to top 5 results
             title = result.get("title", "No title available")
             url = result.get("url", "")
             content = result.get("content", "")
-            
+
             # Extract key information
             paper_info = {
                 "title": title,
@@ -154,19 +151,19 @@ def search_arxiv(query: str) -> ArxivSearchResult:
                 "summary": content[:200] + "..." if len(content) > 200 else content
             }
             papers.append(paper_info)
-        
+
         # Format the results as a structured output
         result_text = f"## arXiv Research Papers for: {query}\n\n"
         result_text += f"Found {len(papers)} relevant research papers:\n\n"
-        
+
         for i, paper in enumerate(papers, 1):
             result_text += f"### {i}. {paper['title']}\n"
             result_text += f"**URL:** {paper['url']}\n"
             result_text += f"**Summary:** {paper['summary']}\n\n"
-        
+
         result_text += "---\n"
         result_text += f"*Search performed using Tavily for academic research papers on {query}*"
-        
+
         return ArxivSearchResult(
             query=query,
             results=result_text,
@@ -182,11 +179,11 @@ def search_arxiv(query: str) -> ArxivSearchResult:
 
 class Researcher:
     """A researcher class that manages Memori initialization and agent creation"""
-    
+
     def __init__(self):
         global _researcher_instance
         _researcher_instance = self
-        
+
         self.memori = Memori(
             database_connect="sqlite:///research_memori.db",
             conscious_ingest=True,  # Working memory
@@ -195,13 +192,13 @@ class Researcher:
         )
         self.memori.enable()
         self.memory_tool = create_memory_tool(self.memori)
-        
+
         # Initialize Tavily client for arXiv search
         self.tavily_client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
-        
+
         self.research_agent = None
         self.memory_agent = None
-    
+
     async def run_agent_with_memory(self, agent, user_input: str):
         """Run agent and record the conversation in memory"""
         try:
@@ -224,29 +221,29 @@ class Researcher:
         except Exception as e:
             print(f"Agent execution error: {str(e)}")
             raise
-    
+
     def define_agents(self):
         """Define and create research and memory agents"""
         # Create research agent
         self.research_agent = self._create_research_agent()
-        
+
         # Create memory agent
         self.memory_agent = self._create_memory_agent()
-        
+
         return self.research_agent, self.memory_agent
-    
+
     def get_research_agent(self):
         """Get the research agent, creating it if necessary"""
         if self.research_agent is None:
             self.define_agents()
         return self.research_agent
-    
+
     def get_memory_agent(self):
         """Get the memory agent, creating it if necessary"""
         if self.memory_agent is None:
             self.define_agents()
         return self.memory_agent
-    
+
     def _create_research_agent(self):
         """Create a research agent with Memori memory capabilities and arXiv search"""
         agent = Agent(
@@ -264,7 +261,7 @@ class Researcher:
 
                 Your writing style is:
                 - Clear and authoritative
-                - Engaging but professional  
+                - Engaging but professional
                 - Fact-focused with proper citations
                 - Accessible to educated non-specialists
                 - Builds upon previous research when relevant
@@ -281,7 +278,7 @@ class Researcher:
 
                 Always mention if you're building upon previous research sessions!
                 Focus on academic research papers and scholarly sources.
-                
+
                 When presenting research findings, structure them clearly with:
                 - Key research questions addressed
                 - Methodology and approach
@@ -326,5 +323,3 @@ class Researcher:
             tools=[search_memory],
         )
         return agent
-
-

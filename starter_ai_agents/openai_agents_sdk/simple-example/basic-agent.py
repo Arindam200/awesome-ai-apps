@@ -1,8 +1,8 @@
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel
-import asyncio
 import os
-from dotenv import load_dotenv
 
+from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel
+from dotenv import load_dotenv
+import asyncio
 load_dotenv()
 
 

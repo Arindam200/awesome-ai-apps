@@ -3,8 +3,6 @@
 from typing import Any, Dict, List
 
 import gradio as gr
-
-
 def create_progress_display(
     label: str = "Progress", initial_value: str = "Ready to start...", lines: int = 20
 ) -> gr.Textbox:

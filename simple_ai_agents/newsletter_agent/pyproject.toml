@@ -1,0 +1,25 @@
+﻿[project]
+name = "newsletter-agent"
+version = "0.1.0"
+description = "AI agent application built with modern Python tools"
+authors = [
+    {name = "Arindam Majumder", email = "arindammajumder2020@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+dependencies = [
+    "agno>=1.5.1",
+    "openai>=1.78.1",
+    "python-dotenv>=1.1.0",
+    "requests>=2.31.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Arindam200/awesome-ai-apps"
+Repository = "https://github.com/Arindam200/awesome-ai-apps"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

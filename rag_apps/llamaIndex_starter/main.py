@@ -1,12 +1,12 @@
 import os
-from llama_index.llms.nebius import NebiusLLM
-from llama_index.core.llms import ChatMessage
 
+from llama_index.core.llms import ChatMessage
+from llama_index.llms.nebius import NebiusLLM
 def main():
     # Initialize the LLM
     # You can set the API key in environment variable or pass it directly
     # os.environ["NEBIUS_API_KEY"] = "your_api_key"
-    
+
     llm = NebiusLLM(
         model="Qwen/Qwen3-235B-A22B",
         api_key=os.getenv("NEBIUS_API_KEY")

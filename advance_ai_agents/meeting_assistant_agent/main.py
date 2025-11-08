@@ -1,16 +1,15 @@
-import os
 from typing import AsyncIterator, Iterator
-from agno.agent import Agent
-from agno.tools.slack import SlackTools
-from agno.tools.linear import LinearTools
-from agno.tools.file import FileTools
-from agno.workflow import Step, Workflow
-from agno.run.workflow import WorkflowRunOutputEvent, WorkflowRunEvent
-from agno.workflow.parallel import Parallel
-from agno.models.nebius import Nebius
-from dotenv import load_dotenv
+import os
 
-# Load environment variables
+from agno.agent import Agent
+from agno.models.nebius import Nebius
+from agno.run.workflow import WorkflowRunOutputEvent, WorkflowRunEvent
+from agno.tools.file import FileTools
+from agno.tools.linear import LinearTools
+from agno.tools.slack import SlackTools
+from agno.workflow import Step, Workflow
+from agno.workflow.parallel import Parallel
+from dotenv import load_dotenv
 load_dotenv()
 
 model = Nebius(id="moonshotai/Kimi-K2-Instruct", api_key=os.getenv("NEBIUS_API_KEY"))
@@ -45,7 +44,7 @@ slack_agent = Agent(
         "Highlight key decisions, assigned tasks (with assignees and deadlines), pricing strategy ($10,000 charge, $2,000 build cost), "
         "and next steps. Use bullet points for clarity and mention any upcoming meetings or deadlines.\n\n"
         "Example message:\n"
-        
+
         "Hey team! Here's a quick recap of our key decisions from today's session:"
         "🎯 Key Decisions:"
         "• Pricing set at $10,000.\n"

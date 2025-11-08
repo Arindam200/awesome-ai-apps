@@ -1,10 +1,11 @@
-import os
-from crewai.tools import BaseTool
 from typing import Dict, Callable, Optional
-from pydantic import Field
-from notifier.email_notifier import send_notification
+import os
+
 from agents.decision_logic import is_significant_change
+from crewai.tools import BaseTool
 from dotenv import load_dotenv
+from notifier.email_notifier import send_notification
+from pydantic import Field
 load_dotenv("api.env")
 
 class DecisionTool(BaseTool):

@@ -1,7 +1,27 @@
+"""
+Ask
+
+Module description goes here.
+"""
+
+from typing import List, Dict, Optional, Union, Any
+import logging
 import os
-from dotenv import load_dotenv
+
 from agno.agent import Agent
 from agno.models.nebius import Nebius
+from dotenv import load_dotenv
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 
 load_dotenv()
 
@@ -24,11 +44,11 @@ chat_agent = Agent(
 def nebius_chat(query: str):
     if not query:
         return {"error": "Query parameter is required"}
-    
+
     try:
         response = chat_agent.run(query)
         answer = response.content
         return {"question": query, "answer": answer}
-    
+
     except Exception as e:
         return {"error": str(e)}

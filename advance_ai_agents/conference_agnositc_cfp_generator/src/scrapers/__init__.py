@@ -16,7 +16,7 @@ __all__ = [
     'ConferenceDetector',
     'BaseConferenceAdapter',
     'SchedAdapter',
-    'SessionizeAdapter', 
+    'SessionizeAdapter',
     'GenericAdapter',
     'get_platform_adapter',
     'ParallelConferenceCrawler',

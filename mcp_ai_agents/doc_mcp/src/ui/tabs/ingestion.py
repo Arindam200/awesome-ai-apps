@@ -1,10 +1,10 @@
 """Documentation ingestion tab implementation."""
 
-import logging
-import time
 from typing import Any, Dict, List
+import logging
 
 import gradio as gr
+import time
 
 from ...core.types import ProcessingStatus
 from ...github.file_loader import (discover_repository_files,
