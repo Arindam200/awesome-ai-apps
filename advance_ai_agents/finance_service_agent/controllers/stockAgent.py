@@ -1,3 +1,10 @@
+"""
+Stockagent
+
+Module description goes here.
+"""
+
+from typing import List, Dict, Optional, Union, Any
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.responses import JSONResponse
 from agno.agent import Agent, RunResponse
@@ -7,6 +14,21 @@ import json
 import re
 import os
 import dotenv
+
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 
 dotenv.load_dotenv()
 NEBIUS_API_KEY = os.getenv("NEBIUS_API_KEY")

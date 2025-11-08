@@ -1,3 +1,10 @@
+"""
+Stockroutes
+
+Module description goes here.
+"""
+
+from typing import List, Dict, Optional, Union, Any
 from fastapi import APIRouter, Depends, Request
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
@@ -12,6 +19,21 @@ import re
 import json
 from fastapi.templating import Jinja2Templates
 import datetime
+
+import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
 
 templates = Jinja2Templates(directory="templates")
 router = APIRouter()
