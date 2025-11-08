@@ -134,6 +134,7 @@ Interested in sponsoring this project? Feel free to reach out!
 <!-- - [Autogen Starter](starter_ai_agents/autogen_starter) - Microsoft Autogen multi-agent conversation framework. -->
 - [DSPy Starter](starter_ai_agents/dspy_starter) - DSPy framework for building and optimizing AI systems.
 - [Google ADK Starter](starter_ai_agents/google_adk_starter) - Google Agent Development Kit starter.
+- [cagent Starter](starter_ai_agents/cagent_starter) -  An open source and easy to use, customizable multi-agent runtime by Docker that orchestrates AI agents
 
 ### 🪶 Simple Agents
 
