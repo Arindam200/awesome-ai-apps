@@ -1,13 +1,13 @@
 # Brand Reputation Monitor
 
-A powerful AI-powered brand reputation monitoring tool that analyzes news coverage, sentiment, and brand insights to help businesses track their reputation in real-time. This application uses Nebius AI for intelligent analysis, Memori for persistent context, Bright Data for real-time web scraping, and Agno agents for comprehensive brand intelligence.
+A powerful AI-powered brand reputation monitoring tool that analyzes news coverage, sentiment, and brand insights to help businesses track their reputation in real-time. This application uses Nebius Token Factory for intelligent analysis, Memori for persistent context, Bright Data for real-time web scraping, and Agno agents for comprehensive brand intelligence.
 
 ## Features ✨
 
 📰 **News Analysis**: Real-time monitoring of news articles and press coverage about your brand  
 💭 **Sentiment Analysis**: AI-powered sentiment tracking (positive, negative, neutral)  
 🔍 **Brand Insights**: Actionable insights extracted from news and public perception  
-🤖 **Conversational AI**: Natural chat interface with Nebius AI-powered follow-up questions  
+🤖 **Conversational AI**: Natural chat interface with Nebius Token Factory-powered follow-up questions  
 💾 **Memory Integration**: Stores conversation context using Memori with SQLite for persistent learning  
 🌐 **Real-Time Web Scraping**: Uses Bright Data to extract current news and brand data  
 🎯 **Keyword-Based Monitoring**: Custom search queries for targeted brand tracking  
@@ -19,7 +19,7 @@ A powerful AI-powered brand reputation monitoring tool that analyzes news covera
 ## Prerequisites 🛠️
 
 - Python 3.10+
-- Nebius AI API key ([Get it here](https://studio.nebius.ai/))
+- Nebius Token Factory API key ([Get it here](https://studio.nebius.ai/))
 - Bright Data API credentials
 - SQLite (included with Python)
 
@@ -38,14 +38,14 @@ pip install -r requirements.txt
 
 3. **Create a `.env` file in the project root and add your API credentials:**
 ```env
-# Nebius AI Configuration
+# Nebius Token Factory Configuration
 NEBIUS_API_KEY=your_nebius_api_key
 
 # Bright Data Configuration
 BRIGHTDATA_API_KEY=your_brightdata_api_key
 ```
 
-> **Note:** This application uses **Nebius AI** for intelligent brand analysis. Get your API key from [Nebius AI Studio](https://studio.nebius.ai/).
+> **Note:** This application uses **Nebius Token Factory** for intelligent brand analysis. Get your API key from [Nebius Token Factory](https://studio.nebius.ai/).
 
 ## Usage 🚀
 
@@ -57,7 +57,7 @@ streamlit run app.py
 2. **Open your web browser** and navigate to the provided local URL (typically `http://localhost:8501`)
 
 3. **Configure your API keys** in the sidebar:
-   - Nebius AI API Key
+   - Nebius Token Factory API Key
    - Bright Data API Key
    - Click "Save API Keys"
 
@@ -150,11 +150,11 @@ The AI system analyzes your brand across multiple dimensions:
 
 ## API Configuration 🔑
 
-### Nebius AI
-- **Model**: Qwen/Qwen3-Coder-480B-A35B-Instruct (via Nebius AI Studio)
+### Nebius Token Factory
+- **Model**: Qwen/Qwen3-Coder-480B-A35B-Instruct (via Nebius Token Factory)
 - **Purpose**: News analysis, sentiment analysis, and insight generation
 - **Framework**: Agno agents for structured AI interactions
-- **Get API Key**: [Nebius AI Studio](https://studio.nebius.ai/)
+- **Get API Key**: [Nebius Token Factory](https://studio.nebius.ai/)
 
 ### Bright Data
 - **SERP Zone**: `sdk_serp` (for Google News searches)
@@ -178,7 +178,7 @@ The AI system analyzes your brand across multiple dimensions:
 
 ### Key Components
 1. **Conversation Manager**: Handles user interaction and flow states
-2. **Brand Analysis Engine**: Nebius AI-powered news analysis with Agno agents
+2. **Brand Analysis Engine**: Nebius Token Factory-powered news analysis with Agno agents
 3. **Web Research Engine**: Bright Data integration for real-time scraping
 4. **Memory System**: Memori for context storage and retrieval
 5. **Context Search**: Automatic memory search before responding
@@ -256,8 +256,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ### API Key Errors
 - Check API keys are correctly entered in sidebar
 - Verify environment variables in `.env` file
-- Ensure both Nebius AI and Bright Data keys are valid
-- Get Nebius AI API key from [Nebius AI Studio](https://studio.nebius.ai/)
+- Ensure both Nebius Token Factory and Bright Data keys are valid
+- Get Nebius Token Factory API key from [Nebius Token Factory](https://studio.nebius.ai/)
 
 ### Bright Data Issues
 - Ensure Bright Data API key is valid and has credits

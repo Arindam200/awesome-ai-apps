@@ -1,13 +1,13 @@
 # AI Hedge Fund - Comprehensive Financial Analysis Workflow
 
-A sophisticated Motia-based workflow powered by Nebius Ai Studio that performs comprehensive financial analysis using multiple specialized AI agents, web search, and real-time market data.
+A sophisticated Motia-based workflow powered by Nebius Token Factory that performs comprehensive financial analysis using multiple specialized AI agents, web search, and real-time market data.
 
 ## 🏗️ Architecture Overview
 
 This workflow provides end-to-end financial analysis with:
 - **Parallel Processing**: Multiple specialized analysis agents run simultaneously
 - **Real-time Data**: Web search + financial market data integration
-- **AI-Powered Insights**: Nebius AI for comprehensive analysis
+- **AI-Powered Insights**: Nebius Token Factory for comprehensive analysis
 - **State Management**: Persistent data across workflow steps
 - **Interactive UI**: Custom React components for user interaction
 
@@ -169,7 +169,7 @@ docker run -p 3000:3000 -e NEBIUS_API_KEY=your_key ai-hedgefund
 
 ## 📊 Analysis Types
 
-1. **General Analysis**: Overall market and company overview using Nebius AI
+1. **General Analysis**: Overall market and company overview using Nebius Token Factory
 2. **Fundamental Analysis**: Valuation, financial ratios, growth prospects
 3. **Portfolio Analysis**: Investment recommendations, allocation strategies
 4. **Risk Analysis**: Risk assessment, volatility analysis, downside protection

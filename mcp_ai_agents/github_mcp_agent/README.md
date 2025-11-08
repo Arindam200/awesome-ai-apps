@@ -2,7 +2,7 @@
 
 ![Demo](./assets/demo.gif)
 
-A powerful GitHub repository exploration tool powered by the Model Context Protocol (MCP) and Nebius AI. This Streamlit application allows you to interact with GitHub repositories using natural language queries.
+A powerful GitHub repository exploration tool powered by the Model Context Protocol (MCP) and Nebius Token Factory. This Streamlit application allows you to interact with GitHub repositories using natural language queries.
 
 ## Features
 

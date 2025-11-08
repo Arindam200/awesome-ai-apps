@@ -1,6 +1,6 @@
 # Simple Memory Agents with Agno & Nebius
 
-A demonstration of AI agents with persistent memory capabilities using the Agno framework and Nebius AI models. This project showcases how to create intelligent agents that can remember user information across conversations and provide personalized responses.
+A demonstration of AI agents with persistent memory capabilities using the Agno framework and Nebius Token Factory models. This project showcases how to create intelligent agents that can remember user information across conversations and provide personalized responses.
 
 ## 🚀 Features
 
@@ -138,4 +138,4 @@ This project is part of the awesome-llm-apps collection.
 ## 🔗 Related Projects
 
 - [Agno Framework](https://github.com/agno-ai/agno)
-- [Nebius AI](https://dub.sh/nebius)
+- [Nebius Token Factory](https://dub.sh/nebius)

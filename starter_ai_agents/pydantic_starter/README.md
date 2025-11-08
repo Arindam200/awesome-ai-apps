@@ -2,7 +2,7 @@
 
 # PydanticAI Starter Agent
 
-A powerful AI agent built with PydanticAI that provides real-time weather information for any city. This agent uses the Nebius AI model to deliver accurate weather forecasts and insights.
+A powerful AI agent built with PydanticAI that provides real-time weather information for any city. This agent uses the Nebius Token Factory model to deliver accurate weather forecasts and insights.
 
 ## Features
 
@@ -15,7 +15,7 @@ A powerful AI agent built with PydanticAI that provides real-time weather inform
 ## Prerequisites
 
 - Python 3.8 or higher
-- Nebius API key (get it from [Nebius AI Studio](https://studio.nebius.ai/))
+- Nebius API key (get it from [Nebius Token Factory](https://studio.nebius.ai/))
 
 ## Installation
 
@@ -61,7 +61,7 @@ The agent will fetch and display the weather forecast for the specified city (de
 The agent is built using:
 
 - PydanticAI framework for AI agent development
-- Nebius AI's Meta-Llama-3.1-70B-Instruct model
+- Nebius Token Factory's Meta-Llama-3.1-70B-Instruct model
 - DuckDuckGo Search Tool for weather information
 
 ## Contributing
@@ -71,4 +71,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Acknowledgments
 
 - [PydanticAI Framework](https://ai.pydantic.dev/)
-- [Nebius AI](https://studio.nebius.ai/)
+- [Nebius Token Factory](https://studio.nebius.ai/)

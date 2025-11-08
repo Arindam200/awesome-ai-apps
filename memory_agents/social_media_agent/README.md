@@ -2,12 +2,12 @@
 
 # Social Media Agent
 
-A powerful AI-powered social media automation tool that analyzes your Twitter writing style, stores it in Memori, generates new tweets using Nebius AI and posts it using Composio. This application allows users to scrape their existing tweets, analyze their unique tweeting style, and generate new social media content that sounds exactly like them.
+A powerful AI-powered social media automation tool that analyzes your Twitter writing style, stores it in Memori, generates new tweets using Nebius Token Factory and posts it using Composio. This application allows users to scrape their existing tweets, analyze their unique tweeting style, and generate new social media content that sounds exactly like them.
 
 ## Features ✨
 
 🐦 **Twitter Style Analysis**: Scrape and analyze your tweeting patterns, tone, and personality
-🤖 **AI-Powered Tweet Generation**: Uses Nebius AI to create content in your exact style  
+🤖 **AI-Powered Tweet Generation**: Uses Nebius Token Factory to create content in your exact style  
 💾 **Memory Integration**: Stores your tweeting style profile using Memori for long-term learning
 🔍 **Smart Web Scraping**: Uses ScrapeGraph to extract your latest tweets automatically
 🎯 **Style Matching**: Generates tweets that perfectly match your social media personality
@@ -19,7 +19,7 @@ A powerful AI-powered social media automation tool that analyzes your Twitter wr
 ## Prerequisites 🛠️
 
 - Python 3.10+
-- Nebius AI API credentials
+- Nebius Token Factory API credentials
 - ScrapeGraph (SGAI) API access
 - Composio Twitter integration setup
 - Twitter authentication via Composio
@@ -42,7 +42,7 @@ uv sync
 3. Create a `.env` file in the project root and add your API credentials:
 
 ```bash
-# Nebius AI Configuration
+# Nebius Token Factory Configuration
 NEBIUS_API_KEY=your_nebius_api_key
 
 # ScrapeGraph Configuration
@@ -75,7 +75,7 @@ uv run streamlit run app.py
 
 - **Twitter Handle Input**: Enter any Twitter handle (including your own)
 - **Tweet Scraping**: Automatically extracts the most popular 10 tweets using ScrapeGraph
-- **Style Analysis**: Nebius AI analyzes tweeting patterns, tone, and personality
+- **Style Analysis**: Nebius Token Factory analyzes tweeting patterns, tone, and personality
 - **Memory Storage**: Automatically stores your style profile in Memori
 
 ### 2. Tweet Generation Agent (Main Area)
@@ -108,7 +108,7 @@ The AI analyzes your tweeting patterns across multiple dimensions:
 
 ## API Configuration 🔑
 
-### Nebius AI
+### Nebius Token Factory
 
 - **Model**: `zai-org/GLM-4.5-Air` (configurable)
 - **Purpose**: Tweet generation and style analysis
@@ -139,7 +139,7 @@ The AI analyzes your tweeting patterns across multiple dimensions:
 ### Key Components
 
 - **Tweet Scraper**: Extracts tweets using ScrapeGraph
-- **Style Analyzer**: Analyzes tweeting patterns using Nebius AI
+- **Style Analyzer**: Analyzes tweeting patterns using Nebius Token Factory
 - **Tweet Generator**: Creates new content matching your style
 - **Memory Manager**: Stores and retrieves tweeting style profiles
 - **Twitter Poster**: Direct posting via Composio integration

@@ -15,7 +15,7 @@ This application follows a multi-stage pipeline to create a powerful talk sugges
 
 - Python 3.8+
 - Couchbase Server with Vector Search capabilities
-- OpenAI-compatible API access (Nebius AI)
+- OpenAI-compatible API access (Nebius Token Factory)
 - Environment variables configured (see `.env` setup below)
 
 ## 🚀 Complete Pipeline Flow
@@ -94,7 +94,7 @@ python embeddinggeneration.py
 - Updates documents with embedding vectors
 - Enables vector search functionality
 
-**Model**: Uses Nebius AI's embedding endpoint for high-quality vectors
+**Model**: Uses Nebius Token Factory's embedding endpoint for high-quality vectors
 
 ### Step 5: RAG Application (`talk_suggestions_app.py`)
 

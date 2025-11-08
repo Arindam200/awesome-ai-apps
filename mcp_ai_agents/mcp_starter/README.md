@@ -2,14 +2,14 @@
 
 # MCP Starter Agent with Nebius
 
-A GitHub repository analysis tool powered by Nebius AI and the Model Context Protocol (MCP). This tool helps analyze GitHub repositories by providing detailed insights about issues and commits using AI-powered analysis.
+A GitHub repository analysis tool powered by Nebius Token Factory and the Model Context Protocol (MCP). This tool helps analyze GitHub repositories by providing detailed insights about issues and commits using AI-powered analysis.
 
 ## Features
 
 - Analyzes GitHub repositories using AI
 - Retrieves and analyzes recent issues
 - Examines latest commits
-- Powered by Meta-Llama-3.1-8B-Instruct model via Nebius AI
+- Powered by Meta-Llama-3.1-8B-Instruct model via Nebius Token Factory
 
 ## Prerequisites
 
@@ -52,10 +52,10 @@ The tool will:
 
 ## How It Works
 
-The tool uses the Model Context Protocol (MCP) to interact with GitHub's API and Nebius AI for analysis. It:
+The tool uses the Model Context Protocol (MCP) to interact with GitHub's API and Nebius Token Factory for analysis. It:
 
 1. Connects to GitHub using your personal access token
-2. Uses Nebius AI's Meta-Llama-3.1-8B-Instruct model for intelligent analysis
+2. Uses Nebius Token Factory's Meta-Llama-3.1-8B-Instruct model for intelligent analysis
 3. Retrieves and analyzes repository data
 4. Provides detailed insights about issues and commits
 

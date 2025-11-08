@@ -19,7 +19,7 @@ An advanced AI-powered agent that does [X, Y, and Z]. Built with [mention key te
 - **Python**: Core programming language
 - **[Framework e.g., Streamlit, FastAPI]**: For the web interface/API
 - **[AI Library e.g., ScrapeGraph AI, CrewAI]**: For AI-powered workflows
-- **[LLM Provider e.g., Nebius AI, OpenAI]**: For language model access
+- **[LLM Provider e.g., Nebius Token Factory, OpenAI]**: For language model access
 - **[Other tools e.g., Twilio, APScheduler]**: For notifications, scheduling, etc.
 - **[Database e.g., JSON, Vector DB]**: For data storage
 
@@ -37,7 +37,7 @@ A brief explanation of how the project works, from input to output.
 - Python 3.9+
 - [uv](https://github.com/astral-sh/uv) or pip for package management
 - API keys for the following services:
-  - [Service 1 (e.g., Nebius AI)](https://example.com)
+  - [Service 1 (e.g., Nebius Token Factory)](https://example.com)
   - [Service 2 (e.g., Bright Data)](https://example.com)
 
 ### Environment Variables

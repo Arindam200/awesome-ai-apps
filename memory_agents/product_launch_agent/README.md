@@ -19,7 +19,7 @@ A powerful AI-powered competitive intelligence tool that analyzes competitor pro
 ## Prerequisites 🛠️
 
 - Python 3.10+
-- Nebius AI API key ([Get it here](https://studio.nebius.ai/))
+- Nebius Token Factory API key ([Get it here](https://studio.nebius.ai/))
 - [MemoriSDK](https://github.com/GibsonAI/memori) 
 - Bright Data API credentials
 - MongoDB (local or cloud instance)
@@ -44,7 +44,7 @@ pip install -r requirements.txt
 
 4. **Create a `.env` file in the project root and add your API credentials:**
 ```env
-# Nebius AI Configuration
+# Nebius Token Factory Configuration
 NEBIUS_API_KEY=your_nebius_api_key
 
 # Bright Data Configuration
@@ -53,7 +53,7 @@ BRIGHT_DATA_SERP_ZONE=sdk_serp
 BRIGHT_DATA_UNLOCKER_ZONE=unlocker
 ```
 
-> **Note:** This application uses **Nebius AI** for powering the AI agents. Get your API key from [Nebius AI Studio](https://studio.nebius.ai/).
+> **Note:** This application uses **Nebius Token Factory** for powering the AI agents. Get your API key from [Nebius Token Factory](https://studio.nebius.ai/).
 
 ## Usage 🚀
 

@@ -2,7 +2,7 @@
 
 # LlamaIndex Starter Agent
 
-A powerful AI agent template built with LlamaIndex that demonstrates how to create intelligent agents using the LlamaIndex framework. This starter project implements a Task Management Assistant using the Nebius AI model to showcase LlamaIndex's capabilities in building practical AI applications.
+A powerful AI agent template built with LlamaIndex that demonstrates how to create intelligent agents using the LlamaIndex framework. This starter project implements a Task Management Assistant using the Nebius Token Factory model to showcase LlamaIndex's capabilities in building practical AI applications.
 
 ## Features
 
@@ -15,7 +15,7 @@ A powerful AI agent template built with LlamaIndex that demonstrates how to crea
 ## Prerequisites
 
 - Python 3.10 or higher
-- Nebius API key (get it from [Nebius AI Studio](https://studio.nebius.ai/))
+- Nebius API key (get it from [Nebius Token Factory](https://studio.nebius.ai/))
 
 ## Installation
 
@@ -67,7 +67,7 @@ Example queries:
 The agent is built using:
 
 - LlamaIndex framework for AI agent development
-- Nebius AI's Qwen/Qwen3-235B-A22B model
+- Nebius Token Factory's Qwen/Qwen3-235B-A22B model
 - ReAct agent pattern with custom function tools
 - Python's datetime for time calculations
 
@@ -86,4 +86,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Acknowledgments
 
 - [LlamaIndex](https://www.llamaindex.ai/)
-- [Nebius AI](https://studio.nebius.ai/)
+- [Nebius Token Factory](https://studio.nebius.ai/)

@@ -2,12 +2,12 @@
 
 # Talk to your Database 🤖
 
-A powerful AI-powered database query tool that translates natural language questions into SQL queries using Nebius AI. This application allows users to interact with their MySQL databases using plain English, making database operations accessible to non-technical users.
+A powerful AI-powered database query tool that translates natural language questions into SQL queries using Nebius Token Factory. This application allows users to interact with their MySQL databases using plain English, making database operations accessible to non-technical users.
 
 ## Features ✨
 
 - 🗄️ **Natural Language Processing**: Ask database questions in plain English
-- 🤖 **AI-Powered SQL Generation**: Uses Nebius AI to convert questions to SQL
+- 🤖 **AI-Powered SQL Generation**: Uses Nebius Token Factory to convert questions to SQL
 - 📊 **Interactive Results**: View query results in clean, sortable tables
 - 📝 **Business Insights**: Get AI-generated explanations of query results
 - 📚 **Query History**: Track all your previous queries and results
@@ -19,7 +19,7 @@ A powerful AI-powered database query tool that translates natural language quest
 ## Prerequisites 🛠️
 
 - Python 3.10+
-- [Nebius AI API key](https://dub.sh/AIStudio)
+- [Nebius Token Factory API key](https://dub.sh/AIStudio)
 - [GibsonAI DB connection](https://www.gibsonai.com)
 - MySQL database access
 
@@ -56,7 +56,7 @@ A powerful AI-powered database query tool that translates natural language quest
 
 3. Configure your settings in the sidebar:
 
-   - **Nebius API Key**: Enter your Nebius AI API key
+   - **Nebius API Key**: Enter your Nebius Token Factory API key
    - **Database Connection String**: Enter your MySQL connection string from [GibsonAI](https://www.gibsonai.com)
 
 4. Ask questions in plain English:
@@ -102,7 +102,7 @@ mysql://username:password@host/database
 
 ## API Keys 🔑
 
-- **Nebius AI API Key**: Get your API key from [https://studio.nebius.com/](https://dub.sh/AIStudio)
+- **Nebius Token Factory API Key**: Get your API key from [https://studio.nebius.com/](https://dub.sh/AIStudio)
 
 ## Architecture 🏗️
 
@@ -115,7 +115,7 @@ mysql://username:password@host/database
 ### Key Components
 
 - **Connection String Parser**: Safely parses MySQL connection strings
-- **SQL Translator**: Converts natural language to SQL using Nebius AI
+- **SQL Translator**: Converts natural language to SQL using Nebius Token Factory
 - **Result Explainer**: Provides business insights from query results
 - **Query History**: Tracks and displays previous queries
 

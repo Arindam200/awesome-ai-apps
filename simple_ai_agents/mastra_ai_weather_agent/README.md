@@ -6,7 +6,7 @@ A simple example showing how to use a tool.
 
 - Node.js v20.0+
 - pnpm (recommended) or npm
-- Nebius AI Key
+- Nebius Token Factory Key
 
 ## Getting Started
 
