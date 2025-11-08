@@ -166,6 +166,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Custom MCP Server](mcp_ai_agents/custom_mcp_server) - Custom MCP server implementation.
 - [Couchbase MCP Server](mcp_ai_agents/couchbase_mcp_server) - Couchbase database integration with MCP.
 - [ScaleKit Exa MCP Security](mcp_ai_agents/scalekit-exa-mcp-security) - Security-focused MCP integration with Exa.
+- [Docker E2B MCP Agent](mcp_ai_agents/e2b_docker_mcp_agent) - Secure AI Agent for running Agents in Sandbox with Docker MCP Gateway access
 
 ### 🧠 Memory Agents
 
