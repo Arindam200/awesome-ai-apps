@@ -52,7 +52,7 @@ adk web
 
 ## Required API Keys
 
-- [Nebius AI](https://dub.sh/AIStudio) - For LLM inference
+- [Nebius Token Factory](https://dub.sh/AIStudio) - For LLM inference
 - [Resend](https://resend.com/) - For email sending
 
 ## Customization

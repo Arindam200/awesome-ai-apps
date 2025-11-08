@@ -2,14 +2,14 @@
 
 ![Demo](./assets/demo.png)
 
-A multi-stage AI-powered research workflow agent that automates comprehensive web research, analysis, and report generation using Agno, Scrapegraph, and Nebius AI.
+A multi-stage AI-powered research workflow agent that automates comprehensive web research, analysis, and report generation using Agno, Scrapegraph, and Nebius Token Factory.
 
 
 ## Features
 
 - **Multi-Stage Research Workflow**: Automated pipeline for searching, analyzing, and reporting
 - **Web Scraping**: Advanced data extraction with Scrapegraph
-- **AI-Powered Analysis**: Uses Nebius AI for intelligent synthesis
+- **AI-Powered Analysis**: Uses Nebius Token Factory for intelligent synthesis
 - **Streamlit Web UI**: Modern, interactive interface
 - **MCP Server**: Model Context Protocol server for integration
 - **Command-Line Support**: Run research tasks directly from the terminal
@@ -18,7 +18,7 @@ A multi-stage AI-powered research workflow agent that automates comprehensive we
 
 ![Workflow](./assets/workflow.gif)
 
-1. **Searcher**: Finds and extracts high-quality, up-to-date information from the web using Scrapegraph and Nebius AI.
+1. **Searcher**: Finds and extracts high-quality, up-to-date information from the web using Scrapegraph and Nebius Token Factory.
 2. **Analyst**: Synthesizes, interprets, and organizes the research findings, highlighting key insights and trends.
 3. **Writer**: Crafts a clear, structured, and actionable report, including references and recommendations.
 
@@ -33,7 +33,7 @@ A multi-stage AI-powered research workflow agent that automates comprehensive we
 
 - Python 3.10+
 - [uv](https://github.com/astral-sh/uv) for dependency management
-- API keys for [Nebius AI](https://dub.sh/nebius) and [Scrapegraph](https://dub.sh/scrapegraphai)
+- API keys for [Nebius Token Factory](https://dub.sh/nebius) and [Scrapegraph](https://dub.sh/scrapegraphai)
 
 
 
@@ -184,7 +184,7 @@ Contributions are welcome! Please feel free to submit a Pull Request or open an 
 
 - [Agno](https://www.agno.com/) for agent orchestration
 - [Scrapegraph](https://dub.sh/scrapegraphai) for web scraping
-- [Nebius AI Studio](https://studio.nebius.com/) for AI model access
+- [Nebius Token Factory](https://studio.nebius.com/) for AI model access
 - [Streamlit](https://streamlit.io/) for the web interface
 
 

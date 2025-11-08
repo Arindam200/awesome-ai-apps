@@ -75,7 +75,7 @@ pip install -r requirements.txt
 
 You'll need:
 
-- 🔑 **Nebius API Key** → [Get from Nebius AI Studio](https://studio.nebius.com/?modals=create-api-key)
+- 🔑 **Nebius API Key** → [Get from Nebius Token Factory](https://studio.nebius.com/?modals=create-api-key)
 - 🔑 **GitHub API Key** → [Generate Here](https://github.com/settings/tokens)
 - 🔑 **Exa API Key** → [Get from Exa](https://exa.ai)
 

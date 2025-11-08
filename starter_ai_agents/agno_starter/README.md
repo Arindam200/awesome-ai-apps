@@ -2,7 +2,7 @@
 
 # HackerNews Analysis Agent
 
-A powerful AI agent built with Agno that analyzes and provides insights about HackerNews content. This agent uses the Nebius AI model to deliver intelligent analysis of tech news, trends, and discussions.
+A powerful AI agent built with Agno that analyzes and provides insights about HackerNews content. This agent uses the Nebius Token Factory model to deliver intelligent analysis of tech news, trends, and discussions.
 
 ## Features
 
@@ -15,7 +15,7 @@ A powerful AI agent built with Agno that analyzes and provides insights about Ha
 ## Prerequisites
 
 - Python 3.10 or higher
-- Nebius API key (get it from [Nebius AI Studio](https://studio.nebius.ai/))
+- Nebius API key (get it from [Nebius Token Factory](https://studio.nebius.ai/))
 
 ## Installation
 
@@ -61,7 +61,7 @@ The agent will start with a welcome message and show available capabilities. You
 The agent is built using:
 
 - Agno framework for AI agent development
-- Nebius AI's Qwen/Qwen3-30B-A3B model
+- Nebius Token Factory's Qwen/Qwen3-30B-A3B model
 - HackerNews Tool from Agno
 
 ## Contributing
@@ -71,4 +71,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Acknowledgments
 
 - [Agno Framework](https://www.agno.com/)
-- [Nebius AI](https://studio.nebius.ai/)
+- [Nebius Token Factory](https://studio.nebius.ai/)

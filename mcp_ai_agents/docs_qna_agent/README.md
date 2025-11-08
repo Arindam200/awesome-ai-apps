@@ -2,7 +2,7 @@
 
 # 📚 Talk to Your Docs - Documentation QnA Agent
 
-A Streamlit-based AI agent that allows you to have conversations with any documentation using MCP (Model Context Protocol) tools and Nebius AI.
+A Streamlit-based AI agent that allows you to have conversations with any documentation using MCP (Model Context Protocol) tools and Nebius Token Factory.
 
 ## Features
 
@@ -59,7 +59,7 @@ The application uses:
 
 - **Agno Framework**: For AI agent orchestration
 - **MCP Tools**: For documentation interaction
-- **Nebius AI**: As the language model provider
+- **Nebius Token Factory**: As the language model provider
 - **Streamlit**: For the web interface
 
 ## License

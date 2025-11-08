@@ -1,4 +1,4 @@
-# ReAct agent from scratch with Nebius AI Studio and LangGraph
+# ReAct agent from scratch with Nebius Token Factory and LangGraph
 
 LangGraph is a framework for building stateful LLM applications, making it a good choice for constructing ReAct (Reasoning and Acting) Agents.
 

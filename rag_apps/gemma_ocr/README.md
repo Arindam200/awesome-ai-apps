@@ -2,7 +2,7 @@
 
 # Gemma 3 OCR Example
 
-A fast OCR-based document and image processing app powered by Nebius AI Studio and Google’s Gemma 3 model. Upload PDFs or images and extract structured content using AI—displayed in real-time with an interactive UI.
+A fast OCR-based document and image processing app powered by Nebius Token Factory and Google’s Gemma 3 model. Upload PDFs or images and extract structured content using AI—displayed in real-time with an interactive UI.
 
 ## Features
 
@@ -18,7 +18,7 @@ A fast OCR-based document and image processing app powered by Nebius AI Studio a
 ## Prerequisites
 
 * Python 3.10+
-* [Nebius AI Studio](https://studio.nebius.com/) Account
+* [Nebius Token Factory](https://studio.nebius.com/) Account
 * [Nebius API Key](https://studio.nebius.com/?modals=create-api-key)
 * `uv` installed (for dependency management):
   Install it globally:

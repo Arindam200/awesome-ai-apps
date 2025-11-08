@@ -13,7 +13,7 @@ A powerful AI-powered finance agent built with the Agno framework that provides 
 ## 🛠️ Tech Stack
 
 - **Framework**: [Agno](https://www.agno.com/) - Modern AI agent framework
-- **LLM Model**: DeepSeek-V3-0324 via Nebius AI Studio
+- **LLM Model**: DeepSeek-V3-0324 via Nebius Token Factory
 - **Financial Data**: [YFinance](https://pypi.org/project/yfinance/) - Yahoo Finance API wrapper
 - **Web Search**: [DuckDuckGo](https://duckduckgo.com/) - Privacy-focused search engine
 - **UI**: Agno Playground - Interactive web interface
@@ -21,7 +21,7 @@ A powerful AI-powered finance agent built with the Agno framework that provides 
 ## 📋 Prerequisites
 
 - Python 3.10 or higher
-- Nebius AI Studio API key
+- Nebius Token Factory API key
 - Internet connection for real-time data
 
 ## 🚀 Quick Start
@@ -49,7 +49,7 @@ NEBIUS_API_KEY=your_nebius_api_key_here
 
 **How to get your Nebius API key:**
 
-1. Visit [Nebius AI Studio](https://dub.sh/AIStudio)
+1. Visit [Nebius Token Factory](https://dub.sh/AIStudio)
 2. Sign up or log in to your account
 3. Navigate to the API section
 4. Generate a new API key
@@ -151,7 +151,7 @@ This project is part of the [Awesome AI Apps](https://github.com/Arindam200/awes
 
 ## 🙏 Acknowledgments
 
-- [Nebius AI Studio](https://dub.sh/AIStudio) for providing the LLM infrastructure
+- [Nebius Token Factory](https://dub.sh/AIStudio) for providing the LLM infrastructure
 - [Agno](https://www.agno.com/) for the powerful agent framework
 - [YFinance](https://pypi.org/project/yfinance/) for financial data access
 - [DuckDuckGo](https://duckduckgo.com/) for privacy-focused web search

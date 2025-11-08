@@ -1,10 +1,10 @@
 # DSPy Starter Agent
 
-A powerful AI agent built with DSPy, leveraging advanced LLMs and tool integration for reasoning, search, and computation. This starter project uses the Nebius AI model and DSPy’s ReAct framework to answer complex questions and perform multi-step tasks.
+A powerful AI agent built with DSPy, leveraging advanced LLMs and tool integration for reasoning, search, and computation. This starter project uses the Nebius Token Factory model and DSPy’s ReAct framework to answer complex questions and perform multi-step tasks.
 
 ## Features
 
-- 🤖 **LLM-Powered Reasoning**: Uses Meta-Llama-3.1-70B-Instruct via Nebius AI for intelligent responses
+- 🤖 **LLM-Powered Reasoning**: Uses Meta-Llama-3.1-70B-Instruct via Nebius Token Factory for intelligent responses
 - 🧮 **Tool Integration**: Access to Python interpreter and Wikipedia search for multi-step reasoning
 - 🔗 **ReAct Framework**: Combines retrieval, action, and computation in a single agent
 - ⚡ **Easy Customization**: Add your own tools and workflows
@@ -13,7 +13,7 @@ A powerful AI agent built with DSPy, leveraging advanced LLMs and tool integrati
 ## Prerequisites
 
 - Python 3.10 or higher
-- Nebius API key (get it from [Nebius AI Studio](https://studio.nebius.ai/))
+- Nebius API key (get it from [Nebius Token Factory](https://studio.nebius.ai/))
 
 ## Installation
 
@@ -58,7 +58,7 @@ The agent will answer questions using Wikipedia search and Python math evaluatio
 The agent is built using:
 
 - DSPy framework for LLM orchestration and tool use
-- Nebius AI's Meta-Llama-3.1-70B-Instruct model
+- Nebius Token Factory's Meta-Llama-3.1-70B-Instruct model
 - ReAct module for multi-step reasoning
 - Python interpreter and Wikipedia search tools
 
@@ -77,4 +77,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Acknowledgments
 
 - [DSPy Framework](https://github.com/stanfordnlp/dspy)
-- [Nebius AI](https://dub.sh/nebius)
+- [Nebius Token Factory](https://dub.sh/nebius)

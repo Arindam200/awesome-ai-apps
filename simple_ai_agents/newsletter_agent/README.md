@@ -1,13 +1,13 @@
 ![demo](./demo.gif)
 
-# AI Newsletter Agent with Agno, Firecrawl & Nebius AI
+# AI Newsletter Agent with Agno, Firecrawl & Nebius Token Factory
 
-A powerful AI-powered newsletter generator that researches, analyzes, and creates professional newsletters on any topic using Nebius AI, Agno, and Firecrawl. This application leverages advanced AI models to deliver well-structured, up-to-date newsletters with the latest information from the web.
+A powerful AI-powered newsletter generator that researches, analyzes, and creates professional newsletters on any topic using Nebius Token Factory, Agno, and Firecrawl. This application leverages advanced AI models to deliver well-structured, up-to-date newsletters with the latest information from the web.
 
 ## Features
 
 - Real-time web research using Firecrawl
-- AI-powered content generation with Nebius AI (Llama-3.1-70B-Instruct)
+- AI-powered content generation with Nebius Token Factory (Llama-3.1-70B-Instruct)
 - Professional newsletter formatting in markdown
 - Customizable search parameters (number of articles, time range)
 - Download newsletters in markdown format
@@ -19,13 +19,13 @@ A powerful AI-powered newsletter generator that researches, analyzes, and create
 
 1. **Topic Research**: The agent uses Firecrawl to search for recent, authoritative articles and sources on the chosen topic.
 2. **Content Analysis**: Extracts key insights, trends, and expert opinions from the gathered articles.
-3. **Newsletter Generation**: Synthesizes the information into a well-structured newsletter using Nebius AI, following a professional template.
+3. **Newsletter Generation**: Synthesizes the information into a well-structured newsletter using Nebius Token Factory, following a professional template.
 4. **Download & Share**: Users can download the generated newsletter in markdown format for easy sharing or publishing.
 
 ## Prerequisites
 
 - Python 3.10 or higher
-- [Nebius AI API key](https://studio.nebius.com/?modals=create-api-key)
+- [Nebius Token Factory API key](https://studio.nebius.com/?modals=create-api-key)
 - [Firecrawl API key](https://www.firecrawl.dev/app/api-keys)
 
 ## Project Structure
@@ -94,7 +94,7 @@ streamlit run app.py
 
 1. **Initial Research**: The agent uses Firecrawl to find recent, relevant articles and sources on the chosen topic.
 2. **Content Analysis**: Extracts key insights, trends, and expert opinions from the gathered articles.
-3. **Newsletter Generation**: Synthesizes the information into a well-structured newsletter using Nebius AI, following a professional template.
+3. **Newsletter Generation**: Synthesizes the information into a well-structured newsletter using Nebius Token Factory, following a professional template.
 4. **Download & Share**: Users can download the generated newsletter in markdown format for easy sharing or publishing.
 
 ## Technical Details
@@ -102,7 +102,7 @@ streamlit run app.py
 - Uses Streamlit for the web interface
 - Implements Agno agent framework for workflow orchestration
 - Integrates Firecrawl for real-time web research
-- Utilizes Nebius AI (Llama-3.1-70B-Instruct) for content generation
+- Utilizes Nebius Token Factory (Llama-3.1-70B-Instruct) for content generation
 - Stores agent data in a local SQLite database (`tmp/newsletter_agent.db`)
 - Supports secure API key management via `.env` or sidebar input
 - Implements proper error handling and logging
@@ -122,7 +122,7 @@ The generated newsletters follow this structure:
 ## API Keys
 
 - **Firecrawl API Key**: Get your API key from [https://firecrawl.dev](https://www.firecrawl.dev/app/api-keys)
-- **Nebius API Key**: Your Nebius AI API key from [https://studio.nebius.com](https://studio.nebius.com/?modals=create-api-key)
+- **Nebius API Key**: Your Nebius Token Factory API key from [https://studio.nebius.com](https://studio.nebius.com/?modals=create-api-key)
 
 ## Contributing
 
@@ -135,6 +135,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Acknowledgments
 
 - Built with Streamlit
-- Powered by Nebius AI
+- Powered by Nebius Token Factory
 - Web research powered by Firecrawl
 - Agent framework by Agno

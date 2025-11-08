@@ -1,10 +1,10 @@
 # Web Automation Agent with Browser Use & Nebius
 
-This project demonstrates a simple web automation agent that uses the `browser-use` library to perform tasks in a web browser based on natural language instructions. The agent is powered by a large language model from Nebius AI Studio.
+This project demonstrates a simple web automation agent that uses the `browser-use` library to perform tasks in a web browser based on natural language instructions. The agent is powered by a large language model from Nebius Token Factory.
 
 ## How it Works
 
-The script initializes an `Agent` from the `browser-use` library. This agent is given a specific task to perform on the web. It uses a chat model, configured to use Nebius AI's API endpoint, to understand the task and control the browser.
+The script initializes an `Agent` from the `browser-use` library. This agent is given a specific task to perform on the web. It uses a chat model, configured to use Nebius Token Factory's API endpoint, to understand the task and control the browser.
 
 In this example, the agent is instructed to:
 
@@ -17,7 +17,7 @@ In this example, the agent is instructed to:
 ## Prerequisites
 
 - Python 3.7+
-- A [Nebius AI API key](https://dub.sh/nebius)
+- A [Nebius Token Factory API key](https://dub.sh/nebius)
 
 ## Setup
 
@@ -43,7 +43,7 @@ In this example, the agent is instructed to:
     ```
 
 3.  **Set up environment variables:**
-    Create a file named `.env` in the root of the project directory and add your Nebius AI API key:
+    Create a file named `.env` in the root of the project directory and add your Nebius Token Factory API key:
     ```
     NEBIUS_API_KEY="your_nebius_api_key_here"
     ```

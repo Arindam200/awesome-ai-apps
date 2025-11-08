@@ -2,7 +2,7 @@
 
 # CrewAI Starter Agent
 
-A powerful AI research crew built with CrewAI that leverages multiple specialized agents to discover and analyze groundbreaking technologies. This project uses the Nebius AI model to deliver intelligent research and analysis of emerging tech trends.
+A powerful AI research crew built with CrewAI that leverages multiple specialized agents to discover and analyze groundbreaking technologies. This project uses the Nebius Token Factory model to deliver intelligent research and analysis of emerging tech trends.
 
 ## Features
 
@@ -15,7 +15,7 @@ A powerful AI research crew built with CrewAI that leverages multiple specialize
 ## Prerequisites
 
 - Python 3.10 or higher
-- Nebius API key (get it from [Nebius AI Studio](https://studio.nebius.ai/))
+- Nebius API key (get it from [Nebius Token Factory](https://studio.nebius.ai/))
 
 ## Installation
 
@@ -61,7 +61,7 @@ The crew will execute the research task and provide insights about emerging AI t
 The crew is built using:
 
 - CrewAI framework for multi-agent systems
-- Nebius AI's Meta-Llama-3.1-70B-Instruct model
+- Nebius Token Factory's Meta-Llama-3.1-70B-Instruct model
 
 ### Task Structure
 
@@ -79,4 +79,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Acknowledgments
 
 - [CrewAI Framework](https://github.com/joaomdmoura/crewAI)
-- [Nebius AI](https://studio.nebius.ai/)
+- [Nebius Token Factory](https://studio.nebius.ai/)

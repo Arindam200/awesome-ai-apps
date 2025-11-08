@@ -2,20 +2,20 @@
 
 # LlamaIndex RAG Starter
 
-A starter project demonstrating how to use LlamaIndex with Nebius AI for building RAG (Retrieval-Augmented Generation) applications.
+A starter project demonstrating how to use LlamaIndex with Nebius Token Factory for building RAG (Retrieval-Augmented Generation) applications.
 
 ## Overview
 
-This project showcases the integration of LlamaIndex with Nebius AI, providing access to state-of-the-art LLM models. It demonstrates how to:
+This project showcases the integration of LlamaIndex with Nebius Token Factory, providing access to state-of-the-art LLM models. It demonstrates how to:
 
-- Set up and configure Nebius AI with LlamaIndex
+- Set up and configure Nebius Token Factory with LlamaIndex
 - Use different LLM endpoints (complete, chat, streaming)
 - Build RAG applications with custom data
 
 ## Prerequisites
 
 - Python 3.8+
-- Nebius AI API key (Get one at [studio.nebius.ai](https://studio.nebius.ai/))
+- Nebius Token Factory API key (Get one at [studio.nebius.ai](https://studio.nebius.ai/))
 
 ## Installation
 
@@ -73,7 +73,7 @@ for chunk in llm.stream_chat(messages):
 
 ## Available Models
 
-Nebius AI provides access to various state-of-the-art LLM models. Check out the full list of available models at [studio.nebius.ai](https://studio.nebius.ai/).
+Nebius Token Factory provides access to various state-of-the-art LLM models. Check out the full list of available models at [studio.nebius.ai](https://studio.nebius.ai/).
 
 ## Contributing
 

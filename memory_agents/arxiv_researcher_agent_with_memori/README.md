@@ -40,7 +40,7 @@ uv sync
 
 #### Nebius API Key
 
-- Visit [Nebius AI Studio](https://dub.sh/nebius)
+- Visit [Nebius Token Factory](https://dub.sh/nebius)
 - Create a new API key
 
 #### Tavily API Key
@@ -54,7 +54,7 @@ uv sync
 Create a `.env` file in this directory:
 
 ```env
-NEBIUS_API_KEY="your nebius-api-key-here"  # Replace with your actual Nebius AI API key
+NEBIUS_API_KEY="your nebius-api-key-here"  # Replace with your actual Nebius Token Factory API key
 TAVILY_API_KEY="your-tavily-api-key-here"  # Replace with your actual Tavily API key
 EXAMPLE_MODEL_NAME ="moonshotai/Kimi-K2-Instruct" # Replace with any other supported models
 EXAMPLE_BASE_URL= "https://api.studio.nebius.ai/v1"

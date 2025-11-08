@@ -2,7 +2,7 @@
 
 # 🏢 Startup Idea Validator Agent
 
-An advanced AI-powered agentic application that validates and analyzes startup ideas through multi-stage research, competitor analysis, and comprehensive reporting. Built with Google ADK, Nebius AI, Tavily, and Streamlit.
+An advanced AI-powered agentic application that validates and analyzes startup ideas through multi-stage research, competitor analysis, and comprehensive reporting. Built with Google ADK, Nebius Token Factory, Tavily, and Streamlit.
 
 ## 🚀 Features
 
@@ -18,7 +18,7 @@ An advanced AI-powered agentic application that validates and analyzes startup i
 - **Python**: Core programming language
 - **Streamlit**: Interactive web dashboard
 - **Google ADK**: Agentic workflow and LLM orchestration
-- **Nebius AI**: Large language model for research and analysis
+- **Nebius Token Factory**: Large language model for research and analysis
 - **Tavily**: Web search and data extraction
 - **uv**: Fast Python package manager
 - **dotenv**: Environment variable management

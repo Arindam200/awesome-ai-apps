@@ -8,7 +8,7 @@ A powerful, conference-agnostic RAG (Retrieval-Augmented Generation) application
 - **⚡ Parallel Processing**: High-performance async crawling with rate limiting and batch processing
 - **🔍 Intelligent Search**: Vector search with automatic fallback to text-based similarity matching
 - **🔬 Real-time Research**: Integrates live web research using Exa and Tavily APIs
-- **🤖 Smart Proposals**: Generates unique talk proposals using Nebius AI's advanced LLMs
+- **🤖 Smart Proposals**: Generates unique talk proposals using Nebius Token Factory's advanced LLMs
 - **📊 Analytics Dashboard**: Conference statistics, category distributions, and corpus insights
 - **🎯 Multi-Platform**: Streamlit web interface with comprehensive conference management
 
@@ -24,7 +24,7 @@ A powerful, conference-agnostic RAG (Retrieval-Augmented Generation) application
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Couchbase     │    │   Vector Search  │    │   LLM Generation│
-│   Corpus        │◀───│   & Analytics    │───▶│   (Nebius AI)   │
+│   Corpus        │◀───│   & Analytics    │───▶│   (Nebius Token Factory)   │
 │   Management    │    │                  │    │                 │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
@@ -35,7 +35,7 @@ A powerful, conference-agnostic RAG (Retrieval-Augmented Generation) application
 
 - Python 3.8+
 - Couchbase Server with Vector Search capabilities
-- API keys for Nebius AI, Exa, and Tavily (see Environment Setup)
+- API keys for Nebius Token Factory, Exa, and Tavily (see Environment Setup)
 
 ### Installation
 
@@ -68,7 +68,7 @@ The Streamlit interface will open at `http://localhost:8501`
 Create a `.env` file with the following configuration:
 
 ```env
-# Nebius AI Configuration (for chat completions and embeddings)
+# Nebius Token Factory Configuration (for chat completions and embeddings)
 NEBIUS_API_KEY=your_nebius_api_key_here
 NEBIUS_API_BASE=https://api.studio.nebius.com/v1/
 
@@ -87,7 +87,7 @@ CB_SEARCH_INDEX_PATTERN=vector_search_talks_{conference_id}
 
 ### Supported LLM Models
 
-The system uses Nebius AI models:
+The system uses Nebius Token Factory models:
 - **openai/gpt-oss-120b** (Primary chat model for generating talk proposals)
 
 ### Embedding Models
@@ -230,7 +230,7 @@ conference-talk-abstract-generator/
 │   └── create_search_indexes.py    # Manual index creation utility
 ├── src/
 │   ├── config/
-│   │   └── nebius_client.py        # Nebius AI client configuration
+│   │   └── nebius_client.py        # Nebius Token Factory client configuration
 │   ├── scrapers/
 │   │   ├── conference_detector.py  # Platform detection logic
 │   │   ├── platform_adapters.py    # Platform-specific parsers
@@ -261,7 +261,7 @@ conference-talk-abstract-generator/
 
 ### LLM Integration
 
-- **Unified AI Platform**: Nebius AI provides both chat completions and embedding generation
+- **Unified AI Platform**: Nebius Token Factory provides both chat completions and embedding generation
 - **Structured Prompts**: Carefully crafted prompts for consistent, high-quality outputs
 - **Context Management**: Intelligent combination of research and historical data
 
@@ -334,7 +334,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 For questions and support:
 - Open an issue in the GitHub repository
 - Check the troubleshooting section above
-- Review the Couchbase and Nebius AI documentation
+- Review the Couchbase and Nebius Token Factory documentation
 
 ---
 

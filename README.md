@@ -148,7 +148,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Mastra Weather Bot](simple_ai_agents/mastra_ai_weather_agent) - Weather updates with Mastra AI.
 - [Calendar Assistant](simple_ai_agents/cal_scheduling_agent) - Calendar scheduling with Cal.com.
 - [Web Automation Agent](simple_ai_agents/browser_agent) - Simple Browser Agent implementation with Nebius & browser use.
-- [Nebius Chat](simple_ai_agents/nebius_chat) - Nebius AI Studio Chat interface.
+- [Nebius Chat](simple_ai_agents/nebius_chat) - Nebius Token Factory Chat interface.
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Talk to your Database with GibsonAI & Langchain
 <!-- - [YouTube Channel Analyzer](simple_ai_agents/youtube_channel_analyzer) - Analyze YouTube channels and extract insights. -->
 <!-- - [Memory Agent](simple_ai_agents/memory_agent) - Agent with persistent memory capabilities. -->

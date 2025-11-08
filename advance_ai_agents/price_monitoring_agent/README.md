@@ -2,14 +2,14 @@
 
 # 💲 Price Monitoring Agent
 
-An advanced AI-powered price monitoring and alert system that tracks product prices and availability from e-commerce websites, detects significant changes, and instantly sends alerts via SMS/WhatsApp. Built with ScrapeGraph AI, CrewAI, Nebius AI, Twilio, and Streamlit.
+An advanced AI-powered price monitoring and alert system that tracks product prices and availability from e-commerce websites, detects significant changes, and instantly sends alerts via SMS/WhatsApp. Built with ScrapeGraph AI, CrewAI, Nebius Token Factory, Twilio, and Streamlit.
 
 ## 🚀 Features
 
 - **Automated Price Tracking**: Real-time monitoring of product prices & stock availability
 - **Intelligent Web Scraping**: ScrapeGraph AI extracts product data from dynamic web pages
 - **Smart Workflow Automation**: CrewAI coordinates fetching, analysis, and alerting tasks
-- **AI-Powered Change Detection**: Nebius AI identifies significant price or availability changes
+- **AI-Powered Change Detection**: Nebius Token Factory identifies significant price or availability changes
 - **Instant Notifications**: Twilio sends SMS/WhatsApp alerts
 - **Scheduled Monitoring**: APScheduler runs checks at user-defined intervals
 - **Data Persistence**: Product data stored in JSON for historical comparison
@@ -25,7 +25,7 @@ An advanced AI-powered price monitoring and alert system that tracks product pri
 - **Streamlit**: Interactive web dashboard
 - **ScrapeGraph AI**: Intelligent web scraping
 - **CrewAI**: Agent-based workflow automation
-- **Nebius AI**: AI-based data analysis
+- **Nebius Token Factory**: AI-based data analysis
 - **Twilio API**: SMS/WhatsApp notification service
 - **APScheduler**: Scheduled task automation
 - **JSON**: Lightweight database for product data
@@ -101,7 +101,7 @@ CLIENT_PHONE_NO="your_whatsapp_number"
 
 1. **Product Tracking**: Add product URLs via the Streamlit UI
 2. **Scraping**: ScrapeGraph AI extracts product title, price, and stock status
-3. **Change Detection**: Nebius AI analyzes new data and compares with previous data
+3. **Change Detection**: Nebius Token Factory analyzes new data and compares with previous data
 4. **Alerting**: Twilio sends SMS/WhatsApp notifications if significant changes are detected
 5. **Automation**: APScheduler runs checks automatically at fixed intervals
 

@@ -2,7 +2,7 @@
 
 ![GIf](./demo.gif)
 
-A powerful AI-powered resume optimization tool that helps job seekers enhance their resumes based on specific job requirements. Built with Streamlit and powered by Nebius AI, this application provides targeted suggestions to improve your resume's effectiveness.
+A powerful AI-powered resume optimization tool that helps job seekers enhance their resumes based on specific job requirements. Built with Streamlit and powered by Nebius Token Factory, this application provides targeted suggestions to improve your resume's effectiveness.
 
 ## Features
 
@@ -68,7 +68,7 @@ streamlit run main.py
 
 1. **Resume Upload**: The application processes your PDF resume and extracts its content
 2. **Job Analysis**: Analyzes the provided job title and description
-3. **AI Processing**: Uses Nebius AI models to:
+3. **AI Processing**: Uses Nebius Token Factory models to:
    - Analyze your resume content
    - Compare it with job requirements
    - Generate targeted improvement suggestions

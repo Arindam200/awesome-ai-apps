@@ -1,7 +1,7 @@
 ![Nebius Chat](assets/nebius.png)
-# Nebius AI Studio Chat
+# Nebius Token Factory Chat
 
-A powerful Streamlit-based chat interface for interacting with Nebius AI Studio's advanced language models and image generation capabilities.
+A powerful Streamlit-based chat interface for interacting with Nebius Token Factory's advanced language models and image generation capabilities.
 
 
 ## 🚀 Features
@@ -32,7 +32,7 @@ A powerful Streamlit-based chat interface for interacting with Nebius AI Studio'
 ### Prerequisites
 
 - Python 3.11 or higher
-- Nebius AI Studio API key
+- Nebius Token Factory API key
 
 ### Setup
 
@@ -69,7 +69,7 @@ A powerful Streamlit-based chat interface for interacting with Nebius AI Studio'
 
 ### API Key Setup
 
-1. Sign up at [Nebius AI Studio](https://console.nebius.ai/ai/llm)
+1. Sign up at [Nebius Token Factory](https://console.nebius.ai/ai/llm)
 2. Generate your API key from the console
 3. Add the key to your `.env` file or enter it in the sidebar
 
@@ -209,7 +209,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- [Nebius AI Studio](https://console.nebius.ai/) for providing the API
+- [Nebius Token Factory](https://console.nebius.ai/) for providing the API
 - [Streamlit](https://streamlit.io/) for the web framework
 - [DeepSeek](https://www.deepseek.com/) and [Qwen](https://qwen.ai/) for the language models
 
@@ -218,7 +218,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For support and questions:
 
 - Create an issue in the repository
-- Check the [Nebius AI Studio documentation](https://docs.nebius.ai/)
+- Check the [Nebius Token Factory documentation](https://docs.nebius.ai/)
 - Review the application logs for debugging
 
 ## 🔄 Changelog
