@@ -19,7 +19,7 @@ A powerful AI-powered brand reputation monitoring tool that analyzes news covera
 ## Prerequisites 🛠️
 
 - Python 3.10+
-- Nebius Token Factory API key ([Get it here](https://studio.nebius.ai/))
+- Nebius Token Factory API key ([Get it here](https://dub.sh/nebius))
 - Bright Data API credentials
 - SQLite (included with Python)
 
