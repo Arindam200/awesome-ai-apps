@@ -12,7 +12,7 @@ class NebiusClient:
     def __init__(self):
         # Single Nebius client for both chat and embeddings
         self.client = OpenAI(
-            base_url="https://api.tokenfactory.nebius.com/v1",
+            base_url="https://api.tokenfactory.nebius.com/v1/",
             api_key=os.getenv("NEBIUS_API_KEY")
         )
         
