@@ -14,7 +14,7 @@ from agno.agent import Agent
 # Load environment variables
 load_dotenv()
 
-DEFAULT_SERVER_URL = "https://docs.tokenfactory.nebius.com/"
+DEFAULT_SERVER_URL = "https://docs.tokenfactory.nebius.com/mcp"
 
 # --- Function to run the MCP agent ---
 async def run_mcp_agent(url: str, query: str, api_key: str) -> str:
