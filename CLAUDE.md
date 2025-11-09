@@ -68,7 +68,7 @@ cp .env.example .env
 ```
 
 Common API keys used across projects:
-- `NEBIUS_API_KEY` - Nebius AI inference provider (used extensively)
+- `NEBIUS_API_KEY` - Nebius Token Factory inference provider (used extensively)
 - `OPENAI_API_KEY` - OpenAI models
 - `GITHUB_PERSONAL_ACCESS_TOKEN` - For GitHub MCP agents
 - `SGAI_API_KEY` - ScrapeGraph AI for web scraping agents
@@ -169,7 +169,7 @@ Each lesson builds on the previous, with complete working examples.
 ## Key Technical Notes
 
 - **Python Version**: Requires Python 3.10 or higher (specified in most pyproject.toml files)
-- **Primary AI Provider**: Nebius AI Studio is used extensively across examples for inference
+- **Primary AI Provider**: Nebius Token Factory is used extensively across examples for inference
 - **Dependency Management**: Newer projects use `uv` for faster package installation
 - **MCP Tools**: Many agents integrate with external services via MCP (GitHub, databases, custom servers)
 - **Streaming UI**: Streamlit is the standard for web-based agent interfaces

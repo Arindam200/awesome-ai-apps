@@ -1,6 +1,6 @@
 # Web Automation Agent with Browser Use & Nebius
 
-This project demonstrates a simple web automation agent that uses the `browser-use` library to perform tasks in a web browser based on natural language instructions. The agent is powered by a large language model from Nebius AI Studio.
+This project demonstrates a simple web automation agent that uses the `browser-use` library to perform tasks in a web browser based on natural language instructions. The agent is powered by a large language model from Nebius Token Factory.
 
 ## How it Works
 

@@ -70,7 +70,7 @@ Create a `.env` file with the following configuration:
 ```env
 # Nebius AI Configuration (for chat completions and embeddings)
 NEBIUS_API_KEY=your_nebius_api_key_here
-NEBIUS_API_BASE=https://api.studio.nebius.com/v1/
+NEBIUS_API_BASE=https://api.tokenfactory.nebius.com/v1
 
 # Research APIs (Optional - for web research functionality)
 EXA_API_KEY=your_exa_api_key_here

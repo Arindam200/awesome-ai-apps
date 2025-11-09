@@ -74,7 +74,7 @@ def firecrawl_scrape_nebius(_: str) -> dict:
     firecrawl = FirecrawlApp(api_key=os.getenv("FIRECRAWL_API_KEY"))
     try:
         scrape_result = firecrawl.scrape_url(
-            url="https://studio.nebius.com/",
+            url="https://tokenfactory.nebius.com/",
             formats=["markdown"],
             only_main_content=True
         )
@@ -144,9 +144,9 @@ You are a summarizer and formatter.
 firecrawl_agent = LlmAgent(
     name="FirecrawlAgent",
     model=nebius_model,
-    description="Scrapes Nebius Studio homepage using Firecrawl.",
+    description="Scrapes Nebius Token Factory homepage using Firecrawl.",
     instruction="""
-    Use the firecrawl_scrape_nebius tool to fetch markdown content from Nebius Studio website in proper format. 
+    Use the firecrawl_scrape_nebius tool to fetch markdown content from Nebius Token Factory website in proper format. 
     Prefix your response with "**🔥FirecrawlAgent:**"
     """,
     tools=[firecrawl_scrape_nebius],
@@ -165,9 +165,9 @@ analysis_agent = LlmAgent(
 You are an AI analyst specializing in the latest AI trends and Large Language Models (LLMs).
 - Analyze the 'final_summary', combining it with your knowledge of AI advancements and the information extracted from 'exa_results' and 'tavily_results'.
 - Identify key trends, growth areas, and notable statistics related to AI and LLMs.
-- Carefully examine the 'firecrawl_content', which contain data from Nebius AI Studio's `llms.txt`. This file provides details about available models on Nebius, including their names, pricing, token limits, and availability.
+- Carefully examine the 'firecrawl_content', which contain data from Nebius Token Factory's `llms.txt`. This file provides details about available models on Nebius, including their names, pricing, token limits, and availability.
 - Instead of focusing solely on model names, analyze the functional capabilities and intended use cases of LLMs mentioned in the 'final_summary'.
-- Cross-reference the LLMs' functionalities with the Nebius AI Studio offerings in 'firecrawl_content', prioritizing models with similar features such as context window size, training data, or specialized capabilities.
+- Cross-reference the LLMs' functionalities with the Nebius Token Factory offerings in 'firecrawl_content', prioritizing models with similar features such as context window size, training data, or specialized capabilities.
 - Utilize any available metadata in 'firecrawl_content', such as model descriptions, tags, or categories, for more accurate matching.
 - If a relevant LLM is found on Nebius, provide a specific recommendation to the user, highlighting its features, pricing, token limits, and potential benefits based on the context from the 'final_summary'.
 - If no exact match is found, suggest alternative Nebius models with the closest functional alignment to the desired capabilities.

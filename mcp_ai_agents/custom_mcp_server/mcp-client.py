@@ -17,7 +17,7 @@ load_dotenv()
 EMAIL_MCP_PATH = "/Users/arindammajumder/Developer/Python/Nebius-Cookbook/Examples/email-mcp"  
 UV_PATH = "/Users/arindammajumder/.local/bin/uv"  
 MODEL_NAME = "meta-llama/Llama-3.3-70B-Instruct"
-API_BASE_URL = "https://api.studio.nebius.ai/v1"
+API_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
 PASSKEY = os.environ["GOOGLE_PASSKEY"]
 
 async def setup_email_agent(mcp_server: MCPServerStdio) -> Agent:

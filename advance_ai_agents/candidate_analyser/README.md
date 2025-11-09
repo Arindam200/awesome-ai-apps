@@ -8,8 +8,8 @@
   <a href="https://streamlit.io" target="_blank">
     <img src="https://img.shields.io/badge/Built%20With-Streamlit-%23FF4B4B?style=for-the-badge" alt="Streamlit">
   </a>
-  <a href="https://studio.nebius.com/" target="_blank">
-  <img src="https://img.shields.io/badge/Built%20With-Nebius-%230073e6?style=for-the-badge" alt="Nebius">
+  <a href="https://tokenfactory.nebius.com/" target="_blank">
+  <img src="https://img.shields.io/badge/Built%20With-Nebius%20Token%20Factory-%230073e6?style=for-the-badge" alt="Nebius Token Factory">
 </a>
   <a href="https://agno.com" target="_blank">
     <img src="https://img.shields.io/badge/Agno-Agent%20Framework-orange?style=for-the-badge" alt="Agno">
@@ -75,7 +75,7 @@ pip install -r requirements.txt
 
 You'll need:
 
-- 🔑 **Nebius API Key** → [Get from Nebius AI Studio](https://studio.nebius.com/?modals=create-api-key)
+- 🔑 **Nebius API Key** → [Get from Nebius Token Factory](https://tokenfactory.nebius.com/)
 - 🔑 **GitHub API Key** → [Generate Here](https://github.com/settings/tokens)
 - 🔑 **Exa API Key** → [Get from Exa](https://exa.ai)
 

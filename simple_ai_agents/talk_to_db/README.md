@@ -102,7 +102,7 @@ mysql://username:password@host/database
 
 ## API Keys 🔑
 
-- **Nebius AI API Key**: Get your API key from [https://studio.nebius.com/](https://dub.sh/AIStudio)
+- **Nebius AI API Key**: Get your API key from [https://tokenfactory.nebius.com/](https://dub.sh/AIStudio)
 
 ## Architecture 🏗️
 

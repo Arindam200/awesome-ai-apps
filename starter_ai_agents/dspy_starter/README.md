@@ -13,7 +13,7 @@ A powerful AI agent built with DSPy, leveraging advanced LLMs and tool integrati
 ## Prerequisites
 
 - Python 3.10 or higher
-- Nebius API key (get it from [Nebius AI Studio](https://studio.nebius.ai/))
+- Nebius API key (get it from [Nebius Token Factory](https://studio.nebius.ai/))
 
 ## Installation
 

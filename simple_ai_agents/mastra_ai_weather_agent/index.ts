@@ -6,7 +6,7 @@ import { z } from 'zod';
 const nebius = createOpenAICompatible({
   name: "nebius",
   apiKey: process.env.NEBIUS_API_KEY,
-  baseURL: "https://api.studio.nebius.com/v1/",
+  baseURL: "https://api.tokenfactory.nebius.com/v1",
 });
 
 const model = "meta-llama/Meta-Llama-3.1-405B-Instruct";

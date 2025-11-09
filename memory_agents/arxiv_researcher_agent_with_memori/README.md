@@ -40,7 +40,7 @@ uv sync
 
 #### Nebius API Key
 
-- Visit [Nebius AI Studio](https://dub.sh/nebius)
+- Visit [Nebius Token Factory](https://dub.sh/nebius)
 - Create a new API key
 
 #### Tavily API Key
