@@ -27,7 +27,7 @@ A powerful AI-powered brand reputation monitoring tool that analyzes news covera
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/yourusername/brand-reputation-monitor.git
+git clone https://github.com/Arindam200/awesome-ai-apps/brand-reputation-monitor.git
 cd memory_agents/brand_reputation_monitor
 ```
 
@@ -45,7 +45,7 @@ NEBIUS_API_KEY=your_nebius_api_key
 BRIGHTDATA_API_KEY=your_brightdata_api_key
 ```
 
-> **Note:** This application uses **Nebius Token Factory** for intelligent brand analysis. Get your API key from [Nebius Token Factory](https://studio.nebius.ai/).
+> **Note:** This application uses **Nebius Token Factory** for intelligent brand analysis. Get your API key from [Nebius Token Factory](https://dub.sh/nebius).
 
 ## Usage 🚀
 
@@ -154,7 +154,7 @@ The AI system analyzes your brand across multiple dimensions:
 - **Model**: Qwen/Qwen3-Coder-480B-A35B-Instruct (via Nebius Token Factory)
 - **Purpose**: News analysis, sentiment analysis, and insight generation
 - **Framework**: Agno agents for structured AI interactions
-- **Get API Key**: [Nebius Token Factory](https://studio.nebius.ai/)
+- **Get API Key**: [Nebius Token Factory](https://dub.sh/nebius)
 
 ### Bright Data
 - **SERP Zone**: `sdk_serp` (for Google News searches)
@@ -257,7 +257,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - Check API keys are correctly entered in sidebar
 - Verify environment variables in `.env` file
 - Ensure both Nebius AI and Bright Data keys are valid
-- Get Nebius Token Factory API key from [Nebius Token Factory](https://studio.nebius.ai/)
+- Get Nebius Token Factory API key from [Nebius Token Factory](https://dub.sh/nebius)
 
 ### Bright Data Issues
 - Ensure Bright Data API key is valid and has credits
