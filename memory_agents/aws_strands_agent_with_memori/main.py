@@ -22,7 +22,7 @@ Usage:
     python aws_strands_example.py
 
 Environment Variables:
-    # For LiteLLM with Nebius AI Studio
+    # For LiteLLM with Nebius Token Factory
     NEBIUS_API_KEY=your_nebius_api_key
 """
 

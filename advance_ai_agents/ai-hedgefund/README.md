@@ -91,11 +91,11 @@ cp env.example .env
 ```bash
 # Required
 NEBIUS_API_KEY=your_actual_nebius_api_key
-NEBIUS_BASE_URL=https://api.studio.nebius.com/v1/
+NEBIUS_BASE_URL=https://api.tokenfactory.nebius.com/v1
 NEBIUS_MODEL=Qwen/Qwen3-14B
 
 ALPHA_VINTAGE_KEY=your_alpha_vintage_api_key_here
-SERPER_API_KEY=your_serper_api_key_here 
+SERPER_API_KEY=your_serper_api_key_here
 ```
 
 ### Installation & Setup

@@ -7,7 +7,7 @@ A comprehensive AI analysis pipeline that analyzes AI news, benchmarks, and tren
 This agent demonstrates a complex 5-agent sequential pipeline that:
 - Fetches the latest AI news from Twitter/X using Exa search
 - Retrieves AI benchmarks and analysis using Tavily search
-- Scrapes and processes data from Nebius AI Studio using Firecrawl
+- Scrapes and processes data from Nebius Token Factory using Firecrawl
 - Synthesizes and structures this information into a comprehensive analysis
 - Analyzes AI trends and provides specific Nebius model recommendations
 
@@ -17,7 +17,7 @@ Uses a 5-agent sequential pipeline:
 1. **ExaAgent**: Fetches latest AI news from Twitter/X
 2. **TavilyAgent**: Retrieves AI benchmarks and analysis
 3. **SummaryAgent**: Combines and formats information from the first two agents
-4. **FirecrawlAgent**: Scrapes Nebius Studio website for model information
+4. **FirecrawlAgent**: Scrapes Nebius Token Factory website for model information
 5. **AnalysisAgent**: Performs deep analysis using Llama-3.1-Nemotron-Ultra-253B model
 
 ## Installation

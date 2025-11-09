@@ -81,7 +81,7 @@ with st.sidebar:
         file_type = file.type
         file_bytes = file.getvalue()
         client = OpenAI(
-            base_url="https://api.studio.nebius.com/v1/",
+            base_url="https://api.tokenfactory.nebius.com/v1",
             api_key=api_key or os.environ.get("NEBIUS_API_KEY"),
         )
 

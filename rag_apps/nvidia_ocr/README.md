@@ -2,7 +2,7 @@
 
 # Nvidia Nemotron-Nano OCR Example
 
-A fast OCR-based document and image processing app powered by Nebius AI Studio and Nvidia's Nemotron-Nano model. Upload PDFs or images and extract structured content using AI—displayed in real-time with an interactive UI.
+A fast OCR-based document and image processing app powered by Nebius Token Factory and Nvidia's Nemotron-Nano model. Upload PDFs or images and extract structured content using AI—displayed in real-time with an interactive UI.
 
 ## Features
 
@@ -18,8 +18,8 @@ A fast OCR-based document and image processing app powered by Nebius AI Studio a
 ## Prerequisites
 
 * Python 3.10+
-* [Nebius AI Studio](https://dub.sh/nebius) Account
-* [Nebius API Key](https://studio.nebius.com/?modals=create-api-key)
+* [Nebius Token Factory](https://dub.sh/nebius) Account
+* [Nebius API Key](https://tokenfactory.nebius.com/)
 * `uv` installed (for dependency management):
   Install it globally:
 

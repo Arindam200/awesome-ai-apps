@@ -15,7 +15,7 @@ st.set_page_config(page_title="Nebius-chat", page_icon="🧠", layout="wide")
 class NebiusStudioChat:
     def __init__(self):
         self.api_key = os.getenv("NEBIUS_API_KEY")
-        self.base_url = "https://api.studio.nebius.com/v1"
+        self.base_url = "https://api.tokenfactory.nebius.com/v1"
         self.models = {
             "DeepSeek-R1-0528": "deepseek-ai/DeepSeek-R1-0528",
             "Qwen3-235B-A22B": "Qwen/Qwen3-235B-A22B",
@@ -238,7 +238,7 @@ def main():
         tool_mode = st.selectbox(
             "Choose Tool",
             ["Chat", "Image Generation"],
-            help="Select Nebius Studio tool to use",
+            help="Select Nebius Token Factory tool to use",
         )
         st.divider()
 
@@ -368,7 +368,7 @@ def main():
         with st.expander("ℹ️ Setup Instructions"):
             st.markdown(
                 """
-            1. **Get API Key**: Sign up at [Nebius AI Studio](https://console.nebius.ai/ai/llm)
+            1. **Get API Key**: Sign up at [Nebius Token Factory](https://console.nebius.ai/ai/llm)
             2. **Enter Key**: Add your API key in the sidebar
             3. **Choose Model**: Select the appropriate Nebius model
             4. **Customize**: Adjust instructions and parameters

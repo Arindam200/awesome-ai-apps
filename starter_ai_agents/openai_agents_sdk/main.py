@@ -22,7 +22,7 @@ if not resend.api_key:
     raise ValueError("RESEND_API_KEY is not set in the environment variables")
 if not api_key:
     raise ValueError("NEBIUS_API_KEY is not set in the environment variables")
-base_url = os.getenv("EXAMPLE_BASE_URL", "https://api.studio.nebius.ai/v1")
+base_url = os.getenv("EXAMPLE_BASE_URL", "https://api.tokenfactory.nebius.com/v1")
 model_name = os.getenv("EXAMPLE_MODEL_NAME", "meta-llama/Meta-Llama-3.1-8B-Instruct")
 
 client = AsyncOpenAI(base_url=base_url, api_key=api_key)

@@ -23,7 +23,7 @@ Human-in-the-Loop (HITL) workflows integrate human judgment and oversight into a
 ## Prerequisites
 
 - Python 3.10
-- [Nebius API key](https://studio.nebius.com/?modals=create-api-key) (set in .env file)
+- [Nebius API key](https://tokenfactory.nebius.com/) (set in .env file)
 
 ## Setup
 

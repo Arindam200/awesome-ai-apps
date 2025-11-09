@@ -1,8 +1,8 @@
-# Job Search Agent with Bright Data and Nebius AI Studio
+# Job Search Agent with Bright Data and Nebius Token Factory
 
 ![GIF](./assets/job-search.gif)
 
-A powerful AI-powered job search agent that analyzes LinkedIn profiles and finds relevant job opportunities using Bright Data for web scraping and Nebius AI Studio for intelligent analysis.
+A powerful AI-powered job search agent that analyzes LinkedIn profiles and finds relevant job opportunities using Bright Data for web scraping and Nebius Token Factory for intelligent analysis.
 
 ## Features
 
@@ -36,7 +36,7 @@ Before running this project, make sure you have:
 
 - Python 3.10 or higher
 - A [Bright Data](https://brightdata.com/) account and API credentials
-- [Nebius AI Studio](https://studio.nebius.com/) account and API key
+- [Nebius Token Factory](https://tokenfactory.nebius.com/) account and API key
 
 ## Project Structure
 
@@ -115,7 +115,7 @@ streamlit run app.py
 - Uses Streamlit for the web interface
 - Implements asynchronous processing with asyncio
 - Leverages Bright Data's MCP server for web scraping
-- Utilizes Nebius AI Studio's Llama-3.3-70B-Instruct model for analysis
+- Utilizes Nebius Token Factory's Llama-3.3-70B-Instruct model for analysis
 - Implements proper error handling and logging
 
 ## Contributing
@@ -125,5 +125,5 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Acknowledgments
 
 - [Bright Data](https://brightdata.com/) for web scraping capabilities
-- [Nebius AI Studio](https://studio.nebius.com/) for AI model access
+- [Nebius Token Factory](https://tokenfactory.nebius.com/) for AI model access
 - [Streamlit](https://streamlit.io/) for the web interface framework

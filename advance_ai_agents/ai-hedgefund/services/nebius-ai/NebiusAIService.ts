@@ -11,9 +11,9 @@ export class NebiusAIService {
    * @param baseURL Nebius base URL, defaults to environment variable  
    * @param model Model to use, defaults to environment variable  
    */  
-  constructor(apiKey?: string, baseURL?: string, model?: string) {  
-    const resolvedApiKey = apiKey || (typeof process !== 'undefined' ? process.env.NEBIUS_API_KEY : '') || '';  
-    this.baseURL = baseURL || (typeof process !== 'undefined' ? process.env.NEBIUS_BASE_URL : '') || 'https://api.studio.nebius.com/v1/';  
+  constructor(apiKey?: string, baseURL?: string, model?: string) {
+    const resolvedApiKey = apiKey || (typeof process !== 'undefined' ? process.env.NEBIUS_API_KEY : '') || '';
+    this.baseURL = baseURL || (typeof process !== 'undefined' ? process.env.NEBIUS_BASE_URL : '') || 'https://api.tokenfactory.nebius.com/v1';
     this.model = model || (typeof process !== 'undefined' ? process.env.NEBIUS_MODEL : '') || 'Qwen/Qwen3-235B-A22B';  
     
     if (!resolvedApiKey) {  

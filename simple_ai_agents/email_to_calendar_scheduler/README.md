@@ -39,7 +39,7 @@ The system intelligently extracts event details from emails (dates, times, locat
 - Python 3.9+
 - [uv](https://github.com/astral-sh/uv) or pip for package management
 - API keys and credentials for the following services:
-  - [NEBIUS API](https://studio.nebius.com/) for LLM access
+  - [NEBIUS API](https://tokenfactory.nebius.com/) for LLM access
   - Google Cloud Project with Gmail and Calendar APIs enabled
   - OAuth 2.0 credentials file (`credentials.json`)
 
@@ -204,5 +204,5 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 ## 🙏 Acknowledgments
 
 - Shoutout to [Agno Framework](https://github.com/agno-agi/agno) for their powerful multi-agent system.
-- Thanks to [Nebius](https://studio.nebius.com/) for providing fast LLM inference.
+- Thanks to [Nebius](https://tokenfactory.nebius.com/) for providing fast LLM inference.
 - Built with the Qwen 3 32B model for intelligent reasoning and task execution.
