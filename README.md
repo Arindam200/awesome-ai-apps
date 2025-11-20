@@ -135,6 +135,8 @@ Interested in sponsoring this project? Feel free to reach out!
 - [DSPy Starter](starter_ai_agents/dspy_starter) - DSPy framework for building and optimizing AI systems.
 - [Google ADK Starter](starter_ai_agents/google_adk_starter) - Google Agent Development Kit starter.
 - [cagent Starter](starter_ai_agents/cagent_starter) -  An open source and easy to use, customizable multi-agent runtime by Docker that orchestrates AI agents
+- [Mastra with OpenAI OSS](https://github.com/mastra-ai/template-openai-oss) - A Mastra template that works with LM Studio and the OpenAI OSS 20b model.
+  
 
 ### 🪶 Simple Agents
 
@@ -150,6 +152,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Web Automation Agent](simple_ai_agents/browser_agent) - Simple Browser Agent implementation with Nebius & browser use.
 - [Nebius Chat](simple_ai_agents/nebius_chat) - Nebius Token Factory Chat interface.
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Talk to your Database with GibsonAI & Langchain
+- [PDF to audio](https://github.com/mastra-ai/template-pdf-to-audio) - A Mastra template for processing structured PDFs, and synthesizing content with voice capabilities.
 <!-- - [YouTube Channel Analyzer](simple_ai_agents/youtube_channel_analyzer) - Analyze YouTube channels and extract insights. -->
 <!-- - [Memory Agent](simple_ai_agents/memory_agent) - Agent with persistent memory capabilities. -->
 
@@ -216,6 +219,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [YouTube to Blog Agent](advance_ai_agents/youtube_to_blog_agent) - Convert YouTube content to blog posts. -->
 - [Smart GTM Agent](advance_ai_agents/smart_gtm_agent) - Go-to-market strategy and analysis agent.
 - [Conference Agnostic CFP Generator](advance_ai_agents/conference_agnositc_cfp_generator) - Generate conference proposals automatically.
+- [Mastra coding agent](https://github.com/mastra-ai/template-coding-agen) - An advanced template that provides a coding agent capable of writing code in secure, isolated E2B sandboxes.
 
 ## 📺 Playlist of Demo Videos & Tutorials
 
