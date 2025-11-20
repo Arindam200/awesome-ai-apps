@@ -143,8 +143,16 @@ def search_jobs_with_exa(config: JobSearchConfig) -> List[dict]:
                     if result.url not in seen_urls:
                         seen_urls.add(result.url)
                         all_results.append(result)
-            except Exception:
-                pass
+            except Exception as search_error:
+                # Fallback search failed (API error, network issue, etc.)
+                # Proceed with existing results from domain group searches
+                # This is acceptable since we may already have enough results
+                if len(all_results) == 0:
+                    # If we have no results at all, re-raise to fail the entire search
+                    raise Exception(
+                        f"All job searches failed. Last error: {str(search_error)}"
+                    )
+                # Otherwise, continue with partial results
 
         # Initialize LLM for better extraction if API key is available
         llm = None
@@ -213,8 +221,11 @@ Company name:"""
                 and company.lower() not in ["none", "not specified", "n/a", "unknown"]
             ):
                 return company
-        except Exception:
-            pass
+        except Exception as llm_error:
+            # LLM extraction failed (API error, rate limit, etc.)
+            # Fall through to regex extraction below - this is the intended fallback behavior
+            # Suppress the error and let regex extraction handle it as fallback
+            _ = llm_error  # Acknowledge error but proceed with regex fallback
 
     # Fallback to regex extraction
     # Look for patterns like "at Company Name" or "Company Name is hiring"

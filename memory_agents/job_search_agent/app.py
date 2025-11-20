@@ -8,11 +8,9 @@ import base64
 import streamlit as st
 from memori import Memori
 from dotenv import load_dotenv
-import json
-from typing import List, Optional
 from workflow import JobSearchConfig, process_job_search
 from langchain_nebius import ChatNebius
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import HumanMessage
 from resume_parser import extract_text_from_pdf, parse_resume
 
 # Load environment variables
@@ -255,24 +253,21 @@ with tab1:
                     # Ingest search into Memori for Memory Q&A
                     if st.session_state.memori_initialized:
                         try:
-                            from memorisdk import MemoriContext
-
                             # Store search summary
                             summary_text = (
                                 f"Searched for {job_title} jobs"
                                 + (f" in {location}" if location else "")
                                 + f" ({work_style} work style). Found {len(job_listings)} listings."
                             )
-                            st.session_state.memori.ingest(
-                                MemoriContext(
-                                    user_input=f"Search jobs: {job_title} in {location or 'any location'} ({work_style})",
-                                    assistant_output=summary_text,
-                                )
+                            st.session_state.memori.record_conversation(
+                                user_input=f"Search jobs: {job_title} in {location or 'any location'} ({work_style})",
+                                ai_output=summary_text,
                             )
 
                             # Store each job description in memori for resume matching
                             for job in job_listings:
-                                job_description_text = f"""Job Listing:
+                                try:
+                                    job_description_text = f"""Job Listing:
 Title: {job.title}
 Company: {job.company}
 Location: {job.location}
@@ -283,14 +278,19 @@ URL: {job.url}
 Full Job Description:
 {job.description}
 """
-                                st.session_state.memori.ingest(
-                                    MemoriContext(
+                                    st.session_state.memori.record_conversation(
                                         user_input=f"Job listing: {job.title} at {job.company}",
-                                        assistant_output=job_description_text,
+                                        ai_output=job_description_text,
                                     )
-                                )
-                        except Exception:
-                            pass
+                                except Exception as ingest_error:
+                                    # Continue with other jobs if one fails to ingest
+                                    st.warning(
+                                        f"Could not store job '{job.title}' in memory: {str(ingest_error)}"
+                                    )
+                        except Exception as e:
+                            st.warning(
+                                f"Could not store job search results in memory: {str(e)}"
+                            )
 
                 except Exception as e:
                     st.error(f"❌ Error during job search: {str(e)}")
@@ -331,8 +331,6 @@ with tab2:
                     # Store in Memori
                     if st.session_state.memori_initialized:
                         try:
-                            from memorisdk import MemoriContext
-
                             resume_summary = f"""Resume Information:
 {parsed_resume.get('extracted_summary', 'Resume uploaded and processed')}
 
@@ -342,11 +340,9 @@ Key Details:
 - Phone: {parsed_resume.get('phone', 'Not found')}
 """
 
-                            st.session_state.memori.ingest(
-                                MemoriContext(
-                                    user_input="Uploaded resume for job matching",
-                                    assistant_output=resume_summary,
-                                )
+                            st.session_state.memori.record_conversation(
+                                user_input="Uploaded resume for job matching",
+                                ai_output=resume_summary,
                             )
                             st.success("✅ Resume processed and stored in memory!")
                         except Exception as e:
@@ -416,8 +412,9 @@ with tab3:
                                     "\n\nMemori context from prior searches:\n"
                                     + "\n".join(f"- {r}" for r in memori_results)
                                 )
-                        except Exception:
-                            pass
+                        except Exception as search_error:
+                            # Continue without Memori context if search fails
+                            st.warning(f"Could not search memory: {str(search_error)}")
 
                     # Get current search results context
                     search_context = ""
@@ -476,16 +473,15 @@ If asked outside scope, politely say you only answer about stored job searches a
 
                     if st.session_state.memori_initialized:
                         try:
-                            from memorisdk import MemoriContext
-
-                            st.session_state.memori.ingest(
-                                MemoriContext(
-                                    user_input=memory_prompt,
-                                    assistant_output=response_text,
-                                )
+                            st.session_state.memori.record_conversation(
+                                user_input=memory_prompt,
+                                ai_output=response_text,
                             )
-                        except Exception:
-                            pass
+                        except Exception as ingest_error:
+                            # Continue even if memory ingestion fails
+                            st.warning(
+                                f"Could not store conversation in memory: {str(ingest_error)}"
+                            )
 
                     st.session_state.memory_messages.append(
                         {"role": "assistant", "content": response_text}
