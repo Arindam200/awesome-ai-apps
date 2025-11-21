@@ -178,6 +178,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [AWS Strands Agent with Memori](memory_agents/aws_strands_agent_with_memori) - AWS Strands agent enhanced with Memori memory.
 - [Blog Writing Agent](memory_agents/blog_writing_agent) - Personalized blog writing agent with memory.
 - [Social Media Agent](memory_agents/social_media_agent) - Social media automation agent with memory.
+- [Job Search Agent](memory_agents/job_search_agent) - Job search agent with memory.
 
 ### 📚 RAG Applications
 
