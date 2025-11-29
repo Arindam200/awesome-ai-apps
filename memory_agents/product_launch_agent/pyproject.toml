@@ -1,0 +1,18 @@
+[project]
+name = "product-launch-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "agno>=2.3.2",
+    "beautifulsoup4>=4.14.2",
+    "certifi>=2024.2.2",
+    "lxml>=6.0.2",
+    "memori==3.0.0b3",
+    "openai>=1.0.0",
+    "pymongo>=4.6.0",
+    "requests>=2.32.5",
+    "sqlalchemy>=2.0.44",
+    "streamlit>=1.51.0",
+]
