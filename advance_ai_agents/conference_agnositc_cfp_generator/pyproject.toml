@@ -1,0 +1,19 @@
+[project]
+name = "conference-agnostic-cfp-generator"
+version = "0.1.0"
+description = "Generate conference proposals automatically"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.28.0",
+    "python-dotenv>=1.0.0",
+    "openai>=1.0.0",
+    "exa-py>=1.0.0",
+    "tavily-python>=0.3.0",
+    "aiohttp>=3.9.0",
+    "beautifulsoup4>=4.12.0",
+    "couchbase>=4.1.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "requests>=2.31.0",
+]

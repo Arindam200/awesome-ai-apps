@@ -1,0 +1,14 @@
+[project]
+name = "candidate-analyser"
+version = "0.1.0"
+description = "Analyze GitHub/LinkedIn profiles"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.45.0",
+    "openai>=1.57.1",
+    "pandas>=2.2.3",
+    "groq>=0.13.0",
+    "pydantic>=2.10.11",
+    "pyyaml>=6.0.1",
+]

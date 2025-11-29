@@ -1,5 +1,5 @@
-
 ![banner](./banner.png)
+
 # OpenAI Agents SDK Starter Agent
 
 A simple demonstration of using OpenAI's Agents SDK with Nebius Token Factory's API to create an AI assistant that can send emails.
@@ -32,7 +32,11 @@ The application requires the following environment variables:
 2. Install the required dependencies:
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 3. Set up your environment variables
@@ -59,5 +63,3 @@ Modify the `main.py` file to:
 - Add more tools
 - Alter the example query
 - Configure different LLM models
-
-

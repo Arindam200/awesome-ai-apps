@@ -5,6 +5,7 @@ A comprehensive AI analysis pipeline that analyzes AI news, benchmarks, and tren
 ## Overview
 
 This agent demonstrates a complex 5-agent sequential pipeline that:
+
 - Fetches the latest AI news from Twitter/X using Exa search
 - Retrieves AI benchmarks and analysis using Tavily search
 - Scrapes and processes data from Nebius Token Factory using Firecrawl
@@ -14,6 +15,7 @@ This agent demonstrates a complex 5-agent sequential pipeline that:
 ## Technical Pattern
 
 Uses a 5-agent sequential pipeline:
+
 1. **ExaAgent**: Fetches latest AI news from Twitter/X
 2. **TavilyAgent**: Retrieves AI benchmarks and analysis
 3. **SummaryAgent**: Combines and formats information from the first two agents
@@ -23,22 +25,30 @@ Uses a 5-agent sequential pipeline:
 ## Installation
 
 1. Clone the Repo
+
 ```bash
 git clone https://github.com/Arindam200/awesome-ai-apps.git
 cd advance_ai_agents/trend_analyzer_agent
 ```
 
 2. Install dependencies:
+
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 3. Set up environment variables:
+
 ```bash
 cp .env.example .env
 ```
 
 4. Edit the `.env` file with your API keys:
+
 ```
 NEBIUS_API_KEY="your_nebius_api_key_here"
 NEBIUS_API_BASE="https://api.studio.nebius.ai/v1"
@@ -50,6 +60,7 @@ FIRECRAWL_API_KEY="your_firecrawl_api_key_here"
 ## Usage
 
 Run with ADK CLI:
+
 ```bash
 # Terminal - Run directly in the terminal
 adk run analyzer_agent
@@ -63,4 +74,4 @@ adk web
 - [Nebius AI](https://dub.sh/AIStudio) - For LLM inference
 - [Exa](https://exa.ai/) - For AI news search
 - [Tavily](https://tavily.com/) - For specialized search
-- [Firecrawl](https://firecrawl.dev/) - For web scraping 
+- [Firecrawl](https://firecrawl.dev/) - For web scraping

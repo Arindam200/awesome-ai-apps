@@ -1,0 +1,10 @@
+[project]
+name = "crewai-starter"
+version = "0.1.0"
+description = "Multi-agent research team using CrewAI"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "litellm",
+    "crewai",
+]

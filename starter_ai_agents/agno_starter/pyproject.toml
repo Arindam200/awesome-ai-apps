@@ -1,0 +1,14 @@
+[project]
+name = "agno-starter"
+version = "0.1.0"
+description = "Agno-based agent for trend analysis on HackerNews"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "agno>=1.5.1",
+    "mcp>=1.8.1",
+    "openai>=1.78.1",
+    "python-dotenv>=1.1.0",
+    "requests",
+    "pytz",
+]

@@ -29,7 +29,11 @@ cd starter_ai_agents/agno_starter
 2. Install dependencies:
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 3. Create a `.env` file in the project root and add your Nebius API key:

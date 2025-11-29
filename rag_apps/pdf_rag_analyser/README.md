@@ -37,7 +37,11 @@ source venv/bin/activate
 ### 3. Install Required Dependencies
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 ### 4. Run the App

@@ -183,9 +183,6 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Gemma3 OCR](rag_apps/gemma_ocr/) - OCR-based document and image processor using Gemma3
 - [Nvidia Nemotron OCR](rag_apps/nvidia_ocr/) - OCR-based Document and image parse using Nvidia Nemotron-Nano-V2-12b
 - [Contextual AI RAG](rag_apps/contextual_ai_rag) - Enterprise-level RAG with managed datastores and quality evaluation.
-<!-- - [Corrective RAG](rag_apps/corrective_rag) - Self-correcting RAG system with feedback loops.
-- [Self RAG](rag_apps/self_rag) - Self-reflective RAG with quality assessment.
-- [LangExtract Example](rag_apps/langextract-example) - Document extraction and processing with LangExtract. -->
 
 ### 🔬 Advanced Agents
 
@@ -201,9 +198,6 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Startup Idea Validator Agent](advance_ai_agents/startup_idea_validator_agent) - Agentic Workflow to validate and analyze startup ideas.
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent) - Agentic Workflow that send meeting notes and creates task based on conversation.
 - [AI Hedgefund](advance_ai_agents/ai-hedgefund) - Agentic Workflow for financial analysis.
-<!-- - [Outreach Agent](advance_ai_agents/outreach_agent) - Automated outreach and communication agent.
-- [Product Recommendation Agent](advance_ai_agents/product_recomendation_agent) - AI-powered product recommendation system.
-- [YouTube to Blog Agent](advance_ai_agents/youtube_to_blog_agent) - Convert YouTube content to blog posts. -->
 - [Smart GTM Agent](advance_ai_agents/smart_gtm_agent) - Go-to-market strategy and analysis agent.
 - [Conference Agnostic CFP Generator](advance_ai_agents/conference_agnositc_cfp_generator) - Generate conference proposals automatically.
 
@@ -259,6 +253,10 @@ Get easy-to-follow weekly tutorials and deep dives on AI, LLMs, and agent framew
 
    ```bash
    pip install -r requirements.txt
+
+   or
+
+   uv sync
    ```
 
 4. **Follow project-specific instructions**

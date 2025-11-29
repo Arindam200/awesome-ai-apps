@@ -1,0 +1,12 @@
+[project]
+name = "openai-agents-sdk"
+version = "0.1.0"
+description = "OpenAI Agents SDK based email helper & haiku writer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openai-agents",
+    "pydantic",
+    "resend",
+    "python-dotenv",
+]

@@ -1,0 +1,11 @@
+[project]
+name = "google-adk-starter"
+version = "0.1.0"
+description = "Google Agent Development Kit starter"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "google-adk",
+    "resend",
+    "python-dotenv",
+]

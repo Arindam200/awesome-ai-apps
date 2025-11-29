@@ -36,7 +36,11 @@ cd awesome-ai-apps/simple_ai_agents/finance_agent
 ### 2. Install Dependencies
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 ### 3. Set Up Environment Variables

@@ -60,7 +60,11 @@ source venv/bin/activate  # On Windows, use: venv\Scripts\activate
 3. Install dependencies:
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 4. Create a `.env` file in the project root with your API keys:

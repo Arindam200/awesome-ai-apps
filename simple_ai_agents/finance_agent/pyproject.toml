@@ -1,0 +1,10 @@
+[project]
+name = "finance-agent"
+version = "0.1.0"
+description = "Finance agent that tracks live stock & market data"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "agno",
+    "openai",
+]

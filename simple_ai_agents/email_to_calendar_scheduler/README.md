@@ -26,7 +26,7 @@ An advanced multi-agent system that automates email management and calendar sche
 
 The Smart Scheduler Assistant operates through a coordinated multi-agent system:
 
-1. **Email Agent** retrieves and reads the latest emails from your Gmail account, summarizes them and filters out unnecessary emails. 
+1. **Email Agent** retrieves and reads the latest emails from your Gmail account, summarizes them and filters out unnecessary emails.
 2. **Calendar Agent** processes the filtered emails and updates your Google Calendar accordingly
 3. **Team Coordinator** orchestrates the workflow between all agents to ensure seamless operation
 
@@ -100,8 +100,6 @@ Follow these steps carefully to set up Google Cloud credentials:
 
 Before running the main application, you need to authenticate once to generate the `token.json` file:
 
-
-
 1. Run the authentication script:
 
    ```bash
@@ -109,6 +107,7 @@ Before running the main application, you need to authenticate once to generate t
    ```
 
 2. A browser window will open automatically:
+
    - Select your Google account
    - Click "Allow" to grant access to Gmail and Calendar
    - You may see a warning that the app isn't verified - click "Advanced" and then "Go to Smart Scheduler Assistant (unsafe)"
@@ -160,6 +159,7 @@ Before running the main application, you need to authenticate once to generate t
    ```
 
 2. **Interact with the assistant:**
+
    - The assistant will greet you with: "🧠 Smart Scheduler Assistant is running. Type 'exit' to quit."
    - Type your requests in natural language, such as:
      - "Read my latest 5 emails and schedule any meetings"
@@ -199,7 +199,6 @@ Contributions are welcome! Please feel free to submit a Pull Request. See the [C
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](https://github.com/Arindam200/awesome-ai-apps/blob/main/LICENSE) file for details.
-
 
 ## 🙏 Acknowledgments
 

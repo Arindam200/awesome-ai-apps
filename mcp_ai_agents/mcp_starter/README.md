@@ -32,7 +32,11 @@ NEBIUS_API_KEY=your_nebius_api_key
 2. Install dependencies:
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 ## Usage
@@ -58,4 +62,3 @@ The tool uses the Model Context Protocol (MCP) to interact with GitHub's API and
 2. Uses Nebius AI's Meta-Llama-3.1-8B-Instruct model for intelligent analysis
 3. Retrieves and analyzes repository data
 4. Provides detailed insights about issues and commits
-

@@ -40,23 +40,31 @@ A powerful, conference-agnostic RAG (Retrieval-Augmented Generation) application
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone <repository-url>
 cd conference-talk-abstract-generator
 ```
 
 2. **Install dependencies**
+
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 3. **Configure environment variables**
+
 ```bash
 cp .env.example .env
 # Edit .env with your API keys and Couchbase credentials
 ```
 
 4. **Run the application**
+
 ```bash
 python main.py
 ```
@@ -67,7 +75,7 @@ The Streamlit interface will open at `http://localhost:8501`
 
 Create a `.env` file with the following configuration:
 
-```env
+````env
 # Nebius AI Configuration (for chat completions and embeddings)
 NEBIUS_API_KEY=your_nebius_api_key_here
 NEBIUS_API_BASE=https://api.tokenfactory.nebius.com/v1
@@ -167,7 +175,7 @@ The system automatically creates collections as needed, but you can pre-create:
 CREATE BUCKET `conferences`;
 
 -- Collections are auto-created as `talks_{conference_id}`
-```
+````
 
 ### 2. Vector Search Index
 
@@ -183,12 +191,14 @@ Indexes are automatically created with optimal settings:
         "_default.talks_{conference_id}": {
           "properties": {
             "embedding": {
-              "fields": [{
-                "name": "embedding",
-                "type": "vector",
-                "dims": 4096,
-                "similarity": "dot_product"
-              }]
+              "fields": [
+                {
+                  "name": "embedding",
+                  "type": "vector",
+                  "dims": 4096,
+                  "similarity": "dot_product"
+                }
+              ]
             }
           }
         }
@@ -201,18 +211,21 @@ Indexes are automatically created with optimal settings:
 ## 🎯 Example Use Cases
 
 ### Technology Research
+
 ```
 Input: "Advanced OpenTelemetry patterns for distributed tracing"
 Output: Comprehensive proposal with current best practices and historical context
 ```
 
 ### Implementation Stories
+
 ```
 Input: "Migrating from Prometheus to Grafana Cloud"
 Output: Real-world migration guide with lessons learned
 ```
 
 ### Emerging Trends
+
 ```
 Input: "WebAssembly in Kubernetes workloads"
 Output: Cutting-edge proposal combining latest research with practical applications
@@ -268,6 +281,7 @@ conference-talk-abstract-generator/
 ## 🐛 Troubleshooting
 
 ### Vector Search Issues
+
 ```bash
 # Check if search index exists
 python scripts/create_search_indexes.py list
@@ -277,6 +291,7 @@ python scripts/create_search_indexes.py create conference_id
 ```
 
 ### Connection Problems
+
 ```bash
 # Test Couchbase connection
 python -c "from src.models.corpus_manager import ConferenceCorpusManager; cm = ConferenceCorpusManager()"
@@ -286,6 +301,7 @@ python -c "from src.config.nebius_client import NebiusClient; nc = NebiusClient(
 ```
 
 ### Crawling Failures
+
 - Check conference URL accessibility
 - Verify platform is supported
 - Review rate limiting settings
@@ -294,16 +310,19 @@ python -c "from src.config.nebius_client import NebiusClient; nc = NebiusClient(
 ## 🚀 Performance Optimization
 
 ### Crawling Performance
+
 - **Batch Size**: Start with 10, increase for faster servers
 - **Rate Limiting**: 1-2 seconds between batches is usually safe
 - **Concurrent Requests**: Limited to prevent overwhelming conference sites
 
 ### Search Performance
+
 - **Vector Indexes**: Ensure proper index creation and building
 - **Query Optimization**: Use specific keywords and categories
 - **Caching**: Results are cached within sessions
 
 ### Memory Management
+
 - **Streaming**: Large datasets are processed in chunks
 - **Connection Pooling**: Efficient database connection reuse
 - **Cleanup**: Automatic resource cleanup on application exit
@@ -332,6 +351,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 📞 Support
 
 For questions and support:
+
 - Open an issue in the GitHub repository
 - Check the troubleshooting section above
 - Review the Couchbase and Nebius AI documentation

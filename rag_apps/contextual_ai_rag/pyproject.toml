@@ -1,0 +1,12 @@
+[project]
+name = "contextual-ai-rag"
+version = "0.1.0"
+description = "Enterprise-level RAG with managed datastores and quality evaluation"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.28.0",
+    "contextual-client>=0.1.0",
+    "python-dotenv>=1.0.0",
+    "llama-index-llms-nebius>=0.2.1",
+]

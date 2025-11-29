@@ -1,0 +1,15 @@
+[project]
+name = "email-to-calendar-scheduler"
+version = "0.1.0"
+description = "Smart Scheduler Assistant - AI-powered Gmail reader and Google Calendar manager"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "agno>=2.1.8",
+    "google-api-python-client>=2.185.0",
+    "google-auth>=2.41.1",
+    "google-auth-httplib2>=0.2.0",
+    "google-auth-oauthlib>=1.2.2",
+    "openai",
+    "python-dotenv>=1.1.1",
+]

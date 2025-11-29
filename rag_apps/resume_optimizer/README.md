@@ -38,7 +38,11 @@ cd rag_apps/resume_optimizer
 2. Install the required dependencies:
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 3. Create a `.env` file in the project root and add your Nebius API key:

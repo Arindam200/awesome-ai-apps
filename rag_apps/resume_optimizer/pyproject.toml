@@ -1,0 +1,15 @@
+[project]
+name = "resume-optimizer"
+version = "0.1.0"
+description = "Boost resumes with AI"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit",
+    "llama-index",
+    "llama-index-llms-nebius",
+    "llama-index-embeddings-nebius",
+    "python-dotenv",
+    "PyPDF2",
+    "pydantic",
+]

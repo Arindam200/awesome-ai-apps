@@ -32,7 +32,11 @@ cd rag_apps/qwen3_rag
 2. Install the required packages:
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 3. Set up your environment variables:

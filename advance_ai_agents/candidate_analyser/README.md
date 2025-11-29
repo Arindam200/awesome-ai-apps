@@ -27,7 +27,7 @@
 ## ⚡ Features
 
 - ✅ **Multi-Candidate Analyzer**  
-  Analyze *multiple* GitHub users side-by-side for any job role.
+  Analyze _multiple_ GitHub users side-by-side for any job role.
 
 - ✅ **Single Candidate Profiler**  
   Deep analysis of one candidate's GitHub + optional LinkedIn profile.
@@ -45,14 +45,14 @@
 
 ## 🧰 Tech Stack
 
-| Component         | Tool/Library                        |
-|-------------------|-------------------------------------|
-| **UI**            | 🧼 Streamlit                        |
-| **AI Model** | 🧠 DeepSeek via Nebius |
-| **Agent Framework** | 🧠 Agno Agents                    |
-| **GitHub Analysis**| 🛠️ GitHubTools                    |
-| **LinkedIn Parsing**| 🔎 ExaTools                       |
-| **Reasoning Engine**| 🧩 ReasoningTools + ThinkingTools |
+| Component            | Tool/Library                      |
+| -------------------- | --------------------------------- |
+| **UI**               | 🧼 Streamlit                      |
+| **AI Model**         | 🧠 DeepSeek via Nebius            |
+| **Agent Framework**  | 🧠 Agno Agents                    |
+| **GitHub Analysis**  | 🛠️ GitHubTools                    |
+| **LinkedIn Parsing** | 🔎 ExaTools                       |
+| **Reasoning Engine** | 🧩 ReasoningTools + ThinkingTools |
 
 ---
 
@@ -68,7 +68,11 @@ cd advance_ai_agents/candidate_analyser
 ### 2. Install Requirements
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 ### 3. Get API Keys
@@ -133,12 +137,11 @@ Agent(
 ```
 
 **This agent:**
+
 - Thinks before evaluating (🧠)
 - Gathers accurate GitHub + LinkedIn info (🔍)
 - Reasons like an expert hiring manager (📈)
 - Provides a final score with strict justification (✅❌)
-
-
 
 ## 🔗 Links
 
