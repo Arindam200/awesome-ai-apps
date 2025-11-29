@@ -94,19 +94,6 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ---
 
-<!-- ## 🚀 Featured AI Agent Frameworks
-
-- [<img src="https://raw.githubusercontent.com/google/adk-python/main/assets/agent-development-kit.png" alt="Google ADK logo" width="20" height="20"> Google Agent Development Kit (ADK)](https://google.github.io/adk-docs/)
-- [<img src="https://avatars.githubusercontent.com/u/14957082?s=200&v=4" alt="OpenAI Agents SDK logo" width="20" height="20"> OpenAI Agents SDK](https://openai.github.io/openai-agents-python/)
-- [<img src="https://cdn.simpleicons.org/langchain" alt="LangChain logo" width="25" height="25"> LangChain ](https://python.langchain.com/)
-- [<img src="https://avatars.githubusercontent.com/u/130722866?s=200&v=4" alt="Llamaindex logo" width="20" height="20"> LlamaIndex](https://www.llamaindex.ai/)
-- [<img src="https://avatars.githubusercontent.com/u/104874993?s=48&v=4" alt="Agno logo" width="20" height="20"> Agno](https://www.agno.com/)
-- [<img src="https://cdn.prod.website-files.com/66cf2bfc3ed15b02da0ca770/66d07240057721394308addd_Logo%20(1).svg" alt="CrewAI logo" width="35" height="25"> CrewAI](https://www.crewai.com/)
-- [<img src="https://avatars.githubusercontent.com/u/209155962?s=200&v=4" alt="AWS Strands Agents logo" width="20" height="20"> AWS Strands Agent](https://strandsagents.com/)
-- [<img src="https://avatars.githubusercontent.com/u/110818415?s=200&v=4" alt="Pydantic AI logo" width="20" height="20"> Pydantic AI](https://ai.pydantic.dev/)
-- [<img src="https://avatars.githubusercontent.com/u/134388954?s=200&v=4" alt="Camel AI logo" width="20" height="20"> CAMEL‑AI](https://www.camel-ai.org/)
-- [<img src="assets/DSPy.png" alt="DSPy logo" width="20" height="20"> DSPy](https://dspy.ai/) -->
-
 ## 🎓 **NEW: AWS Strands Course for Beginners**
 
 **Comprehensive hands-on course on building AI agents with AWS Strands SDK:**
@@ -134,12 +121,13 @@ Interested in sponsoring this project? Feel free to reach out!
 <!-- - [Autogen Starter](starter_ai_agents/autogen_starter) - Microsoft Autogen multi-agent conversation framework. -->
 - [DSPy Starter](starter_ai_agents/dspy_starter) - DSPy framework for building and optimizing AI systems.
 - [Google ADK Starter](starter_ai_agents/google_adk_starter) - Google Agent Development Kit starter.
-- [cagent Starter](starter_ai_agents/cagent_starter) -  An open source and easy to use, customizable multi-agent runtime by Docker that orchestrates AI agents
+- [cagent Starter](starter_ai_agents/cagent_starter) - An open source and easy to use, customizable multi-agent runtime by Docker that orchestrates AI agents
 
 ### 🪶 Simple Agents
 
 **Straightforward, practical use-cases:**
 
+- [Agno AI Examples](simple_ai_agents/agno_ai_examples) - Simple to multi-agent examples with web search & knowledge base.
 - [Finance Agent](simple_ai_agents/finance_agent) - Tracks live stock & market data.
 - [Human-in-the-Loop Agent](simple_ai_agents/human_in_the_loop_agent) - HITL actions for safe AI tasks.
 - [Newsletter Generator](simple_ai_agents/newsletter_agent) - AI newsletter builder with Firecrawl.
@@ -147,11 +135,10 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Agno UI Example](simple_ai_agents/agno_ui_agent) - UI for web & finance agents.
 - [Mastra Weather Bot](simple_ai_agents/mastra_ai_weather_agent) - Weather updates with Mastra AI.
 - [Calendar Assistant](simple_ai_agents/cal_scheduling_agent) - Calendar scheduling with Cal.com.
+- [Smart Scheduler Assistant](simple_ai_agents/email_to_calendar_scheduler) - AI-powered Gmail reader and Google Calendar manager.
 - [Web Automation Agent](simple_ai_agents/browser_agent) - Simple Browser Agent implementation with Nebius & browser use.
 - [Nebius Chat](simple_ai_agents/nebius_chat) - Nebius Token Factory Chat interface.
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Talk to your Database with GibsonAI & Langchain
-<!-- - [YouTube Channel Analyzer](simple_ai_agents/youtube_channel_analyzer) - Analyze YouTube channels and extract insights. -->
-<!-- - [Memory Agent](simple_ai_agents/memory_agent) - Agent with persistent memory capabilities. -->
 
 ### 🗂️ MCP Agents
 
@@ -179,6 +166,8 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Blog Writing Agent](memory_agents/blog_writing_agent) - Personalized blog writing agent with memory.
 - [Social Media Agent](memory_agents/social_media_agent) - Social media automation agent with memory.
 - [Job Search Agent](memory_agents/job_search_agent) - Job search agent with memory.
+- [Brand Reputation Monitor](memory_agents/brand_reputation_monitor) - AI-powered brand reputation monitoring with news analysis and sentiment tracking.
+- [Product Launch Agent](memory_agents/product_launch_agent) - Competitive intelligence tool for analyzing competitor product launches.
 
 ### 📚 RAG Applications
 
