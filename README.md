@@ -201,6 +201,10 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Smart GTM Agent](advance_ai_agents/smart_gtm_agent) - Go-to-market strategy and analysis agent.
 - [Conference Agnostic CFP Generator](advance_ai_agents/conference_agnositc_cfp_generator) - Generate conference proposals automatically.
 
+## 🤖 Agent UI
+
+- [CopilotKit](https://github.com/CopilotKit/CopilotKit) - Bridges your backend agents to an interactive frontend - streaming, reasoning, tool calls, and structured outputs in real time.
+
 ## 📺 Playlist of Demo Videos & Tutorials
 
 ### 🎓 **Course Playlists**
