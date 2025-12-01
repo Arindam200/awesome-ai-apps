@@ -168,6 +168,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Job Search Agent](memory_agents/job_search_agent) - Job search agent with memory.
 - [Brand Reputation Monitor](memory_agents/brand_reputation_monitor) - AI-powered brand reputation monitoring with news analysis and sentiment tracking.
 - [Product Launch Agent](memory_agents/product_launch_agent) - Competitive intelligence tool for analyzing competitor product launches.
+- [AI Consultant Agent](memory_agents/ai_consultant_agent/) - An AI-powered consulting agent that uses **Memori v3** as a long-term memory fabric and **ExaAI** for research.
 
 ### 📚 RAG Applications
 
