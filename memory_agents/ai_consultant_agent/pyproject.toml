@@ -1,0 +1,20 @@
+[project]
+name = "ai-consultant-agent"
+version = "0.1.0"
+description = "AI Consultant Agent with LangChain, ExaAI, and Memori"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "langchain>=0.1.0",
+    "langchain-nebius>=0.1.3",
+    "langchain-core>=0.1.0",
+    "exa-py>=1.0.0",
+    "memori>=3.0.0b3",
+    "sqlalchemy>=2.0.0",
+    "openai>=2.6.1",
+    "streamlit>=1.50.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+
