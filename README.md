@@ -122,7 +122,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [DSPy Starter](starter_ai_agents/dspy_starter) - DSPy framework for building and optimizing AI systems.
 - [Google ADK Starter](starter_ai_agents/google_adk_starter) - Google Agent Development Kit starter.
 - [cagent Starter](starter_ai_agents/cagent_starter) - An open source and easy to use, customizable multi-agent runtime by Docker that orchestrates AI agents
-- [Sayna](https://github.com/SaynaAI/sayna) - Voice layer for AI agents with real-time STT/TTS, multi-provider support (Deepgram, ElevenLabs, Azure, Google), and WebSocket streaming.
+- [Sayna Voice Agent](starter_ai_agents/sayna_starter) - Real-time voice infrastructure with multi-provider STT/TTS (Deepgram, ElevenLabs, Azure, Google) and WebSocket streaming.
 
 ### 🪶 Simple Agents
 
