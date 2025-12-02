@@ -1,0 +1,23 @@
+[project]
+name = "customer_support_voice_agent"
+version = "0.1.0"
+description = "Customer Support Voice Agent using Memori v3, Firecrawl, and OpenAI GPT-4o + TTS."
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.36.0",
+    "python-dotenv>=1.0.1",
+    "sqlalchemy>=2.0.25",
+    "memori>=0.3.0",          # Adjust to the version you use elsewhere in this repo
+    "openai>=1.40.0",
+    "firecrawl-py>=0.1.0",    # Firecrawl Python SDK
+    "pydantic>=2.7.0",
+]
+
+[project.optional-dependencies]
+dev = ["black", "ruff", "mypy"]
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
