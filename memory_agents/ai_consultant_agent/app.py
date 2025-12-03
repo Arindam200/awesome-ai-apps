@@ -69,6 +69,13 @@ with st.sidebar:
         help="Your OpenAI API key for the consultant LLM (Memori v3 will register this client).",
     )
 
+    memori_api_key_input = st.text_input(
+        "Memori API Key (optional)",
+        value=os.getenv("MEMORI_API_KEY", ""),
+        type="password",
+        help="Used for Memori Advanced Augmentation and higher quotas.",
+    )
+
     exa_api_key_input = st.text_input(
         "ExaAI API Key",
         value=os.getenv("EXA_API_KEY", ""),
@@ -79,9 +86,11 @@ with st.sidebar:
     if st.button("Save API Keys"):
         if openai_api_key_input:
             os.environ["OPENAI_API_KEY"] = openai_api_key_input
+        if memori_api_key_input:
+            os.environ["MEMORI_API_KEY"] = memori_api_key_input
         if exa_api_key_input:
             os.environ["EXA_API_KEY"] = exa_api_key_input
-        if openai_api_key_input or exa_api_key_input:
+        if openai_api_key_input or exa_api_key_input or memori_api_key_input:
             st.success("✅ API keys saved for this session")
         else:
             st.warning("Please enter at least one API key")
