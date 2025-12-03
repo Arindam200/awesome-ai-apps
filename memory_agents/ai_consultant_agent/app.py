@@ -49,9 +49,9 @@ exa_img_inline = _load_inline_image(
 
 title_html = f"""
 <div style='display:flex; align-items:center; width:120%; padding:8px 0;'>
-  <h1 style='margin:0; padding:0; font-size:2.2rem; font-weight:800; display:flex; align-items:center; gap:10px;'>
+  <h1 style='margin:0; padding:0; font-size:2.5rem; font-weight:800; display:flex; align-items:center; gap:5px;'>
     <span>AI Consultant Agent with</span>
-    {memori_img_inline} and
+    {memori_img_inline}and
     {exa_img_inline}
   </h1>
 </div>

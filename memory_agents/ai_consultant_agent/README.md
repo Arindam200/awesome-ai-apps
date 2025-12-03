@@ -1,8 +1,8 @@
+![Demo](./demo.png)
+
 ## AI Consultant Agent with Memori
 
 An AI-powered consulting agent that uses **Memori v3** as a long-term memory fabric and **ExaAI** for research. Built with Streamlit for the UI.
-
-Memori repo: [`GibsonAI/Memori`](https://github.com/GibsonAI/Memori)
 
 ## Features
 
@@ -14,10 +14,11 @@ Memori repo: [`GibsonAI/Memori`](https://github.com/GibsonAI/Memori)
 
 ## Prerequisites
 
-- Python 3.11 or higher  
-- [uv](https://github.com/astral-sh/uv) package manager (fast Python package installer)  
-- OpenAI API key (`OPENAI_API_KEY`)  
-- ExaAI API key (`EXA_API_KEY`)  
+- Python 3.11 or higher
+- [uv](https://github.com/astral-sh/uv) package manager (fast Python package installer)
+- OpenAI API key (`OPENAI_API_KEY`)
+- ExaAI API key (`EXA_API_KEY`)
+- Memori API key (`MEMORI_API_KEY`)
 - (Optional) `SQLITE_DB_PATH` if you want to override the default `./memori.sqlite` path
 
 ## Installation
@@ -133,4 +134,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ---
 
 Made with ❤️ by [Studio1](https://www.Studio1hq.com) Team
-
