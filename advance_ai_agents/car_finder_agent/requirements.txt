@@ -1,0 +1,8 @@
+streamlit
+pymongo
+python-dotenv
+requests
+crewai
+crewai-tools
+scrapegraph-py
+litellm
