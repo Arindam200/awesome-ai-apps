@@ -14,7 +14,7 @@ Smartly find the best car options based on your budget, mileage needs, brand pre
   <a href="https://streamlit.io/"><img src="https://img.shields.io/badge/Streamlit-App-FF4B4B?logo=streamlit&logoColor=white"></a>
   <a href="https://www.mongodb.com/"><img src="https://img.shields.io/badge/Database-MongoDB-47A248?logo=mongodb&logoColor=white"></a>
   <a href="https://www.crewai.com/"><img src="https://img.shields.io/badge/Agents-CrewAI-111827?logo=github&logoColor=white"></a>
-  <a href="https://nebius.ai/"><img src="https://img.shields.io/badge/LLM-Nebius-4B9CD3?logo=azurepipelines&logoColor=white"></a>
+  <a href="https://dub.sh/nebius"><img src="https://img.shields.io/badge/LLM-Nebius-4B9CD3?logo=azurepipelines&logoColor=white"></a>
   <a href="https://scrapegraphai.com/"><img src="https://img.shields.io/badge/Scraper-Scrapegraph.ai-0EA5E9?logo=webstorm&logoColor=white"></a>
 </p>
 
