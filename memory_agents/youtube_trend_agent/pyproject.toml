@@ -1,7 +1,7 @@
 [project]
 name = "youtube-trend-agent"
 version = "0.1.0"
-description = "YouTube Trend Analysis Agent with Memori, Agno (OpenAI), Exa, and yt-dlp"
+description = "YouTube Trend Analysis Agent with Memori, Agno (Nebius), Exa, and yt-dlp"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

@@ -1,12 +1,12 @@
 """
-YouTube Trend Analysis Agent with Memori, Agno (OpenAI), and YouTube scraping.
+YouTube Trend Analysis Agent with Memori, Agno (Nebius), and YouTube scraping.
 
 Streamlit app:
 - Sidebar: API keys + YouTube channel URL + "Ingest channel into Memori" button.
 - Main: Chat interface to ask about trends and get new video ideas.
 
 This app uses:
-- OpenAI (via both the OpenAI SDK and Agno's OpenAIChat model) for LLM reasoning.
+- Nebius (via both the OpenAI SDK and Agno's Nebius model) for LLM reasoning.
 - yt-dlp to scrape YouTube channel/playlist videos.
 - Memori to store and search your channel's video history.
 """
@@ -16,9 +16,10 @@ import os
 
 import streamlit as st
 from agno.agent import Agent
-from agno.models.openai import OpenAIChat
+from agno.models.nebius import Nebius
+from dotenv import load_dotenv
 
-from youtube_trend_agent.core import fetch_exa_trends, ingest_channel_into_memori
+from core import fetch_exa_trends, ingest_channel_into_memori
 
 
 def _load_inline_image(path: str, height_px: int) -> str:
@@ -36,6 +37,8 @@ def _load_inline_image(path: str, height_px: int) -> str:
 
 
 def main():
+    load_dotenv()
+
     # Page config
     st.set_page_config(
         page_title="YouTube Trend Analysis Agent",
@@ -66,11 +69,18 @@ def main():
     with st.sidebar:
         st.subheader("🔑 API Keys & Channel")
 
-        openai_api_key_input = st.text_input(
-            "OpenAI API Key",
-            value=os.getenv("OPENAI_API_KEY", ""),
+        # Nebius logo above the Nebius API key field
+        try:
+            st.image("assets/Nebius_Logo.png", width=120)
+        except Exception:
+            # Non-fatal if the logo is missing
+            pass
+
+        nebius_api_key_input = st.text_input(
+            "Nebius API Key",
+            value=os.getenv("NEBIUS_API_KEY", ""),
             type="password",
-            help="Your OpenAI API key (used for both Memori and Agno).",
+            help="Your Nebius API key (used for both Memori and Agno).",
         )
 
         exa_api_key_input = st.text_input(
@@ -93,8 +103,8 @@ def main():
         )
 
         if st.button("Save Settings"):
-            if openai_api_key_input:
-                os.environ["OPENAI_API_KEY"] = openai_api_key_input
+            if nebius_api_key_input:
+                os.environ["NEBIUS_API_KEY"] = nebius_api_key_input
             if exa_api_key_input:
                 os.environ["EXA_API_KEY"] = exa_api_key_input
             if memori_api_key_input:
@@ -105,8 +115,8 @@ def main():
         st.markdown("---")
 
         if st.button("Ingest channel into Memori"):
-            if not os.getenv("OPENAI_API_KEY"):
-                st.warning("OPENAI_API_KEY is required before ingestion.")
+            if not os.getenv("NEBIUS_API_KEY"):
+                st.warning("NEBIUS_API_KEY is required before ingestion.")
             elif not channel_url_input.strip():
                 st.warning("Please enter a YouTube channel or playlist URL.")
             else:
@@ -129,11 +139,26 @@ def main():
         )
 
     # Get keys for main app logic
-    if not os.getenv("OPENAI_API_KEY"):
+    nebius_key = os.getenv("NEBIUS_API_KEY", "")
+    if not nebius_key:
         st.warning(
-            "⚠️ Please enter your OpenAI API key in the sidebar to start chatting!"
+            "⚠️ Please enter your Nebius API key in the sidebar to start chatting!"
         )
         st.stop()
+
+    # Initialize Nebius model for the advisor (once)
+    if "nebius_model" not in st.session_state:
+        try:
+            st.session_state.nebius_model = Nebius(
+                id=os.getenv(
+                    "YOUTUBE_TREND_MODEL",
+                    "moonshotai/Kimi-K2-Instruct",
+                ),
+                api_key=nebius_key,
+            )
+        except Exception as e:
+            st.error(f"Failed to initialize Nebius model: {e}")
+            st.stop()
 
     # Display chat history
     st.markdown(
@@ -229,9 +254,7 @@ External web trends for this niche (may be partial):
 
                     advisor = Agent(
                         name="YouTube Trend Advisor",
-                        model=OpenAIChat(
-                            id=os.getenv("YOUTUBE_TREND_MODEL", "gpt-4o-mini")
-                        ),
+                        model=st.session_state.nebius_model,
                         markdown=True,
                     )
 

@@ -2,7 +2,7 @@
 Core logic for the YouTube Trend Analysis Agent.
 
 This module contains:
-- Memori + OpenAI initialization helpers.
+- Memori + Nebius initialization helpers.
 - YouTube scraping utilities.
 - Exa-based trend fetching.
 - Channel ingestion into Memori.
@@ -38,18 +38,18 @@ class _SilentLogger:
         pass
 
 
-def init_memori_with_openai() -> Memori | None:
+def init_memori_with_nebius() -> Memori | None:
     """
-    Initialize Memori v3 + OpenAI client, mirroring the customer_support/ai_consultant pattern.
+    Initialize Memori v3 + Nebius client (via the OpenAI SDK).
 
     This is used so Memori can automatically persist "memories" when we send
-    documents through the registered OpenAI client. Agno + OpenAIChat power all
+    documents through the registered Nebius-backed client. Agno + Nebius power all
     YouTube analysis and idea generation.
     """
-    openai_key = os.getenv("OPENAI_API_KEY", "")
-    if not openai_key:
+    nebius_key = os.getenv("NEBIUS_API_KEY", "")
+    if not nebius_key:
         st.warning(
-            "OPENAI_API_KEY is not set – Memori v3 ingestion will not be active."
+            "NEBIUS_API_KEY is not set – Memori v3 ingestion will not be active."
         )
         return None
 
@@ -68,14 +68,18 @@ def init_memori_with_openai() -> Memori | None:
 
         SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-        client = OpenAI(api_key=openai_key)
+        client = OpenAI(
+            base_url="https://api.studio.nebius.com/v1/",
+            api_key=nebius_key,
+        )
+        # Use the OpenAI-compatible registration API; the client itself points to Nebius.
         mem = Memori(conn=SessionLocal).openai.register(client)
         # Attribution so Memori can attach memories to this process/entity.
         mem.attribution(entity_id="youtube-channel", process_id="youtube-trend-agent")
         mem.config.storage.build()
 
         st.session_state.memori = mem
-        st.session_state.openai_client = client
+        st.session_state.nebius_client = client
         return mem
     except Exception as e:
         st.warning(f"Memori v3 initialization note: {e}")
@@ -229,15 +233,15 @@ def ingest_channel_into_memori(channel_url: str) -> int:
     Returns:
         Number of video documents ingested.
     """
-    # Ensure Memori + OpenAI client are initialized
+    # Ensure Memori + Nebius client are initialized
     memori: Memori | None = st.session_state.get("memori")
-    client: OpenAI | None = st.session_state.get("openai_client")
+    client: OpenAI | None = st.session_state.get("nebius_client")
     if memori is None or client is None:
-        memori = init_memori_with_openai()
-        client = st.session_state.get("openai_client")
+        memori = init_memori_with_nebius()
+        client = st.session_state.get("nebius_client")
 
     if memori is None or client is None:
-        st.error("Memori/OpenAI failed to initialize; cannot ingest channel.")
+        st.error("Memori/Nebius failed to initialize; cannot ingest channel.")
         return 0
 
     videos = fetch_channel_videos(channel_url)
@@ -288,10 +292,13 @@ Description:
 """
 
         try:
-            # Send this document through the registered OpenAI client so that
+            # Send this document through the registered Nebius client so that
             # Memori v3 can automatically capture it as a "memory".
             _ = client.chat.completions.create(
-                model="gpt-4o-mini",
+                model=os.getenv(
+                    "YOUTUBE_TREND_INGEST_MODEL",
+                    "moonshotai/Kimi-K2-Instruct",
+                ),
                 messages=[
                     {
                         "role": "user",
@@ -306,7 +313,7 @@ Description:
             )
             ingested += 1
         except Exception as e:
-            st.warning(f"Memori/OpenAI issue ingesting video '{title}': {e}")
+            st.warning(f"Memori/Nebius issue ingesting video '{title}': {e}")
 
     # Flush writes if needed
     try:

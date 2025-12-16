@@ -1,6 +1,6 @@
 ## YouTube Trend Analysis Agent
 
-YouTube channel analysis agent powered by **Memori**, **Agno (OpenAI)**, **Exa**, and **yt-dlp**.
+YouTube channel analysis agent powered by **Memori**, **Agno (Nebius)**, **Exa**, and **yt-dlp**.  
 Paste your YouTube channel URL, ingest recent videos into Memori, then chat with an agent that surfaces trends and concrete new video ideas grounded in your own content.
 
 ### Features
@@ -31,7 +31,7 @@ This will create a virtual environment (if needed) and install all dependencies 
 
 3. **Environment variables** (set in your shell or a local `.env` file in this folder):
 
-- `OPENAI_API_KEY` – required (used both for Memori ingestion and the Agno-powered advisor).
+- `NEBIUS_API_KEY` – required (used both for Memori ingestion and the Agno-powered advisor).
 - `EXA_API_KEY` – optional but recommended (for external trend context via Exa).
 - `MEMORI_API_KEY` – optional, for Memori Advanced Augmentation / higher quotas.
 - `SQLITE_DB_PATH` – optional, defaults to `./memori.sqlite` if unset.
@@ -48,7 +48,7 @@ uv run streamlit run app.py
 
 In the **sidebar**:
 
-1. Enter your **OpenAI**, optional **Exa**, and optional **Memori** API keys.
+1. Enter your **Nebius**, optional **Exa**, and optional **Memori** API keys.
 2. Paste your **YouTube channel (or playlist) URL**.
 3. Click **“Ingest channel into Memori”** to scrape and store recent videos.
 
