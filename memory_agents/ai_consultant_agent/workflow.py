@@ -1,13 +1,13 @@
 """
 AI Consultant Workflow
-Uses LangChain for reasoning and ExaAI for web/case-study research.
+Uses LangChain for reasoning and Tavily for web/case-study research.
 """
 
 import os
 from typing import List, Optional, Tuple, Any
 
 from dotenv import load_dotenv
-from exa_py import Exa
+from tavily import TavilyClient
 from pydantic import BaseModel, Field
 
 # Load environment variables from .env if present
@@ -54,7 +54,7 @@ class CompanyProfile(BaseModel):
 
 
 class ResearchSnippet(BaseModel):
-    """Single ExaAI search result distilled for prompting."""
+    """Single Tavily search result distilled for prompting."""
 
     title: str
     url: str
@@ -81,40 +81,43 @@ def _build_research_query(profile: CompanyProfile) -> str:
     return " ".join(parts)
 
 
-def search_ai_case_studies_with_exa(
+def search_ai_case_studies_with_tavily(
     profile: CompanyProfile, max_results: int = 5
 ) -> List[ResearchSnippet]:
     """
-    Use ExaAI to retrieve a handful of relevant AI case studies / examples.
+    Use Tavily to retrieve a handful of relevant AI case studies / examples.
     """
-    exa_key = os.getenv("EXA_API_KEY")
-    if not exa_key:
-        raise RuntimeError("EXA_API_KEY not set in environment variables")
+    tavily_key = os.getenv("TAVILY_API_KEY")
+    if not tavily_key:
+        raise RuntimeError("TAVILY_API_KEY not set in environment variables")
 
-    client = Exa(api_key=exa_key)
+    client = TavilyClient(api_key=tavily_key)
     query = _build_research_query(profile)
 
     try:
-        results = client.search_and_contents(
+        # Use advanced depth to get richer snippets; return up to max_results
+        results = client.search(
             query=query,
-            num_results=max_results,
-            type="auto",
-            text=True,
+            search_depth="advanced",
+            max_results=max_results,
+            include_answer=False,
+            include_raw_content=False,
         )
     except Exception as e:
-        raise RuntimeError(f"Error calling ExaAI: {e}") from e
+        raise RuntimeError(f"Error calling Tavily: {e}") from e
 
     snippets: List[ResearchSnippet] = []
-    for r in results.results:
-        if not (r.title or r.url or r.text):
-            continue
-        text = (r.text or "").strip()
-        # Keep a concise but useful excerpt
+    for r in results.get("results", []):
+        title = (r.get("title") or "AI case study").strip()
+        url = r.get("url") or ""
+        text = (r.get("content") or r.get("snippet") or "").strip()
         snippet_text = text[:800] if text else ""
+        if not (title or url or snippet_text):
+            continue
         snippets.append(
             ResearchSnippet(
-                title=r.title or "AI case study",
-                url=r.url or "",
+                title=title,
+                url=url,
                 snippet=snippet_text,
             )
         )
@@ -127,7 +130,7 @@ def run_ai_assessment(
 ) -> Tuple[str, List[ResearchSnippet]]:
     """
     Main workflow:
-    - Pull a few relevant case studies via ExaAI.
+    - Pull a few relevant case studies via Tavily.
     - Ask the LLM (LangChain-compatible) to produce a structured consulting report.
 
     Returns:
@@ -135,7 +138,7 @@ def run_ai_assessment(
         research_snippets: List[ResearchSnippet] -> For optional debugging / display.
     """
     # Step 1: web research
-    research_snippets = search_ai_case_studies_with_exa(profile, max_results=5)
+    research_snippets = search_ai_case_studies_with_tavily(profile, max_results=5)
 
     # Step 2: build prompt for the consultant LLM
     research_section = ""

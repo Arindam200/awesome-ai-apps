@@ -40,19 +40,15 @@ def _load_inline_image(path: str, height_px: int) -> str:
 
 
 # Reuse existing logos from other agents
-memori_img_inline = _load_inline_image(
-    "../job_search_agent/assets/Memori_Logo.png", height_px=90
-)
-exa_img_inline = _load_inline_image(
-    "../job_search_agent/assets/exa_logo.png", height_px=70
-)
+memori_img_inline = _load_inline_image("assets/Memori_Logo.png", height_px=90)
+tavily_img_inline = _load_inline_image("assets/tavily_logo.png", height_px=70)
 
 title_html = f"""
 <div style='display:flex; align-items:center; width:120%; padding:8px 0;'>
   <h1 style='margin:0; padding:0; font-size:2.5rem; font-weight:800; display:flex; align-items:center; gap:5px;'>
     <span>AI Consultant Agent with</span>
     {memori_img_inline}and
-    {exa_img_inline}
+    {tavily_img_inline}
   </h1>
 </div>
 """
@@ -76,11 +72,11 @@ with st.sidebar:
         help="Used for Memori Advanced Augmentation and higher quotas.",
     )
 
-    exa_api_key_input = st.text_input(
-        "ExaAI API Key",
-        value=os.getenv("EXA_API_KEY", ""),
+    tavily_api_key_input = st.text_input(
+        "Tavily API Key",
+        value=os.getenv("TAVILY_API_KEY", ""),
         type="password",
-        help="Your ExaAI API key for web/case-study search",
+        help="Your Tavily API key for web/case-study search",
     )
 
     if st.button("Save API Keys"):
@@ -88,14 +84,14 @@ with st.sidebar:
             os.environ["OPENAI_API_KEY"] = openai_api_key_input
         if memori_api_key_input:
             os.environ["MEMORI_API_KEY"] = memori_api_key_input
-        if exa_api_key_input:
-            os.environ["EXA_API_KEY"] = exa_api_key_input
-        if openai_api_key_input or exa_api_key_input or memori_api_key_input:
+        if tavily_api_key_input:
+            os.environ["TAVILY_API_KEY"] = tavily_api_key_input
+        if openai_api_key_input or tavily_api_key_input or memori_api_key_input:
             st.success("✅ API keys saved for this session")
         else:
             st.warning("Please enter at least one API key")
 
-    both_keys_present = bool(os.getenv("EXA_API_KEY")) and bool(
+    both_keys_present = bool(os.getenv("TAVILY_API_KEY")) and bool(
         os.getenv("OPENAI_API_KEY")
     )
     if both_keys_present:
@@ -107,13 +103,13 @@ with st.sidebar:
     st.markdown("### 💡 About")
     st.markdown(
         """
-        This application acts as an **AI consultant** for companies:
-        - Assesses **AI readiness** and where to integrate AI.
-        - Suggests **use cases** across workforce, tools, and ecosystem.
-        - Provides rough **cost bands** and risks.
-        - Uses **Memori** + to remember past assessments and Q&A.
+        This application acts as an *AI consultant* for companies:
+        - Assesses *AI readiness* and where to integrate AI.
+        - Suggests *use cases* across workforce, tools, and ecosystem.
+        - Provides rough *cost bands* and risks.
+        - Uses *Memori* + to remember past assessments and Q&A.
 
-        Web research is powered by **ExaAI**, and reasoning is powered by **OpenAI** via Memori.
+        Web research is powered by *Tavily, and reasoning is powered by **OpenAI* via Memori.
 
         ---
 
@@ -122,7 +118,7 @@ with st.sidebar:
     )
 
 # Get API keys from environment
-exa_key = os.getenv("EXA_API_KEY", "")
+tavily_key = os.getenv("TAVILY_API_KEY", "")
 
 # Initialize session state
 if "assessment_markdown" not in st.session_state:
@@ -166,8 +162,8 @@ if "openai_client" not in st.session_state:
             st.warning(f"Memori v3 initialization note: {str(e)}")
 
 # Check if keys are set for required services
-if not exa_key:
-    st.warning("⚠️ Please enter your ExaAI API key in the sidebar to run assessments!")
+if not tavily_key:
+    st.warning("⚠️ Please enter your Tavily API key in the sidebar to run assessments!")
     st.stop()
 if "openai_client" not in st.session_state:
     st.warning(
@@ -285,7 +281,7 @@ with tab1:
                         st.session_state.company_profile = profile
 
                         st.markdown(
-                            f"## 🧾 AI Readiness & Cost Assessment for **{profile.company_name}**"
+                            f"## 🧾 AI Readiness & Cost Assessment for *{profile.company_name}*"
                         )
                         st.markdown(assessment_markdown)
 
@@ -299,7 +295,7 @@ with tab1:
         st.markdown(
             "### Last Assessment Result "
             + (
-                f"for **{st.session_state.company_profile.company_name}**"
+                f"for *{st.session_state.company_profile.company_name}*"
                 if st.session_state.company_profile
                 else ""
             )
@@ -311,12 +307,12 @@ with tab2:
 
     if st.session_state.company_profile:
         st.info(
-            f"Most recent company: **{st.session_state.company_profile.company_name}** "
+            f"Most recent company: *{st.session_state.company_profile.company_name}* "
             f"({st.session_state.company_profile.industry})"
         )
     else:
         st.info(
-            "Run at least one assessment in the **AI Assessment** tab to ground the memory context."
+            "Run at least one assessment in the *AI Assessment* tab to ground the memory context."
         )
 
     for message in st.session_state.memory_messages:
