@@ -2,14 +2,14 @@
 
 ## AI Consultant Agent with Memori
 
-An AI-powered consulting agent that uses **Memori v3** as a long-term memory fabric and **ExaAI** for research. Built with Streamlit for the UI.
+An AI-powered consulting agent that uses **Memori v3** as a long-term memory fabric and **Tavily** for research. Built with Streamlit for the UI.
 
 ## Features
 
 - 🧠 **AI Readiness Assessment**: Analyze a company’s AI maturity, goals, and constraints.
 - 🎯 **Use-Case Recommendations**: Suggest where to integrate AI (workflows, CX, analytics, product, ecosystem).
 - 💵 **Cost Bands**: Provide rough cost bands and complexity for proposed AI initiatives.
-- ⚙️ **Web / Case-Study Research**: Use **ExaAI** to pull in relevant case studies and industry examples.
+- ⚙️ **Web / Case-Study Research**: Use **Tavily** to pull in relevant case studies and industry examples.
 - 🧾 **Persistent Memory (Memori v3)**: Store and reuse context across assessments and follow-up questions.
 
 ## Prerequisites
@@ -17,7 +17,7 @@ An AI-powered consulting agent that uses **Memori v3** as a long-term memory fab
 - Python 3.11 or higher
 - [uv](https://github.com/astral-sh/uv) package manager (fast Python package installer)
 - OpenAI API key (`OPENAI_API_KEY`)
-- ExaAI API key (`EXA_API_KEY`)
+- Tavily API key (`TAVILY_API_KEY`)
 - Memori API key (`MEMORI_API_KEY`)
 - (Optional) `SQLITE_DB_PATH` if you want to override the default `./memori.sqlite` path
 
@@ -65,7 +65,7 @@ Create a `.env` file in this directory:
 
 ```bash
 OPENAI_API_KEY=your_openai_api_key_here
-EXA_API_KEY=your_exa_api_key_here
+TAVILY_API_KEY=your_tavily_api_key_here
 # Optional:
 # SQLITE_DB_PATH=./memori.sqlite
 ```
@@ -113,7 +113,7 @@ In the UI you can:
 ```text
 ai_consultant_agent/
 ├── app.py              # Streamlit interface (assessment + memory tabs)
-├── workflow.py         # ExaAI research + OpenAI-based consulting workflow
+├── workflow.py         # Tavily research + OpenAI-based consulting workflow
 ├── pyproject.toml      # Project dependencies (uv format)
 ├── README.md           # This file
 ├── requirements.txt    # PIP-style dependency list
