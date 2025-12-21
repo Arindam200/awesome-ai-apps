@@ -8,91 +8,57 @@ from openai import OpenAI
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
-try:
-    from pymongo import MongoClient
-except ImportError:  # pragma: no cover - optional dependency
-    MongoClient = None  # type: ignore[misc]
-
 
 load_dotenv()
 
 
 class MemoriManager:
     """
-    Thin wrapper around Memori + OpenAI client + SQLAlchemy engine.
-    Reuses the pattern from ai_consultant_agent but tailored to a single learner.
+    Thin wrapper around Memori + OpenAI client + CockroachDB (via SQLAlchemy).
+    Uses a single Cockroach/Postgres-compatible URL for all persistence.
     """
 
     def __init__(
         self,
         openai_api_key: str | None = None,
         db_url: str | None = None,
-        sqlite_path: str = "./memori_study.sqlite",
         entity_id: str = "study-coach-user",
         process_id: str = "study-coach",
     ) -> None:
         """
-        If `db_url` is not provided, falls back to local SQLite at `sqlite_path`.
-        Supports:
-        - Any SQLAlchemy URL (SQLite, Postgres, MySQL, CockroachDB, etc.).
-        - MongoDB URLs starting with mongodb:// or mongodb+srv://.
+        Expected connection pattern (Cockroach/Postgres via psycopg):
+
+            postgresql+psycopg://user:password@host:26257/database
         """
-        self.sqlite_path = sqlite_path
         self.entity_id = entity_id
         self.process_id = process_id
-        self.db_url = db_url or ""
+        self.db_url = db_url or os.getenv("MEMORI_DB_URL", "")
 
         openai_key = openai_api_key or os.getenv("OPENAI_API_KEY", "")
         if not openai_key:
             raise RuntimeError("OPENAI_API_KEY is not set – cannot initialize Memori.")
 
-        self.SessionLocal: sessionmaker | None = None
-
-        # Decide connection strategy based on db_url scheme
-        conn_arg: Any
         db_url_effective = self.db_url.strip()
-
-        if db_url_effective.startswith("mongodb://") or db_url_effective.startswith(
-            "mongodb+srv://"
-        ):
-            if MongoClient is None:
-                raise RuntimeError(
-                    "pymongo is required for MongoDB connections. "
-                    "Install it or use a SQLAlchemy database URL."
-                )
-            mongo_client = MongoClient(db_url_effective)
-
-            # Derive DB name from path; fallback to 'memori'
-            from urllib.parse import urlparse
-
-            parsed = urlparse(db_url_effective)
-            db_name = parsed.path.lstrip("/") or "memori"
-
-            def get_db():
-                return mongo_client[db_name]
-
-            conn_arg = get_db
-        else:
-            # SQLAlchemy path (SQLite / Postgres / MySQL / CockroachDB / etc.)
-            if db_url_effective:
-                database_url = db_url_effective
-            else:
-                database_url = f"sqlite:///{self.sqlite_path}"
-
-            engine_kwargs: dict[str, Any] = {"pool_pre_ping": True}
-            if database_url.startswith("sqlite"):
-                engine_kwargs["connect_args"] = {"check_same_thread": False}
-
-            engine = create_engine(database_url, **engine_kwargs)
-
-            # Optional connectivity check
-            with engine.connect() as conn:
-                conn.execute(text("SELECT 1"))
-
-            self.SessionLocal = sessionmaker(
-                autocommit=False, autoflush=False, bind=engine
+        if not db_url_effective:
+            raise RuntimeError(
+                "MEMORI_DB_URL is not set – please provide a CockroachDB URL "
+                "like postgresql+psycopg://user:password@host:26257/database"
             )
-            conn_arg = self.SessionLocal
+
+        # Single Cockroach/Postgres-compatible SQLAlchemy engine
+        engine = create_engine(
+            db_url_effective,
+            pool_pre_ping=True,
+        )
+
+        # Optional connectivity check
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+
+        self.SessionLocal: sessionmaker | None = sessionmaker(
+            autocommit=False, autoflush=False, bind=engine
+        )
+        conn_arg: Any = self.SessionLocal
 
         client = OpenAI(api_key=openai_key)
         mem = Memori(conn=conn_arg).openai.register(client)

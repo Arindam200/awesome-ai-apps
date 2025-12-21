@@ -37,13 +37,9 @@ An AI-powered **Study Coach** that uses **Memori v3** as long-term memory and **
     - “Do I learn better from videos or practice problems?”
   - Uses the same Memori store that holds your profile + session summaries.
 
-- ⚙️ **Configurable storage**
-  - By default uses **SQLite** (`./memori_study.sqlite`).
-  - Optional **Database URL** in the sidebar to point Memori at:
-    - SQLite via SQLAlchemy: `sqlite:///memori_study.sqlite`
-    - PostgreSQL: `postgresql+psycopg://user:password@host:5432/database`
-    - MySQL: `mysql+pymysql://user:password@host:3306/database`
-    - MongoDB: `mongodb://host:27017/memori`
+- ⚙️ **CockroachDB storage**
+  - Uses **CockroachDB** via a Postgres+psycopg SQLAlchemy URL stored in `MEMORI_DB_URL`, e.g.  
+    `postgresql+psycopg://user:password@host:26257/database`
 
 ---
 
@@ -52,9 +48,8 @@ An AI-powered **Study Coach** that uses **Memori v3** as long-term memory and **
 - Python 3.11+
 - [`uv`](https://github.com/astral-sh/uv) (recommended) or `pip`
 - `OPENAI_API_KEY` (Memori registers this OpenAI client)
-- Optional:
-  - `MEMORI_DB_URL` for custom DB (otherwise SQLite is used)
-  - `MEMORI_API_KEY` for Memori advanced augmentation / quotas
+- `MEMORI_DB_URL` – CockroachDB URL (`postgresql+psycopg://...`)
+- `MEMORI_API_KEY` for Memori advanced augmentation / quotas
 
 ---
 
@@ -71,9 +66,8 @@ Create a `.env` file:
 
 ```bash
 OPENAI_API_KEY=your_openai_key_here
-# Optional:
-# MEMORI_DB_URL=postgresql+psycopg://user:password@host:5432/database
-# MEMORI_API_KEY=your_memori_key_here
+MEMORI_DB_URL=postgresql+psycopg://user:password@host:26257/database
+MEMORI_API_KEY=your_memori_key_here
 ```
 
 Run the app:
@@ -88,8 +82,6 @@ Or with plain pip:
 pip install -e .
 streamlit run app.py
 ```
-
-If `MEMORI_DB_URL` is not set, the app will create/use `./memori_study.sqlite` for Memori v3.
 
 ## License
 

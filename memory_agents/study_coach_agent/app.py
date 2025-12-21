@@ -56,7 +56,6 @@ def get_memori_manager(openai_key: str, db_url: str | None) -> MemoriManager:
     return MemoriManager(
         openai_api_key=openai_key,
         db_url=db_url,
-        sqlite_path="./memori_study.sqlite",
     )
 
 
@@ -158,14 +157,11 @@ def sidebar_keys():
             help="Used for Memori Advanced Augmentation and higher quotas.",
         )
         db_url_input = st.text_input(
-            "Database URL (optional)",
+            "CockroachDB URL",
             value=os.getenv("MEMORI_DB_URL", ""),
             help=(
-                "SQLAlchemy or MongoDB URL. "
-                "Examples: sqlite:///memori_study.sqlite, "
-                "postgresql+psycopg://user:password@host:5432/database, "
-                "mysql+pymysql://user:password@host:3306/database, "
-                "mongodb://host:27017/memori"
+                "CockroachDB connection string using the Postgres+psycopg driver, e.g. "
+                "postgresql+psycopg://user:password@host:26257/database"
             ),
         )
 
@@ -180,7 +176,9 @@ def sidebar_keys():
             if openai_api_key_input or memori_api_key_input or db_url_input:
                 st.success("✅ Settings saved for this session")
             else:
-                st.warning("Please enter at least an OpenAI API key")
+                st.warning(
+                    "Please enter at least an OpenAI API key and CockroachDB URL"
+                )
 
         st.markdown("---")
         st.markdown("### ℹ️ About")

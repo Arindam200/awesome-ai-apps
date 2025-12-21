@@ -7,7 +7,6 @@ requires-python = ">=3.11"
 dependencies = [
     "memori>=3.0.0b3",
     "sqlalchemy>=2.0.0",
-    "pymongo>=4.5.0",
     "openai>=2.6.1",
     "streamlit>=1.50.0",
     "pydantic>=2.0.0",
