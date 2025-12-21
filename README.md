@@ -139,6 +139,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Smart Scheduler Assistant](simple_ai_agents/email_to_calendar_scheduler) - AI-powered Gmail reader and Google Calendar manager.
 - [Web Automation Agent](simple_ai_agents/browser_agent) - Simple Browser Agent implementation with Nebius & browser use.
 - [Nebius Chat](simple_ai_agents/nebius_chat) - Nebius Token Factory Chat interface.
+- [RouteLLM Chat](simple_ai_agents/llm_router) - Intelligent model routing with RouteLLM, automatically selecting between GPT-4o-mini and Nebius Llama for cost-optimized conversations.
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Talk to your Database with GibsonAI & Langchain
 
 ### 🗂️ MCP Agents
@@ -170,6 +171,8 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Brand Reputation Monitor](memory_agents/brand_reputation_monitor) - AI-powered brand reputation monitoring with news analysis and sentiment tracking.
 - [Product Launch Agent](memory_agents/product_launch_agent) - Competitive intelligence tool for analyzing competitor product launches.
 - [AI Consultant Agent](memory_agents/ai_consultant_agent/) - An AI-powered consulting agent that uses **Memori v3** as a long-term memory fabric and **ExaAI** for research.
+- [Customer Support Voice Agent](memory_agents/customer_support_voice_agent) - Voice-enabled customer support assistant with Memori v3 and Firecrawl for knowledge base management.
+- [YouTube Trend Agent](memory_agents/youtube_trend_agent) - YouTube channel analysis agent with Memori, Agno, and Exa for trend analysis and video ideas.
 
 ### 📚 RAG Applications
 
@@ -202,6 +205,8 @@ Interested in sponsoring this project? Feel free to reach out!
 - [AI Hedgefund](advance_ai_agents/ai-hedgefund) - Agentic Workflow for financial analysis.
 - [Smart GTM Agent](advance_ai_agents/smart_gtm_agent) - Go-to-market strategy and analysis agent.
 - [Conference Agnostic CFP Generator](advance_ai_agents/conference_agnositc_cfp_generator) - Generate conference proposals automatically.
+- [Car Finder Agent](advance_ai_agents/car_finder_agent) - AI-powered used car recommendation system with CrewAI and MongoDB.
+- [Content Team Agent](advance_ai_agents/content_team_agent) - SEO content optimization workflow with Agno & SerpAPI for Google AI Search ranking.
 
 ## 📺 Playlist of Demo Videos & Tutorials
 
