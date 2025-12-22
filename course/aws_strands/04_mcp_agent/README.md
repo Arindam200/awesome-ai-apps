@@ -89,42 +89,6 @@ python multiple_mcp.py
 - "What's the fastest way to get to Barcelona from London?"
 - "What listings are available in Cape Town for 2 people for 3 nights?"
 
-## 🔍 Code Structure
-
-### main.py - Single Server Integration
-
-```python
-def create_aws_doc_agent() -> Agent:
-    """Creates an agent with AWS documentation tools."""
-    # Configure model
-    # Set up MCP client
-    # Discover tools dynamically
-    # Return configured agent
-
-def main():
-    """Demonstrates single MCP server usage."""
-    # Create agent
-    # Ask AWS question
-    # Show response
-```
-
-### multiple_mcp.py - Multi-Server Integration
-
-```python
-def create_multi_mcp_agent() -> Agent:
-    """Creates an agent with tools from multiple MCP servers."""
-    # Configure model
-    # Set up multiple MCP clients
-    # Combine tools from all servers
-    # Return multi-capable agent
-
-def main():
-    """Demonstrates multi-MCP server usage."""
-    # Create multi-server agent
-    # Ask complex question
-    # Show comprehensive response
-```
-
 ## 🌟 Benefits of MCP
 
 1. **Extensibility**: Add new capabilities without code changes
