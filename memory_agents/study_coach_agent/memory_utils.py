@@ -180,14 +180,21 @@ class MemoriManager:
         except Exception:
             return None
 
+        tag = "STUDY_COACH_PROFILE"
         for r in results:
             text = str(r)
-            idx = text.find("{")
-            jdx = text.rfind("}")
-            if idx == -1 or jdx == -1:
+
+            # We always store profiles as: "STUDY_COACH_PROFILE { ...json... }"
+            tag_idx = text.find(tag)
+            if tag_idx == -1:
                 continue
+
+            json_str = text[tag_idx + len(tag) :].strip()
+            if not json_str:
+                continue
+
             try:
-                obj = json.loads(text[idx : jdx + 1])
+                obj = json.loads(json_str)
             except Exception:
                 continue
 

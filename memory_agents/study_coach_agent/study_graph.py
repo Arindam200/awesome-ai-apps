@@ -137,32 +137,34 @@ def _evaluate_node(state: VerificationState, llm_client) -> VerificationState:
         f"Learner's explanation:\n{explanation}\n\n"
         "1) First, provide a single integer score from 0 to 100.\n"
         "2) Then provide concise feedback and next-step advice.\n"
-        "Respond in the JSON form: "
+        "Respond ONLY with a valid JSON object of the form: "
         '{"score": <int>, "feedback": "<text>", "next_step": "<text>"}'
     )
+
+    # Request structured JSON so we don't have to do fragile brace-slicing.
     response = llm_client.chat.completions.create(
         model="gpt-4o-mini",
+        response_format={"type": "json_object"},
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
     )
-    raw = response.choices[0].message.content or ""
+    raw = response.choices[0].message.content or "{}"
 
-    # Very small and permissive JSON-ish parsing
+    # Parse strict JSON output into our typed verification state.
     score = 0
     feedback = ""
     next_step = ""
     try:
         import json  # local import to keep top neat
 
-        start = raw.find("{")
-        end = raw.rfind("}")
-        obj = json.loads(raw[start : end + 1])
+        obj = json.loads(raw)
         score = int(obj.get("score", 0))
         feedback = str(obj.get("feedback", "") or "")
         next_step = str(obj.get("next_step", "") or "")
     except Exception:
+        # Fall back to treating the raw content as feedback if parsing somehow fails.
         feedback = raw
         next_step = ""
 

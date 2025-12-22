@@ -101,6 +101,7 @@ def _maybe_restore_profile_from_memori(memori_mgr: MemoriManager) -> None:
         )
         response = memori_mgr.openai_client.chat.completions.create(
             model="gpt-4o-mini",
+            response_format={"type": "json_object"},
             messages=[
                 {"role": "system", "content": system_prompt},
                 {
@@ -109,13 +110,9 @@ def _maybe_restore_profile_from_memori(memori_mgr: MemoriManager) -> None:
                 },
             ],
         )
-        raw = response.choices[0].message.content or ""
-        start = raw.find("{")
-        end = raw.rfind("}")
-        if start == -1 or end == -1:
-            return
+        raw = response.choices[0].message.content or "{}"
 
-        data = json.loads(raw[start : end + 1])
+        data = json.loads(raw)
         if not isinstance(data, dict) or not data:
             return
 
