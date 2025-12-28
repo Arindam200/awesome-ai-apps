@@ -141,6 +141,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Nebius Chat](simple_ai_agents/nebius_chat) - Nebius Token Factory Chat interface.
 - [RouteLLM Chat](simple_ai_agents/llm_router) - Intelligent model routing with RouteLLM, automatically selecting between GPT-4o-mini and Nebius Llama for cost-optimized conversations.
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Talk to your Database with GibsonAI & Langchain
+- [Jarvis AI Assistant](https://github.com/akshayaggarwal99/jarvis-ai-assistant) - Free, open-source voice dictation app for Mac with local Whisper + Ollama support, zero telemetry.
 
 ### 🗂️ MCP Agents
 
