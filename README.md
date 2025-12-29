@@ -208,6 +208,10 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Car Finder Agent](advance_ai_agents/car_finder_agent) - AI-powered used car recommendation system with CrewAI and MongoDB.
 - [Content Team Agent](advance_ai_agents/content_team_agent) - SEO content optimization workflow with Agno & SerpAPI for Google AI Search ranking.
 
+## 🤖 Agent UI
+
+- [CopilotKit](https://github.com/CopilotKit/CopilotKit) - Bridges your backend agents to an interactive frontend - streaming, reasoning, tool calls, and structured outputs in real time.
+
 ## 📺 Playlist of Demo Videos & Tutorials
 
 ### 🎓 **Course Playlists**
