@@ -1,14 +1,39 @@
-## YouTube Trend Analysis Agent
+## YouTube Trend Analysis Agent with Memori & MiniMax
 
-YouTube channel analysis agent powered by **Memori**, **Agno (Nebius)**, **Exa**, and **yt-dlp**.  
-Paste your YouTube channel URL, ingest recent videos into Memori, then chat with an agent that surfaces trends and concrete new video ideas grounded in your own content.
+An AI-powered **YouTube Trend Coach** that uses **Memori v3** as long‑term memory and **MiniMax (OpenAI‑compatible)** for reasoning.
+
+- **Scrapes your channel** with `yt-dlp` and stores video metadata in Memori.
+- Uses **MiniMax** to analyze your channel history plus **Exa** web trends.
+- Provides a **Streamlit chat UI** to ask for trends and concrete new video ideas grounded in your own content.
+
+---
 
 ### Features
 
-- **Direct YouTube scraping**: Uses `yt-dlp` to scrape your channel or playlist from YouTube and collect titles, tags, dates, views, and descriptions.
-- **Memori memory store**: Stores each video as a Memori memory (via OpenAI) for fast semantic search and reuse across chats.
-- **Web trend context with Exa**: Calls Exa to pull recent articles and topics for your niche and blends them with your own channel history.
-- **Streamlit UI**: Sidebar for API keys + channel URL and a chat area for asking about trends and ideas.
+- **Direct YouTube scraping**
+  - Uses `yt-dlp` to scrape a channel or playlist URL (titles, tags, dates, views, descriptions).
+  - Stores each video as a Memori document for later semantic search.
+
+- **Memori memory store**
+  - Uses `Memori` + a MiniMax/OpenAI‑compatible client to persist “memories” of your videos.
+  - Ingestion happens via `ingest_channel_into_memori` in `core.py`, which calls `client.chat.completions.create(...)` so Memori can automatically capture documents.
+
+- **Web trend context with Exa (optional)**
+  - If `EXA_API_KEY` is set, fetches web articles and topics for your niche via `Exa`.
+  - Blends Exa trends with your channel history when generating ideas.
+
+- **Streamlit UI**
+  - Sidebar for API keys, MiniMax base URL, and channel URL.
+  - Main area provides a chat interface for asking about trends and ideas.
+
+---
+
+### Prerequisites
+
+- Python 3.11+
+- [`uv`](https://github.com/astral-sh/uv) (recommended) or `pip`
+- MiniMax account + API key (used via the OpenAI SDK)
+- Optional: Exa and Memori API keys
 
 ---
 
@@ -29,12 +54,12 @@ uv sync
 
 This will create a virtual environment (if needed) and install all dependencies declared in `pyproject.toml`.
 
-3. **Environment variables** (set in your shell or a local `.env` file in this folder):
+3. **Environment variables**
 
-- `NEBIUS_API_KEY` – required (used both for Memori ingestion and the Agno-powered advisor).
-- `EXA_API_KEY` – optional but recommended (for external trend context via Exa).
-- `MEMORI_API_KEY` – optional, for Memori Advanced Augmentation / higher quotas.
-- `SQLITE_DB_PATH` – optional, defaults to `./memori.sqlite` if unset.
+You can either:
+
+- Set these in your `.env`, (see .env.example) **or**
+- Enter them in the Streamlit **sidebar** (the app writes them into `os.environ` for the current process).
 
 ---
 
@@ -46,13 +71,28 @@ From the `youtube_trend_agent` directory:
 uv run streamlit run app.py
 ```
 
+---
+
+### Using the App
+
 In the **sidebar**:
 
-1. Enter your **Nebius**, optional **Exa**, and optional **Memori** API keys.
-2. Paste your **YouTube channel (or playlist) URL**.
-3. Click **“Ingest channel into Memori”** to scrape and store recent videos.
+1. Enter your **MiniMax API Key** and (optionally) **MiniMax Base URL**.
+2. Optionally enter **Exa** and **Memori** API keys.
+3. Paste your **YouTube channel (or playlist) URL**.
+4. Click **“Save Settings”** to store the keys for this session.
+5. Click **“Ingest channel into Memori”** to scrape and store recent videos.
 
-Then use the main chat box to ask things like:
+Then, in the main chat:
 
-- “Suggest 5 new video ideas that build on my existing content and current trends.”
-- “What trends am I missing in my current uploads?”
+- Ask things like:
+  - “Suggest 5 new video ideas that build on my existing content and current trends.”
+  - “What trends am I missing in my current uploads?”
+  - “Which topics seem to perform best on my channel?”
+
+The agent will:
+
+- Pull context from **Memori** (your stored video history),
+- Use **MiniMax** (`MiniMax-M2.1` by default, configurable),
+- Optionally incorporate **Exa** web trends,
+- And respond with specific, actionable ideas and analysis.

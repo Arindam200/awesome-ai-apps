@@ -1,12 +1,12 @@
 """
-YouTube Trend Analysis Agent with Memori, Agno (Nebius), and YouTube scraping.
+YouTube Trend Analysis Agent with Memori, MiniMax (OpenAI-compatible), and YouTube scraping.
 
 Streamlit app:
 - Sidebar: API keys + YouTube channel URL + "Ingest channel into Memori" button.
 - Main: Chat interface to ask about trends and get new video ideas.
 
 This app uses:
-- Nebius (via both the OpenAI SDK and Agno's Nebius model) for LLM reasoning.
+- MiniMax (via the OpenAI SDK) for LLM reasoning.
 - yt-dlp to scrape YouTube channel/playlist videos.
 - Memori to store and search your channel's video history.
 """
@@ -15,9 +15,8 @@ import base64
 import os
 
 import streamlit as st
-from agno.agent import Agent
-from agno.models.nebius import Nebius
 from dotenv import load_dotenv
+from openai import OpenAI
 
 from core import fetch_exa_trends, ingest_channel_into_memori
 
@@ -69,18 +68,17 @@ def main():
     with st.sidebar:
         st.subheader("🔑 API Keys & Channel")
 
-        # Nebius logo above the Nebius API key field
-        try:
-            st.image("assets/Nebius_Logo.png", width=120)
-        except Exception:
-            # Non-fatal if the logo is missing
-            pass
-
-        nebius_api_key_input = st.text_input(
-            "Nebius API Key",
-            value=os.getenv("NEBIUS_API_KEY", ""),
+        minimax_api_key_input = st.text_input(
+            "MiniMax API Key",
+            value=os.getenv("OPENAI_API_KEY", ""),
             type="password",
-            help="Your Nebius API key (used for both Memori and Agno).",
+            help="Your MiniMax API key (used via the OpenAI-compatible SDK).",
+        )
+
+        minimax_base_url_input = st.text_input(
+            "MiniMax Base URL",
+            value=os.getenv("OPENAI_BASE_URL", "https://api.minimax.io/v1"),
+            help="Base URL for MiniMax's OpenAI-compatible API.",
         )
 
         exa_api_key_input = st.text_input(
@@ -103,8 +101,10 @@ def main():
         )
 
         if st.button("Save Settings"):
-            if nebius_api_key_input:
-                os.environ["NEBIUS_API_KEY"] = nebius_api_key_input
+            if minimax_api_key_input:
+                os.environ["OPENAI_API_KEY"] = minimax_api_key_input
+            if minimax_base_url_input:
+                os.environ["OPENAI_BASE_URL"] = minimax_base_url_input
             if exa_api_key_input:
                 os.environ["EXA_API_KEY"] = exa_api_key_input
             if memori_api_key_input:
@@ -115,8 +115,8 @@ def main():
         st.markdown("---")
 
         if st.button("Ingest channel into Memori"):
-            if not os.getenv("NEBIUS_API_KEY"):
-                st.warning("NEBIUS_API_KEY is required before ingestion.")
+            if not os.getenv("OPENAI_API_KEY"):
+                st.warning("OPENAI_API_KEY (MiniMax) is required before ingestion.")
             elif not channel_url_input.strip():
                 st.warning("Please enter a YouTube channel or playlist URL.")
             else:
@@ -139,25 +139,23 @@ def main():
         )
 
     # Get keys for main app logic
-    nebius_key = os.getenv("NEBIUS_API_KEY", "")
-    if not nebius_key:
+    api_key = os.getenv("OPENAI_API_KEY", "")
+    base_url = os.getenv("OPENAI_BASE_URL", "https://api.minimax.io/v1")
+    if not api_key:
         st.warning(
-            "⚠️ Please enter your Nebius API key in the sidebar to start chatting!"
+            "⚠️ Please enter your MiniMax API key in the sidebar to start chatting!"
         )
         st.stop()
 
-    # Initialize Nebius model for the advisor (once)
-    if "nebius_model" not in st.session_state:
+    # Initialize MiniMax/OpenAI client for the advisor (once)
+    if "openai_client" not in st.session_state:
         try:
-            st.session_state.nebius_model = Nebius(
-                id=os.getenv(
-                    "YOUTUBE_TREND_MODEL",
-                    "moonshotai/Kimi-K2-Instruct",
-                ),
-                api_key=nebius_key,
+            st.session_state.openai_client = OpenAI(
+                base_url=base_url,
+                api_key=api_key,
             )
         except Exception as e:
-            st.error(f"Failed to initialize Nebius model: {e}")
+            st.error(f"Failed to initialize MiniMax client: {e}")
             st.stop()
 
     # Display chat history
@@ -252,18 +250,30 @@ External web trends for this niche (may be partial):
 {exa_trends}
 """
 
-                    advisor = Agent(
-                        name="YouTube Trend Advisor",
-                        model=st.session_state.nebius_model,
-                        markdown=True,
+                    client = st.session_state.openai_client
+                    completion = client.chat.completions.create(
+                        model=os.getenv(
+                            "YOUTUBE_TREND_MODEL",
+                            "MiniMax-M2.1",
+                        ),
+                        messages=[
+                            {
+                                "role": "system",
+                                "content": (
+                                    "You are a YouTube strategy assistant that analyzes a creator's "
+                                    "channel and suggests specific, actionable video ideas."
+                                ),
+                            },
+                            {
+                                "role": "user",
+                                "content": full_prompt,
+                            },
+                        ],
+                        extra_body={"reasoning_split": True},
                     )
 
-                    result = advisor.run(full_prompt)
-                    response_text = (
-                        str(result.content)
-                        if hasattr(result, "content")
-                        else str(result)
-                    )
+                    message = completion.choices[0].message
+                    response_text = getattr(message, "content", "") or str(message)
 
                     st.session_state.messages.append(
                         {"role": "assistant", "content": response_text}

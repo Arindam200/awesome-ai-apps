@@ -2,7 +2,7 @@
 Core logic for the YouTube Trend Analysis Agent.
 
 This module contains:
-- Memori + Nebius initialization helpers.
+- Memori initialization helpers (using an OpenAI-compatible client, e.g. MiniMax).
 - YouTube scraping utilities.
 - Exa-based trend fetching.
 - Channel ingestion into Memori.
@@ -43,13 +43,20 @@ def init_memori_with_nebius() -> Memori | None:
     Initialize Memori v3 + Nebius client (via the OpenAI SDK).
 
     This is used so Memori can automatically persist "memories" when we send
-    documents through the registered Nebius-backed client. Agno + Nebius power all
-    YouTube analysis and idea generation.
+    documents through the registered OpenAI-compatible client.
+
+    NOTE:
+    - To use MiniMax, set:
+        OPENAI_BASE_URL = "https://api.minimax.io/v1"
+        OPENAI_API_KEY  = "<your-minimax-api-key>"
     """
-    nebius_key = os.getenv("NEBIUS_API_KEY", "")
-    if not nebius_key:
+    # MiniMax (or other OpenAI-compatible) configuration via standard OpenAI env vars
+    base_url = os.getenv("OPENAI_BASE_URL", "https://api.minimax.io/v1")
+    api_key = os.getenv("OPENAI_API_KEY", "")
+
+    if not api_key:
         st.warning(
-            "NEBIUS_API_KEY is not set – Memori v3 ingestion will not be active."
+            "OPENAI_API_KEY is not set – Memori v3 ingestion will not be active."
         )
         return None
 
@@ -69,10 +76,10 @@ def init_memori_with_nebius() -> Memori | None:
         SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
         client = OpenAI(
-            base_url="https://api.studio.nebius.com/v1/",
-            api_key=nebius_key,
+            base_url=base_url,
+            api_key=api_key,
         )
-        # Use the OpenAI-compatible registration API; the client itself points to Nebius.
+        # Use the OpenAI-compatible registration API; the client itself points to MiniMax (or any compatible provider).
         mem = Memori(conn=SessionLocal).openai.register(client)
         # Attribution so Memori can attach memories to this process/entity.
         mem.attribution(entity_id="youtube-channel", process_id="youtube-trend-agent")
@@ -297,7 +304,7 @@ Description:
             _ = client.chat.completions.create(
                 model=os.getenv(
                     "YOUTUBE_TREND_INGEST_MODEL",
-                    "moonshotai/Kimi-K2-Instruct",
+                    "MiniMax-M2.1",
                 ),
                 messages=[
                     {
