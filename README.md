@@ -75,6 +75,8 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
         </a>
       </sub>
     </td>
+  </tr>
+  <tr align="center">
     <td width="200" valign="middle" align="center">
       <a href="https://dub.sh/memorilabs" target="_blank" title="Visit Memorilabs">
         <img src="assets/memori.png" height="36" style="max-width:180px;" alt="Memori - SQL Native Memory for AI">
@@ -83,11 +85,52 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
       <sub>
         <span style="white-space:nowrap;">SQL Native Memory for AI</span>
         <br>
-        <a href="https://dub.sh/gibson" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit GibsonAI website">
+        <a href="https://dub.sh/memorilabs" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Memorilabs website">
         </a>
       </sub>
     </td>
+    <td width="200" valign="middle" align="center">
+      <a href="https://dub.sh/copilotkit" target="_blank" title="Visit CopilotKit">
+        <img src="assets/copilot-kit-logo.svg" height="36" style="max-width:180px;" alt="CopilotKit - Agentic Application Platform">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">Agentic Application Platform</span>
+        <br>
+        <a href="https://dub.sh/copilotkit" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit CopilotKit website">
+        </a>
+      </sub>
+    </td>
+    <td width="200" valign="middle" align="center">
+      <a href="https://dub.sh/scalekitt" target="_blank" title="Visit ScaleKit">
+        <img src="assets/scalekit.svg" height="36" style="max-width:180px;" alt="ScaleKit - Auth Stack for AI">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">Auth Stack for AI</span>
+        <br>
+        <a href="https://dub.sh/scalekitt" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit ScaleKit website">
+        </a>
+      </sub>
+    </td>
+  </tr>
+  <tr align="center">
+    <td width="200" valign="middle" align="center">
+      <!-- <a href="https://okahu.ai" target="_blank" title="Visit Okahu">
+        <img src="assets/okahu.png" height="36" style="max-width:180px;" alt="Okahu - AI Platform">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">AI Platform</span>
+        <br>
+        <a href="https://okahu.ai" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Okahu website">
+        </a>
+      </sub>
+    </td> -->
   </tr>
 </table>
 
@@ -301,19 +344,6 @@ Get easy-to-follow weekly tutorials and deep dives on AI, LLMs, and agent framew
    # or for Streamlit apps
    streamlit run app.py
    ```
-
-### Common API Keys Needed
-
-Most projects require one or more of these API keys:
-
-- `NEBIUS_API_KEY` - Nebius Token Factory (used extensively)
-- `OPENAI_API_KEY` - OpenAI models
-- `GITHUB_PERSONAL_ACCESS_TOKEN` - For GitHub MCP agents
-- `SGAI_API_KEY` - ScrapeGraph AI for web scraping
-- `MEMORI_API_KEY` - GibsonAI Memori for memory-enabled agents
-- `EXA_API_KEY` - Exa AI for search capabilities
-
-> **Note**: Each project has its own `README.md` with detailed setup instructions, API key requirements, and usage examples. Always check the project-specific documentation before running.
 
 ## 🤝 Contributing
 
