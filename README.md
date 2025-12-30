@@ -36,7 +36,7 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
 
 <table align="center" cellpadding="10" style="width:100%; border-collapse:collapse;">
   <tr align="center">
-    <td width="200" valign="middle" align="center">
+    <td width="300" valign="middle" align="center">
       <a href="https://dub.sh/brightdata" target="_blank" title="Visit Bright Data">
         <img src="https://mintlify.s3.us-west-1.amazonaws.com/brightdata/logo/light.svg" height="35" style="max-width:180px;" alt="Bright Data - Web Data Platform">
       </a>
@@ -49,7 +49,7 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
         </a>
       </sub>
     </td>
-    <td width="200" valign="middle" align="center">
+    <td width="300" valign="middle" align="center">
       <a href="https://dub.sh/nebius" target="_blank" title="Visit Nebius Token Factory">
         <img src="./assets/nebius.png" height="36" style="max-width:180px;" alt="Nebius Token Factory">
       </a>
@@ -62,7 +62,7 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
         </a>
       </sub>
     </td>
-    <td width="200" valign="middle" align="center">
+    <td width="300" valign="middle" align="center">
       <a href="https://dub.sh/scrapegraphai" target="_blank" title="Visit ScrapeGraphAI on GitHub">
         <img src="https://raw.githubusercontent.com/ScrapeGraphAI/ScrapeGraph-AI/main/docs/assets/scrapegraphai_logo.png" height="44" style="max-width:180px;" alt="ScrapeGraphAI - Web Scraping Library">
       </a>
@@ -77,7 +77,7 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
     </td>
   </tr>
   <tr align="center">
-    <td width="200" valign="middle" align="center">
+    <td width="300" valign="middle" align="center">
       <a href="https://dub.sh/memorilabs" target="_blank" title="Visit Memorilabs">
         <img src="assets/memori.png" height="36" style="max-width:180px;" alt="Memori - SQL Native Memory for AI">
       </a>
@@ -90,7 +90,7 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
         </a>
       </sub>
     </td>
-    <td width="200" valign="middle" align="center">
+    <td width="300" valign="middle" align="center">
       <a href="https://dub.sh/copilotkit" target="_blank" title="Visit CopilotKit">
         <img src="assets/copilot-kit-logo.svg" height="36" style="max-width:180px;" alt="CopilotKit - Agentic Application Platform">
       </a>
@@ -103,7 +103,7 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
         </a>
       </sub>
     </td>
-    <td width="200" valign="middle" align="center">
+    <td width="300" valign="middle" align="center">
       <a href="https://dub.sh/scalekitt" target="_blank" title="Visit ScaleKit">
         <img src="assets/scalekit.svg" height="36" style="max-width:180px;" alt="ScaleKit - Auth Stack for AI">
       </a>
@@ -117,9 +117,9 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
       </sub>
     </td>
   </tr>
-  <tr align="center">
+  <!-- <tr align="center">
     <td width="200" valign="middle" align="center">
-      <!-- <a href="https://okahu.ai" target="_blank" title="Visit Okahu">
+      <a href="https://okahu.ai" target="_blank" title="Visit Okahu">
         <img src="assets/okahu.png" height="36" style="max-width:180px;" alt="Okahu - AI Platform">
       </a>
       <br>
@@ -130,8 +130,8 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
           <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Okahu website">
         </a>
       </sub>
-    </td> -->
-  </tr>
+    </td>
+  </tr> -->
 </table>
 
 ### 💎 Become a Sponsor
