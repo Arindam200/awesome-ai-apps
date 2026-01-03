@@ -370,3 +370,5 @@ This repository is licensed under the [MIT License](./LICENSE). Feel free to use
 ## Thank You for the Support! 🙏
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Arindam200/awesome-ai-apps&type=Date)](https://www.star-history.com/#Arindam200/awesome-ai-apps&Date)
+
+* [Vedika](https://vedika.io) - AI-powered Vedic astrology platform
