@@ -1,0 +1,141 @@
+---
+# KAOS Starter: Multi-Agent System with MCP Tools
+# A coordinator agent with two worker agents and echo MCP tool
+# Deploy: kubectl apply -f multi-agent-system.yaml
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kaos-demo
+  labels:
+    app.kubernetes.io/part-of: kaos-starter
+
+---
+# ModelAPI: Hosted Ollama with smollm2 model (runs in-cluster)
+apiVersion: kaos.tools/v1alpha1
+kind: ModelAPI
+metadata:
+  name: demo-modelapi
+  namespace: kaos-demo
+spec:
+  mode: Hosted
+  hostedConfig:
+    model: "smollm2:135m"
+
+---
+# MCPServer: Echo tool for testing
+apiVersion: kaos.tools/v1alpha1
+kind: MCPServer
+metadata:
+  name: demo-echo-mcp
+  namespace: kaos-demo
+spec:
+  type: python-runtime
+  config:
+    tools:
+      fromPackage: "test-mcp-echo-server"
+
+---
+# MCPServer: Calculator tool
+apiVersion: kaos.tools/v1alpha1
+kind: MCPServer
+metadata:
+  name: demo-calc-mcp
+  namespace: kaos-demo
+spec:
+  type: python-runtime
+  config:
+    tools:
+      fromString: |
+        def calculate(expression: str) -> str:
+            """Evaluate a mathematical expression and return the result."""
+            try:
+                result = eval(expression)
+                return f"Result: {result}"
+            except Exception as e:
+                return f"Error: {str(e)}"
+
+---
+# Agent: Coordinator - orchestrates worker agents
+apiVersion: kaos.tools/v1alpha1
+kind: Agent
+metadata:
+  name: coordinator
+  namespace: kaos-demo
+spec:
+  modelAPI: demo-modelapi
+  mcpServers:
+  - demo-echo-mcp
+  - demo-calc-mcp
+  config:
+    description: "Coordinator agent that orchestrates worker agents"
+    instructions: |
+      You are a coordinator agent managing a team of workers.
+      
+      You can delegate tasks to:
+      - worker-1: General purpose tasks
+      - worker-2: Specialized analysis tasks
+      
+      You have access to these tools:
+      - echo: Echo back messages for testing
+      - calculate: Evaluate math expressions
+      
+      When given a task, decide whether to handle it yourself or delegate to a worker.
+    reasoningLoopMaxSteps: 10
+    env:
+    - name: MODEL_NAME
+      value: "smollm2:135m"
+  agentNetwork:
+    access:
+    - worker-1
+    - worker-2
+
+---
+# Agent: Worker 1 - general purpose worker
+apiVersion: kaos.tools/v1alpha1
+kind: Agent
+metadata:
+  name: worker-1
+  namespace: kaos-demo
+spec:
+  modelAPI: demo-modelapi
+  mcpServers:
+  - demo-echo-mcp
+  config:
+    description: "General purpose worker agent"
+    instructions: |
+      You are worker-1, a general purpose assistant.
+      You receive delegated tasks from the coordinator.
+      You have access to an echo tool for testing.
+      Complete tasks efficiently and return clear results.
+    reasoningLoopMaxSteps: 5
+    env:
+    - name: MODEL_NAME
+      value: "smollm2:135m"
+  agentNetwork:
+    access: []
+
+---
+# Agent: Worker 2 - specialized worker
+apiVersion: kaos.tools/v1alpha1
+kind: Agent
+metadata:
+  name: worker-2
+  namespace: kaos-demo
+spec:
+  modelAPI: demo-modelapi
+  mcpServers:
+  - demo-calc-mcp
+  config:
+    description: "Specialized analysis worker agent"
+    instructions: |
+      You are worker-2, specialized in analysis and calculations.
+      You receive delegated tasks from the coordinator.
+      You have access to a calculator tool for math operations.
+      Focus on detailed analysis and provide thorough responses.
+    reasoningLoopMaxSteps: 5
+    env:
+    - name: MODEL_NAME
+      value: "smollm2:135m"
+  agentNetwork:
+    access: []
