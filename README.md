@@ -184,7 +184,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🪶 Simple Agents
 
-**Straightforward, practical use-cases for everyday AI applications.** _13 projects_
+**Straightforward, practical use-cases for everyday AI applications.** _14 projects_
 
 - [Agno AI Examples](simple_ai_agents/agno_ai_examples) - Simple to multi-agent examples with web search & knowledge base
 - [Finance Agent](simple_ai_agents/finance_agent) - Real-time stock & market data tracking agent
@@ -199,6 +199,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Nebius Chat](simple_ai_agents/nebius_chat) - Chat interface for Nebius Token Factory
 - [RouteLLM Chat](simple_ai_agents/llm_router) - Intelligent model routing with RouteLLM (GPT-4o-mini vs Nebius Llama) for cost optimization
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Natural language database queries with GibsonAI & LangChain
+- [Agent Discovery Agent](simple_ai_agents/agent_discovery_agent) - Find and compare AI agents across NANDA, MCP, Virtuals, A2A, and ERC-8004 registries
 
 ### 🗂️ MCP Agents
 
