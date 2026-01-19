@@ -1,7 +1,5 @@
 # KAOS Starter - Kubernetes Multi-Agent System
 
-![KAOS UI](https://raw.githubusercontent.com/axsaucedo/kaos/main/docs/images/kaos-ui.gif)
-
 A starter example demonstrating how to deploy a multi-agent system on Kubernetes using **KAOS** (K8s Agent Orchestration System). This example sets up a coordinator agent with two worker agents and MCP tools.
 
 ## Overview
@@ -16,24 +14,20 @@ This starter showcases:
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Kubernetes Cluster                    │
-│                                                          │
-│  ┌──────────────┐    ┌──────────────┐                   │
-│  │  Coordinator │───▶│   Worker 1   │                   │
-│  │    Agent     │    │    Agent     │                   │
-│  └──────┬───────┘    └──────────────┘                   │
-│         │            ┌──────────────┐                   │
-│         └───────────▶│   Worker 2   │                   │
-│                      │    Agent     │                   │
-│                      └──────────────┘                   │
-│                                                          │
-│  ┌──────────────┐    ┌──────────────┐                   │
-│  │   ModelAPI   │    │  MCP Server  │                   │
-│  │   (Ollama)   │    │  (Echo Tool) │                   │
-│  └──────────────┘    └──────────────┘                   │
-└─────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph kube["Kubernetes Cluster"]
+        coor["Coordinator Agent"]
+        wor1["Worker 1 Agent"]
+        wor2["Worker 2 Agent"]
+        api["ModelAPI Hosted"]
+        mcp["MCP Server (Echo Tool)"]
+    end
+
+    coor --> wor1
+    coor --> wor2
+
+
 ```
 
 ## Prerequisites
@@ -176,64 +170,7 @@ The UI is hosted at: https://axsaucedo.github.io/kaos-ui/
 
 Configure it to connect to your cluster's proxy endpoint.
 
-![KAOS UI](https://raw.githubusercontent.com/axsaucedo/kaos/main/docs/images/kaos-ui.gif)
-
-## Configuration Reference
-
-### Agent CRD
-
-```yaml
-apiVersion: kaos.tools/v1alpha1
-kind: Agent
-metadata:
-  name: my-agent
-spec:
-  modelAPI: my-model-api      # Reference to ModelAPI
-  mcpServers:                  # List of MCP servers
-  - my-mcp-server
-  config:
-    description: "Agent description"
-    instructions: "System prompt"
-    reasoningLoopMaxSteps: 5
-  agentNetwork:
-    access:                    # Agents this agent can delegate to
-    - worker-1
-    - worker-2
-```
-
-### ModelAPI CRD
-
-```yaml
-apiVersion: kaos.tools/v1alpha1
-kind: ModelAPI
-metadata:
-  name: my-model-api
-spec:
-  mode: Hosted                 # Hosted (in-cluster Ollama) or Proxy
-  hostedConfig:
-    model: "smollm2:135m"      # Model to use
-```
-
-### MCPServer CRD
-
-```yaml
-apiVersion: kaos.tools/v1alpha1
-kind: MCPServer
-metadata:
-  name: my-mcp-server
-spec:
-  type: python-runtime
-  config:
-    tools:
-      fromPackage: "test-mcp-echo-server"
-```
-
-## Next Steps
-
-- **Use with Claude/GPT**: Configure a [Proxy ModelAPI](https://github.com/axsaucedo/kaos/blob/main/docs/operator/modelapi-crd.md) to connect to Anthropic or OpenAI
-- **Add Custom Tools**: Create [custom MCP servers](https://github.com/axsaucedo/kaos/blob/main/docs/operator/mcpserver-crd.md) with your own tools
-- **Scale Agents**: Add more workers and configure complex agent hierarchies
-- **Production Setup**: Configure [Gateway API](https://github.com/axsaucedo/kaos/blob/main/docs/operator/gateway-api.md) for external access
+![KAOS UI](https://github.com/axsaucedo/kaos/blob/main/docs/public/demo.gif?raw=true)
 
 ## Resources
 
@@ -242,10 +179,3 @@ spec:
 - [Agent CRD Reference](https://github.com/axsaucedo/kaos/blob/main/docs/operator/agent-crd.md)
 - [Sample Configurations](https://github.com/axsaucedo/kaos/tree/main/operator/config/samples)
 
-## Cleanup
-
-Remove all resources:
-
-```bash
-kubectl delete -f multi-agent-system.yaml
-```
