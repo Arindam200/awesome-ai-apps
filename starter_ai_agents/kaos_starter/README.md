@@ -146,7 +146,7 @@ EOF
 
 Then we can start creating the multi-agent system. First we start with the two worker agents. 
 
-All of the agents will be using the `nebius/black-forest-labs/flux-schnell` as it's quite low cost model.
+All of the agents will be using the `nebius/Qwen/Qwen3-235B-A22B` model - a capable instruction-following model from Qwen.
 
 ```yaml
 kubectl apply -f - <<EOF
@@ -157,7 +157,7 @@ metadata:
   name: worker-1
   namespace: kaos-demo
 spec:
-  model: "nebius/black-forest-labs/flux-schnell"
+  model: "nebius/Qwen/Qwen3-235B-A22B"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-echo-mcp
@@ -180,7 +180,7 @@ metadata:
   name: worker-2
   namespace: kaos-demo
 spec:
-  model: "nebius/black-forest-labs/flux-schnell"
+  model: "nebius/Qwen/Qwen3-235B-A22B"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-calc-mcp
@@ -208,7 +208,7 @@ metadata:
   name: coordinator
   namespace: kaos-demo
 spec:
-  model: "nebius/black-forest-labs/flux-schnell"
+  model: "nebius/Qwen/Qwen3-235B-A22B"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-echo-mcp
@@ -261,7 +261,7 @@ kubectl port-forward svc/coordinator -n kaos-demo 8080:8000 &
 curl http://localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "smollm2:135m",
+    "model": "nebius/Qwen/Qwen3-235B-A22B",
     "messages": [{"role": "user", "content": "Hello! Can you delegate a task to worker-1?"}]
   }'
 ```
@@ -305,7 +305,7 @@ kubectl port-forward svc/coordinator -n kaos-demo 8080:8000 &
 curl http://localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "smollm2:135m",
+    "model": "nebius/Qwen/Qwen3-235B-A22B",
     "messages": [
       {"role": "user", "content": "Please ask worker-1 to echo the message: Hello World"}
     ]

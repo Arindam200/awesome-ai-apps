@@ -11,6 +11,9 @@ metadata:
 spec:
   mode: Proxy
   proxyConfig:
+    # Using nebius/* wildcard allows any Nebius model to be used by agents
+    # The ModelAPI generates a passthrough config that routes requests
+    # based on the model prefix (e.g., nebius/Qwen/Qwen3-235B-A22B)
     models:
     - "nebius/*"
     apiKey:
@@ -60,7 +63,9 @@ metadata:
   name: coordinator
   namespace: kaos-demo
 spec:
-  model: "nebius/black-forest-labs/flux-schnell"
+  # Use a Nebius chat model - Qwen3 is a capable instruction-following model
+  # See https://docs.litellm.ai/docs/providers/nebius for supported models
+  model: "nebius/Qwen/Qwen3-235B-A22B"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-echo-mcp
@@ -93,7 +98,7 @@ metadata:
   name: worker-1
   namespace: kaos-demo
 spec:
-  model: "nebius/black-forest-labs/flux-schnell"
+  model: "nebius/Qwen/Qwen3-235B-A22B"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-echo-mcp
@@ -116,7 +121,7 @@ metadata:
   name: worker-2
   namespace: kaos-demo
 spec:
-  model: "nebius/black-forest-labs/flux-schnell"
+  model: "nebius/Qwen/Qwen3-235B-A22B"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-calc-mcp
