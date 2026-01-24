@@ -3,24 +3,21 @@
 # A coordinator agent with two worker agents and echo MCP tool
 # Deploy: kubectl apply -f multi-agent-system.yaml
 
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: kaos-demo
-  labels:
-    app.kubernetes.io/part-of: kaos-starter
-
----
-# ModelAPI: Hosted Ollama with smollm2 model (runs in-cluster)
 apiVersion: kaos.tools/v1alpha1
 kind: ModelAPI
 metadata:
   name: demo-modelapi
   namespace: kaos-demo
 spec:
-  mode: Hosted
-  hostedConfig:
-    model: "smollm2:135m"
+  mode: Proxy
+  proxyConfig:
+    models:
+    - "nebius/*"
+    apiKey:
+      valueFrom:
+        secretKeyRef:
+          name: nebius-secrets
+          key: api-key
 
 ---
 # MCPServer: Echo tool for testing
@@ -63,6 +60,7 @@ metadata:
   name: coordinator
   namespace: kaos-demo
 spec:
+  model: "nebius/black-forest-labs/flux-schnell"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-echo-mcp
@@ -82,9 +80,6 @@ spec:
       
       When given a task, decide whether to handle it yourself or delegate to a worker.
     reasoningLoopMaxSteps: 10
-    env:
-    - name: MODEL_NAME
-      value: "smollm2:135m"
   agentNetwork:
     access:
     - worker-1
@@ -98,6 +93,7 @@ metadata:
   name: worker-1
   namespace: kaos-demo
 spec:
+  model: "nebius/black-forest-labs/flux-schnell"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-echo-mcp
@@ -109,9 +105,6 @@ spec:
       You have access to an echo tool for testing.
       Complete tasks efficiently and return clear results.
     reasoningLoopMaxSteps: 5
-    env:
-    - name: MODEL_NAME
-      value: "smollm2:135m"
   agentNetwork:
     access: []
 
@@ -123,6 +116,7 @@ metadata:
   name: worker-2
   namespace: kaos-demo
 spec:
+  model: "nebius/black-forest-labs/flux-schnell"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-calc-mcp
@@ -134,8 +128,5 @@ spec:
       You have access to a calculator tool for math operations.
       Focus on detailed analysis and provide thorough responses.
     reasoningLoopMaxSteps: 5
-    env:
-    - name: MODEL_NAME
-      value: "smollm2:135m"
   agentNetwork:
     access: []

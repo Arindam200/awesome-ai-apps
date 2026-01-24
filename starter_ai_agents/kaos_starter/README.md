@@ -42,8 +42,13 @@ flowchart TB
 
 ```bash
 # Add the KAOS Helm repository
-helm install kaos-operator oci://ghcr.io/axsaucedo/kaos/kaos-operator \
+helm repo add kaos https://axsaucedo.github.io/kaos/charts
+helm repo update
+
+# Install the operator
+helm install kaos kaos/kaos-operator \
   --namespace kaos-system \
+  --version v0.1.2 \
   --create-namespace
 ```
 
@@ -57,17 +62,180 @@ For more installation options, see the [KAOS Installation Guide](https://github.
 
 ### 2. Deploy the Multi-Agent System
 
-Apply the sample configuration:
+Create the namespace
 
-```bash
-kubectl apply -f multi-agent-system.yaml
+```
+kubectl create namespace kaos-demo
 ```
 
-This creates:
-- **Namespace**: `kaos-demo`
-- **ModelAPI**: Hosted Ollama with smollm2 model
-- **MCPServer**: Echo tool for testing
-- **Agents**: Coordinator + 2 workers
+Create a secret to configure Nebulus api key. 
+
+First ensure that you have your secret key available.
+
+```
+export NEBIUS_KEY= <- add your hey here
+```
+
+Then create the secret in your cluster
+
+```
+kubectl create secret generic nebius-secrets --from-literal "api-key=$NEBIUS_KEY"
+```
+
+Apply the sample configuration. You can do it directly from `multi-agent-system.yaml` or one by one as below.
+
+If we do one by one, we can start with the ModelAPI which configures the proxy to the Nebius AI token platform.
+
+```yaml
+kubectl apply -f - <<EOF
+apiVersion: kaos.tools/v1alpha1
+kind: ModelAPI
+metadata:
+  name: demo-modelapi
+  namespace: kaos-demo
+spec:
+  mode: Proxy
+  proxyConfig:
+    models:
+    - "nebius/*"
+    apiKey:
+      valueFrom:
+        secretKeyRef:
+          name: nebius-secrets
+          key: api-key
+EOF
+```
+
+Then we can create two demo MCP servers
+
+```yaml
+kubectl apply -f - <<EOF
+# MCPServer: Echo tool for testing
+apiVersion: kaos.tools/v1alpha1
+kind: MCPServer
+metadata:
+  name: demo-echo-mcp
+  namespace: kaos-demo
+spec:
+  type: python-runtime
+  config:
+    tools:
+      fromPackage: "test-mcp-echo-server"
+
+---
+# MCPServer: Calculator tool
+apiVersion: kaos.tools/v1alpha1
+kind: MCPServer
+metadata:
+  name: demo-calc-mcp
+  namespace: kaos-demo
+spec:
+  type: python-runtime
+  config:
+    tools:
+      fromString: |
+        def calculate(expression: str) -> str:
+            """Evaluate a mathematical expression and return the result."""
+            try:
+                result = eval(expression)
+                return f"Result: {result}"
+            except Exception as e:
+                return f"Error: {str(e)}"
+EOF
+```
+
+Then we can start creating the multi-agent system. First we start with the two worker agents. 
+
+All of the agents will be using the `nebius/black-forest-labs/flux-schnell` as it's quite low cost model.
+
+```yaml
+kubectl apply -f - <<EOF
+# Agent: Worker 1 - general purpose worker
+apiVersion: kaos.tools/v1alpha1
+kind: Agent
+metadata:
+  name: worker-1
+  namespace: kaos-demo
+spec:
+  model: "nebius/black-forest-labs/flux-schnell"
+  modelAPI: demo-modelapi
+  mcpServers:
+  - demo-echo-mcp
+  config:
+    description: "General purpose worker agent"
+    instructions: |
+      You are worker-1, a general purpose assistant.
+      You receive delegated tasks from the coordinator.
+      You have access to an echo tool for testing.
+      Complete tasks efficiently and return clear results.
+    reasoningLoopMaxSteps: 5
+  agentNetwork:
+    access: []
+
+---
+# Agent: Worker 2 - specialized worker
+apiVersion: kaos.tools/v1alpha1
+kind: Agent
+metadata:
+  name: worker-2
+  namespace: kaos-demo
+spec:
+  model: "nebius/black-forest-labs/flux-schnell"
+  modelAPI: demo-modelapi
+  mcpServers:
+  - demo-calc-mcp
+  config:
+    description: "Specialized analysis worker agent"
+    instructions: |
+      You are worker-2, specialized in analysis and calculations.
+      You receive delegated tasks from the coordinator.
+      You have access to a calculator tool for math operations.
+      Focus on detailed analysis and provide thorough responses.
+    reasoningLoopMaxSteps: 5
+  agentNetwork:
+    access: []
+EOF
+```
+
+Finally we can create the coordinator agent:
+
+```yaml
+kubectl apply -f - <<EOF
+# Agent: Coordinator - orchestrates worker agents
+apiVersion: kaos.tools/v1alpha1
+kind: Agent
+metadata:
+  name: coordinator
+  namespace: kaos-demo
+spec:
+  model: "nebius/black-forest-labs/flux-schnell"
+  modelAPI: demo-modelapi
+  mcpServers:
+  - demo-echo-mcp
+  - demo-calc-mcp
+  config:
+    description: "Coordinator agent that orchestrates worker agents"
+    instructions: |
+      You are a coordinator agent managing a team of workers.
+      
+      You can delegate tasks to:
+      - worker-1: General purpose tasks
+      - worker-2: Specialized analysis tasks
+      
+      You have access to these tools:
+      - echo: Echo back messages for testing
+      - calculate: Evaluate math expressions
+      
+      When given a task, decide whether to handle it yourself or delegate to a worker.
+    reasoningLoopMaxSteps: 10
+  agentNetwork:
+    access:
+    - worker-1
+    - worker-2
+EOF
+```
+
+We now have everything in place and deployed.
 
 ### 3. Wait for Resources to be Ready
 
