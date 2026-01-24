@@ -48,7 +48,7 @@ helm repo update
 # Install the operator
 helm install kaos kaos/kaos-operator \
   --namespace kaos-system \
-  --version v0.1.2 \
+  --version v0.1.3 \
   --create-namespace
 ```
 
