@@ -11,11 +11,12 @@ metadata:
 spec:
   mode: Proxy
   proxyConfig:
-    # Using nebius/* wildcard allows any Nebius model to be used by agents
-    # The ModelAPI generates a passthrough config that routes requests
-    # based on the model prefix (e.g., nebius/Qwen/Qwen3-235B-A22B)
+    # Using wildcard allows any model to be used by agents
+    # The provider field tells LiteLLM to route via the Nebius provider
+    # Config generates: model_name: "*" → model: "nebius/*"
     models:
-    - "nebius/*"
+    - "*"
+    provider: "nebius"  # All models routed via nebius provider
     apiKey:
       valueFrom:
         secretKeyRef:
@@ -63,9 +64,10 @@ metadata:
   name: coordinator
   namespace: kaos-demo
 spec:
-  # Use a Nebius chat model - Qwen3 is a capable instruction-following model
-  # See https://docs.litellm.ai/docs/providers/nebius for supported models
-  model: "nebius/Qwen/Qwen3-235B-A22B"
+  # Agents use simple model names - the ModelAPI adds the provider prefix
+  # This model name is matched against the models list (which has "*")
+  # LiteLLM receives: model: "nebius/openai/gpt-oss-20b"
+  model: "openai/gpt-oss-20b"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-echo-mcp
@@ -98,7 +100,7 @@ metadata:
   name: worker-1
   namespace: kaos-demo
 spec:
-  model: "nebius/Qwen/Qwen3-235B-A22B"
+  model: "openai/gpt-oss-20b"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-echo-mcp
@@ -121,7 +123,7 @@ metadata:
   name: worker-2
   namespace: kaos-demo
 spec:
-  model: "nebius/Qwen/Qwen3-235B-A22B"
+  model: "openai/gpt-oss-20b"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-calc-mcp

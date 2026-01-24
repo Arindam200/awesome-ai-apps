@@ -96,8 +96,11 @@ metadata:
 spec:
   mode: Proxy
   proxyConfig:
+    # Using wildcard allows any model to be used by agents
+    # The provider field tells LiteLLM to route via the Nebius provider
     models:
-    - "nebius/*"
+    - "*"
+    provider: "nebius"  # All models routed via nebius provider
     apiKey:
       valueFrom:
         secretKeyRef:
@@ -146,7 +149,7 @@ EOF
 
 Then we can start creating the multi-agent system. First we start with the two worker agents. 
 
-All of the agents will be using the `nebius/Qwen/Qwen3-235B-A22B` model - a capable instruction-following model from Qwen.
+All agents use simple model names (e.g., `openai/gpt-oss-20b`). The ModelAPI's `provider: "nebius"` field automatically routes these via the Nebius provider.
 
 ```yaml
 kubectl apply -f - <<EOF
@@ -157,7 +160,8 @@ metadata:
   name: worker-1
   namespace: kaos-demo
 spec:
-  model: "nebius/Qwen/Qwen3-235B-A22B"
+  # Simple model name - provider is handled by ModelAPI
+  model: "openai/gpt-oss-20b"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-echo-mcp
@@ -180,7 +184,7 @@ metadata:
   name: worker-2
   namespace: kaos-demo
 spec:
-  model: "nebius/Qwen/Qwen3-235B-A22B"
+  model: "openai/gpt-oss-20b"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-calc-mcp
@@ -208,7 +212,7 @@ metadata:
   name: coordinator
   namespace: kaos-demo
 spec:
-  model: "nebius/Qwen/Qwen3-235B-A22B"
+  model: "openai/gpt-oss-20b"
   modelAPI: demo-modelapi
   mcpServers:
   - demo-echo-mcp
@@ -261,7 +265,7 @@ kubectl port-forward svc/coordinator -n kaos-demo 8080:8000 &
 curl http://localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "nebius/Qwen/Qwen3-235B-A22B",
+    "model": "openai/gpt-oss-20b",
     "messages": [{"role": "user", "content": "Hello! Can you delegate a task to worker-1?"}]
   }'
 ```
@@ -305,7 +309,7 @@ kubectl port-forward svc/coordinator -n kaos-demo 8080:8000 &
 curl http://localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "nebius/Qwen/Qwen3-235B-A22B",
+    "model": "openai/gpt-oss-20b",
     "messages": [
       {"role": "user", "content": "Please ask worker-1 to echo the message: Hello World"}
     ]
