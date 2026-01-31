@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-apps-config
+  namespace: ai-apps
+data:
+  monitoring.yaml: |
+    check_interval: 30
+    alert_thresholds:
+      response_time_ms: 5000
+      error_rate: 0.05
+      cpu_usage: 0.8
+      memory_usage: 0.7
+    applications:
+      finance_agent:
+        base_url: "http://finance-agent-service:8000"
+        health_endpoints: ["/health", "/model/health"]
+      newsletter_agent:
+        base_url: "http://newsletter-agent-service:8000"
+        health_endpoints: ["/health"]
