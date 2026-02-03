@@ -203,7 +203,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🗂️ MCP Agents
 
-**Examples using Model Context Protocol for external tool integration.** _11 projects_
+**Examples using Model Context Protocol for external tool integration.** _12 projects_
 
 - [Doc-MCP](mcp_ai_agents/doc_mcp) - Semantic RAG documentation & Q&A system
 - [LangGraph MCP Agent](mcp_ai_agents/langchain_langgraph_mcp_agent) - LangChain ReAct agent with Couchbase integration
@@ -216,6 +216,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Couchbase MCP Server](mcp_ai_agents/couchbase_mcp_server) - Couchbase database integration with MCP protocol
 - [ScaleKit Exa MCP Security](mcp_ai_agents/scalekit-exa-mcp-security) - Security-focused MCP integration with Exa search
 - [Docker E2B MCP Agent](mcp_ai_agents/e2b_docker_mcp_agent) - Secure AI agent for running agents in sandboxed Docker environments via MCP Gateway
+- [AgentFund MCP](https://github.com/RioTheGreat-ai/agentfund-mcp) - Crowdfunding for AI agents with milestone-based escrow on Base chain
 
 ### 🧠 Memory Agents
 
