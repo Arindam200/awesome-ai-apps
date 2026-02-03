@@ -400,3 +400,5 @@ This repository is licensed under the [MIT License](./LICENSE). Feel free to use
 ## Thank You for the Support! 🙏
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Arindam200/awesome-ai-apps&type=Date)](https://www.star-history.com/#Arindam200/awesome-ai-apps&Date)
+
+- [AgentMarket](https://agentmarket.cloud) - B2A marketplace for AI agents. 189 listings, 28M+ real data records, LangChain/MCP integration.
