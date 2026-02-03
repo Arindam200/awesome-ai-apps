@@ -117,7 +117,7 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
       </sub>
     </td>
   </tr>
-  <!-- <tr align="center">
+  <tr align="center">
     <td width="200" valign="middle" align="center">
       <a href="https://okahu.ai" target="_blank" title="Visit Okahu">
         <img src="assets/okahu.png" height="36" style="max-width:180px;" alt="Okahu - AI Platform">
@@ -131,7 +131,23 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
         </a>
       </sub>
     </td>
-  </tr> -->
+     <td width="200" valign="middle" align="center">
+      <a href="https://dub.sh/serpApi" target="_blank" title="Visit SerpApi">
+        <img src="assets/serpApi.jpg" height="40" style="max-width:180px;" alt="SerpApi - Google Search API">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">Google Search API</span>
+        <br>
+        <a href="https://dub.sh/serpApi" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit SerpApi website">
+        </a>
+      </sub>
+    </td>
+  </tr>
+
+   
+
 </table>
 
 ### 💎 Become a Sponsor
