@@ -1,4 +1,4 @@
-# WFGY 16 Problem Map LLM Debugger
+# 🧩 WFGY 16 Problem Map LLM Debugger
 
 A Nebius-compatible notebook and minimal CLI that turns messy LLM and RAG bugs into **one of 16 reproducible failure modes**, each with a documented fix in the WFGY Problem Map.
 
@@ -12,7 +12,7 @@ Everything runs as plain text prompts. No SDKs, no provider lock in.
 
 ---
 
-## What this app is
+## 🧠 What this app is
 
 This app is a thin wrapper around two public assets from the WFGY project:
 
@@ -30,7 +30,7 @@ Think of it as a **semantic firewall debugger** that sits in front of any LLM pi
 
 ---
 
-## The 16 Problem Map overview
+## 🗺️ The 16 Problem Map overview
 
 The full map lives in the main WFGY repo:
 
@@ -61,7 +61,7 @@ Once a bug is mapped to a number, you can apply the fix and expect it not to sil
 
 ---
 
-## Running on Nebius (or any Jupyter environment)
+## 🚀 Running on Nebius (or any Jupyter environment)
 
 This project is designed to run on Nebius-hosted notebooks but also works on Colab, local Jupyter, or any environment where you can make OpenAI-compatible API calls.
 
@@ -117,7 +117,7 @@ You can treat this as a diagnostic layer in front of any LLM app, without changi
 
 ---
 
-## Minimal CLI demo (`main.py`)
+## 💻 Minimal CLI demo (`main.py`)
 
 For people who prefer a terminal flow, this repository includes a small CLI script.
 It uses the same logic as the notebook and can also be dropped into a single Colab cell.
@@ -365,7 +365,7 @@ while True:
         break
 ```
 
-### How to run the CLI demo
+### ▶️ How to run the CLI demo
 
 1. Install the Python dependencies:
 
@@ -398,7 +398,7 @@ The tool prints:
 
 ---
 
-## Optional helper: Dr WFGY ER
+## 🏥 Optional helper: Dr WFGY ER
 
 If you prefer a fully prepared chat window instead of running code, there is also an optional helper:
 
