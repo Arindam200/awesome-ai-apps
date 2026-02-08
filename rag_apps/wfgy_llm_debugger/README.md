@@ -5,7 +5,8 @@
 
 > A 16–mode, map-based debugger that turns messy LLM / RAG bugs into reproducible failure modes, each linked to a concrete fix in the WFGY Problem Map.
 
-A Nebius-compatible notebook and minimal CLI that helps LLM and RAG developers **classify bugs into one of 16 failure modes** (No.1–No.16) instead of guessing.  
+A Nebius-compatible notebook and minimal CLI that helps LLM and RAG developers **classify bugs into one of 16 failure modes** (No.1–No.16) instead of guessing.
+
 Paste a trace, log, or prompt / answer pair, and the debugger returns the closest Problem Map number plus a suggested fix in the open-source WFGY repo.
 
 Built with plain **Python**, the official **OpenAI client**, and **requests**, so it runs anywhere an OpenAI-compatible API is available (Nebius, OpenAI, custom gateways, etc.).
