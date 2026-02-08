@@ -1,7 +1,18 @@
-# WFGY 3.0 · TXT-based long-horizon stress-test app (Nebius-ready)
+# 🧪 WFGY 16 Problem Map · RAG Failure Clinic (Nebius TXT runner)
 
-WFGY is an experimental "tension" language and framework for studying how large language models behave under long-horizon, high-pressure reasoning tasks.
+A practical RAG failure clinic built on top of **WFGY Problem Map 1.0**.  
+You run a curated list of **16 reproducible failure modes** against any Nebius-hosted LLM and see exactly where your RAG pipeline breaks.
 
-WFGY 3.0 · Singularity Demo compresses this language into a single TXT pack. When you upload the TXT to a model and follow the on-screen menu, it acts like a long-horizon evaluation and debugging app: you can see exactly where the model stays coherent, starts to drift, or fully collapses.
+Instead of only asking “does my chatbot answer something”, this clinic is designed to surface:
 
-This example shows how to run the WFGY 3.0 TXT workflow on **Nebius Token Factory** using its OpenAI-compatible API.
+- hallucination & chunk drift (Problem Map No.1)  
+- interpretation collapse when chunks are correct but logic is wrong (No.2)  
+- long reasoning chain drift (No.3)  
+- bluffing / overconfident answers with no evidence (No.4)  
+- semantic vs embedding mismatch in your vector store (No.5)  
+- …and the rest of the 16 canonical failure modes you defined in WFGY.
+
+> The full map, stories, and fixes are in the open source WFGY repo (MIT):  
+> https://github.com/onestardao/WFGY/tree/main/ProblemMap#readme
+
+This example only gives you a **Nebius TXT runner** so you can quickly probe those 16 modes with any Nebius Token Factory model.
