@@ -47,7 +47,7 @@ This app focuses on mapping real world bugs into the following 16 classes:
 | 5   | Semantic ≠ embedding | Cosine similarity does not match true meaning | [embedding vs semantic](https://github.com/onestardao/WFGY/blob/main/ProblemMap/embedding-vs-semantic.md) |
 | 6   | Logic collapse and recovery | Chains hit dead ends and need controlled reset | [logic collapse](https://github.com/onestardao/WFGY/blob/main/ProblemMap/logic-collapse.md) |
 | 7   | Memory breaks across sessions | Lost threads and no continuity | [memory coherence](https://github.com/onestardao/WFGY/blob/main/ProblemMap/memory-coherence.md) |
-| 8   | Debugging as a black box | No visibility into retrieval and failure paths | [retrieval traceability](https://github.com/onestardao/WFGY/blob/main/ProblemMap/retrieval-traceability.md) 
+| 8   | Debugging as a black box | No visibility into retrieval and failure paths | [retrieval traceability](https://github.com/onestardao/WFGY/blob/main/ProblemMap/retrieval-traceability.md) |
 | 9   | Entropy collapse | Attention melts into incoherent output | [entropy collapse](https://github.com/onestardao/WFGY/blob/main/ProblemMap/entropy-collapse.md) |
 | 10  | Creative freeze | Flat and literal outputs when you needed structure and creativity | [creative freeze](https://github.com/onestardao/WFGY/blob/main/ProblemMap/creative-freeze.md) |
 | 11  | Symbolic collapse | Abstract or logical prompts stop working | [symbolic collapse](https://github.com/onestardao/WFGY/blob/main/ProblemMap/symbolic-collapse.md) |
@@ -135,9 +135,9 @@ import textwrap
 import requests
 from openai import OpenAI
 
-
 PROBLEM_MAP_URL = "https://raw.githubusercontent.com/onestardao/WFGY/main/ProblemMap/README.md"
 TXTOS_URL = "https://raw.githubusercontent.com/onestardao/WFGY/main/OS/TXTOS.txt"
+DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 
 def fetch_text(url: str) -> str:
@@ -147,83 +147,93 @@ def fetch_text(url: str) -> str:
 
 
 def build_system_prompt(problem_map: str, txtos: str) -> str:
-    header = """
-You are an LLM debugger that follows the WFGY 16 Problem Map.
+    prompt = f"""
+    You are an LLM debugger that follows the WFGY 16 Problem Map.
 
-Goal:
-Given a description of a bug or failure in an LLM or RAG pipeline, you map it to the closest Problem Map number (No.1–No.16), explain why, and propose a minimal fix.
+    Goal:
+    Given a description of a bug or failure in an LLM or RAG pipeline, you map it
+    to the closest Problem Map number (No.1–No.16), then describe:
 
-Rules:
-- Always return one primary Problem Map number and at most one secondary candidate.
-- Explain your reasoning in plain language.
-- When useful, mention the original document name inside the WFGY repo so users can look it up.
-"""
-    return (
-        textwrap.dedent(header)
-        + "\n\n=== TXT OS excerpt ===\n"
-        + txtos[:6000]
-        + "\n\n=== Problem Map excerpt ===\n"
-        + problem_map[:6000]
-    )
+    - the primary Problem Map number (and at most one secondary candidate)
+    - why this failure matches that number, in plain language
+    - which WFGY document to read first, and what minimal patch to try
+
+    You have two reference documents inlined below.
+    They are long. Skim for structure and names, not every sentence.
+
+    [WFGY Problem Map 1.0 README]
+    {problem_map}
+
+    [TXT OS semantic operating system]
+    {txtos}
+
+    Answer format (markdown):
+
+    1. **Primary Problem Map number**: No.X
+    2. **Optional secondary**: No.Y (if clearly relevant, otherwise say "none")
+    3. **Reasoning**: 2–4 sentences, plain language, no equations.
+    4. **Next steps**: which WFGY page to open and the first concrete fix to try.
+
+    Always stay within the 16 Problem Map numbers. Do not invent new numbers.
+    """
+    return textwrap.dedent(prompt).strip()
 
 
-def main() -> None:
-    api_key = os.environ.get("OPENAI_API_KEY")
-    base_url = os.environ.get("OPENAI_BASE_URL")
-    model_name = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
-
+def run_session() -> None:
+    api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
         raise RuntimeError("Please set OPENAI_API_KEY in your environment.")
 
-    print("Downloading WFGY assets...")
-    problem_map_text = fetch_text(PROBLEM_MAP_URL)
-    txtos_text = fetch_text(TXTOS_URL)
+    print("Downloading WFGY references...")
+    problem_map = fetch_text(PROBLEM_MAP_URL)
+    txtos = fetch_text(TXTOS_URL)
 
-    system_prompt = build_system_prompt(problem_map_text, txtos_text)
+    system_prompt = build_system_prompt(problem_map, txtos)
 
-    client = OpenAI(api_key=api_key, base_url=base_url)
+    base_url = os.getenv("OPENAI_BASE_URL")
+    if base_url:
+        client = OpenAI(api_key=api_key, base_url=base_url)
+    else:
+        client = OpenAI(api_key=api_key)
 
-    print()
-    print("Paste a short description of your LLM or RAG bug.")
-    print("Include the prompt, answer, and any relevant logs.")
-    print("Finish with an empty line and press Enter.")
-    print()
+    print("\nWFGY 16 Problem Map LLM Debugger")
+    print("Describe your bug or failure.")
+    print("Type multiple lines if needed, then press Enter on an empty line to send.")
+    print("Type 'q' on a new line (before any text) to quit.\n")
 
-    lines = []
     while True:
-        try:
+        print("Bug description:")
+        lines = []
+        while True:
             line = input()
-        except EOFError:
-            break
-        if not line.strip():
-            break
-        lines.append(line)
+            if line.strip().lower() == "q" and not lines:
+                print("Bye. Map once, then fix once.")
+                return
+            if line == "":
+                break
+            lines.append(line)
 
-    user_bug = "\n".join(lines)
+        if not lines:
+            continue
 
-    if not user_bug.strip():
-        print("No input provided. Exiting.")
-        return
+        user_prompt = "\n".join(lines)
 
-    print()
-    print("Asking the WFGY debugger...")
-    print()
+        print("\nThinking with WFGY...")
+        response = client.chat.completions.create(
+            model=DEFAULT_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+        )
 
-    completion = client.chat.completions.create(
-        model=model_name,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_bug},
-        ],
-        temperature=0.2,
-    )
-
-    answer = completion.choices[0].message.content
-    print(answer)
+        content = response.choices[0].message.content or ""
+        print("\n" + content + "\n")
+        print("-" * 72 + "\n")
 
 
 if __name__ == "__main__":
-    main()
+    run_session()
 ```
 
 ### How to run the CLI demo
@@ -250,6 +260,7 @@ if __name__ == "__main__":
 
 4. Paste your bug description, prompt, answer, and any logs.
    End the input with an empty line and press Enter.
+   You can send multiple bugs in one session and type `q` on a new empty line to quit.
 
 The tool prints:
 
@@ -267,4 +278,3 @@ If you prefer a fully prepared chat window instead of running code, there is als
 
 You can paste the same bugs or even screenshots of WFGY pages there.
 However, this repository focuses on the **code and notebook version**, which you can fork, extend, and run on Nebius or any other OpenAI-compatible stack.
-
