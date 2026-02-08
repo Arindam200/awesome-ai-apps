@@ -1,42 +1,57 @@
+<!-- Optional: Add a banner or GIF at the top -->
+<!-- TODO: Add a small Colab / Nebius screenshot later, e.g. ./assets/wfgy-16-debugger.gif -->
+
 # 🧩 WFGY 16 Problem Map LLM Debugger
 
-A Nebius-compatible notebook and minimal CLI that turns messy LLM and RAG bugs into **one of 16 reproducible failure modes**, each with a documented fix in the WFGY Problem Map.
+> A 16–mode, map-based debugger that turns messy LLM / RAG bugs into reproducible failure modes, each linked to a concrete fix in the WFGY Problem Map.
 
-Instead of guessing why your pipeline broke again, you:
+A Nebius-compatible notebook and minimal CLI that helps LLM and RAG developers **classify bugs into one of 16 failure modes** (No.1–No.16) instead of guessing.  
+Paste a trace, log, or prompt / answer pair, and the debugger returns the closest Problem Map number plus a suggested fix in the open-source WFGY repo.
 
-1. paste the bug or trace  
-2. get back the closest **Problem Map number (No.1–No.16)**  
-3. follow the linked fix in the WFGY repo  
-
-Everything runs as plain text prompts. No SDKs, no provider lock in.
+Built with plain **Python**, the official **OpenAI client**, and **requests**, so it runs anywhere an OpenAI-compatible API is available (Nebius, OpenAI, custom gateways, etc.).
 
 ---
 
-## 🧠 What this app is
+## 🚀 Features
 
-This app is a thin wrapper around two public assets from the WFGY project:
+- **16-mode failure map**  
+  Maps each bug or incident to one primary Problem Map number `No.1–No.16` and an optional secondary candidate.
 
-- `TXTOS.txt` – a text based “reasoning OS” prompt that gives the model a stable way to analyse problems  
-- `ProblemMap/README.md` – a 16-mode catalog of common AI failures with concrete fixes  
+- **LLM / RAG-first design**  
+  Works with prompts, answers, retrieval traces, and logs. No SDK or infra changes required; everything is done with text prompts.
 
-By loading both into your model (on Nebius, Colab, or any Jupyter environment), the debugger can:
+- **Semantic firewall debugger**  
+  Uses `TXTOS.txt` as a “reasoning OS” plus the WFGY Problem Map README to reason about failures before generation.
 
-- read your bug description, logs, or screenshots  
-- classify it into one primary Problem Map number (and optionally a secondary candidate)  
-- explain why this number fits  
-- suggest a minimal fix and point you to the exact document in the WFGY repo  
+- **Colab / Nebius single-cell script**  
+  One script that:
+  - asks for your API key, base URL, and model
+  - downloads WFGY references
+  - guides you line-by-line to paste the bug
+  - prints the diagnosis and next steps
 
-Think of it as a **semantic firewall debugger** that sits in front of any LLM pipeline.
+- **CLI-friendly**  
+  The same script can be saved as `main.py` and run from a terminal, so it fits into existing workflows or dev shells.
 
 ---
 
-## 🗺️ The 16 Problem Map overview
+## 🛠️ Tech Stack
 
-The full map lives in the main WFGY repo:
+- **Python 3.9+** – core runtime
+- **OpenAI Python client** – for OpenAI-compatible chat completions
+- **requests** – to download WFGY assets (`TXTOS.txt` and `ProblemMap/README.md`)
+- **Nebius / OpenAI / other OpenAI-compatible endpoint** – LLM provider
+- **Jupyter / Colab / Nebius notebooks** – recommended for interactive runs, but not required
+
+---
+
+## 🧩 WFGY Problem Map (16 modes)
+
+The debugger is powered by the public WFGY Problem Map:
 
 - [WFGY Problem Map 1.0 – main page](https://github.com/onestardao/WFGY/tree/main/ProblemMap#readme)
 
-This app focuses on mapping real-world bugs into the following 16 classes:
+It focuses on mapping real-world bugs into the following classes:
 
 | No. | Problem domain | What breaks in practice | Doc |
 |-----|----------------|-------------------------|-----|
@@ -57,353 +72,160 @@ This app focuses on mapping real-world bugs into the following 16 classes:
 | 15  | Deployment deadlock | Circular waits in infra and pipelines | [deployment deadlock](https://github.com/onestardao/WFGY/blob/main/ProblemMap/deployment-deadlock.md) |
 | 16  | Pre-deploy collapse | Version skew or missing secrets on first call | [pre-deploy collapse](https://github.com/onestardao/WFGY/blob/main/ProblemMap/predeploy-collapse.md) |
 
-Once a bug is mapped to a number, you can apply the fix and expect it not to silently reappear in the same way.
+Once a bug is mapped to a number, you can apply the fix and expect it not to quietly reappear in the same way.
 
 ---
 
-## 🚀 Running on Nebius (or any Jupyter environment)
+## Workflow
 
-This project is designed to run on Nebius-hosted notebooks but also works on Colab, local Jupyter, or any environment where you can make OpenAI-compatible API calls.
+<!-- Optional: Add a workflow diagram or GIF -->
+<!-- TODO: Add a small text diagram or GIF later, e.g. ./assets/workflow.gif -->
 
-High-level flow inside the notebook:
+**High-level flow:**
 
-1. **Install dependencies**
+1. User runs the single-cell script in Nebius / Colab / Jupyter, or runs `python main.py` in a terminal.
+2. Script asks for:
+   - API key (via `getpass`)
+   - optional custom base URL (Nebius or any OpenAI-compatible endpoint)
+   - model name (defaults to `gpt-4o` if left blank)
+3. Script downloads:
+   - `TXTOS.txt` from `OS/TXTOS.txt`
+   - `ProblemMap/README.md` from `ProblemMap/README.md`
+4. User pastes a bug description (prompt, answer, logs).
+5. Model returns:
+   - primary `No.X`
+   - optional secondary `No.Y`
+   - short reasoning
+   - which WFGY Problem Map page to read first and what patch to try.
+
+You can treat this as a **diagnostic layer in front of any LLM app**, without changing infra.
+
+---
+
+## 📦 Getting Started
+
+### Prerequisites
+
+- Python **3.9+**
+- An OpenAI-compatible endpoint:
+  - Nebius AI, OpenAI, or your own gateway
+- An API key for that endpoint
+
+### Environment Variables
+
+The script can be run entirely interactively, but these are the variables it ultimately uses:
+
+```env
+OPENAI_API_KEY="your_api_key"
+OPENAI_BASE_URL="https://your-openai-compatible-endpoint/v1"  # optional
+OPENAI_MODEL="gpt-4o"                                         # or your preferred model
+````
+
+In the Colab / Nebius single-cell mode, the script prompts you for these values instead of reading them from disk.
+
+### Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/Arindam200/awesome-llm-apps.git
+   cd awesome-llm-apps/rag_apps/wfgy_llm_debugger
+   ```
+
+2. **Create and activate a virtual environment (optional but recommended):**
+
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
+
+3. **Install dependencies:**
 
    ```bash
    pip install openai requests
-
-2. **Paste the single-cell debugger script**
-
-   Create a new notebook cell and paste the full script from this repo
-   (or save it as `main.py` and call it with `!python main.py` inside the notebook).
-
-3. **Run the cell**
-
-   When you run the cell, the debugger will:
-
-   * ask for your API key (via a secure prompt)
-   * ask for an optional custom base URL (you can paste your Nebius endpoint here)
-   * ask for a model name (press Enter to use `gpt-4o` by default)
-
-   After setup, it downloads:
-
-   * `TXTOS.txt` from `OS/TXTOS.txt`
-   * `ProblemMap/README.md`
-
-   Both are concatenated into a single system prompt so the model has:
-
-   * the reasoning OS (how to think), and
-   * the 16 problem catalog (what to map to).
-
-4. **Paste your bug**
-
-   You provide:
-
-   * a short description of the issue
-   * the prompt and answer, or RAG traces, or logs
-
-   The more concrete the example, the easier it is to classify.
-
-5. **Submit and read the diagnosis**
-
-   The cell will guide you line by line:
-
-   * type multiple lines
-   * press Enter on an empty line to finish
-   * the debugger returns one primary `No.X`, an optional secondary `No.Y`,
-     a short explanation, and which WFGY document to open for the first fix.
-
-You can treat this as a diagnostic layer in front of any LLM app, without changing your existing infra.
+   ```
 
 ---
 
-## 💻 Minimal CLI demo (`main.py`)
+## ⚙️ Usage
 
-For people who prefer a terminal flow, this repository includes a small CLI script.
-It uses the same logic as the notebook and can also be dropped into a single Colab cell.
+### 1. Notebook / Colab / Nebius (single-cell demo)
 
-Place the following file at `rag_apps/wfgy_llm_debugger/main.py`:
+1. Open a new notebook (Nebius, Colab, or local Jupyter).
+2. Paste the full script from `main.py` into a single cell.
+3. Run the cell. It will:
 
-```python
-# WFGY 16 Problem Map LLM Debugger (Colab full demo)
-# Single cell script: paste into one Colab cell and run.
+   * ask for your API key
+   * ask for an optional base URL
+   * ask for a model name (press Enter to use `gpt-4o`)
+4. Follow the prompts:
 
-from getpass import getpass
-import textwrap
-import requests
-from openai import OpenAI
+   * type or paste your bug description line by line
+   * press Enter on an empty line to submit
 
-PROBLEM_MAP_URL = "https://raw.githubusercontent.com/onestardao/WFGY/main/ProblemMap/README.md"
-TXTOS_URL = "https://raw.githubusercontent.com/onestardao/WFGY/main/OS/TXTOS.txt"
-WFGY_PROBLEM_MAP_HOME = "https://github.com/onestardao/WFGY/tree/main/ProblemMap#readme"
-WFGY_REPO = "https://github.com/onestardao/WFGY"
+The debugger prints:
 
-EXAMPLE_1 = """=== Example 1 — retrieval hallucination (No.1 style) ===
+* one primary `No.X`
+* an optional secondary `No.Y`
+* a short explanation in plain language
+* which WFGY document to open and what first fix to try
 
-Context: I have a simple RAG chatbot that answers questions from a product FAQ.
-The FAQ only covers billing rules for my SaaS product and does NOT mention anything about cryptocurrency or stock trading.
+### 2. CLI demo (`main.py`)
 
-Prompt: "Can I pay my subscription with Bitcoin?"
+You can also run the same script directly from the terminal.
 
-Retrieved context (from vector store):
-- "We only accept major credit cards and PayPal."
-- "All payments are processed in USD."
-
-Model answer:
-"Yes, you can pay with Bitcoin. We support several cryptocurrencies through a third-party payment gateway."
-
-Logs:
-No errors. Retrieval shows the FAQ chunks above, but the model still confidently invents 'Bitcoin' support.
-"""
-
-EXAMPLE_2 = """=== Example 2 — bootstrap ordering / infra race (No.14 style) ===
-
-Context: We have a simple RAG API with three services: api-gateway, rag-worker, and vector-db (running Qdrant).
-In local docker compose everything works without problems.
-
-Deployment: In production, we deploy these services on Kubernetes.
-
-Symptom:
-Sometimes, right after a fresh deploy, the api-gateway returns 500 errors for the first few minutes.
-Logs show connection timeouts from api-gateway to vector-db.
-
-After a while (5–10 minutes), the errors disappear and the system works normally.
-
-We suspect some kind of startup race between api-gateway and vector-db, but we are not sure how to fix it properly.
-"""
-
-EXAMPLE_3 = """=== Example 3 — secrets / config drift around first deploy (No.16 style) ===
-
-Context: We added a new environment variable for our RAG pipeline: SECRET_RAG_KEY.
-This is required by a middleware that signs all outgoing requests to our internal search API.
-
-Local: On local machines, developers set SECRET_RAG_KEY in their .env file and everything works.
-
-Production:
-We deployed a new version of the app, but forgot to add SECRET_RAG_KEY to the production environment.
-The first requests after deploy start failing with 500 errors and 'missing secret' messages in the logs.
-
-After we hot-patched the secret into the production config, the errors stopped.
-However, this kind of 'first deploy breaks because of missing secrets / config drift' keeps happening in different forms.
-We want to classify this failure mode and stop repeating the same mistake.
-"""
-
-
-def fetch_text(url: str) -> str:
-    """Download a small text file with basic error handling."""
-    resp = requests.get(url, timeout=30)
-    resp.raise_for_status()
-    return resp.text
-
-
-def build_system_prompt(problem_map: str, txtos: str) -> str:
-    """Build the system prompt that powers the debugger."""
-    header = """
-You are an LLM debugger that follows the WFGY 16 Problem Map.
-
-Goal:
-Given a description of a bug or failure in an LLM or RAG pipeline, you map it to the closest Problem Map number (No.1–No.16), explain why, and propose a minimal fix.
-
-Rules:
-- Always return exactly one primary Problem Map number (No.1–No.16).
-- Optionally return one secondary candidate if it is very close.
-- Explain your reasoning in plain language.
-- Point the user to the right direction inside the WFGY Problem Map when possible.
-- Prefer minimal structural patches over generic high level advice.
-
-About the three built in examples:
-- Example 1 is a clean retrieval hallucination pattern. It should map primarily to No.1.
-- Example 2 is a bootstrap ordering or infra race pattern. It should map primarily to No.14.
-- Example 3 is a first deploy secrets / config drift pattern. It should map primarily to No.16.
-"""
-    return (
-        textwrap.dedent(header)
-        + "\n\n=== TXT OS excerpt ===\n"
-        + txtos[:6000]
-        + "\n\n=== Problem Map excerpt ===\n"
-        + problem_map[:6000]
-    )
-
-
-def setup_client():
-    """Collect API config and preload WFGY assets."""
-    print("Enter your OpenAI API key:")
-    api_key = getpass("API key: ")
-
-    base_url = input(
-        "Custom OpenAI-compatible base URL (press Enter for default api.openai.com): "
-    ).strip()
-    if not base_url:
-        base_url = "https://api.openai.com/v1"
-
-    model_name = input(
-        "Model name (press Enter for gpt-4o): "
-    ).strip()
-    if not model_name:
-        model_name = "gpt-4o"
-
-    print("Downloading WFGY Problem Map and TXTOS prompt...")
-    problem_map_text = fetch_text(PROBLEM_MAP_URL)
-    txtos_text = fetch_text(TXTOS_URL)
-    system_prompt = build_system_prompt(problem_map_text, txtos_text)
-    print("Setup complete. WFGY debugger is ready.")
-    print()
-
-    client = OpenAI(api_key=api_key, base_url=base_url)
-
-    return client, system_prompt, model_name
-
-
-def print_examples():
-    """Print the three ready-to-copy examples."""
-    print("If you do not know what to write, you can copy one of these examples:")
-    print("  - Example 1: retrieval hallucination (No.1 style)")
-    print("  - Example 2: bootstrap ordering / infra race (No.14 style)")
-    print("  - Example 3: secrets / config drift around first deploy (No.16 style)")
-    print()
-    print("Full text of the examples (ready to copy paste):")
-    print("------------------------------------------------------------")
-    print(EXAMPLE_1)
-    print("------------------------------------------------------------")
-    print(EXAMPLE_2)
-    print("------------------------------------------------------------")
-    print(EXAMPLE_3)
-    print("------------------------------------------------------------")
-    print()
-
-
-def run_debug_session(client: OpenAI, system_prompt: str, model_name: str) -> None:
-    """Run one interactive debug round."""
-    print("============================================================")
-    print("WFGY 16 Problem Map LLM Debugger")
-    print()
-    print("How to use this session:")
-    print("  1) Scroll up and read the three examples if you are unsure what to paste.")
-    print("  2) Paste one example OR your own LLM / RAG bug description.")
-    print("     Include prompt, answer, and any relevant logs.")
-    print("  3) When you are done, press Enter on an empty line to submit.")
-    print("  4) After you see the diagnosis, open the WFGY Problem Map for the full fix.")
-    print()
-
-    print_examples()
-
-    print("Now it is your turn.")
-    print("Type your bug description line by line.")
-    print("The program will prompt you for each line.")
-    print("When you are finished, just press Enter on an empty line to submit.")
-    print()
-
-    lines = []
-    first = True
-    while True:
-        try:
-            if first:
-                prompt = (
-                    "Line 1 — paste your bug here "
-                    "(press Enter for next line, empty line to finish): "
-                )
-                first = False
-            else:
-                prompt = (
-                    "Next line — continue typing, or press Enter on an empty line to submit: "
-                )
-            line = input(prompt)
-        except EOFError:
-            break
-
-        if not line.strip():
-            # Empty line = end of input block
-            break
-
-        lines.append(line)
-
-    user_bug = "\n".join(lines).strip()
-    if not user_bug:
-        print("No bug description detected. Nothing to debug in this round.")
-        print()
-        return
-
-    print()
-    print("Asking the WFGY debugger...")
-    print()
-
-    completion = client.chat.completions.create(
-        model=model_name,
-        temperature=0.2,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {
-                "role": "user",
-                "content": (
-                    "Here is the bug description. Please follow the rules.\n\n"
-                    + user_bug
-                ),
-            },
-        ],
-    )
-
-    reply = completion.choices[0].message.content or ""
-    print(reply)
-    print()
-    print("For full documentation and concrete fixes, open the WFGY Problem Map:")
-    print(WFGY_PROBLEM_MAP_HOME)
-    print()
-    print("This debugger is only the front door. The real fixes live in the repo:")
-    print(WFGY_REPO)
-    print("============================================================")
-    print()
-
-
-# Boot the debugger session
-client, system_prompt, model_name = setup_client()
-
-while True:
-    run_debug_session(client, system_prompt, model_name)
-    again = input("Debug another bug? (y/n): ").strip().lower()
-    if again != "y":
-        print("Session finished. Goodbye.")
-        break
+```bash
+python main.py
 ```
 
-### ▶️ How to run the CLI demo
+When prompted:
 
-1. Install the Python dependencies:
+* paste your API key
+* optionally paste a custom base URL (for example, your Nebius endpoint)
+* choose a model name (press Enter to use `gpt-4o`)
 
-   ```bash
-   pip install openai requests
-   ```
+Then paste your bug description, prompt, answer, and any logs.
+Type multiple lines if needed; press Enter on an empty line to submit the bug.
 
-2. Run the script from the `rag_apps/wfgy_llm_debugger` directory:
-
-   ```bash
-   python main.py
-   ```
-
-3. When prompted:
-
-   * paste your API key
-   * optionally paste a custom base URL (for example, your Nebius OpenAI-compatible endpoint)
-   * choose a model name (press Enter to use `gpt-4o`)
-
-4. Paste your bug description, prompt, answer, and any logs.
-   Type multiple lines if needed; press Enter on an empty line to submit the bug.
-
-You can send multiple bugs in one session; after each diagnosis, the script will ask if you want to debug another one.
-
-The tool prints:
-
-* the suggested Problem Map number
-* a short diagnosis in plain language
-* which WFGY document to open and what fix to try first
+You can send multiple bugs in one session; after each diagnosis, the script asks if you want to debug another one.
 
 ---
 
-## 🏥 Optional helper: Dr WFGY ER
+## 📂 Project Structure
 
-If you prefer a fully prepared chat window instead of running code, there is also an optional helper:
+This project lives under the `rag_apps` directory of the main repo.
 
-* **Dr WFGY in ChatGPT Room** – a pre-configured share link that behaves like an ER doctor for broken pipelines.
+```text
+rag_apps/
+└── wfgy_llm_debugger/
+    ├── main.py        # Single-cell style debugger script (also works as CLI)
+    └── README.md      # This file
+```
 
-You can paste the same bugs or even screenshots of WFGY pages there.
-However, this repository focuses on the **code and notebook version**, which you can fork, extend, and run on Nebius or any other OpenAI-compatible stack.
+(An `assets/` folder can be added later for GIFs / screenshots, if desired.)
 
+---
+
+## 🤝 Contributing
+
+Contributions and feedback are welcome.
+If you would like to tweak the prompt, add more examples, or extend the debugger to other providers, feel free to open an issue or submit a PR.
+
+Please see the main repository’s [CONTRIBUTING.md](https://github.com/Arindam200/awesome-llm-apps/blob/main/CONTRIBUTING.md) for detailed guidelines.
+
+---
+
+## 📄 License
+
+This project follows the license of the parent repository and the upstream WFGY project:
+
+* awesome-llm-apps: [MIT License](https://github.com/Arindam200/awesome-llm-apps/blob/main/LICENSE)
+* WFGY / Problem Map content: MIT-licensed in the original repo
+
+---
+
+## 🙏 Acknowledgments
+
+* [Nebius AI](https://nebius.com/) for the OpenAI-compatible infrastructure.
+* [WFGY Project](https://github.com/onestardao/WFGY) for the Problem Map, TXTOS, and the semantic firewall idea.
+* The awesome-llm-apps maintainers for curating a high-quality gallery of practical LLM / RAG applications.
