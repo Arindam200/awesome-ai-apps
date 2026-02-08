@@ -279,7 +279,8 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Nvidia Nemotron OCR](rag_apps/nvidia_ocr/) - OCR-based document and image parsing using Nvidia Nemotron-Nano-V2-12b
 - [Contextual AI RAG](rag_apps/contextual_ai_rag) - Enterprise-level RAG with managed datastores and quality evaluation
 - [Simple RAG](rag_apps/simple_rag) - Basic RAG implementation with Nebius for quick starts
-- [WFGY 3.0 TXT Stress Test](rag_apps/wfgy_llm_debugger) - TXT-based long-horizon stress-test and debugging app powered by Nebius Token Factory
+- [WFGY 16 Problem Map · RAG Failure Clinic](rag_apps/wfgy_llm_debugger) - TXT-based checklist that probes 16 reproducible RAG failure modes on any Nebius-hosted model
+
 
 
 ### 🔬 Advanced Agents
