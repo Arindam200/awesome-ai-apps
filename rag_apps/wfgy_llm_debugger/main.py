@@ -1,212 +1,98 @@
-"""
-WFGY 16 Problem Map LLM Debugger
-Simple terminal helper for mapping real bugs to the 16 core failure modes.
+import os
+import textwrap
+import requests
+from openai import OpenAI
 
-This script does not call any API by itself.
-It is meant to be run in any plain Python environment
-(local machine, Nebius notebook, or other cloud runtime).
-"""
-
-from dataclasses import dataclass
-from typing import List, Optional
+PROBLEM_MAP_URL = "https://raw.githubusercontent.com/onestardao/WFGY/main/ProblemMap/README.md"
+TXTOS_URL = "https://raw.githubusercontent.com/onestardao/WFGY/main/OS/TXTOS.txt"
+DEFAULT_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 
 
-@dataclass
-class Problem:
-    pid: int
-    name: str
-    short: str
-    layer: str
-    doc_url: str
+def fetch_text(url: str) -> str:
+    response = requests.get(url, timeout=30)
+    response.raise_for_status()
+    return response.text
 
 
-PROBLEMS: List[Problem] = [
-    Problem(
-        pid=1,
-        name="Hallucination & chunk drift",
-        short="Retrieval surfaces wrong or off-topic chunks for the question.",
-        layer="[IN] {OBS}",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/hallucination.md",
-    ),
-    Problem(
-        pid=2,
-        name="Interpretation collapse",
-        short="Chunks are fine, but the model misinterprets them or answers the wrong question.",
-        layer="[RE]",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/retrieval-collapse.md",
-    ),
-    Problem(
-        pid=3,
-        name="Long reasoning chains drift",
-        short="Multi-step answers slowly wander away from the original task.",
-        layer="[RE] {OBS}",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/context-drift.md",
-    ),
-    Problem(
-        pid=4,
-        name="Bluffing / overconfidence",
-        short="The model sounds confident but the cited facts are not grounded.",
-        layer="[RE]",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/bluffing.md",
-    ),
-    Problem(
-        pid=5,
-        name="Semantic ≠ embedding",
-        short="Cosine similarity in the vector store does not match real semantic similarity.",
-        layer="[IN] {OBS}",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/embedding-vs-semantic.md",
-    ),
-    Problem(
-        pid=6,
-        name="Logic collapse & recovery",
-        short="Reasoning hits a dead end and needs a controlled reset, not random retries.",
-        layer="[RE] {OBS}",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/logic-collapse.md",
-    ),
-    Problem(
-        pid=7,
-        name="Memory breaks across sessions",
-        short="Conversations or agents forget previous agreements or context.",
-        layer="[ST]",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/memory-coherence.md",
-    ),
-    Problem(
-        pid=8,
-        name="Debugging is a black box",
-        short="No clear trace of how retrieval, prompts, and tools produced this answer.",
-        layer="[IN] {OBS}",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/retrieval-traceability.md",
-    ),
-    Problem(
-        pid=9,
-        name="Entropy collapse",
-        short="Attention melts and the answer turns incoherent or repetitive.",
-        layer="[ST]",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/entropy-collapse.md",
-    ),
-    Problem(
-        pid=10,
-        name="Creative freeze",
-        short="Outputs are flat or literal even when the prompt asks for exploration.",
-        layer="[RE]",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/creative-freeze.md",
-    ),
-    Problem(
-        pid=11,
-        name="Symbolic collapse",
-        short="Symbolic or abstract prompts break, proofs fall apart, math feels wrong.",
-        layer="[RE]",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/symbolic-collapse.md",
-    ),
-    Problem(
-        pid=12,
-        name="Philosophical recursion",
-        short="Self-reference loops, paradox traps, or endless meta-questions.",
-        layer="[RE]",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/philosophical-recursion.md",
-    ),
-    Problem(
-        pid=13,
-        name="Multi-agent chaos",
-        short="Multiple agents overwrite each other or drift into conflicting roles.",
-        layer="[ST] {OBS}",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/Multi-Agent_Problems.md",
-    ),
-    Problem(
-        pid=14,
-        name="Bootstrap ordering",
-        short="Services start in the wrong order, so early calls fail or hit empty stores.",
-        layer="[OP]",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/bootstrap-ordering.md",
-    ),
-    Problem(
-        pid=15,
-        name="Deployment deadlock",
-        short="Circular waits or blocked pipelines during deploy or rollback.",
-        layer="[OP]",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/deployment-deadlock.md",
-    ),
-    Problem(
-        pid=16,
-        name="Pre-deploy collapse",
-        short="First production calls hit missing secrets, wrong versions, or cold indexes.",
-        layer="[OP] {OBS}",
-        doc_url="https://github.com/onestardao/WFGY/blob/main/ProblemMap/predeploy-collapse.md",
-    ),
-]
+def build_system_prompt(problem_map: str, txtos: str) -> str:
+    prompt = f"""
+    You are an LLM debugger that follows the WFGY 16 Problem Map.
+
+    Goal:
+    Given a description of a bug or failure in an LLM or RAG pipeline, you map it
+    to the closest Problem Map number (No.1–No.16), then describe:
+
+    - the primary Problem Map number (and at most one secondary candidate)
+    - why this failure matches that number, in plain language
+    - which WFGY document to read first, and what minimal patch to try
+
+    You have two reference documents inlined below.
+    They are long. Skim for structure and names, not every sentence.
+
+    [WFGY Problem Map 1.0 README]
+    {problem_map}
+
+    [TXT OS semantic operating system]
+    {txtos}
+
+    Answer format (markdown):
+
+    1. **Primary Problem Map number**: No.X
+    2. **Optional secondary**: No.Y (if clearly relevant, otherwise say "none")
+    3. **Reasoning**: 2–4 sentences, plain language, no equations.
+    4. **Next steps**: which WFGY page to open and the first concrete fix to try.
+
+    Always stay within the 16 Problem Map numbers. Do not invent new numbers.
+    """
+    return textwrap.dedent(prompt).strip()
 
 
-def print_intro() -> None:
-    print("=" * 72)
-    print("WFGY 16 Problem Map LLM Debugger")
-    print("=" * 72)
-    print(
-        "Use this helper when you have a stubborn LLM or RAG bug.\n"
-        "Describe your symptom, pick the closest Problem Map number,\n"
-        "then open the linked page in a browser to apply the full fix.\n"
-    )
+def run_session() -> None:
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError("Please set OPENAI_API_KEY in your environment.")
 
+    print("Downloading WFGY references...")
+    problem_map = fetch_text(PROBLEM_MAP_URL)
+    txtos = fetch_text(TXTOS_URL)
 
-def print_all_problems() -> None:
-    print("Available failure modes:\n")
-    for p in PROBLEMS:
-        print(f"  {p.pid:>2}. {p.name}  {p.layer}")
-        print(f"      {p.short}")
-    print()
+    system_prompt = build_system_prompt(problem_map, txtos)
+    client = OpenAI(api_key=api_key)
 
-
-def find_problem(pid: int) -> Optional[Problem]:
-    for p in PROBLEMS:
-        if p.pid == pid:
-            return p
-    return None
-
-
-def interactive_loop() -> None:
-    print_intro()
-    print_all_problems()
+    print("\nWFGY 16 Problem Map LLM Debugger")
+    print("Describe your bug or failure. Type a few lines, then press Enter on an empty line to send.")
+    print("Type 'q' on a new line (before any text) to quit.\n")
 
     while True:
-        raw = input(
-            "Type a Problem Map number (1-16) to see details, "
-            "'list' to show all, or 'q' to quit: "
-        ).strip()
+        print("Bug description:")
+        lines = []
+        while True:
+            line = input()
+            if line.strip().lower() == "q" and not lines:
+                print("Bye. Map once, then fix once.")
+                return
+            if line == "":
+                break
+            lines.append(line)
 
-        if raw.lower() in {"q", "quit", "exit"}:
-            print("Good luck with your debugging. Remember to map once, fix once.")
-            return
-
-        if raw.lower() in {"l", "list"}:
-            print_all_problems()
+        if not lines:
             continue
 
-        try:
-            pid = int(raw)
-        except ValueError:
-            print("Please type a number between 1 and 16, 'list', or 'q'.")
-            continue
+        user_prompt = "\n".join(lines)
 
-        problem = find_problem(pid)
-        if not problem:
-            print("Unknown problem id, please choose between 1 and 16.")
-            continue
+        print("\nThinking with WFGY...")
+        response = client.chat.completions.create(
+            model=DEFAULT_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+        )
 
-        print()
-        print(f"[No.{problem.pid}] {problem.name}  {problem.layer}")
-        print("-" * 72)
-        print(problem.short)
-        print()
-        print("Open this page in your browser for the full WFGY fix:")
-        print(f"  {problem.doc_url}")
-        print()
-
-        follow_up = input(
-            "Press Enter to continue, or type 'q' to quit: "
-        ).strip().lower()
-        if follow_up in {"q", "quit", "exit"}:
-            print("Session ended. Map this once, then apply the permanent fix.")
-            return
+        content = response.choices[0].message.content or ""
+        print("\n" + content + "\n")
+        print("-" * 72 + "\n")
 
 
 if __name__ == "__main__":
-    interactive_loop()
+    run_session()
