@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128">
+  <rect width="128" height="128" fill="#0b0f1a"/>
+  <rect x="24" y="20" width="80" height="96" rx="20" ry="20" fill="#32324a" stroke="#c0c0d0" stroke-width="2"/>
+  <text x="64" y="70" font-family="monospace" font-size="18" text-anchor="middle" fill="#e6f1ff">RIP</text>
+</svg>
