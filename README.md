@@ -211,6 +211,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [cagent Starter](starter_ai_agents/cagent_starter) - Open-source customizable multi-agent runtime by Docker
 - [Sayna Voice Agent](starter_ai_agents/sayna_starter) - Real-time voice infrastructure with multi-provider STT/TTS (Deepgram, ElevenLabs, Azure, Google) and WebSocket streaming
 - [KAOS Starter](starter_ai_agents/kaos_starter) - Kubernetes-native multi-agent system with MCP tools and in-cluster LLM
+- [Reverse Image Location (Geo Solver)](https://reverseimagelocation.com) - Next-gen AI reverse image search tool capable of precise geolocation reasoning without metadata.
 
 ### 🪶 Simple Agents
 
