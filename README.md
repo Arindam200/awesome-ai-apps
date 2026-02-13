@@ -401,3 +401,5 @@ This repository is licensed under the [MIT License](./LICENSE). Feel free to use
 ## Thank You for the Support! 🙏
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Arindam200/awesome-ai-apps&type=Date)](https://www.star-history.com/#Arindam200/awesome-ai-apps&Date)
+
+- [AgentIndex](https://github.com/agentidx/agentindex) - Discovery service for AI agents. Search 36,000+ agents by capability. Supports A2A protocol, REST API, and MCP.
