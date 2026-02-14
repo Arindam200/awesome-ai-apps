@@ -1,0 +1,24 @@
+.git
+.github
+.vscode
+.env
+.DS_Store
+
+node_modules
+web/node_modules
+
+internal/web/static
+
+__debug_*
+*.log
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Docs
+docs/
+LICENSE
+README.md
+AGENTS.md

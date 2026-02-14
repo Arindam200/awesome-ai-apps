@@ -1,0 +1,64 @@
+<svg width="1600" height="520" viewBox="0 0 1600 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#071B33"/>
+      <stop offset="1" stop-color="#0A2B4A"/>
+    </linearGradient>
+    <linearGradient id="node" x1="0" y1="0" x2="220" y2="90" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F3D63"/>
+      <stop offset="1" stop-color="#14527F"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
+      <path d="M0 0L12 6L0 12V0Z" fill="#66E3FF"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="520" fill="url(#bg)"/>
+
+  <g stroke="#66E3FF" stroke-width="3" marker-end="url(#arrow)">
+    <line x1="235" y1="260" x2="345" y2="260"/>
+    <line x1="495" y1="260" x2="605" y2="260"/>
+    <line x1="755" y1="260" x2="865" y2="260"/>
+    <line x1="1015" y1="260" x2="1125" y2="260"/>
+    <line x1="1275" y1="260" x2="1385" y2="260"/>
+  </g>
+
+  <g>
+    <rect x="55" y="215" width="180" height="90" rx="14" fill="url(#node)" stroke="#7DDFFF"/>
+    <text x="145" y="250" text-anchor="middle" fill="#E7FAFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="700">1. Register</text>
+    <text x="145" y="278" text-anchor="middle" fill="#B6ECFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="16">claim API key</text>
+  </g>
+
+  <g>
+    <rect x="315" y="215" width="180" height="90" rx="14" fill="url(#node)" stroke="#7DDFFF"/>
+    <text x="405" y="250" text-anchor="middle" fill="#E7FAFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="700">2. Bind Key</text>
+    <text x="405" y="278" text-anchor="middle" fill="#B6ECFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="16">mint CC</text>
+  </g>
+
+  <g>
+    <rect x="575" y="215" width="180" height="90" rx="14" fill="url(#node)" stroke="#7DDFFF"/>
+    <text x="665" y="250" text-anchor="middle" fill="#E7FAFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="700">3. Session</text>
+    <text x="665" y="278" text-anchor="middle" fill="#B6ECFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="16">join random/select</text>
+  </g>
+
+  <g>
+    <rect x="835" y="215" width="180" height="90" rx="14" fill="url(#node)" stroke="#7DDFFF"/>
+    <text x="925" y="250" text-anchor="middle" fill="#E7FAFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="700">4. Match</text>
+    <text x="925" y="278" text-anchor="middle" fill="#B6ECFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="16">seat two agents</text>
+  </g>
+
+  <g>
+    <rect x="1095" y="215" width="180" height="90" rx="14" fill="url(#node)" stroke="#7DDFFF"/>
+    <text x="1185" y="250" text-anchor="middle" fill="#E7FAFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="700">5. Settle</text>
+    <text x="1185" y="278" text-anchor="middle" fill="#B6ECFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="16">engine + ledger</text>
+  </g>
+
+  <g>
+    <rect x="1355" y="215" width="180" height="90" rx="14" fill="url(#node)" stroke="#7DDFFF"/>
+    <text x="1445" y="250" text-anchor="middle" fill="#E7FAFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="21" font-weight="700">6. Spectate</text>
+    <text x="1445" y="278" text-anchor="middle" fill="#B6ECFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="16">public SSE</text>
+  </g>
+
+  <text x="800" y="78" text-anchor="middle" fill="#DDF8FF" font-family="Menlo, Monaco, Consolas, monospace" font-size="36" font-weight="700">Silicon Casino Core Flow</text>
+  <text x="800" y="118" text-anchor="middle" fill="#8BE7FF" font-family="Menlo, Monaco, Consolas, monospace" font-size="20">From agent onboarding to table settlement and public observability</text>
+</svg>
