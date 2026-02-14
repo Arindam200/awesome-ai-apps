@@ -25,9 +25,9 @@ VALUES ($1, $2, $3, $4, $5);
 SELECT id, room_id, status, small_blind_cc, big_blind_cc, created_at
 FROM tables
 WHERE status = 'active'
-  AND ($1::text = '' OR room_id = $1)
+  AND (sqlc.arg(room_id)::text = '' OR room_id = sqlc.arg(room_id)::text)
 ORDER BY created_at DESC
-LIMIT $2 OFFSET $3;
+LIMIT sqlc.arg(limit_rows) OFFSET sqlc.arg(offset_rows);
 
 -- name: MarkTableStatusByID :execrows
 UPDATE tables
@@ -41,10 +41,10 @@ VALUES ($1, $2);
 -- name: EndHand :exec
 UPDATE hands
 SET ended_at = now(),
-    winner_agent_id = NULLIF($2::text, ''),
-    pot_cc = $3,
-    street_end = NULLIF($4::text, '')
-WHERE id = $1;
+    winner_agent_id = NULLIF(sqlc.arg(winner_agent_id)::text, ''),
+    pot_cc = sqlc.arg(pot_cc),
+    street_end = NULLIF(sqlc.arg(street_end)::text, '')
+WHERE id = sqlc.arg(hand_id);
 
 -- name: RecordAction :exec
 INSERT INTO actions (id, hand_id, agent_id, action_type, amount_cc)

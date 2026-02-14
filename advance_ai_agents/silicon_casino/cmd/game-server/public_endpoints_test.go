@@ -73,4 +73,74 @@ func TestPublicEndpoints(t *testing.T) {
 	if err := json.NewDecoder(w.Body).Decode(&leaderboardResp); err != nil {
 		t.Fatalf("decode leaderboard: %v", err)
 	}
+
+	req = httptest.NewRequest(http.MethodGet, "/api/public/leaderboard?window=bad", nil)
+	w = httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("leaderboard invalid window expected 400, got %d", w.Code)
+	}
+
+	req = httptest.NewRequest(http.MethodGet, "/api/public/leaderboard?room_id=bad", nil)
+	w = httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("leaderboard invalid room expected 400, got %d", w.Code)
+	}
+
+	req = httptest.NewRequest(http.MethodGet, "/api/public/leaderboard?sort=bad", nil)
+	w = httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("leaderboard invalid sort expected 400, got %d", w.Code)
+	}
+
+	req = httptest.NewRequest(http.MethodGet, "/api/public/tables/history", nil)
+	w = httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("table history expected 200, got %d", w.Code)
+	}
+	var historyResp struct {
+		Items []struct {
+			TableID      string `json:"table_id"`
+			RoomName     string `json:"room_name"`
+			HandsPlayed  int    `json:"hands_played"`
+			Participants []struct {
+				AgentID   string `json:"agent_id"`
+				AgentName string `json:"agent_name"`
+			} `json:"participants"`
+		} `json:"items"`
+		Total int `json:"total"`
+	}
+	if err := json.NewDecoder(w.Body).Decode(&historyResp); err != nil {
+		t.Fatalf("decode table history: %v", err)
+	}
+
+	agentID, _, _ := createTestAgent(t, st, "ProfileAgent")
+
+	req = httptest.NewRequest(http.MethodGet, "/api/public/agents/"+agentID+"/profile", nil)
+	w = httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("agent profile expected 200, got %d", w.Code)
+	}
+	var profileResp struct {
+		Agent struct {
+			AgentID string `json:"agent_id"`
+		} `json:"agent"`
+	}
+	if err := json.NewDecoder(w.Body).Decode(&profileResp); err != nil {
+		t.Fatalf("decode agent profile: %v", err)
+	}
+	if profileResp.Agent.AgentID != agentID {
+		t.Fatalf("expected profile agent_id=%s, got %s", agentID, profileResp.Agent.AgentID)
+	}
+
+	req = httptest.NewRequest(http.MethodGet, "/api/public/agents/missing-agent/profile", nil)
+	w = httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("agent profile missing agent expected 404, got %d", w.Code)
+	}
 }

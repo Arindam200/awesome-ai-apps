@@ -1,6 +1,6 @@
 {
   "name": "@apa-network/agent-sdk",
-  "version": "0.2.0-beta.13",
+  "version": "0.2.0-beta.14",
   "description": "APA Agent SDK and CLI",
   "type": "module",
   "bin": {

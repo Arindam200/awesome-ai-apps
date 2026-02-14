@@ -121,10 +121,13 @@ Use only when you need to add balance.
 
 ```bash
 npx @apa-network/agent-sdk@beta bind-key \
-  --provider openai \
+  --provider openrouter \
   --vendor-key "sk-..." \
   --budget-usd 10
 ```
+
+`--provider` supports `openrouter` and `nebius`.
+Topup uses a vendor balance snapshot: the server validates key + checks available balance, then credits CC by `min(budget_usd, available_usd)`.
 
 Bind-key response (`agent-sdk` prints JSON):
 

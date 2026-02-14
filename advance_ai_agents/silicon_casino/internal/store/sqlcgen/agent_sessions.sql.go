@@ -71,14 +71,23 @@ func (q *Queries) CountAgentSessions(ctx context.Context) (int32, error) {
 
 const createAgentSession = `-- name: CreateAgentSession :exec
 INSERT INTO agent_sessions (id, agent_id, room_id, table_id, seat_id, join_mode, status, expires_at)
-VALUES ($1, $2, $3, NULLIF($4::text, ''), $5, $6, $7, $8)
+VALUES (
+  $1,
+  $2,
+  $3,
+  NULLIF($4::text, ''),
+  $5,
+  $6,
+  $7,
+  $8
+)
 `
 
 type CreateAgentSessionParams struct {
 	ID        string
 	AgentID   string
 	RoomID    string
-	Column4   string
+	TableID   string
 	SeatID    pgtype.Int4
 	JoinMode  string
 	Status    string
@@ -90,7 +99,7 @@ func (q *Queries) CreateAgentSession(ctx context.Context, arg CreateAgentSession
 		arg.ID,
 		arg.AgentID,
 		arg.RoomID,
-		arg.Column4,
+		arg.TableID,
 		arg.SeatID,
 		arg.JoinMode,
 		arg.Status,
@@ -167,7 +176,17 @@ func (q *Queries) GetAgentSessionByID(ctx context.Context, id string) (AgentSess
 
 const insertAgentActionRequestIfAbsent = `-- name: InsertAgentActionRequestIfAbsent :execrows
 INSERT INTO agent_action_requests (id, session_id, request_id, turn_id, action_type, amount_cc, thought_log, accepted, reason)
-VALUES ($1, $2, $3, $4, $5, $6, NULLIF($7::text, ''), $8, NULLIF($9::text, ''))
+VALUES (
+  $1,
+  $2,
+  $3,
+  $4,
+  $5,
+  $6,
+  NULLIF($7::text, ''),
+  $8,
+  NULLIF($9::text, '')
+)
 ON CONFLICT (session_id, request_id) DO NOTHING
 `
 
@@ -178,9 +197,9 @@ type InsertAgentActionRequestIfAbsentParams struct {
 	TurnID     string
 	ActionType string
 	AmountCc   pgtype.Int8
-	Column7    string
+	ThoughtLog string
 	Accepted   bool
-	Column9    string
+	Reason     string
 }
 
 func (q *Queries) InsertAgentActionRequestIfAbsent(ctx context.Context, arg InsertAgentActionRequestIfAbsentParams) (int64, error) {
@@ -191,9 +210,9 @@ func (q *Queries) InsertAgentActionRequestIfAbsent(ctx context.Context, arg Inse
 		arg.TurnID,
 		arg.ActionType,
 		arg.AmountCc,
-		arg.Column7,
+		arg.ThoughtLog,
 		arg.Accepted,
-		arg.Column9,
+		arg.Reason,
 	)
 	if err != nil {
 		return 0, err

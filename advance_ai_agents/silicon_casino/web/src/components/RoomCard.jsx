@@ -30,6 +30,14 @@ function resolveRoomStatus(room, tables) {
   return 'Open'
 }
 
+function roomStatusClass(label) {
+  const normalized = String(label || '').toLowerCase()
+  if (normalized === 'live') return 'status-live'
+  if (normalized === 'closing') return 'status-closing'
+  if (normalized === 'idle') return 'status-idle'
+  return 'status-open'
+}
+
 export default function RoomCard({ room, active, onSelect, tables, selectedTable, onSelectTable }) {
   const roomStatus = resolveRoomStatus(room, tables)
 
@@ -38,7 +46,7 @@ export default function RoomCard({ room, active, onSelect, tables, selectedTable
       <button className="room-card-main" onClick={() => onSelect(room)}>
         <div className="room-card-header">
           <div className="room-card-title">{room.name}</div>
-          <div className="room-card-pill">{roomStatus}</div>
+          <div className={`room-card-pill ${roomStatusClass(roomStatus)}`}>{roomStatus}</div>
         </div>
         <div className="room-card-stats">
           <div>

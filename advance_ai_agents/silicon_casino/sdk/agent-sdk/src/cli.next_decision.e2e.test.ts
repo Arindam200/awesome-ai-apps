@@ -145,6 +145,9 @@ test("next-decision creates session, emits decision_request (without protocol fi
 
     const created = calls.find((c) => c.url === `${apiBase}/agent/sessions` && c.method === "POST");
     assert.ok(created);
+    const createdPayload = JSON.parse(String(created?.body || "{}")) as Record<string, unknown>;
+    assert.equal(createdPayload.join_mode, "random");
+    assert.equal(createdPayload.room_id, undefined);
   });
 });
 
@@ -414,7 +417,7 @@ test("submit-decision blocks out-of-range amount locally", async () => {
   });
 });
 
-test("next-decision emits noop when table is closing", async () => {
+test("next-decision emits table_closing when table is closing", async () => {
   await withTempCwd(async () => {
     const apiBase = "http://mock.local/api";
     await saveCredential({
@@ -462,8 +465,66 @@ test("next-decision emits noop when table is closing", async () => {
       .filter(Boolean)
       .map((line) => JSON.parse(line) as Record<string, unknown>);
     assert.equal(messages.length, 1);
-    assert.equal(messages[0]?.type, "noop");
+    assert.equal(messages[0]?.type, "table_closing");
     assert.equal(messages[0]?.reason, "table_closing");
+  });
+});
+
+test("next-decision keeps decision state cleared after table_closed", async () => {
+  await withTempCwd(async () => {
+    const apiBase = "http://mock.local/api";
+    await saveCredential({
+      api_base: apiBase,
+      agent_name: "BotA",
+      agent_id: "agent_1",
+      api_key: "apa_1"
+    });
+
+    const originalFetch = globalThis.fetch;
+    const stdout = captureStdout();
+
+    globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = typeof input === "string" ? input : input instanceof URL ? input.toString() : input.url;
+      const method = init?.method || "GET";
+
+      if (url === `${apiBase}/agents/me` && method === "GET") {
+        return jsonResponse({ status: "claimed", balance_cc: 10000 });
+      }
+      if (url === `${apiBase}/public/rooms` && method === "GET") {
+        return jsonResponse({ items: [{ id: "room_low", min_buyin_cc: 1000, name: "Low" }] });
+      }
+      if (url === `${apiBase}/agent/sessions` && method === "POST") {
+        return jsonResponse({ session_id: "sess_closed", stream_url: "/api/agent/sessions/sess_closed/events" });
+      }
+      if (url === `${apiBase}/agent/sessions/sess_closed/events` && method === "GET") {
+        return sseResponse([
+          "id: 650\nevent: message\ndata: {\"event\":\"table_closed\",\"data\":{\"reason\":\"opponent_reconnect_timeout\"}}\n\n"
+        ]);
+      }
+      throw new Error(`unexpected fetch: ${method} ${url}`);
+    }) as typeof globalThis.fetch;
+
+    try {
+      await runCLI(["next-decision", "--api-base", apiBase, "--join", "random", "--timeout-ms", "2000"]);
+    } finally {
+      globalThis.fetch = originalFetch;
+      stdout.restore();
+    }
+
+    const messages = stdout.writes
+      .join("")
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => JSON.parse(line) as Record<string, unknown>);
+    assert.equal(messages.length, 1);
+    assert.equal(messages[0]?.type, "table_closed");
+
+    const state = await loadDecisionState();
+    assert.equal(state.session_id, "");
+    assert.equal(state.stream_url, "");
+    assert.equal(state.last_event_id, "");
+    assert.equal(state.pending_decision, undefined);
   });
 });
 

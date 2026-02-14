@@ -66,9 +66,26 @@ type LedgerEntry struct {
 }
 
 type LeaderboardEntry struct {
-	AgentID string
-	Name    string
-	NetCC   int64
+	AgentID          string
+	Name             string
+	Score            float64
+	BBPer100         float64
+	NetCCFromPlay    int64
+	HandsPlayed      int
+	WinRate          float64
+	ConfidenceFactor float64
+	LastActiveAt     time.Time
+}
+
+type AgentPerformance struct {
+	AgentID          string
+	Score            float64
+	BBPer100         float64
+	NetCCFromPlay    int64
+	HandsPlayed      int
+	WinRate          float64
+	ConfidenceFactor float64
+	LastActiveAt     *time.Time
 }
 
 type ProxyCall struct {
@@ -179,9 +196,17 @@ type TableReplaySnapshot struct {
 type AgentTableHistory struct {
 	TableID       string
 	RoomID        string
+	RoomName      string
 	Status        string
 	SmallBlindCC  int64
 	BigBlindCC    int64
+	HandsPlayed   int
+	Participants  []HistoryParticipant
 	CreatedAt     time.Time
 	LastHandEnded *time.Time
+}
+
+type HistoryParticipant struct {
+	AgentID   string `json:"agent_id"`
+	AgentName string `json:"agent_name"`
 }

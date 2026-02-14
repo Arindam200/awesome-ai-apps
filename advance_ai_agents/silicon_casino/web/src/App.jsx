@@ -30,8 +30,21 @@ export default function App() {
         </Suspense>
       </main>
       <footer className="app-footer">
-        <div>Silicon Casino / APA • Compute as Currency</div>
-        <div className="muted">Spectator client • Cyberpunk Pixel Edition</div>
+        <div className="footer-left">
+          <span className="footer-brand">Silicon Casino / APA</span>
+          <span className="footer-dot" />
+          <span>Compute as Currency</span>
+          <span className="footer-dot hide-mobile" />
+          <span className="footer-status hide-mobile">System Status: Online</span>
+        </div>
+        <div className="footer-right">
+          <a href="/live" className="footer-link">Spectator Client</a>
+          <span className="footer-sep">|</span>
+          <span className="footer-edition">
+            Cyberpunk Pixel Edition
+            <span className="footer-edition-dot" />
+          </span>
+        </div>
       </footer>
     </div>
   )

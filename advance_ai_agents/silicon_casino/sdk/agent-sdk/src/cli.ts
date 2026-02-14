@@ -59,7 +59,7 @@ function printHelp(): void {
   apa-bot register --name <name> --description <desc> [--api-base <url>]
   apa-bot claim (--claim-code <code> | --claim-url <url>) [--api-base <url>]
   apa-bot me [--api-base <url>]
-  apa-bot bind-key --provider <openai|kimi> --vendor-key <key> --budget-usd <num> [--api-base <url>]
+  apa-bot bind-key --provider <openrouter|nebius> --vendor-key <key> --budget-usd <num> [--api-base <url>]
   apa-bot next-decision --join <random|select> [--room-id <id>]
                        [--timeout-ms <ms>] [--api-base <url>]
   apa-bot submit-decision --decision-id <id> --action <fold|check|call|raise|bet>
@@ -291,16 +291,22 @@ async function ensureSession(
   }
   const balance = Number(me?.balance_cc ?? 0);
   const rooms = await client.listPublicRooms();
-  const pickedRoom = pickRoom(rooms.items || [], joinMode, roomId);
-  if (balance < pickedRoom.min_buyin_cc) {
-    throw new Error(`insufficient_balance (balance=${balance}, min=${pickedRoom.min_buyin_cc})`);
+  if (joinMode === "select") {
+    const pickedRoom = pickRoom(rooms.items || [], joinMode, roomId);
+    if (balance < pickedRoom.min_buyin_cc) {
+      throw new Error(`insufficient_balance (balance=${balance}, min=${pickedRoom.min_buyin_cc})`);
+    }
+  } else {
+    const lowestRoom = pickRoom(rooms.items || [], "random");
+    if (balance < lowestRoom.min_buyin_cc) {
+      throw new Error(`insufficient_balance (balance=${balance}, min=${lowestRoom.min_buyin_cc})`);
+    }
   }
-  const session = await client.createSession({
-	agentID: agentId,
-	apiKey,
-	joinMode: "select",
-	roomID: pickedRoom.id
-	}).catch(async (err: unknown) => {
+  const sessionInput =
+    joinMode === "select"
+      ? { agentID: agentId, apiKey, joinMode: "select" as const, roomID: roomId }
+      : { agentID: agentId, apiKey, joinMode: "random" as const };
+  const session = await client.createSession(sessionInput).catch(async (err: unknown) => {
     const recovered = recoverSessionFromConflict(err, apiBase);
     if (!recovered) {
       throw err;
@@ -359,6 +365,7 @@ async function runNextDecision(args: ArgMap): Promise<void> {
   let decided = false;
   let newLastEventId = lastEventId;
   let pendingDecision: PendingDecision | undefined;
+  let stateCleared = false;
 
   try {
     newLastEventId = await parseSSEOnce(streamURL, lastEventId, timeoutMs, async (evt) => {
@@ -379,13 +386,14 @@ async function runNextDecision(args: ArgMap): Promise<void> {
           last_turn_id: "",
           pending_decision: undefined
         });
+        stateCleared = true;
         emit({ type: "table_closed", session_id: sessionId, reason: data?.reason || "table_closed" });
         decided = true;
         return true;
       }
       if (evType === "reconnect_grace_started") {
         emit({
-          type: "noop",
+          type: "table_closing",
           reason: "table_closing",
           event: evType,
           session_id: sessionId,
@@ -397,7 +405,7 @@ async function runNextDecision(args: ArgMap): Promise<void> {
       }
       if (evType === "opponent_forfeited") {
         emit({
-          type: "noop",
+          type: "table_closing",
           reason: "table_closing",
           event: evType,
           session_id: sessionId
@@ -411,7 +419,7 @@ async function runNextDecision(args: ArgMap): Promise<void> {
       const tableStatus = String(data?.table_status || "active");
       if (tableStatus === "closing") {
         emit({
-          type: "noop",
+          type: "table_closing",
           reason: "table_closing",
           event: evType,
           session_id: sessionId,
@@ -429,6 +437,7 @@ async function runNextDecision(args: ArgMap): Promise<void> {
           last_turn_id: "",
           pending_decision: undefined
         });
+        stateCleared = true;
         emit({
           type: "table_closed",
           session_id: sessionId,
@@ -473,16 +482,17 @@ async function runNextDecision(args: ArgMap): Promise<void> {
       return true;
     });
   } catch (err) {
-    emit({ type: "error", error: err instanceof Error ? err.message : String(err) });
     throw err;
   } finally {
-    await saveDecisionState({
-      session_id: sessionId,
-      stream_url: streamURL,
-      last_event_id: newLastEventId,
-      last_turn_id: "",
-      pending_decision: pendingDecision
-    });
+    if (!stateCleared) {
+      await saveDecisionState({
+        session_id: sessionId,
+        stream_url: streamURL,
+        last_event_id: newLastEventId,
+        last_turn_id: "",
+        pending_decision: pendingDecision
+      });
+    }
   }
 
   if (!decided) {

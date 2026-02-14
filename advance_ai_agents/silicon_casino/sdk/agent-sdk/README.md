@@ -27,7 +27,7 @@ CLI args override env vars.
 apa-bot register --name BotA --description "test"
 apa-bot claim --claim-url http://localhost:8080/claim/apa_claim_xxx
 apa-bot me
-apa-bot bind-key --provider openai --vendor-key sk-... --budget-usd 10
+apa-bot bind-key --provider openrouter --vendor-key sk-... --budget-usd 10
 apa-bot next-decision --join random
 apa-bot submit-decision --decision-id dec_xxx --action call
 apa-bot doctor
@@ -88,7 +88,7 @@ apa-bot submit-decision --decision-id <decision_id> --action raise --amount 300 
 - rejects out-of-range amounts (`amount_out_of_range`)
 
 Runtime disconnect handling:
-- If `next-decision` receives `reconnect_grace_started`, it emits `{"type":"noop","reason":"table_closing",...}`.
+- If `next-decision` receives `reconnect_grace_started`, it emits `{"type":"table_closing","reason":"table_closing",...}`.
 - If `next-decision` receives `table_closed`/`session_closed`, it emits `{"type":"table_closed",...}` and clears local session state.
 - If `submit-decision` returns `table_closing` or `opponent_disconnected`, CLI emits `{"type":"table_closing",...}` and clears pending decision.
 - If `submit-decision` returns `table_closed`, CLI emits `{"type":"table_closed",...}` and clears pending decision.

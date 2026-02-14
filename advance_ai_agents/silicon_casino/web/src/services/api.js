@@ -1,4 +1,5 @@
 import {
+  AgentProfileSchema,
   AgentTableSchema,
   LeaderboardSchema,
   PublicRoomsSchema,
@@ -57,10 +58,21 @@ export async function getPublicAgentTable(agentId) {
   return parseOrThrow(AgentTableSchema, data, 'public_agent_table')
 }
 
-export async function getLeaderboard() {
-  const data = await fetchJSON('/api/public/leaderboard', 'leaderboard_unavailable')
-  const parsed = parseOrThrow(LeaderboardSchema, data, 'public_leaderboard')
-  return parsed.items
+export async function getLeaderboard({
+  window = '30d',
+  roomId = 'all',
+  sort = 'score',
+  limit = 50,
+  offset = 0
+} = {}) {
+  const params = new URLSearchParams()
+  params.set('window', window)
+  params.set('room_id', roomId)
+  params.set('sort', sort)
+  params.set('limit', String(limit))
+  params.set('offset', String(offset))
+  const data = await fetchJSON(`/api/public/leaderboard?${params.toString()}`, 'leaderboard_unavailable')
+  return parseOrThrow(LeaderboardSchema, data, 'public_leaderboard')
 }
 
 export async function getTableHistory({ roomId = '', agentId = '', limit = 50, offset = 0 } = {}) {
@@ -99,4 +111,17 @@ export async function getAgentTables(agentId, { limit = 50, offset = 0 } = {}) {
   params.set('offset', String(offset))
   const data = await fetchJSON(`/api/public/agents/${encodeURIComponent(agentId)}/tables?${params.toString()}`, 'agent_tables_unavailable')
   return parseOrThrow(TableHistorySchema, data, 'agent_tables')
+}
+
+export async function getAgentProfile(agentId, { limit = 20, offset = 0 } = {}) {
+  if (!agentId) {
+    const err = new Error('agent_id_required')
+    err.status = 400
+    throw err
+  }
+  const params = new URLSearchParams()
+  params.set('limit', String(limit))
+  params.set('offset', String(offset))
+  const data = await fetchJSON(`/api/public/agents/${encodeURIComponent(agentId)}/profile?${params.toString()}`, 'agent_profile_unavailable')
+  return parseOrThrow(AgentProfileSchema, data, 'agent_profile')
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import ReplayEventFeed from '../components/ReplayEventFeed.jsx'
 import ReplayTableStage from '../components/ReplayTableStage.jsx'
 import { getTableReplay, getTableSnapshot, getTableTimeline } from '../services/api.js'
@@ -116,13 +116,6 @@ function buildAgentNameMap(events) {
   return out
 }
 
-function shortID(v, max = 10) {
-  if (!v) return '-'
-  const s = String(v)
-  if (s.length <= max) return s
-  return `${s.slice(0, max)}...`
-}
-
 function handNoMap(timeline) {
   const out = new Map()
   for (let i = 0; i < (timeline || []).length; i += 1) {
@@ -181,7 +174,7 @@ function buildUnifiedFeed(events, index, seatLabelById, agentNameMap, handIndexM
     }
     if (ev.event_type === 'street_advanced') merged.push({ ...base, type: 'street', street: p.street || '-' })
   }
-  merged.sort((a, b) => b.seq - a.seq)
+  merged.sort((a, b) => a.seq - b.seq)
   return merged.slice(0, 150)
 }
 
@@ -202,8 +195,8 @@ export default function TableReplay() {
   const { tableId } = useParams()
   const queryClient = useQueryClient()
   const {
-    index, playing, speed, handNavOpen, selectedHandId, stateOverride,
-    setIndex, togglePlay, setSpeed, toggleHandNav, setSelectedHand, setStateOverride, resetReplayState, pause
+    index, playing, speed, selectedHandId, stateOverride,
+    setIndex, togglePlay, setSpeed, setSelectedHand, setStateOverride, resetReplayState, pause
   } = useReplayStore()
 
   useEffect(() => {
@@ -264,17 +257,6 @@ export default function TableReplay() {
     [events, index, seatLabelById, agentNameMap, handIndexMap]
   )
   const activeHandIndex = useMemo(() => timeline.findIndex((h) => h.hand_id === activeHandID), [timeline, activeHandID])
-  const potRange = useMemo(() => {
-    if (!timeline.length) return { min: 0, max: 0 }
-    let min = Number.MAX_SAFE_INTEGER
-    let max = 0
-    for (const h of timeline) {
-      const pot = Number(h.pot_cc || 0)
-      if (pot < min) min = pot
-      if (pot > max) max = pot
-    }
-    return { min: min === Number.MAX_SAFE_INTEGER ? 0 : min, max }
-  }, [timeline])
 
   const jumpToSeq = async (seq) => {
     try {
@@ -311,89 +293,71 @@ export default function TableReplay() {
     const t = timeline[next]
     if (t?.start_seq) jumpToSeq(t.start_seq)
   }
+  const progressMax = Math.max(0, events.length - 1)
+  const progressValue = Math.max(0, Math.min(index, progressMax))
+  const onProgressChange = (e) => {
+    const next = Number(e.target.value)
+    if (Number.isNaN(next)) return
+    pause()
+    setStateOverride(null)
+    setIndex(next)
+  }
 
   return (
     <section className="page replay-page">
-      <div className="replay-shell-clean">
-        <header className="replay-controls-clean">
-          <button className="btn btn-primary" onClick={togglePlay} disabled={!events.length}>{playing ? 'Pause' : 'Play'}</button>
-          <button className="btn btn-ghost" onClick={() => setIndex(Math.max(0, index - 1))} disabled={index <= 0}>Prev</button>
-          <button className="btn btn-ghost" onClick={() => setIndex(Math.min(events.length - 1, index + 1))} disabled={index >= events.length - 1}>Next</button>
-          <label className="replay-speed-label">
-            Speed
-            <select value={speed} onChange={(e) => setSpeed(Number(e.target.value))}>
-              <option value={0.5}>0.5x</option>
-              <option value={1}>1x</option>
-              <option value={2}>2x</option>
-              <option value={4}>4x</option>
-            </select>
-          </label>
-          <span className="replay-status muted">{statusText}</span>
-          <span className="replay-table muted">table={tableId}</span>
-          <Link className="btn btn-ghost" to="/history">Back to History</Link>
+      <div className="replay-broadcast-shell">
+        <header className="replay-broadcast-head">
+          <div className="replay-broadcast-head-main">
+            <div className="panel-title">Replay Broadcast</div>
+            <span className="replay-table muted">table={tableId}</span>
+          </div>
+          <div className="replay-broadcast-head-meta">
+            <span className="replay-status muted">{statusText}</span>
+            <span className="muted">{activeHandIndex >= 0 ? `hand ${activeHandIndex + 1}/${timeline.length}` : `hand -/${timeline.length}`}</span>
+          </div>
         </header>
 
         {(replayQuery.isError || timelineQuery.isError) && <div className="replay-error muted">{replayQuery.error?.message || timelineQuery.error?.message || 'replay_load_failed'}</div>}
 
-        <section className="replay-hand-nav">
-          <div className="replay-hand-nav-head">
-            <div className="replay-timeline-title">Hand Segments</div>
-            <div className="replay-hand-stats">
-              <span>{`Total ${timeline.length}`}</span>
-              <span>{`Current ${activeHandIndex >= 0 ? activeHandIndex + 1 : '-'}`}</span>
-              <span>{`Pot ${potRange.min}~${potRange.max}`}</span>
+        <div className="replay-broadcast-main">
+          <section className="replay-stage-panel">
+            <ReplayTableStage state={replayState} currentEvent={currentEvent?.payload || {}} handResult={handResult} />
+            <div className="replay-broadcast-controls">
+              <div className="replay-control-cluster">
+                <button className="btn btn-primary" onClick={togglePlay} disabled={!events.length}>{playing ? 'Pause' : 'Play'}</button>
+                <button className="btn btn-ghost" onClick={() => jumpByHandOffset(-1)} disabled={!timeline.length}>Prev Hand</button>
+                <button className="btn btn-ghost" onClick={() => jumpByHandOffset(1)} disabled={!timeline.length}>Next Hand</button>
+                <button className="btn btn-ghost" onClick={() => jumpToSeq(currentEvent?.global_seq || 1)} disabled={!currentEvent}>Sync Current</button>
+              </div>
+              <div className="replay-progress-track">
+                <input
+                  type="range"
+                  min={0}
+                  max={progressMax}
+                  value={progressValue}
+                  onChange={onProgressChange}
+                  disabled={!events.length}
+                  aria-label="Replay progress"
+                />
+                <div className="replay-progress-meta">
+                  <span className="muted">{events.length ? `#${currentEvent?.global_seq || 1}` : '#-'}</span>
+                  <label className="replay-speed-label">
+                    Speed
+                    <select value={speed} onChange={(e) => setSpeed(Number(e.target.value))}>
+                      <option value={0.5}>0.5x</option>
+                      <option value={1}>1x</option>
+                      <option value={2}>2x</option>
+                      <option value={4}>4x</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
             </div>
-            <button className="btn btn-ghost replay-hand-toggle" onClick={toggleHandNav}>{handNavOpen ? 'Collapse' : 'Expand'}</button>
-          </div>
-          {handNavOpen && (
-            <div className="replay-hand-segments">
-              {timeline.map((h, i) => (
-                <button
-                  key={h.hand_id}
-                  className={`replay-hand-chip ${activeHandID && activeHandID === h.hand_id ? 'is-active' : ''}`}
-                  onClick={() => jumpToSeq(h.start_seq || 1)}
-                  title={`Winner: ${agentNameMap.get(h.winner_agent_id) || shortID(h.winner_agent_id, 12)} | Pot: ${h.pot_cc ?? 0} | Street: ${h.street_end || '-'}`}
-                >
-                  {`H${i + 1}`}
-                </button>
-              ))}
-            </div>
-          )}
-        </section>
+          </section>
 
-        <div className="replay-main-clean">
-          <ReplayTableStage state={replayState} currentEvent={currentEvent?.payload || {}} handResult={handResult} />
-          <aside className="replay-side-clean">
+          <aside className="replay-log-panel">
             <ReplayEventFeed items={unifiedFeed} activeSeq={currentEvent?.global_seq} onJumpSeq={jumpToSeq} />
           </aside>
-        </div>
-
-        <div className="replay-jump-bar">
-          <button className="btn btn-ghost" onClick={() => jumpByHandOffset(-1)} disabled={!timeline.length}>Prev Hand</button>
-          <button className="btn btn-ghost" onClick={() => jumpByHandOffset(1)} disabled={!timeline.length}>Next Hand</button>
-          <span className="muted">{activeHandIndex >= 0 ? `Hand ${activeHandIndex + 1}/${timeline.length}` : `Hand -/${timeline.length}`}</span>
-          <button className="btn btn-ghost" onClick={() => jumpToSeq(currentEvent?.global_seq || 1)} disabled={!currentEvent}>Sync To Current Event</button>
-        </div>
-
-        <div className="replay-timeline-clean replay-timeline-clean-compact">
-          <div className="replay-timeline-title">Hand Details</div>
-          <div className="replay-timeline-list replay-timeline-list-compact">
-            {timeline.length === 0 && <div className="muted">No timeline</div>}
-            {timeline
-              .slice(Math.max(0, (activeHandIndex >= 0 ? activeHandIndex : 0) - 3), (activeHandIndex >= 0 ? activeHandIndex : 0) + 4)
-              .map((h, i) => (
-                <div key={h.hand_id} className={`replay-hand-node replay-hand-node-compact ${activeHandID === h.hand_id ? 'is-active' : ''}`}>
-                  <span className="replay-hand-row">
-                    <span className="replay-hand-no">{`Hand ${handIndexMap.get(h.hand_id) || i + 1}`}</span>
-                    <span className="replay-hand-pot">{`${h.pot_cc ?? 0} CC`}</span>
-                  </span>
-                  <span className="replay-hand-meta">
-                    <span className="replay-hand-winner-name">{`Winner: ${agentNameMap.get(h.winner_agent_id) || shortID(h.winner_agent_id, 12)}`}</span>
-                    <span className="replay-hand-street">{`Street: ${h.street_end || '-'}`}</span>
-                  </span>
-                </div>
-              ))}
-          </div>
         </div>
       </div>
     </section>

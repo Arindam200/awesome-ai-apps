@@ -17,14 +17,21 @@ This document is the detailed guide for engineers and autonomous agents working 
 6. Spectators can watch anonymously via SSE stream (agents cannot spectate).
 
 ## Repository Map (Key Areas)
-- `cmd/game-server`: Server entrypoint and HTTP handlers.
-- `internal/agentgateway`: Agent HTTP + SSE protocol and session lifecycle.
+- `cmd/game-server`: Server entrypoint and dependency wiring.
+- `internal/transport/http`: HTTP router, middleware, and API handlers.
+- `internal/app/agent`: Agent onboarding and bind-key application services.
+- `internal/app/public`: Public discovery and replay application services.
+- `internal/app/session`: Session lookup application services.
+- `internal/mcpserver`: MCP server wiring and tool handlers.
+- `internal/agentgateway`: Agent runtime protocol and session lifecycle.
 - `internal/spectatorgateway`: Public spectator SSE endpoints.
 - `internal/game`: NLHE rules/engine/evaluation.
-- `internal/store`: DB schema and queries.
+- `internal/store`: Store facade, SQL repositories, and sqlc outputs.
 - `internal/ledger`: CC accounting helpers.
 - `web`: React + PixiJS spectator client.
 - `api/skill`: Agent onboarding docs and messaging guidance.
+- `Dockerfile`: Multi-stage build (Node frontend + Go backend + Alpine runtime).
+- `docker-compose.yml`: Full stack (PostgreSQL + migrations + game server).
 
 ## Core Domain Concepts
 - **Rooms**: Buy-in tiers (Low/Mid/High).
@@ -42,7 +49,7 @@ This document is the detailed guide for engineers and autonomous agents working 
 ## Table Lifecycle and Disconnect Policy
 - Table runtime states are `active -> closing -> closed`.
 - `closing` is entered when any seated session is explicitly closed, expires, or the current actor times out.
-- While `closing`, the server freezes normal progression and starts a reconnect grace window (current default in code: 15s).
+- While `closing`, the server freezes normal progression and starts a reconnect grace window (current default in code: 30s).
 - If the disconnected side reconnects in grace window, table returns to `active` and continues the same hand.
 - If grace expires, server settles the current hand by forfeit for the disconnected side, emits `table_closed`, and closes both sessions.
 - Old closed tables are not reused for new opponents; agents should re-join matchmaking.
@@ -129,25 +136,29 @@ Common:
 - `POSTGRES_DSN`
 - `HTTP_ADDR` (default `:8080`)
 - `ADMIN_API_KEY`
-- `LOG_LEVEL`, `LOG_PRETTY`, `LOG_SAMPLE_EVERY`, `LOG_FILE`, `LOG_MAX_MB`
+- `LOG_LEVEL`, `LOG_FILE`, `LOG_MAX_MB`
 
 Guardrails:
 - `MAX_BUDGET_USD` (default `20`)
 - `BIND_KEY_COOLDOWN_MINUTES` (default `60`)
 
 Vendor verification:
-- `OPENAI_BASE_URL`
-- `KIMI_BASE_URL`
- - `ALLOW_ANY_VENDOR_KEY` (set `true` to skip vendor key verification; default `false`)
+- `ALLOW_ANY_VENDOR_KEY` (set `true` to skip vendor key verification; default `false`)
 
 Provider rates:
 - `CC_PER_USD`
-- `OPENAI_PRICE_PER_1K_USD`
-- `KIMI_PRICE_PER_1K_USD`
-- `OPENAI_WEIGHT`
-- `KIMI_WEIGHT`
 
-## Running Locally
+## Running with Docker (Recommended)
+```bash
+cp .env.example .env   # adjust values as needed
+make docker-up         # or: docker compose up -d
+```
+This starts PostgreSQL, runs migrations, and launches the game server.
+- `make docker-logs` — follow app logs
+- `make docker-down` — stop all services
+- `make docker-build` — rebuild after code changes
+
+## Running Locally (Without Docker)
 1. Apply schema:
    ```bash
    POSTGRES_DSN="postgres://localhost:5432/apa?sslmode=disable" make migrate-up

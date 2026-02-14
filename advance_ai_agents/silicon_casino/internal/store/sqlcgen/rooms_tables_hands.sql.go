@@ -89,25 +89,25 @@ func (q *Queries) CreateTable(ctx context.Context, arg CreateTableParams) error 
 const endHand = `-- name: EndHand :exec
 UPDATE hands
 SET ended_at = now(),
-    winner_agent_id = NULLIF($2::text, ''),
-    pot_cc = $3,
-    street_end = NULLIF($4::text, '')
-WHERE id = $1
+    winner_agent_id = NULLIF($1::text, ''),
+    pot_cc = $2,
+    street_end = NULLIF($3::text, '')
+WHERE id = $4
 `
 
 type EndHandParams struct {
-	ID      string
-	Column2 string
-	PotCc   pgtype.Int8
-	Column4 string
+	WinnerAgentID string
+	PotCc         pgtype.Int8
+	StreetEnd     string
+	HandID        string
 }
 
 func (q *Queries) EndHand(ctx context.Context, arg EndHandParams) error {
 	_, err := q.db.Exec(ctx, endHand,
-		arg.ID,
-		arg.Column2,
+		arg.WinnerAgentID,
 		arg.PotCc,
-		arg.Column4,
+		arg.StreetEnd,
+		arg.HandID,
 	)
 	return err
 }
@@ -172,19 +172,19 @@ const listTables = `-- name: ListTables :many
 SELECT id, room_id, status, small_blind_cc, big_blind_cc, created_at
 FROM tables
 WHERE status = 'active'
-  AND ($1::text = '' OR room_id = $1)
+  AND ($1::text = '' OR room_id = $1::text)
 ORDER BY created_at DESC
-LIMIT $2 OFFSET $3
+LIMIT $3 OFFSET $2
 `
 
 type ListTablesParams struct {
-	Column1 string
-	Limit   int32
-	Offset  int32
+	RoomID     string
+	OffsetRows int32
+	LimitRows  int32
 }
 
 func (q *Queries) ListTables(ctx context.Context, arg ListTablesParams) ([]Table, error) {
-	rows, err := q.db.Query(ctx, listTables, arg.Column1, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, listTables, arg.RoomID, arg.OffsetRows, arg.LimitRows)
 	if err != nil {
 		return nil, err
 	}

@@ -1,6 +1,15 @@
 -- name: CreateAgentSession :exec
 INSERT INTO agent_sessions (id, agent_id, room_id, table_id, seat_id, join_mode, status, expires_at)
-VALUES ($1, $2, $3, NULLIF($4::text, ''), $5, $6, $7, $8);
+VALUES (
+  sqlc.arg(id),
+  sqlc.arg(agent_id),
+  sqlc.arg(room_id),
+  NULLIF(sqlc.arg(table_id)::text, ''),
+  sqlc.arg(seat_id),
+  sqlc.arg(join_mode),
+  sqlc.arg(status),
+  sqlc.arg(expires_at)
+);
 
 -- name: GetAgentSessionByID :one
 SELECT id, agent_id, room_id, table_id, seat_id, join_mode, status, expires_at, created_at, closed_at
@@ -24,7 +33,17 @@ WHERE table_id = $1::text AND status <> 'closed';
 
 -- name: InsertAgentActionRequestIfAbsent :execrows
 INSERT INTO agent_action_requests (id, session_id, request_id, turn_id, action_type, amount_cc, thought_log, accepted, reason)
-VALUES ($1, $2, $3, $4, $5, $6, NULLIF($7::text, ''), $8, NULLIF($9::text, ''))
+VALUES (
+  sqlc.arg(id),
+  sqlc.arg(session_id),
+  sqlc.arg(request_id),
+  sqlc.arg(turn_id),
+  sqlc.arg(action_type),
+  sqlc.arg(amount_cc),
+  NULLIF(sqlc.arg(thought_log)::text, ''),
+  sqlc.arg(accepted),
+  NULLIF(sqlc.arg(reason)::text, '')
+)
 ON CONFLICT (session_id, request_id) DO NOTHING;
 
 -- name: GetAgentActionRequestBySessionAndRequest :one

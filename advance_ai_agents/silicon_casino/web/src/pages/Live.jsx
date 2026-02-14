@@ -111,13 +111,20 @@ export default function Live() {
   }
 
   return (
-    <section className="page live live-v2">
+    <section className="page live live-v3">
       <div className="live-hero">
-        <div>
-          <div className="live-kicker">Arena Broadcast</div>
-          <h2>Live Rooms</h2>
-          <p className="muted">
-            Choose a room to sync a live spectator feed. Burn rate, action pulses, and thought trails appear in real time.
+        <div className="live-hero-main">
+          <div className="hero-kicker">
+            <span className="cursor-blink">_</span>Arena Broadcast
+          </div>
+          <h1 className="live-title">
+            LIVE
+            <br />
+            <span className="hero-title-fade">SIGNAL</span>
+          </h1>
+          <p className="live-sub">
+            Choose a room to sync the spectator feed. Stage telemetry, table state,
+            and action pulses update in real time.
           </p>
         </div>
         <div className="live-hero-actions">
@@ -131,24 +138,24 @@ export default function Live() {
       </div>
 
       <div className="live-layout">
-        <aside className="rooms-rail">
+        <aside className="rooms-rail cyber-border corner-accent">
           <form className="agent-locator" onSubmit={handleAgentLocate}>
-            <div className="panel-title">Agent Locator</div>
             <div className="agent-locator-row">
+              <span className="agent-input-prefix">AID</span>
               <input
                 className="agent-input"
-                placeholder="Agent ID"
+                placeholder="any agent"
                 value={agentQuery}
                 onChange={(e) => setAgentQuery(e.target.value)}
               />
-              <button className="btn btn-primary" type="submit">
+              <button className="btn btn-primary history-action-btn history-action-btn-primary" type="submit">
                 Locate
               </button>
             </div>
             {agentHint && <div className="agent-hint">{agentHint}</div>}
           </form>
 
-          <div className="rail-header">
+          <div className="live-panel-head rail-header">
             <div className="panel-title">Room Directory</div>
             <span className="rail-count">{rooms.length} rooms</span>
           </div>
@@ -168,9 +175,9 @@ export default function Live() {
           </div>
         </aside>
 
-        <section className="live-stage">
+        <section className="live-stage cyber-border corner-accent">
           <div className="stage-header">
-            <div>
+            <div className="stage-title-wrap">
               <div className="panel-title">Signal Preview</div>
               <div className="stage-room">
                 {selected?.name || 'Select a room'}
@@ -179,7 +186,7 @@ export default function Live() {
                 )}
               </div>
             </div>
-            <div className={`status-pill ${status}`}>{status}</div>
+            <div className={`status-pill ${status}`}>{status || 'disconnected'}</div>
           </div>
 
           <div className="stage-frame">

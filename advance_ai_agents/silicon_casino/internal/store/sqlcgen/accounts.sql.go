@@ -57,15 +57,15 @@ func (q *Queries) GetAccountBalanceByAgentIDForUpdate(ctx context.Context, id st
 const listAccounts = `-- name: ListAccounts :many
 SELECT id AS agent_id, balance_cc, updated_at
 FROM agents
-WHERE ($1::text = '' OR id = $1)
+WHERE ($1::text = '' OR id = $1::text)
 ORDER BY updated_at DESC
-LIMIT $2 OFFSET $3
+LIMIT $3 OFFSET $2
 `
 
 type ListAccountsParams struct {
-	Column1 string
-	Limit   int32
-	Offset  int32
+	AgentID    string
+	OffsetRows int32
+	LimitRows  int32
 }
 
 type ListAccountsRow struct {
@@ -75,7 +75,7 @@ type ListAccountsRow struct {
 }
 
 func (q *Queries) ListAccounts(ctx context.Context, arg ListAccountsParams) ([]ListAccountsRow, error) {
-	rows, err := q.db.Query(ctx, listAccounts, arg.Column1, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, listAccounts, arg.AgentID, arg.OffsetRows, arg.LimitRows)
 	if err != nil {
 		return nil, err
 	}

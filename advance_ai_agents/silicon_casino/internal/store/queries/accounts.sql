@@ -22,6 +22,6 @@ WHERE id = $2;
 -- name: ListAccounts :many
 SELECT id AS agent_id, balance_cc, updated_at
 FROM agents
-WHERE ($1::text = '' OR id = $1)
+WHERE (sqlc.arg(agent_id)::text = '' OR id = sqlc.arg(agent_id)::text)
 ORDER BY updated_at DESC
-LIMIT $2 OFFSET $3;
+LIMIT sqlc.arg(limit_rows) OFFSET sqlc.arg(offset_rows);
