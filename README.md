@@ -399,6 +399,16 @@ We welcome contributions from the community! Here's how you can help:
 
 This repository is licensed under the [MIT License](./LICENSE). Feel free to use and modify the examples for your projects.
 
+## 👥 Core Maintainers
+
+This project is actively maintained by:
+
+- arindam200 (Arindam Majumder)
+
+- shivaylamba (Shivay Lamba)
+
+For any questions, suggestions, or contributions, feel free to reach out to the maintainers.
+
 ## Thank You for the Support! 🙏
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Arindam200/awesome-ai-apps&type=Date)](https://www.star-history.com/#Arindam200/awesome-ai-apps&Date)
