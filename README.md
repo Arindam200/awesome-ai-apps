@@ -214,7 +214,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🪶 Simple Agents
 
-**Straightforward, practical use-cases for everyday AI applications.** _14 projects_
+**Straightforward, practical use-cases for everyday AI applications.** _15 projects_
 
 - [Agno AI Examples](simple_ai_agents/agno_ai_examples) - Simple to multi-agent examples with web search & knowledge base
 - [Finance Agent](simple_ai_agents/finance_agent) - Real-time stock & market data tracking agent
@@ -283,7 +283,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _14 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _15 projects_
 
 - [Deep Researcher](advance_ai_agents/deep_researcher_agent) - Multi-stage research agent with Agno & ScrapeGraph AI
 - [Candilyzer](advance_ai_agents/candidate_analyser) - Candidate analysis tool for GitHub/LinkedIn profiles
@@ -299,6 +299,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Conference Agnostic CFP Generator](advance_ai_agents/conference_agnositc_cfp_generator) - Automated conference proposal generation system
 - [Car Finder Agent](advance_ai_agents/car_finder_agent) - AI-powered used car recommendation system with CrewAI and MongoDB
 - [Content Team Agent](advance_ai_agents/content_team_agent) - SEO content optimization workflow with Agno & SerpAPI for Google AI Search ranking
+- [Off Grid - On-Device AI Suite](https://github.com/alichherawalla/off-grid-mobile) - Open-source mobile app running LLMs, vision models, and Stable Diffusion entirely on-device with no cloud dependency
 
 ## 📺 Tutorials & Videos
 
