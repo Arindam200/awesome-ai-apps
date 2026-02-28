@@ -196,6 +196,8 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🧩 Starter Agents
 
+- [Orchard Kit](https://github.com/OrchardHarmonics/orchard-kit) — Alignment, safety & cognitive architecture for autonomous AI agents. Membrane security, epistemic tagger, self-audit, beacon, cognitive architecture (The Loom), collective cognition (The Choir). Zero dependencies.
+
 **Quick-start agents for learning and extending different AI frameworks.** _13 projects_
 
 - [Agno HackerNews Analysis](starter_ai_agents/agno_starter) - Agno-based agent for trend analysis on HackerNews
