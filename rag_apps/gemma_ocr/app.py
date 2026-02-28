@@ -167,7 +167,7 @@ with st.sidebar:
                                         "content": [
                                             {
                                                 "type": "text",
-                                                "text": "Extract the Details and use Tables where applicable",
+                                                "text": "Extract the Details in a Table",
                                             },
                                             {
                                                 "type": "image_url",
@@ -186,7 +186,7 @@ with st.sidebar:
                             )
                         except Exception as e:
                             text = f"OCR API call failed on page {i+1}: {e}"
-                        results.append(text)
+                        results.append(f"### Page {i+1}\n" + text)
                         progress.progress(
                             (i + 1) / num_pages,
                             text=f"Processed {i+1} of {num_pages} pages...",

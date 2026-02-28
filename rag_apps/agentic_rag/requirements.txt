@@ -1,0 +1,6 @@
+agno
+python-dotenv
+streamlit
+arize-phoenix
+lancedb
+openai

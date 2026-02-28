@@ -1,0 +1,9 @@
+# Placeholder Dockerfile for the task-manager service.
+# This should be replaced with the actual Dockerfile content.
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY . .
+
+CMD ["echo", "task-manager service"]

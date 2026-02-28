@@ -1,0 +1,19 @@
+# Development and testing dependencies
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.0.0
+pytest-mock>=3.10.0
+black>=23.0.0
+ruff>=0.0.270
+mypy>=1.0.0
+safety>=2.3.0
+bandit>=1.7.0
+pre-commit>=3.0.0
+sphinx>=5.0.0
+sphinx-rtd-theme>=1.2.0
+
+# Debugging and development tools
+ipython>=8.0.0
+jupyter>=1.0.0
+rich>=13.0.0
+httpx>=0.24.0

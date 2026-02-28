@@ -1,4 +1,4 @@
-![demo](./assets/demo.gif)
+![demo](./assets/demo.png)
 
 # Gemma 3 OCR Example
 
@@ -58,8 +58,6 @@ uv run streamlit run main.py
 ```
 
 Then open your browser at: [http://localhost:8501](http://localhost:8501)
-
-![demo](./assets/demo.png)
 
 
 ## How It Works

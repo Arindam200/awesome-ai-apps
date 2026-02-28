@@ -30,6 +30,10 @@ st.markdown("**Discover the perfect hotels with AI-powered search and comprehens
 
 # Setup sidebar for configuration
 with st.sidebar:
+    # st.markdown("### 🔧 Configuration")
+
+    # API Configuration
+    # st.markdown("#### 🔑 API Settings")
 
     st.image("./assets/Nebius.png", width=150)
     api_key = st.text_input(
@@ -558,6 +562,7 @@ else:
 # Show current active search mode
 if query_to_execute:
     active_mode = st.session_state.get('active_search_tab', 'Unknown')
+    # st.info(f"🎯 **Active Search Mode**: {active_mode} | **Location**: {search_parameters.get('location', 'Not specified')}")
 
 # Search execution buttons
 col1, col2, col3 = st.columns([2, 1, 1])
@@ -651,6 +656,17 @@ if 'search_results' in st.session_state:
     
     results_data = st.session_state['search_results']
     
+    # # Results metadata
+    # col1, col2, col3 = st.columns(3)
+    # with col1:
+    #     st.metric("Search Mode", results_data['mode'])
+    # with col2:
+    #     st.metric("Timestamp", results_data['timestamp'])
+    # with col3:
+    #     st.metric("Model Used", results_data['parameters'].get('model_id', 'Unknown'))
+
+    # Display the actual results
+    # st.markdown("#### 🏨 Hotel Search Results")
     st.markdown(results_data['result'])
     
     # Export functionality
@@ -670,3 +686,28 @@ if 'search_results' in st.session_state:
             mime="application/json"
         )
 
+# Footer with additional information
+# st.markdown("---")
+# st.markdown("### 💡 Tips for Better Results")
+
+# tip_col1, tip_col2 = st.columns(2)
+
+# with tip_col1:
+#     st.markdown("""
+#     **🎯 Search Tips:**
+#     - Be specific about location (include city, state)
+#     - Use natural language for preferences
+#     - Specify dates for accurate pricing
+#     - Mention guest count for appropriate rooms
+#     - Include amenity preferences
+#     """)
+
+# with tip_col2:
+#     st.markdown("""
+#     **⚡ Performance Tips:**
+#     - Use Quick Search for basic queries
+#     - Try Advanced Search for detailed filtering
+#     - Increase timeout for complex searches
+#     - Reduce max results if search is slow
+#     - Check API token validity if errors occur
+#     """)

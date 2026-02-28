@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: health-monitor
+  namespace: ai-apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: health-monitor
+  template:
+    metadata:
+      labels:
+        app: health-monitor
+    spec:
+      containers:
+      - name: health-monitor
+        image: ghcr.io/techfluent-au/ai-apps-monitor:latest
+        ports:
+        - containerPort: 8002
+        volumeMounts:
+        - name: monitoring-config
+          mountPath: /app/config
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: monitoring-config
+        configMap:
+          name: ai-apps-config
