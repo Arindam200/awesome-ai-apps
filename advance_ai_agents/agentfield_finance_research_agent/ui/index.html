@@ -1,0 +1,1430 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Argus — Autonomous Investment Research</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+   href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+   rel="stylesheet"
+  />
+  <style>
+   *,
+   *::before,
+   *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+   }
+
+   :root {
+    --bg: #07080f;
+    --surface: #0d0f1c;
+    --surface2: #13162a;
+    --border: rgba(255, 255, 255, 0.07);
+    --border-hi: rgba(99, 179, 237, 0.5);
+    --text: #e8eaf6;
+    --text-dim: #6b7280;
+    --text-muted: #374151;
+    --blue: #63b3ed;
+    --blue-glow: rgba(99, 179, 237, 0.2);
+    --green: #48bb78;
+    --green-glow: rgba(72, 187, 120, 0.2);
+    --red: #fc8181;
+    --red-glow: rgba(252, 129, 129, 0.2);
+    --yellow: #f6e05e;
+    --yellow-glow: rgba(246, 224, 94, 0.2);
+    --purple: #9f7aea;
+    --purple-glow: rgba(159, 122, 234, 0.2);
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+   }
+
+   html,
+   body {
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+   }
+
+   body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+     radial-gradient(
+      ellipse 80% 50% at 50% -10%,
+      rgba(99, 179, 237, 0.07) 0%,
+      transparent 70%
+     ),
+     radial-gradient(
+      ellipse 60% 40% at 80% 80%,
+      rgba(159, 122, 234, 0.04) 0%,
+      transparent 60%
+     );
+    pointer-events: none;
+    z-index: 0;
+   }
+
+   .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+   }
+
+   /* ── Header ── */
+   .header {
+    text-align: center;
+    margin-bottom: 44px;
+   }
+   .logo {
+    font-family: var(--mono);
+    font-size: 52px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    background: linear-gradient(135deg, #fff 30%, var(--blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 10px;
+   }
+   .tagline {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+   }
+
+   /* ── Search ── */
+   .search-wrap {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 44px;
+   }
+   #query-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-family: var(--sans);
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    transition:
+     border-color 0.2s,
+     box-shadow 0.2s;
+   }
+   #query-input::placeholder {
+    color: var(--text-muted);
+   }
+   #query-input:focus {
+    border-color: var(--border-hi);
+    box-shadow: 0 0 0 3px var(--blue-glow);
+   }
+   #run-btn {
+    background: var(--blue);
+    color: #07080f;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition:
+     opacity 0.2s,
+     transform 0.1s;
+    white-space: nowrap;
+   }
+   #run-btn:hover {
+    opacity: 0.88;
+   }
+   #run-btn:active {
+    transform: scale(0.98);
+   }
+   #run-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+   }
+
+   /* ── Section label ── */
+   .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+   }
+   .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+   }
+
+   /* ── Pipeline ── */
+   .pipeline {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 44px;
+    align-items: start;
+   }
+
+   .agent-col {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    position: relative;
+   }
+
+   /* Arrow connectors */
+   .agent-col:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -9px;
+    top: 26px;
+    color: var(--text-muted);
+    font-size: 13px;
+    z-index: 2;
+   }
+   /* The two editors are both "after" contrarian — no arrow between editor_short and editor_long */
+   .agent-col[data-agent='editor_short']::after,
+   .agent-col[data-agent='editor_long']::after {
+    display: none;
+   }
+
+   /* ── Agent Card ── */
+   .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    transition:
+     border-color 0.3s,
+     box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+   }
+   .agent-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background: radial-gradient(
+     circle at 50% 0%,
+     var(--card-glow, var(--blue-glow)) 0%,
+     transparent 70%
+    );
+   }
+   .agent-card.working {
+    border-color: var(--border-hi);
+    box-shadow: 0 0 20px var(--blue-glow);
+    animation: pulse-glow 2s ease-in-out infinite;
+   }
+   .agent-card.working::before {
+    opacity: 1;
+   }
+   .agent-card.done {
+    border-color: rgba(72, 187, 120, 0.35);
+    box-shadow: 0 0 12px var(--green-glow);
+   }
+
+   /* Editor cards use purple accent */
+   .agent-col[data-agent='editor_short'] .agent-card.working,
+   .agent-col[data-agent='editor_long'] .agent-card.working {
+    border-color: rgba(159, 122, 234, 0.5);
+    box-shadow: 0 0 20px var(--purple-glow);
+   }
+   .agent-col[data-agent='editor_short'] .agent-card::before,
+   .agent-col[data-agent='editor_long'] .agent-card::before {
+    background: radial-gradient(
+     circle at 50% 0%,
+     var(--purple-glow) 0%,
+     transparent 70%
+    );
+   }
+
+   @keyframes pulse-glow {
+    0%,
+    100% {
+     box-shadow: 0 0 20px var(--blue-glow);
+    }
+    50% {
+     box-shadow: 0 0 36px rgba(99, 179, 237, 0.35);
+    }
+   }
+
+   .agent-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+   }
+   .agent-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+   }
+   .agent-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+   }
+   .agent-role {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+   }
+
+   /* status badge */
+   .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--mono);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    width: fit-content;
+   }
+   .status-badge.idle {
+    color: var(--text-muted);
+    border-color: var(--text-muted);
+   }
+   .status-badge.working {
+    color: var(--blue);
+    border-color: var(--blue);
+    background: var(--blue-glow);
+   }
+   .status-badge.done {
+    color: var(--green);
+    border-color: var(--green);
+    background: var(--green-glow);
+   }
+   .status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+   }
+   .status-badge.working .status-dot {
+    animation: blink 1s ease-in-out infinite;
+   }
+   @keyframes blink {
+    0%,
+    100% {
+     opacity: 1;
+    }
+    50% {
+     opacity: 0.2;
+    }
+   }
+
+   /* card log */
+   .agent-log {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 40px;
+   }
+   .log-line {
+    line-height: 1.5;
+    animation: fade-up 0.25s ease;
+   }
+   .log-line.note {
+    color: var(--blue);
+   }
+   .log-line.detail {
+    color: var(--text-dim);
+   }
+   .log-line.start {
+    color: var(--text);
+   }
+   .log-line.result {
+    color: var(--green);
+    font-weight: 500;
+   }
+   @keyframes fade-up {
+    from {
+     opacity: 0;
+     transform: translateY(3px);
+    }
+    to {
+     opacity: 1;
+     transform: translateY(0);
+    }
+   }
+
+   /* Thought toggle */
+   .thoughts-toggle {
+    display: none;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 4px 8px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text-dim);
+    cursor: pointer;
+    letter-spacing: 0.06em;
+    transition:
+     border-color 0.2s,
+     color 0.2s;
+    width: 100%;
+    justify-content: center;
+   }
+   .thoughts-toggle:hover {
+    border-color: var(--border-hi);
+    color: var(--blue);
+   }
+   .thoughts-toggle.visible {
+    display: flex;
+   }
+   .thoughts-toggle.active {
+    border-color: var(--border-hi);
+    color: var(--blue);
+   }
+
+   /* Thought drawer */
+   .thought-drawer {
+    background: rgba(99, 179, 237, 0.04);
+    border: 1px solid rgba(99, 179, 237, 0.12);
+    border-radius: 10px;
+    overflow: hidden;
+    max-height: 0;
+    transition:
+     max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+     opacity 0.3s;
+    opacity: 0;
+   }
+   .thought-drawer.open {
+    max-height: 300px;
+    opacity: 1;
+   }
+   .drawer-inner {
+    padding: 10px 12px;
+    overflow-y: auto;
+    max-height: 288px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    line-height: 1.65;
+    scrollbar-width: thin;
+    scrollbar-color: var(--surface2) transparent;
+   }
+   .thought-line {
+    padding: 3px 0 3px 9px;
+    border-left: 2px solid rgba(99, 179, 237, 0.2);
+    margin-bottom: 3px;
+    animation: fade-up 0.2s ease;
+   }
+   .thinking-cursor::after {
+    content: '▋';
+    color: var(--blue);
+    animation: cursor-blink 0.7s step-end infinite;
+   }
+   @keyframes cursor-blink {
+    0%,
+    100% {
+     opacity: 1;
+    }
+    50% {
+     opacity: 0;
+    }
+   }
+
+   /* ── Error banner ── */
+   .error-banner {
+    display: none;
+    background: rgba(252, 129, 129, 0.1);
+    border: 1px solid rgba(252, 129, 129, 0.3);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: var(--red);
+    font-family: var(--mono);
+    font-size: 12px;
+    margin-bottom: 16px;
+   }
+
+   /* ── Report Tabs ── */
+   #report-section {
+    display: none;
+    animation: fade-up 0.5s ease;
+   }
+
+   .report-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 0;
+   }
+   .tab-btn {
+    flex: 1;
+    padding: 12px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition:
+     color 0.2s,
+     background 0.2s,
+     border-color 0.2s;
+   }
+   .tab-btn:first-child {
+    border-radius: 14px 0 0 0;
+    border-right: none;
+   }
+   .tab-btn:last-child {
+    border-radius: 0 14px 0 0;
+   }
+   .tab-btn.active {
+    background: var(--surface2);
+    color: var(--text);
+    border-bottom-color: var(--surface2);
+   }
+   .tab-btn.short-tab.active {
+    color: var(--yellow);
+    border-color: rgba(246, 224, 94, 0.4) rgba(246, 224, 94, 0.4)
+     var(--surface2);
+   }
+   .tab-btn.long-tab.active {
+    color: var(--purple);
+    border-color: rgba(159, 122, 234, 0.4) rgba(159, 122, 234, 0.4)
+     var(--surface2);
+   }
+
+   .tab-panel {
+    display: none;
+   }
+   .tab-panel.active {
+    display: block;
+   }
+
+   /* ── Report Card ── */
+   .report-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 0 0 20px 20px;
+    border-top: none;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+   }
+
+   .horizon-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+    width: fit-content;
+   }
+   .horizon-badge.short {
+    color: var(--yellow);
+    border-color: var(--yellow);
+    background: var(--yellow-glow);
+   }
+   .horizon-badge.long {
+    color: var(--purple);
+    border-color: var(--purple);
+    background: var(--purple-glow);
+   }
+
+   .verdict-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+   }
+   .verdict-badge {
+    font-family: var(--mono);
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 10px 22px;
+    border-radius: 12px;
+    border: 2px solid;
+   }
+   .verdict-badge.BUY {
+    color: var(--green);
+    border-color: var(--green);
+    background: var(--green-glow);
+   }
+   .verdict-badge.HOLD {
+    color: var(--yellow);
+    border-color: var(--yellow);
+    background: var(--yellow-glow);
+   }
+   .verdict-badge.SELL {
+    color: var(--red);
+    border-color: var(--red);
+    background: var(--red-glow);
+   }
+
+   .verdict-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+   }
+   .ticker-label {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 600;
+   }
+   .company-label {
+    font-size: 12px;
+    color: var(--text-dim);
+   }
+
+   .confidence-wrap {
+    margin-left: auto;
+    text-align: right;
+   }
+   .confidence-num {
+    font-family: var(--mono);
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 1;
+   }
+   .confidence-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 3px;
+   }
+   .confidence-bar {
+    height: 4px;
+    background: var(--surface);
+    border-radius: 2px;
+    margin-top: 5px;
+    width: 100px;
+    overflow: hidden;
+   }
+   .confidence-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--blue);
+    transition: width 1s ease;
+   }
+
+   .summary-text {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--text-dim);
+    padding: 14px 18px;
+    background: var(--surface);
+    border-radius: 10px;
+    border-left: 3px solid var(--blue);
+   }
+
+   .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+   }
+   .case-card {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+   }
+   .case-card.bull {
+    border-color: rgba(72, 187, 120, 0.2);
+   }
+   .case-card.bear {
+    border-color: rgba(252, 129, 129, 0.2);
+   }
+   .case-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+   }
+   .case-card.bull .case-title {
+    color: var(--green);
+   }
+   .case-card.bear .case-title {
+    color: var(--red);
+   }
+   .case-text {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-dim);
+   }
+
+   .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 8px;
+   }
+   .metric-chip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 9px 12px;
+    font-family: var(--mono);
+   }
+   .metric-key {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+   }
+   .metric-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+   }
+
+   .risks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+   }
+   .risk-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.5;
+   }
+   .risk-item::before {
+    content: '⚠';
+    color: var(--yellow);
+    flex-shrink: 0;
+   }
+
+   .reasoning-text {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.75;
+    font-style: italic;
+   }
+
+   /* ── Spinner ── */
+   .spinner {
+    width: 15px;
+    height: 15px;
+    border: 2px solid rgba(99, 179, 237, 0.2);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+   }
+   @keyframes spin {
+    to {
+     transform: rotate(360deg);
+    }
+   }
+
+   /* ── Responsive ── */
+   @media (max-width: 900px) {
+    .pipeline {
+     grid-template-columns: repeat(3, 1fr);
+    }
+    .agent-col[data-agent='editor_long']::after,
+    .agent-col[data-agent='contrarian']::after {
+     display: none;
+    }
+   }
+   @media (max-width: 600px) {
+    .pipeline {
+     grid-template-columns: 1fr 1fr;
+    }
+    .agent-col::after {
+     display: none !important;
+    }
+    .two-col {
+     grid-template-columns: 1fr;
+    }
+    .logo {
+     font-size: 36px;
+    }
+    .confidence-wrap {
+     margin-left: 0;
+    }
+    .verdict-row {
+     flex-direction: column;
+     align-items: flex-start;
+    }
+   }
+   @media (max-width: 380px) {
+    .pipeline {
+     grid-template-columns: 1fr;
+    }
+   }
+  </style>
+ </head>
+ <body>
+  <div class="container">
+   <header class="header">
+    <div class="logo">ARGUS</div>
+    <div class="tagline">
+     Autonomous Investment Research · 5-Agent Committee · Works best with real,
+     actively traded tickers (e.g. AAPL, NVDA, TSLA)
+    </div>
+   </header>
+
+   <div class="search-wrap">
+    <input
+     id="query-input"
+     type="text"
+     placeholder="Ask anything: 'Should I invest in NVDA?' or just type a ticker..."
+     autocomplete="off"
+    />
+    <button id="run-btn">Analyse →</button>
+   </div>
+
+   <div class="error-banner" id="error-banner"></div>
+
+   <!-- Pipeline: 5 agents -->
+   <div class="section-label">Investment Committee</div>
+   <div class="pipeline" id="pipeline">
+    <!-- Manager -->
+    <div class="agent-col" data-agent="manager">
+     <div class="agent-card" id="card-manager">
+      <div class="agent-header">
+       <div class="agent-icon">🗂</div>
+       <div>
+        <div class="agent-name">The Manager</div>
+        <div class="agent-role">Planner</div>
+       </div>
+      </div>
+      <div class="status-badge idle" id="badge-manager">
+       <div class="status-dot"></div>
+       Idle
+      </div>
+      <div class="agent-log" id="log-manager">
+       <div class="log-line detail">Awaiting query...</div>
+      </div>
+     </div>
+     <button
+      class="thoughts-toggle"
+      id="toggle-manager"
+      onclick="userToggleDrawer('manager')"
+     >
+      ↳ 0 thoughts
+     </button>
+     <div class="thought-drawer" id="drawer-manager">
+      <div class="drawer-inner" id="thoughts-manager"></div>
+     </div>
+    </div>
+
+    <!-- Analyst -->
+    <div class="agent-col" data-agent="analyst">
+     <div class="agent-card" id="card-analyst">
+      <div class="agent-header">
+       <div class="agent-icon">📈</div>
+       <div>
+        <div class="agent-name">The Analyst</div>
+        <div class="agent-role">Bull Case</div>
+       </div>
+      </div>
+      <div class="status-badge idle" id="badge-analyst">
+       <div class="status-dot"></div>
+       Idle
+      </div>
+      <div class="agent-log" id="log-analyst">
+       <div class="log-line detail">Awaiting plan...</div>
+      </div>
+     </div>
+     <button
+      class="thoughts-toggle"
+      id="toggle-analyst"
+      onclick="userToggleDrawer('analyst')"
+     >
+      ↳ 0 thoughts
+     </button>
+     <div class="thought-drawer" id="drawer-analyst">
+      <div class="drawer-inner" id="thoughts-analyst"></div>
+     </div>
+    </div>
+
+    <!-- Contrarian -->
+    <div class="agent-col" data-agent="contrarian">
+     <div class="agent-card" id="card-contrarian">
+      <div class="agent-header">
+       <div class="agent-icon">🔻</div>
+       <div>
+        <div class="agent-name">The Contrarian</div>
+        <div class="agent-role">Bear Case</div>
+       </div>
+      </div>
+      <div class="status-badge idle" id="badge-contrarian">
+       <div class="status-dot"></div>
+       Idle
+      </div>
+      <div class="agent-log" id="log-contrarian">
+       <div class="log-line detail">Awaiting plan...</div>
+      </div>
+     </div>
+     <button
+      class="thoughts-toggle"
+      id="toggle-contrarian"
+      onclick="userToggleDrawer('contrarian')"
+     >
+      ↳ 0 thoughts
+     </button>
+     <div class="thought-drawer" id="drawer-contrarian">
+      <div class="drawer-inner" id="thoughts-contrarian"></div>
+     </div>
+    </div>
+
+    <!-- Editor: Short Term -->
+    <div class="agent-col" data-agent="editor_short">
+     <div class="agent-card" id="card-editor_short">
+      <div class="agent-header">
+       <div class="agent-icon">⚡</div>
+       <div>
+        <div class="agent-name">Short-Term</div>
+        <div class="agent-role">1–6 Months</div>
+       </div>
+      </div>
+      <div class="status-badge idle" id="badge-editor_short">
+       <div class="status-dot"></div>
+       Idle
+      </div>
+      <div class="agent-log" id="log-editor_short">
+       <div class="log-line detail">Awaiting findings...</div>
+      </div>
+     </div>
+     <button
+      class="thoughts-toggle"
+      id="toggle-editor_short"
+      onclick="userToggleDrawer('editor_short')"
+     >
+      ↳ 0 thoughts
+     </button>
+     <div class="thought-drawer" id="drawer-editor_short">
+      <div class="drawer-inner" id="thoughts-editor_short"></div>
+     </div>
+    </div>
+
+    <!-- Editor: Long Term -->
+    <div class="agent-col" data-agent="editor_long">
+     <div class="agent-card" id="card-editor_long">
+      <div class="agent-header">
+       <div class="agent-icon">🏛️</div>
+       <div>
+        <div class="agent-name">Long-Term</div>
+        <div class="agent-role">1–5 Years</div>
+       </div>
+      </div>
+      <div class="status-badge idle" id="badge-editor_long">
+       <div class="status-dot"></div>
+       Idle
+      </div>
+      <div class="agent-log" id="log-editor_long">
+       <div class="log-line detail">Awaiting findings...</div>
+      </div>
+     </div>
+     <button
+      class="thoughts-toggle"
+      id="toggle-editor_long"
+      onclick="userToggleDrawer('editor_long')"
+     >
+      ↳ 0 thoughts
+     </button>
+     <div class="thought-drawer" id="drawer-editor_long">
+      <div class="drawer-inner" id="thoughts-editor_long"></div>
+     </div>
+    </div>
+   </div>
+   <!-- /pipeline -->
+
+   <!-- Tabbed Report -->
+   <div id="report-section">
+    <div class="section-label">Research Report</div>
+    <div class="report-tabs">
+     <button
+      class="tab-btn short-tab active"
+      id="tab-short"
+      onclick="switchTab('short')"
+     >
+      ⚡ Short Term · 1–6 Months
+     </button>
+     <button class="tab-btn long-tab" id="tab-long" onclick="switchTab('long')">
+      🏛️ Long Term · 1–5 Years
+     </button>
+    </div>
+
+    <!-- Short Term Panel -->
+    <div class="tab-panel active" id="panel-short">
+     <div class="report-card">
+      <div class="horizon-badge short">⚡ Short-Term Outlook</div>
+      <div class="verdict-row">
+       <div class="verdict-badge" id="st-verdict">—</div>
+       <div class="verdict-meta">
+        <div class="ticker-label" id="st-ticker">—</div>
+        <div class="company-label" id="st-company">—</div>
+       </div>
+       <div class="confidence-wrap">
+        <div class="confidence-num" id="st-confidence">—</div>
+        <div class="confidence-label">Confidence</div>
+        <div class="confidence-bar">
+         <div
+          class="confidence-fill"
+          id="st-confidence-fill"
+          style="width: 0%"
+         ></div>
+        </div>
+       </div>
+      </div>
+      <div class="summary-text" id="st-summary"></div>
+      <div>
+       <div class="section-label">Analysis</div>
+       <div class="two-col">
+        <div class="case-card bull">
+         <div class="case-title">▲ Bull Case</div>
+         <div class="case-text" id="st-bull"></div>
+        </div>
+        <div class="case-card bear">
+         <div class="case-title">▼ Bear Case</div>
+         <div class="case-text" id="st-bear"></div>
+        </div>
+       </div>
+      </div>
+      <div>
+       <div class="section-label">Key Metrics</div>
+       <div class="metrics-grid" id="st-metrics"></div>
+      </div>
+      <div>
+       <div class="section-label">Risk Factors</div>
+       <div class="risks-list" id="st-risks"></div>
+      </div>
+      <div>
+       <div class="section-label">Analyst Note</div>
+       <div class="reasoning-text" id="st-reasoning"></div>
+      </div>
+     </div>
+    </div>
+
+    <!-- Long Term Panel -->
+    <div class="tab-panel" id="panel-long">
+     <div class="report-card">
+      <div class="horizon-badge long">🏛️ Long-Term Outlook</div>
+      <div class="verdict-row">
+       <div class="verdict-badge" id="lt-verdict">—</div>
+       <div class="verdict-meta">
+        <div class="ticker-label" id="lt-ticker">—</div>
+        <div class="company-label" id="lt-company">—</div>
+       </div>
+       <div class="confidence-wrap">
+        <div class="confidence-num" id="lt-confidence">—</div>
+        <div class="confidence-label">Confidence</div>
+        <div class="confidence-bar">
+         <div
+          class="confidence-fill"
+          id="lt-confidence-fill"
+          style="width: 0%"
+         ></div>
+        </div>
+       </div>
+      </div>
+      <div class="summary-text" id="lt-summary"></div>
+      <div>
+       <div class="section-label">Analysis</div>
+       <div class="two-col">
+        <div class="case-card bull">
+         <div class="case-title">▲ Bull Case</div>
+         <div class="case-text" id="lt-bull"></div>
+        </div>
+        <div class="case-card bear">
+         <div class="case-title">▼ Bear Case</div>
+         <div class="case-text" id="lt-bear"></div>
+        </div>
+       </div>
+      </div>
+      <div>
+       <div class="section-label">Key Metrics</div>
+       <div class="metrics-grid" id="lt-metrics"></div>
+      </div>
+      <div>
+       <div class="section-label">Risk Factors</div>
+       <div class="risks-list" id="lt-risks"></div>
+      </div>
+      <div>
+       <div class="section-label">Analyst Note</div>
+       <div class="reasoning-text" id="lt-reasoning"></div>
+      </div>
+     </div>
+    </div>
+   </div>
+   <!-- /report-section -->
+  </div>
+  <!-- /container -->
+
+  <script>
+   const AGENTS = [
+    'manager',
+    'analyst',
+    'contrarian',
+    'editor_short',
+    'editor_long',
+   ];
+   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+   const el = (id) => document.getElementById(id);
+
+   // ── Agent state ───────────────────────────────────────────────────────────
+   function setAgentState(agent, state) {
+    el(`card-${agent}`).className = `agent-card ${state}`;
+    const badge = el(`badge-${agent}`);
+    badge.className = `status-badge ${state}`;
+    badge.innerHTML = `<div class="status-dot"></div>${{ idle: 'Idle', working: 'Working', done: 'Done' }[state] || state}`;
+   }
+
+   function appendLog(agent, text, cls = 'note') {
+    const log = el(`log-${agent}`);
+    const ph = log.querySelector('.detail');
+    if (ph && ph.textContent.startsWith('Awaiting')) log.innerHTML = '';
+    const div = document.createElement('div');
+    div.className = `log-line ${cls}`;
+    div.textContent = text;
+    log.appendChild(div);
+    while (log.children.length > 4) log.removeChild(log.firstChild);
+   }
+
+   // ── Tab switching ─────────────────────────────────────────────────────────
+   function switchTab(which) {
+    el('tab-short').classList.toggle('active', which === 'short');
+    el('tab-long').classList.toggle('active', which === 'long');
+    el('panel-short').classList.toggle('active', which === 'short');
+    el('panel-long').classList.toggle('active', which === 'long');
+   }
+
+   // ── Reset ─────────────────────────────────────────────────────────────────
+   function resetUI() {
+    const placeholders = {
+     manager: 'Awaiting query...',
+     analyst: 'Awaiting plan...',
+     contrarian: 'Awaiting plan...',
+     editor_short: 'Awaiting findings...',
+     editor_long: 'Awaiting findings...',
+    };
+    AGENTS.forEach((a) => {
+     setAgentState(a, 'idle');
+     el(`log-${a}`).innerHTML =
+      `<div class="log-line detail">${placeholders[a]}</div>`;
+     el(`drawer-${a}`).classList.remove('open');
+     el(`thoughts-${a}`).innerHTML = '';
+     const tog = el(`toggle-${a}`);
+     tog.classList.remove('visible', 'active');
+    });
+    el('report-section').style.display = 'none';
+    el('error-banner').style.display = 'none';
+    storedSteps = {};
+    activeUserDrawer = null;
+    pendingReports = {};
+    switchTab('short');
+   }
+
+   function showError(msg) {
+    const b = el('error-banner');
+    b.textContent = `Error: ${msg}`;
+    b.style.display = 'block';
+    el('run-btn').disabled = false;
+    el('run-btn').textContent = 'Analyse →';
+   }
+
+   // ── Drawer management ─────────────────────────────────────────────────────
+   let storedSteps = {},
+    activeUserDrawer = null,
+    pendingReports = {};
+
+   function openDrawer(agent) {
+    el(`drawer-${agent}`).classList.add('open');
+   }
+   function closeDrawer(agent) {
+    el(`drawer-${agent}`).classList.remove('open');
+    el(`toggle-${agent}`).classList.remove('active');
+   }
+
+   function userToggleDrawer(agent) {
+    const isOpen = el(`drawer-${agent}`).classList.contains('open');
+    AGENTS.forEach((a) => {
+     el(`drawer-${a}`).classList.remove('open');
+     el(`toggle-${a}`).classList.remove('active');
+    });
+    activeUserDrawer = null;
+    if (!isOpen) {
+     const inner = el(`thoughts-${agent}`);
+     inner.innerHTML = '';
+     (storedSteps[agent] || []).forEach((s) => {
+      const d = document.createElement('div');
+      d.className = 'thought-line';
+      d.textContent = s;
+      inner.appendChild(d);
+     });
+     el(`drawer-${agent}`).classList.add('open');
+     el(`toggle-${agent}`).classList.add('active');
+     activeUserDrawer = agent;
+    }
+   }
+
+   // ── Typewriter ────────────────────────────────────────────────────────────
+   async function typeReasoningSteps(agent, steps) {
+    storedSteps[agent] = steps;
+    const inner = el(`thoughts-${agent}`);
+    inner.innerHTML = '';
+    for (let i = 0; i < steps.length; i++) {
+     const line = document.createElement('div');
+     line.className = 'thought-line';
+     inner.appendChild(line);
+     for (const ch of steps[i]) {
+      line.textContent += ch;
+      inner.scrollTop = inner.scrollHeight;
+      await sleep(8);
+     }
+     if (i < steps.length - 1) await sleep(100);
+    }
+    await sleep(1800);
+    if (activeUserDrawer !== agent) closeDrawer(agent);
+
+    // After both editors finish typing, show the report
+    completedEditors.add(agent);
+    if (
+     completedEditors.has('editor_short') &&
+     completedEditors.has('editor_long')
+    ) {
+     if (pendingReports.short_term && pendingReports.long_term) {
+      renderReports(pendingReports);
+     }
+    }
+   }
+
+   const completedEditors = new Set();
+
+   // ── SSE event handling ────────────────────────────────────────────────────
+   function handleEvent(event) {
+    const { type, agent, data } = event;
+
+    if (type === 'agent_start') {
+     setAgentState(agent, 'working');
+     appendLog(agent, data.message || 'Starting...', 'start');
+     el(`thoughts-${agent}`).innerHTML =
+      '<span class="thinking-cursor" style="color:var(--text-dim);font-style:italic">Thinking</span>';
+     openDrawer(agent);
+    }
+
+    if (type === 'agent_note') {
+     appendLog(agent, data.message, 'note');
+     if (data.detail) appendLog(agent, data.detail, 'detail');
+    }
+
+    if (type === 'agent_complete') {
+     setAgentState(agent, 'done');
+
+     const resultLine = {
+      manager: () =>
+       appendLog(
+        agent,
+        `→ ${data.ticker} — ${data.hypotheses?.length || 0} hypotheses`,
+        'result',
+       ),
+      analyst: () => {
+       appendLog(agent, `→ Data quality: ${data.data_quality}`, 'result');
+       if (data.key_metrics?.[0])
+        appendLog(agent, data.key_metrics[0], 'detail');
+      },
+      contrarian: () => {
+       appendLog(agent, `→ Risk severity: ${data.severity}`, 'result');
+       appendLog(agent, `${data.risks?.length || 0} risks`, 'detail');
+      },
+      editor_short: () =>
+       appendLog(
+        agent,
+        `→ ${data.verdict} · ${data.confidence}% confidence`,
+        'result',
+       ),
+      editor_long: () =>
+       appendLog(
+        agent,
+        `→ ${data.verdict} · ${data.confidence}% confidence`,
+        'result',
+       ),
+     };
+     resultLine[agent]?.();
+
+     const steps = data.reasoning_steps || [];
+     const tog = el(`toggle-${agent}`);
+     tog.textContent = `↳ ${steps.length} thought${steps.length !== 1 ? 's' : ''}`;
+     tog.classList.add('visible');
+
+     if (steps.length) typeReasoningSteps(agent, steps);
+     else closeDrawer(agent);
+    }
+
+    if (type === 'error') showError(data.message || 'Unknown error');
+
+    if (type === 'complete') {
+     el('run-btn').disabled = false;
+     el('run-btn').textContent = 'Analyse →';
+     pendingReports = data; // { short_term: {...}, long_term: {...} }
+     // Will render after both editors finish typing (see typeReasoningSteps)
+    }
+   }
+
+   // ── Report rendering ──────────────────────────────────────────────────────
+   function populateReport(prefix, data) {
+    const verdict = data.verdict || 'HOLD';
+    el(`${prefix}-verdict`).textContent = verdict;
+    el(`${prefix}-verdict`).className = `verdict-badge ${verdict}`;
+    el(`${prefix}-ticker`).textContent = data.ticker || '';
+    el(`${prefix}-company`).textContent = data.company_name || '';
+    el(`${prefix}-summary`).textContent = data.summary || '';
+    el(`${prefix}-bull`).textContent = data.bull_case || '';
+    el(`${prefix}-bear`).textContent = data.bear_case || '';
+    el(`${prefix}-reasoning`).textContent = data.reasoning || '';
+
+    const conf = data.confidence ?? 0;
+    const confEl = el(`${prefix}-confidence`);
+    confEl.textContent = `${conf}%`;
+    confEl.style.color =
+     conf >= 70 ? 'var(--green)' : conf >= 50 ? 'var(--yellow)' : 'var(--red)';
+    const fill = el(`${prefix}-confidence-fill`);
+    fill.style.background =
+     conf >= 70 ? 'var(--green)' : conf >= 50 ? 'var(--yellow)' : 'var(--red)';
+    setTimeout(() => {
+     fill.style.width = `${conf}%`;
+    }, 100);
+
+    const metricsEl = el(`${prefix}-metrics`);
+    metricsEl.innerHTML = '';
+    (data.key_metrics || []).forEach((m) => {
+     const [key, ...rest] = m.split(':');
+     const chip = document.createElement('div');
+     chip.className = 'metric-chip';
+     chip.innerHTML = `<div class="metric-key">${key.trim()}</div><div class="metric-val">${rest.join(':').trim()}</div>`;
+     metricsEl.appendChild(chip);
+    });
+
+    const risksEl = el(`${prefix}-risks`);
+    risksEl.innerHTML = '';
+    (data.risks || []).forEach((r) => {
+     const item = document.createElement('div');
+     item.className = 'risk-item';
+     item.textContent = r;
+     risksEl.appendChild(item);
+    });
+   }
+
+   function renderReports(data) {
+    if (data.short_term) populateReport('st', data.short_term);
+    if (data.long_term) populateReport('lt', data.long_term);
+    el('report-section').style.display = 'block';
+    setTimeout(
+     () =>
+      el('report-section').scrollIntoView({
+       behavior: 'smooth',
+       block: 'start',
+      }),
+     100,
+    );
+   }
+
+   // ── Run ───────────────────────────────────────────────────────────────────
+   async function runResearch() {
+    const query = el('query-input').value.trim();
+    if (!query) {
+     el('query-input').focus();
+     return;
+    }
+    resetUI();
+    completedEditors.clear();
+    el('run-btn').disabled = true;
+    el('run-btn').innerHTML = '<span class="spinner"></span>';
+
+    let sessionId;
+    try {
+     const res = await fetch('/research/stream/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query }),
+     });
+     const body = await res.json();
+     if (!res.ok) throw new Error(body.detail || 'Failed to start session');
+     sessionId = body.session_id;
+    } catch (err) {
+     showError(err.message);
+     return;
+    }
+
+    const source = new EventSource(`/research/stream/events/${sessionId}`);
+    source.onmessage = (e) => {
+     try {
+      const event = JSON.parse(e.data);
+      handleEvent(event);
+      if (event.type === 'complete' || event.type === 'error') source.close();
+     } catch {}
+    };
+    source.onerror = () => {
+     source.close();
+     showError('Connection lost. Please try again.');
+     el('run-btn').disabled = false;
+     el('run-btn').textContent = 'Analyse →';
+    };
+   }
+
+   el('run-btn').addEventListener('click', runResearch);
+   el('query-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') runResearch();
+   });
+  </script>
+ </body>
+</html>
