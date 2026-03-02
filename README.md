@@ -285,6 +285,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 **Complex multi-agent pipelines for production-ready end-to-end workflows.** _14 projects_
 
+- [AgentField Financial Research Agent](advance_ai_agents/agentfield_finance_research_agent) - Financial Research Agent with AgentField
 - [Deep Researcher](advance_ai_agents/deep_researcher_agent) - Multi-stage research agent with Agno & ScrapeGraph AI
 - [Candilyzer](advance_ai_agents/candidate_analyser) - Candidate analysis tool for GitHub/LinkedIn profiles
 - [Job Finder](advance_ai_agents/job_finder_agent) - LinkedIn job search automation with Bright Data integration
