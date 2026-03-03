@@ -267,7 +267,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 📚 RAG Applications
 
-**Retrieve-augmented generation examples for document understanding and knowledge bases.** _11 projects_
+**Retrieve-augmented generation examples for document understanding and knowledge bases.** _13 projects_
 
 - [Agentic RAG](rag_apps/agentic_rag) - Agentic RAG implementation with Agno & GPT-5
 - [Agentic RAG with Web Search](rag_apps/agentic_rag_with_web_search) - Advanced RAG with CrewAI, Qdrant, and Exa for hybrid search capabilities
@@ -281,6 +281,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Contextual AI RAG](rag_apps/contextual_ai_rag) - Enterprise-level RAG with managed datastores and quality evaluation
 - [Simple RAG](rag_apps/simple_rag) - Basic RAG implementation with Nebius for quick starts
 - [WFGY 16 Problem Map LLM Debugger](rag_apps/wfgy_llm_debugger) - 16-mode map based debugger for LLM and RAG bugs
+- [CiteMe](https://citeme.app) - AI-powered academic citation generator that searches 11+ databases (OpenAlex, PubMed, Semantic Scholar) and formats references in 40+ citation styles
 
 ### 🔬 Advanced Agents
 
