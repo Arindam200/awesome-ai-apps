@@ -301,6 +301,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Conference Agnostic CFP Generator](advance_ai_agents/conference_agnositc_cfp_generator) - Automated conference proposal generation system
 - [Car Finder Agent](advance_ai_agents/car_finder_agent) - AI-powered used car recommendation system with CrewAI and MongoDB
 - [Content Team Agent](advance_ai_agents/content_team_agent) - SEO content optimization workflow with Agno & SerpAPI for Google AI Search ranking
+- [Autohand Code CLI](https://github.com/autohandai/code-cli) - Self-evolving autonomous coding agent for the terminal with ReAct pattern, 40+ tools, and multiple LLM providers
 
 ## 📺 Tutorials & Videos
 
