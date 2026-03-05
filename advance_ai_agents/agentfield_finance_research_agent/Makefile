@@ -1,12 +1,12 @@
-.PHONY: run start stop restart install open logs
+.PHONY: run start stop restart install open af logs
 
-## Start the Dexter server (port 8080)
+## Start the Argus server (port 8081)
 run: ; uv run python3 src/main.py
 start: run  ## alias for run
 
-## Force-kill anything on port 8080/8081 (use this instead of Ctrl+C)
+## Force-kill anything on port 8081 (use this instead of Ctrl+C)
 stop:
-	@lsof -ti :8080 | xargs kill -9 2>/dev/null; lsof -ti :8081 | xargs kill -9 2>/dev/null; echo "✅ Ports cleared"
+	@lsof -ti :8081 | xargs kill -9 2>/dev/null; echo "✅ Port 8081 cleared"
 
 ## Stop then start fresh
 restart: stop
@@ -17,10 +17,14 @@ restart: stop
 install:
 	uv venv && uv pip install -r requirements.txt
 
-## Open the UI in the default browser
+## Open the Argus UI in the default browser
 open:
-	open http://localhost:8080
+	open http://localhost:8081
+
+## Open the AgentField Control Plane dashboard
+af:
+	open http://localhost:8080/ui
 
 ## Tail server output (attach to a running server's process)
 logs:
-	@lsof -ti :8080 | xargs -I{} sh -c 'echo "Attaching to PID {}"; tail -f /proc/{}/fd/1 2>/dev/null || echo "Use the terminal where uv run is executing to see logs"'
+	@lsof -ti :8081 | xargs -I{} sh -c 'echo "Attaching to PID {}"; tail -f /proc/{}/fd/1 2>/dev/null || echo "Use the terminal where uv run is executing to see logs"'

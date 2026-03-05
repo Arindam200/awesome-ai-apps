@@ -62,8 +62,50 @@ def _json(obj) -> str:
     return json.dumps(obj, default=str, indent=2)
 
 
+CONFIDENCE_GUIDE = (
+    "Confidence scoring — use this scale strictly: "
+    "85-100 = overwhelming evidence, minimal counter-case; "
+    "65-80 = clear lean, meaningful uncertainty exists; "
+    "50-65 = genuinely balanced, could go either way; "
+    "<50 = too uncertain to have strong conviction."
+)
+
+
 # ---------------------------------------------------------------------------
-# Reasoner 4: The Editor — synthesizes final report
+# Reasoner 0: The Manager's plan creation step (standalone)
+# ---------------------------------------------------------------------------
+
+@app.reasoner(path="/research/plan", tags=["committee"])
+async def create_plan(query: str) -> ResearchPlan:
+    """
+    The Manager's first step: decompose a user query into a structured
+    ResearchPlan. Extracted so stream.py can call it with workflow tracking.
+    """
+    app.note(f"[manager] Received research query: {query!r}", tags=["manager"])
+
+    plan: ResearchPlan = await app.ai(
+        system=(
+            "You are the head of research at an investment committee. "
+            "Your job is to decompose a user's investment question into a structured "
+            "research plan. Extract the ticker symbol and company name from the query, "
+            "generate 3-4 key hypotheses to investigate (mix of bull and bear), "
+            "list the specific data points needed, and identify 3-5 focus areas for deep-dive. "
+            "If no ticker is mentioned, infer the most likely one from context."
+        ),
+        user=f"User query: {query}\n\nCreate a ResearchPlan to investigate this question.",
+        schema=ResearchPlan,
+    )
+
+    app.note(
+        f"[manager] Research plan created for {plan.ticker} ({plan.company_name}). "
+        f"Hypotheses: {len(plan.hypotheses)}, Focus areas: {plan.focus_areas}",
+        tags=["manager", plan.ticker],
+    )
+    return plan
+
+
+# ---------------------------------------------------------------------------
+# Reasoner 4: The Editor — synthesizes final report (generic, single-report)
 # ---------------------------------------------------------------------------
 
 @app.reasoner(path="/research/editor", tags=["committee"])
@@ -74,10 +116,8 @@ async def synthesize_report(
     """
     The Editor: synthesizes the Analyst's bull case and the Contrarian's bear
     case into a final, balanced investment research report with a clear verdict.
-
-    NOTE: In the streaming UI pipeline (stream.py), this role is replaced by
-    two parallel editors: run_editor_short (1-6 month) and run_editor_long
-    (1-5 year). This endpoint remains available for direct API access.
+    Used for direct API access; the streaming pipeline uses the horizon-specific
+    editors (editor_short_term / editor_long_term) instead.
     """
     app.note(
         f"[editor] Synthesizing report for {analyst_finding.ticker}",
@@ -112,16 +152,131 @@ async def synthesize_report(
 
 
 # ---------------------------------------------------------------------------
+# Reasoner 4a: Short-Term Editor (1–6 month horizon)
+# ---------------------------------------------------------------------------
+
+@app.reasoner(path="/research/editor/short", tags=["committee"])
+async def editor_short_term(
+    plan: ResearchPlan,
+    analyst_finding: AnalystFinding,
+    risk_assessment: RiskAssessment,
+) -> ResearchReport:
+    """
+    Short-Term Editor: synthesizes a 1–6 month investment recommendation
+    focusing on near-term catalysts, earnings, momentum, and sentiment.
+    """
+    app.note(
+        f"[editor_short] Starting short-term synthesis for {plan.ticker}",
+        tags=["editor_short", plan.ticker],
+    )
+
+    # Fetch short-term-specific data
+    analyst_targets, insiders, income_q, cashflow_q = await asyncio.gather(
+        get_analyst_targets(plan.ticker),
+        get_insider_transactions(plan.ticker, limit=10),
+        get_income_statement(plan.ticker, "quarterly"),
+        get_cash_flow_statement(plan.ticker, "quarterly"),
+    )
+
+    report: ResearchReport = await app.ai(
+        system=(
+            "You are a short-term investment analyst (1–6 month horizon). "
+            "First, populate reasoning_steps with your deliberation: which near-term "
+            "catalysts or risks dominated your thinking, and why you chose this verdict. "
+            "Focus ONLY on near-term factors: upcoming earnings, analyst price targets, "
+            "news sentiment, technical momentum, insider activity, macro events. "
+            "Ignore long-term structural factors — they are irrelevant here. "
+            f"{CONFIDENCE_GUIDE} Set time_horizon='short_term'. "
+            "Arrive at a BUY/HOLD/SELL for the NEXT 1–6 MONTHS."
+        ),
+        user=(
+            f"Ticker: {plan.ticker} ({plan.company_name})\n\n"
+            f"=== ANALYST PRICE TARGETS & CONSENSUS ===\n{_json(analyst_targets)}\n\n"
+            f"=== INSIDER TRANSACTIONS ===\n{_json(insiders)}\n\n"
+            f"=== QUARTERLY INCOME (last 4 quarters) ===\n{_json(income_q)}\n\n"
+            f"=== QUARTERLY CASH FLOW ===\n{_json(cashflow_q)}\n\n"
+            f"=== ANALYST FINDING (BULL) ===\n{_json(analyst_finding)}\n\n"
+            f"=== RISK ASSESSMENT (BEAR) ===\n{_json(risk_assessment)}\n\n"
+            "Synthesise a SHORT-TERM ResearchReport (time_horizon='short_term')."
+        ),
+        schema=ResearchReport,
+        model="nebius/openai/gpt-oss-20b",
+    )
+
+    app.note(
+        f"[editor_short] Short-term verdict: {report.verdict} ({report.confidence}%)",
+        tags=["editor_short", plan.ticker],
+    )
+    return report
+
+
+# ---------------------------------------------------------------------------
+# Reasoner 4b: Long-Term Editor (1–5 year horizon)
+# ---------------------------------------------------------------------------
+
+@app.reasoner(path="/research/editor/long", tags=["committee"])
+async def editor_long_term(
+    plan: ResearchPlan,
+    analyst_finding: AnalystFinding,
+    risk_assessment: RiskAssessment,
+) -> ResearchReport:
+    """
+    Long-Term Editor: synthesizes a 1–5 year investment recommendation
+    focusing on competitive moat, growth trajectory, and structural factors.
+    """
+    app.note(
+        f"[editor_long] Starting long-term synthesis for {plan.ticker}",
+        tags=["editor_long", plan.ticker],
+    )
+
+    # Fetch long-term-relevant data
+    analyst_targets, insiders, facts = await asyncio.gather(
+        get_analyst_targets(plan.ticker),
+        get_insider_transactions(plan.ticker, limit=10),
+        get_company_facts(plan.ticker),
+    )
+
+    report: ResearchReport = await app.ai(
+        system=(
+            "You are a long-term investment analyst (1–5 year horizon). "
+            "First, populate reasoning_steps with your deliberation: which structural "
+            "advantages or risks dominated your thinking, and why you chose this verdict. "
+            "Focus ONLY on long-term factors: competitive moat, revenue growth trajectory, "
+            "balance sheet strength, management quality, industry tailwinds/headwinds, "
+            "valuation vs intrinsic value over 5 years. "
+            "Ignore short-term noise — it is irrelevant here. "
+            f"{CONFIDENCE_GUIDE} Set time_horizon='long_term'. "
+            "Arrive at a BUY/HOLD/SELL for the NEXT 1–5 YEARS."
+        ),
+        user=(
+            f"Ticker: {plan.ticker} ({plan.company_name})\n\n"
+            f"=== ANALYST PRICE TARGETS & CONSENSUS ===\n{_json(analyst_targets)}\n\n"
+            f"=== INSIDER TRANSACTIONS ===\n{_json(insiders)}\n\n"
+            f"=== COMPANY FACTS ===\n{_json(facts)}\n\n"
+            f"=== ANALYST FINDING (BULL) ===\n{_json(analyst_finding)}\n\n"
+            f"=== RISK ASSESSMENT (BEAR) ===\n{_json(risk_assessment)}\n\n"
+            "Synthesise a LONG-TERM ResearchReport (time_horizon='long_term')."
+        ),
+        schema=ResearchReport,
+        model="nebius/openai/gpt-oss-20b",
+    )
+
+    app.note(
+        f"[editor_long] Long-term verdict: {report.verdict} ({report.confidence}%)",
+        tags=["editor_long", plan.ticker],
+    )
+    return report
+
+
+# ---------------------------------------------------------------------------
 # Reasoner 3: The Contrarian — bear case / risk assessment
 # ---------------------------------------------------------------------------
 
 @app.reasoner(path="/research/contrarian", tags=["committee"])
 async def assess_risks(
     plan: ResearchPlan,
-    analyst_finding: AnalystFinding,
 ) -> RiskAssessment:
     """
-    The Contrarian: acts as a dedicated Red Team. Given the Analyst's bull case,
     it searches specifically for risks, counter-arguments, regulatory threats,
     competitive pressures, and anything that could invalidate the thesis.
     """
@@ -162,7 +317,6 @@ async def assess_risks(
         user=(
             f"Ticker: {plan.ticker} ({plan.company_name})\n\n"
             f"=== RESEARCH PLAN (for context) ===\n{_json(plan)}\n\n"
-            f"=== THE ANALYST'S BULL CASE (to critique) ===\n{_json(analyst_finding)}\n\n"
             f"=== RECENT NEWS (risk-focused, {len(risk_news)} articles) ===\n{_json(risk_news)}\n\n"
             "Provide a thorough RiskAssessment. Quantify risks where possible. "
             f"Focus areas: {', '.join(plan.focus_areas)}"
@@ -255,11 +409,12 @@ async def plan_research(query: str) -> DualResearchReport:
     """
     The Manager: entry point for direct API queries (POST /research).
     Decomposes the query into a ResearchPlan, dispatches Analyst and Contrarian
-    in parallel, applies an adaptive retry loop if data quality is low, then
-    runs EditorShort and EditorLong in parallel to produce a DualResearchReport.
+    in parallel, then runs EditorShort and EditorLong in parallel to produce
+    a DualResearchReport.
 
     NOTE: The streaming UI uses POST /research/stream/start instead, which
-    runs the same 5-agent pipeline and streams results as SSE events.
+    runs the same 5-agent pipeline via SSE events, calling the same reasoner
+    functions below for automatic workflow tracking.
 
     Args:
         query: Free-form user query, e.g. "Should I invest in AAPL?"
@@ -267,30 +422,8 @@ async def plan_research(query: str) -> DualResearchReport:
     Returns:
         DualResearchReport with short_term and long_term ResearchReports.
     """
-    app.note(
-        f"[manager] Received research query: {query!r}",
-        tags=["manager"],
-    )
-
-    # Step 1: Decompose the query into a structured ResearchPlan
-    plan: ResearchPlan = await app.ai(
-        system=(
-            "You are the head of research at an investment committee. "
-            "Your job is to decompose a user's investment question into a structured "
-            "research plan. Extract the ticker symbol and company name from the query, "
-            "generate 3-4 key hypotheses to investigate (mix of bull and bear), "
-            "list the specific data points needed, and identify 3-5 focus areas for deep-dive. "
-            "If no ticker is mentioned, infer the most likely one from context."
-        ),
-        user=f"User query: {query}\n\nCreate a ResearchPlan to investigate this question.",
-        schema=ResearchPlan,
-    )
-
-    app.note(
-        f"[manager] Research plan created for {plan.ticker} ({plan.company_name}). "
-        f"Hypotheses: {len(plan.hypotheses)}, Focus areas: {plan.focus_areas}",
-        tags=["manager", plan.ticker],
-    )
+    # Step 1: Create the research plan using the standalone reasoner
+    plan = await create_plan(query)
 
     # Validate ticker before running the full committee
     app.note(f"[manager] Validating {plan.ticker} on yfinance...", tags=["manager", plan.ticker])
@@ -307,59 +440,11 @@ async def plan_research(query: str) -> DualResearchReport:
         tags=["manager", plan.ticker],
     )
 
-    # Step 2: Parallel dispatch → Analyst (bull) + Contrarian (bear)
-    max_retries = 2
-    analyst_finding: AnalystFinding | None = None
-    risk_assessment: RiskAssessment | None = None
-
-    for attempt in range(max_retries + 1):
-        app.note(
-            f"[manager] Dispatching committee (attempt {attempt + 1}/{max_retries + 1})...",
-            tags=["manager", plan.ticker],
-        )
-
-        if analyst_finding is None:
-            analyst_task = conduct_research(plan)
-        else:
-            # Don't re-run Analyst if already satisfied
-            analyst_task = asyncio.coroutine(lambda: analyst_finding)()
-
-        if risk_assessment is None:
-            contrarian_task = assess_risks(plan, analyst_finding) if analyst_finding else None
-
-        if contrarian_task is not None:
-            analyst_finding, risk_assessment = await asyncio.gather(
-                analyst_task, contrarian_task
-            )
-        else:
-            analyst_finding = await analyst_task
-            risk_assessment = await assess_risks(plan, analyst_finding)
-
-        # Adaptive loop: ask Manager to evaluate quality
-        if analyst_finding.data_quality == "low" and attempt < max_retries:
-            app.note(
-                f"[manager] Data quality LOW for {plan.ticker}. "
-                f"Refining research plan and retrying... (attempt {attempt + 1})",
-                tags=["manager", "retry", plan.ticker],
-            )
-            # Refine the plan with feedback
-            plan = await app.ai(
-                system=(
-                    "You are the head of research. The initial research came back with low "
-                    "data quality. Refine the research plan — adjust hypotheses, clarify "
-                    "focus areas, and be more specific about what data is needed."
-                ),
-                user=(
-                    f"Original plan: {_json(plan)}\n\n"
-                    f"Analyst findings (low quality): {_json(analyst_finding)}\n\n"
-                    "Produce an improved ResearchPlan."
-                ),
-                schema=ResearchPlan,
-            )
-            analyst_finding = None  # force re-run
-            risk_assessment = None
-        else:
-            break  # quality is acceptable
+    # Step 2: Analyst (bull) + Contrarian (bear) in parallel
+    analyst_finding, risk_assessment = await asyncio.gather(
+        conduct_research(plan),
+        assess_risks(plan)
+    )
 
     app.note(
         f"[manager] Committee opinions gathered for {plan.ticker}. "
@@ -367,85 +452,11 @@ async def plan_research(query: str) -> DualResearchReport:
         tags=["manager", plan.ticker],
     )
 
-    # Fetch data needed by editors (same data analyst used, but we need it in this scope)
-    analyst_targets, insiders, income_q, cashflow_q = await asyncio.gather(
-        get_analyst_targets(plan.ticker),
-        get_insider_transactions(plan.ticker, limit=10),
-        get_income_statement(plan.ticker, "quarterly"),
-        get_cash_flow_statement(plan.ticker, "quarterly"),
+    # Step 3: Dual editors in parallel — using the standalone reasoner functions
+    short_report, long_report = await asyncio.gather(
+        editor_short_term(plan, analyst_finding, risk_assessment),
+        editor_long_term(plan, analyst_finding, risk_assessment),
     )
-
-    CONFIDENCE_GUIDE = (
-        "Confidence scoring — use this scale strictly: "
-        "85-100 = overwhelming evidence, minimal counter-case; "
-        "65-80 = clear lean, meaningful uncertainty exists; "
-        "50-65 = genuinely balanced, could go either way; "
-        "<50 = too uncertain to have strong conviction."
-    )
-
-    # Step 3: Dual editors in parallel (short-term + long-term)
-    async def run_editor_short() -> ResearchReport:
-        report: ResearchReport = await app.ai(
-            system=(
-                "You are a short-term investment analyst (1–6 month horizon). "
-                "First, populate reasoning_steps with your deliberation: which near-term "
-                "catalysts or risks dominated your thinking, and why you chose this verdict. "
-                "Focus ONLY on near-term factors: upcoming earnings, analyst price targets, "
-                "news sentiment, technical momentum, insider activity, macro events. "
-                "Ignore long-term structural factors — they are irrelevant here. "
-                f"{CONFIDENCE_GUIDE} Set time_horizon='short_term'. "
-                "Arrive at a BUY/HOLD/SELL for the NEXT 1–6 MONTHS."
-            ),
-            user=(
-                f"Ticker: {plan.ticker} ({plan.company_name})\n\n"
-                f"=== ANALYST PRICE TARGETS & CONSENSUS ===\n{_json(analyst_targets)}\n\n"
-                f"=== INSIDER TRANSACTIONS ===\n{_json(insiders)}\n\n"
-                f"=== QUARTERLY INCOME (last 4 quarters) ===\n{_json(income_q)}\n\n"
-                f"=== QUARTERLY CASH FLOW ===\n{_json(cashflow_q)}\n\n"
-                f"=== ANALYST FINDING (BULL) ===\n{_json(analyst_finding)}\n\n"
-                f"=== RISK ASSESSMENT (BEAR) ===\n{_json(risk_assessment)}\n\n"
-                "Synthesise a SHORT-TERM ResearchReport (time_horizon='short_term')."
-            ),
-            schema=ResearchReport,
-            model="nebius/openai/gpt-oss-20b",
-        )
-        app.note(
-            f"[editor_short] Short-term verdict: {report.verdict} ({report.confidence}%)",
-            tags=["editor_short", plan.ticker],
-        )
-        return report
-
-    async def run_editor_long() -> ResearchReport:
-        report: ResearchReport = await app.ai(
-            system=(
-                "You are a long-term investment analyst (1–5 year horizon). "
-                "First, populate reasoning_steps with your deliberation: which structural "
-                "advantages or risks dominated your thinking, and why you chose this verdict. "
-                "Focus ONLY on long-term factors: competitive moat, revenue growth trajectory, "
-                "balance sheet strength, management quality, industry tailwinds/headwinds, "
-                "valuation vs intrinsic value over 5 years. "
-                "Ignore short-term noise — it is irrelevant here. "
-                f"{CONFIDENCE_GUIDE} Set time_horizon='long_term'. "
-                "Arrive at a BUY/HOLD/SELL for the NEXT 1–5 YEARS."
-            ),
-            user=(
-                f"Ticker: {plan.ticker} ({plan.company_name})\n\n"
-                f"=== ANALYST PRICE TARGETS & CONSENSUS ===\n{_json(analyst_targets)}\n\n"
-                f"=== INSIDER TRANSACTIONS ===\n{_json(insiders)}\n\n"
-                f"=== ANALYST FINDING (BULL) ===\n{_json(analyst_finding)}\n\n"
-                f"=== RISK ASSESSMENT (BEAR) ===\n{_json(risk_assessment)}\n\n"
-                "Synthesise a LONG-TERM ResearchReport (time_horizon='long_term')."
-            ),
-            schema=ResearchReport,
-            model="nebius/openai/gpt-oss-20b",
-        )
-        app.note(
-            f"[editor_long] Long-term verdict: {report.verdict} ({report.confidence}%)",
-            tags=["editor_long", plan.ticker],
-        )
-        return report
-
-    short_report, long_report = await asyncio.gather(run_editor_short(), run_editor_long())
 
     app.note(
         f"[manager] Research complete for {plan.ticker}. "

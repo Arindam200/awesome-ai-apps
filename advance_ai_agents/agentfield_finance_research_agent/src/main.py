@@ -4,7 +4,8 @@ main.py — Entry point for the Argus autonomous research agent.
 Usage:
     python src/main.py
 
-The agent will start on http://localhost:8080 and expose:
+The agent will start on http://localhost:8081 (separate from the AgentField
+control plane on :8080) and expose:
     POST /research          → Full investment committee pipeline (Manager entry point)
     POST /research/analyst  → Analyst (bull case) only
     POST /research/contrarian → Contrarian (bear case) only
@@ -12,7 +13,7 @@ The agent will start on http://localhost:8080 and expose:
     + all /skills/* endpoints
 
 Example query:
-    curl -X POST http://localhost:8080/research \
+    curl -X POST http://localhost:8081/research \
          -H "Content-Type: application/json" \
          -d '{"query": "Should I invest in AAPL?"}'
 """
@@ -38,8 +39,9 @@ import src.reasoners # noqa: F401, E402
 import src.stream    # noqa: F401, E402 — SSE endpoints + UI serving
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
+    port = int(os.environ.get("PORT", 8081))
     print(f"🔬 Argus Research Agent starting on http://localhost:{port}")
+    print(f"🎛️  AgentField Control Plane dashboard: http://localhost:8080/ui")
     print("📈 5-Agent Investment Committee:")
     print(f"   POST http://localhost:{port}/research               ← Full pipeline (all 5 agents)")
     print(f"   POST http://localhost:{port}/research/analyst       ← Bull case only")

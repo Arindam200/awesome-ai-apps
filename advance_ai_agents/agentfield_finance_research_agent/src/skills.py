@@ -9,11 +9,34 @@ Skills intentionally return plain JSON-serialisable dicts/lists so the LLM
 can reason over them without needing to understand yfinance objects.
 """
 import asyncio
+import math
 from typing import Optional
 
 import yfinance as yf
 
 from src import app
+
+
+def _safe_float(val, default: float = 0.0) -> float:
+    """Convert a value to float, returning default for None/NaN."""
+    if val is None:
+        return default
+    try:
+        f = float(val)
+        return default if math.isnan(f) else f
+    except (TypeError, ValueError):
+        return default
+
+
+def _safe_int(val, default: int = 0) -> int:
+    """Convert a value to int, returning default for None/NaN."""
+    if val is None:
+        return default
+    try:
+        f = float(val)
+        return default if math.isnan(f) else int(f)
+    except (TypeError, ValueError):
+        return default
 
 
 def _df_to_records(df) -> dict:
@@ -323,8 +346,8 @@ async def get_insider_transactions(ticker: str, limit: int = 10) -> list[dict]:
                     "insider":      str(row.get("Insider", "")),
                     "title":        str(row.get("Position", "")),
                     "transaction":  str(row.get("Transaction", "")),
-                    "shares":       int(row.get("Shares", 0) or 0),
-                    "value_usd":    float(row.get("Value", 0) or 0),
+                    "shares":       _safe_int(row.get("Shares")),
+                    "value_usd":    _safe_float(row.get("Value")),
                     "date":         str(row.get("Start Date", row.get("Date", ""))),
                 })
             return records

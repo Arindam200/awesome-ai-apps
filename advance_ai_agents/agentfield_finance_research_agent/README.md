@@ -31,21 +31,22 @@ Each agent writes its **step-by-step reasoning** into a `reasoning_steps: list[s
 
 ### The Investment Committee
 
-| Agent              | Model   | Role                                                              | Runs             |
-| ------------------ | ------- | ----------------------------------------------------------------- | ---------------- |
-| **Manager**        | gpt-oss-120b  | Decomposes query → dispatches committee                           | Sequential       |
-| **Analyst**        | gpt-oss-120b  | Bull case: revenue, margins, growth, free cash flow, catalysts    | **Parallel [2]** |
-| **Contrarian**     | gpt-oss-120b  | Bear case: risks, lawsuits, competition, valuation                | **Parallel [2]** |
-| **EditorShort** ⚡ | gpt-oss-20b | Short-term verdict (1–6 months) — focuses on catalysts & momentum | **Parallel [3]** |
-| **EditorLong** 🏛️  | gpt-oss-20b | Long-term verdict (1–5 years) — focuses on moat & intrinsic value | **Parallel [3]** |
-| **Skills**         | —       | yfinance wrappers: 7 data endpoints, all fetched in parallel      | Parallel [2]     |
+| Agent              | Model        | Role                                                              | Runs             |
+| ------------------ | ------------ | ----------------------------------------------------------------- | ---------------- |
+| **Manager**        | gpt-oss-120b | Decomposes query → dispatches committee                           | Sequential       |
+| **Analyst**        | gpt-oss-120b | Bull case: revenue, margins, growth, free cash flow, catalysts    | **Parallel [2]** |
+| **Contrarian**     | gpt-oss-120b | Bear case: risks, lawsuits, competition, valuation                | **Parallel [2]** |
+| **EditorShort** ⚡ | gpt-oss-20b  | Short-term verdict (1–6 months) — focuses on catalysts & momentum | **Parallel [3]** |
+| **EditorLong** 🏛️  | gpt-oss-20b  | Long-term verdict (1–5 years) — focuses on moat & intrinsic value | **Parallel [3]** |
+| **Skills**         | —            | yfinance wrappers: 7 data endpoints, all fetched in parallel      | Parallel [2]     |
 
 ## Setup
 
 ### 1. Prerequisites
 
-- Python 3.8–3.13
-- An [Nebius](https://platform.openai.com) API key
+- Python 3.10–3.13
+- A [Nebius](https://nebius.ai) API key
+- [uv](https://docs.astral.sh/uv/) (fast Python package manager)
 
 ### 2. Install
 
@@ -66,23 +67,45 @@ Edit `.env` and fill in your key:
 
 ```env
 NEBIUS_API_KEY=sk-...
+AGENTFIELD_SERVER=http://localhost:8080
+PORT=8081
 ```
 
 > **Note:** No other API keys are needed — `yfinance` (free, no registration) covers all financial data, and AgentField's `Agent()` class requires no API key.
 
 > **Supported tickers:** Argus works best with **real, actively traded stocks** listed on major exchanges (NYSE, NASDAQ, LSE, etc.) — e.g. `AAPL`, `NVDA`, `TSLA`, `MSFT`, `INTC`. Avoid: delisted companies, OTC/penny stocks, crypto tokens, and ETFs — yfinance data for these is often incomplete or missing, which degrades analysis quality.
 
-### 4. Run
+### 4. Start the AgentField Control Plane
+
+The control plane provides a dashboard for monitoring agent workflows, executions, and health:
+
+```bash
+# Install the AgentField CLI (first time only)
+curl -sSf https://agentfield.ai/get | sh
+
+# Start the control plane (runs on http://localhost:8080)
+af server
+```
+
+Keep this terminal running. The dashboard is at `http://localhost:8080/ui`.
+
+### 5. Run the agent
+
+In a **new terminal**:
 
 ```bash
 uv run python3 src/main.py
 ```
 
-The agent starts on `http://localhost:8080`.
+The agent starts on `http://localhost:8081` and registers with the control plane.
 
-### 5. Open the UI
+### 6. Open the UI
 
-Visit **http://localhost:8080** in your browser. Type any query (e.g. _"Should I invest in NVDA?"_) and watch the 5-agent committee work in real time — cards glow, thought drawers type out reasoning live, then the tabbed report appears with separate **Short Term** and **Long Term** verdicts.
+Visit **http://localhost:8081** in your browser. Type any query (e.g. _"Should I invest in NVDA?"_) and watch the 5-agent committee work in real time — cards glow, thought drawers type out reasoning live, then the tabbed report appears with separate **Short Term** and **Long Term** verdicts.
+
+### 7. View workflows in the dashboard
+
+Open `http://localhost:8080/ui` → **Workflow Executions** to see the full execution graph. Every `@app.reasoner()` call appears as a node — you can trace the flow, inspect inputs/outputs, and measure performance.
 
 ## Usage
 
@@ -101,12 +124,12 @@ The full pipeline takes 30–90 seconds. With streaming you get live updates —
 
 ```bash
 # Step 1 — Start a session, get a session_id
-SESSION=$(curl -s -X POST http://localhost:8080/research/stream/start \
+SESSION=$(curl -s -X POST http://localhost:8081/research/stream/start \
   -H "Content-Type: application/json" \
   -d '{"query": "Should I invest in NVDA?"}' | python3 -c "import sys,json; print(json.load(sys.stdin)['session_id'])")
 
 # Step 2 — Connect and receive live SSE events
-curl -s "http://localhost:8080/research/stream/events/$SESSION"
+curl -s "http://localhost:8081/research/stream/events/$SESSION"
 ```
 
 **SSE event types you'll receive:**
@@ -153,7 +176,7 @@ For scripts, integrations, or testing individual agents. Blocks until complete, 
 
 ```bash
 # Full pipeline — returns DualResearchReport (short + long term)
-curl -X POST http://localhost:8080/research \
+curl -X POST http://localhost:8081/research \
   -H "Content-Type: application/json" \
   -d '{"query": "Should I invest in AAPL?"}'
 ```
@@ -169,7 +192,7 @@ Response:
 
 ```bash
 # Analyst only (bull case) — returns AnalystFinding
-curl -X POST http://localhost:8080/research/analyst \
+curl -X POST http://localhost:8081/research/analyst \
   -H "Content-Type: application/json" \
   -d '{"plan": {"ticker": "TSLA", "company_name": "Tesla Inc.", "hypotheses": ["EV dominance"], "data_needs": ["revenue"], "focus_areas": ["growth"], "reasoning_steps": []}}'
 
@@ -201,16 +224,17 @@ argus-agentfield/
 ├── proposal.md          # Original design proposal
 ├── requirements.txt     # Python dependencies
 ├── .env.example         # Environment variable template
+├── Makefile             # Dev shortcuts: make run, make stop, make restart, make af
 ├── README.md            # This file
 ├── ui/
 │   └── index.html       # Single-page live UI (served at GET /)
 └── src/
-    ├── __init__.py      # Shared Agent singleton + AIConfig (openai/gpt-oss-120b)
+    ├── __init__.py      # Shared Agent singleton + AIConfig (nebius/gpt-oss-120b)
     ├── schemas.py       # Pydantic models with reasoning_steps fields
     ├── skills.py        # yfinance data-fetching skills
-    ├── reasoners.py     # 4-agent investment committee (AgentField reasoners)
-    ├── stream.py        # SSE streaming backend + raw FastAPI routes
-    └── main.py          # Entry point
+    ├── reasoners.py     # 7-reasoner investment committee (AgentField reasoners)
+    ├── stream.py        # SSE streaming pipeline (calls reasoners for tracking)
+    └── main.py          # Entry point (port 8081)
 ```
 
 ## Deployment
@@ -223,7 +247,7 @@ Argus is a **persistent Python server** (FastAPI + uvicorn + SSE streaming). It 
 | ----------------- | -------------------------------------------------- |
 | Python            | 3.10+                                              |
 | `NEBIUS_API_KEY`  | Set as an environment variable                     |
-| `PORT`            | Platform-injected or set manually (default `8080`) |
+| `PORT`            | Platform-injected or set manually (default `8081`) |
 | Outbound internet | For Nebius API + yfinance data                     |
 
 ### Railway (recommended — easiest)
@@ -262,8 +286,8 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env   # fill in NEBIUS_API_KEY
 # Run with a process manager:
-PORT=8080 nohup python3 src/main.py &
+PORT=8081 nohup python3 src/main.py &
 # Or use systemd / PM2 / supervisor to keep it alive
 ```
 
-> **Note:** The app prints some AgentField "degraded mode" warnings on startup — these are harmless. All research and UI features work fully without a cloud AgentField hub.
+> **Note:** When running without an AgentField control plane, the agent works fully standalone. Workflow tracking and the dashboard require `af server` to be running.
