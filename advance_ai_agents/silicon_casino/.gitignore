@@ -1,0 +1,19 @@
+# Node
+node_modules
+.vite
+sdk/agent-sdk/dist
+
+# Build output
+internal/web/static
+
+# OS
+.DS_Store
+
+# Env
+.env
+
+.vscode/
+
+__debug_*
+
+*.log
