@@ -8,3 +8,5 @@ Feel free to try these out!
 
 - **[Fine-tune Open-Source LLMs on Nebius Token Factory](Fine_tuning.ipynb)**
   - Learn how to fine-tune & deploy open models like Llama 3.1 directly from your dataset using Nebius Token Factory.
+- **[Customer Support Real World Use Case Finetuning with DataLabs using Nebius Token Factory](customer-support-datalab-finetuning-tutorial.ipynb)**
+  - Learn how to fine-tune & deploy a custom fine-tuned model for customer support usecase using DataLabs.
