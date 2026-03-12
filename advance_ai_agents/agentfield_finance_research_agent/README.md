@@ -1,6 +1,6 @@
-# Argus 🔬
+# AgentField Autonomous Financial Research Agent (Argus🔬)
 
-> An autonomous financial research agent built on [AgentField](https://agentfield.ai). Argus uses a **5-agent Investment Committee** to produce two parallel research reports — one for **short-term** (1–6 months) and one for **long-term** (1–5 year) investment horizons.
+> An autonomous financial research agent built on [AgentField](https://dub.sh/agentf). Argus uses a **5-agent Investment Committee** to produce two parallel research reports — one for **short-term** (1–6 months) and one for **long-term** (1–5 year) investment horizons.
 
 ## Architecture
 
@@ -22,6 +22,8 @@ User Query
     ↓                  Long:  annual data + moat + valuation
   DualResearchReport → tabbed UI (⚡ Short Term | 🏛️ Long Term)
 ```
+<img width="2752" height="1536" alt="studio1-02-argus-architecture-edited" src="https://github.com/user-attachments/assets/b126dfdf-66a8-4d38-9497-485a97148eae" />
+
 
 > **Parallel note:** yfinance data (9 fetches), Analyst+Contrarian LLM calls, and both Editor LLM calls each use `asyncio.gather` — three separate parallelism stages. The Editors use `gpt-oss-20b` (better confidence calibration); all other agents use `gpt-oss-120b`.
 
@@ -45,7 +47,7 @@ Each agent writes its **step-by-step reasoning** into a `reasoning_steps: list[s
 ### 1. Prerequisites
 
 - Python 3.8–3.13
-- An [Nebius](https://platform.openai.com) API key
+- An [Nebius](https://tokenfactory.nebius.com/) API key
 
 ### 2. Install
 
