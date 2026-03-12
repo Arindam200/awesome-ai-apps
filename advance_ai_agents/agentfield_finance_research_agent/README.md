@@ -1,4 +1,4 @@
-# AgentField Autonomous Financial Research Agent (Argus🔬)
+# Building a Production-Ready Multi-Agent Investment Committee with AgentField (Argus🔬)
 
 > An autonomous financial research agent built on [AgentField](https://dub.sh/agentf). Argus uses a **5-agent Investment Committee** to produce two parallel research reports — one for **short-term** (1–6 months) and one for **long-term** (1–5 year) investment horizons.
 
