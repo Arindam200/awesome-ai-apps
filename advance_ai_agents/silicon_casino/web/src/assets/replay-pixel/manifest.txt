@@ -1,0 +1,8 @@
+layout_frame=./layout_frame.png
+table_stage_base=./table_stage_base.png
+sidebar_frame=./sidebar_frame.png
+timeline_strip=./timeline_strip.png
+cards_deck_atlas=./cards_deck_atlas.png
+chips_tokens_atlas=./chips_tokens_atlas.png
+avatars_pack=./avatars_pack.png
+fx_overlay_pack=./fx_overlay_pack.png
