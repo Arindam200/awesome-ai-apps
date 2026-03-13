@@ -284,7 +284,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _14 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _15 projects_
 
 - [AgentField Financial Research Agent](advance_ai_agents/agentfield_finance_research_agent) - Financial Research Agent with AgentField
 - [Deep Researcher](advance_ai_agents/deep_researcher_agent) - Multi-stage research agent with Agno & ScrapeGraph AI
@@ -301,6 +301,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Conference Agnostic CFP Generator](advance_ai_agents/conference_agnositc_cfp_generator) - Automated conference proposal generation system
 - [Car Finder Agent](advance_ai_agents/car_finder_agent) - AI-powered used car recommendation system with CrewAI and MongoDB
 - [Content Team Agent](advance_ai_agents/content_team_agent) - SEO content optimization workflow with Agno & SerpAPI for Google AI Search ranking
+- [BlackVault](https://github.com/venkat22022202/black-vault) - Open-source proxy gateway for AI API keys with session-based access revocation, supporting OpenAI, Anthropic, Google AI & Nebius AI
 
 ## 📺 Tutorials & Videos
 
