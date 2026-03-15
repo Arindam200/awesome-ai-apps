@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  ops-sentinel-api:
+    image: nginx:alpine
+    container_name: ops-sentinel-api
+    ports:
+      - "8080:80"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    labels:
+      stack: "ops-sentinel"
+      role: "api"
+
+  ops-sentinel-cache:
+    image: redis:alpine
+    container_name: ops-sentinel-cache
+    ports:
+      - "6379:6379"
+    command: redis-server --loglevel verbose
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+    labels:
+      stack: "ops-sentinel"
+      role: "cache"
+
+  ops-sentinel-worker:
+    image: python:3.11-alpine
+    container_name: ops-sentinel-worker
+    command: >
+      sh -c "
+      while true; do
+        echo '[INFO] Processing request #'$$RANDOM' at '$(date);
+        sleep 2;
+        echo '[DEBUG] Cache hit ratio: '$$((RANDOM % 100))'%';
+        sleep 1;
+        echo '[WARN] High memory usage detected: '$$((RANDOM % 100))'%';
+        sleep 3;
+        if [ $$((RANDOM % 10)) -eq 0 ]; then
+          echo '[ERROR] Connection timeout to database';
+        fi;
+        sleep 2;
+      done
+      "
+    restart: unless-stopped
+    labels:
+      stack: "ops-sentinel"
+      role: "worker"
