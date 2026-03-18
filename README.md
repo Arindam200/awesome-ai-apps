@@ -415,3 +415,7 @@ For any questions, suggestions, or contributions, feel free to reach out to the 
 ## Thank You for the Support! 🙏
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Arindam200/awesome-ai-apps&type=Date)](https://www.star-history.com/#Arindam200/awesome-ai-apps&Date)
+
+
+## Agent Tools
+- [Arch Tools](https://archtools.dev) - 58 production API tools for AI agents with x402 USDC payments, patent-pending agent auth, and MCP support. Web scraping, AI generation, crypto data, OCR, browser automation. ([GitHub](https://github.com/Deesmo/Arch-AI-Tools))
