@@ -196,7 +196,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🧩 Starter Agents
 
-**Quick-start agents for learning and extending different AI frameworks.** _13 projects_
+**Quick-start agents for learning and extending different AI frameworks.** _14 projects_
 
 - [Agno HackerNews Analysis](starter_ai_agents/agno_starter) - Agno-based agent for trend analysis on HackerNews
 - [OpenAI SDK Starter](starter_ai_agents/openai_agents_sdk) - OpenAI Agents SDK with email helper & haiku writer examples
@@ -211,6 +211,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [cagent Starter](starter_ai_agents/cagent_starter) - Open-source customizable multi-agent runtime by Docker
 - [Sayna Voice Agent](starter_ai_agents/sayna_starter) - Real-time voice infrastructure with multi-provider STT/TTS (Deepgram, ElevenLabs, Azure, Google) and WebSocket streaming
 - [KAOS Starter](starter_ai_agents/kaos_starter) - Kubernetes-native multi-agent system with MCP tools and in-cluster LLM
+- [AnveVoice Starter](starter_ai_agents/anvevoice_starter) - AI voice agent for websites — trains on your site, navigates pages, fills forms, books appointments, and talks to visitors in 50+ languages with <700ms latency
 
 ### 🪶 Simple Agents
 
