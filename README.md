@@ -247,6 +247,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [ScaleKit Exa MCP Security](mcp_ai_agents/scalekit-exa-mcp-security) - Security-focused MCP integration with Exa search
 - [Docker E2B MCP Agent](mcp_ai_agents/e2b_docker_mcp_agent) - Secure AI agent for running agents in sandboxed Docker environments via MCP Gateway
 - [Taskade MCP Agent](mcp_ai_agents/taskade_mcp_agent) - AI-powered workspace agent for managing projects, tasks, and workflows via Taskade MCP
+- [claw-army/claude-node](https://github.com/claw-army/claude-node) - Python subprocess bridge for Claude Code CLI, giving Python code direct access to Claude Code native capabilities via stream-json.
 
 ### 🧠 Memory Agents
 
