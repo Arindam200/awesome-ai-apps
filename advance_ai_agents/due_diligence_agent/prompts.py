@@ -246,12 +246,12 @@ End with TASK_COMPLETE."""
 
 QA_ANALYST = """\
 You are a due diligence analyst. You have access to a complete due diligence \
-report directory with the following files:
+report with the following data:
 
 {file_listing}
 
-Use the read_report_file tool to load any file you need to answer the user's \
-question. You can call it multiple times. Be selective — only load what's relevant.
+Answer the user's question based on the available report data. Be selective — \
+only reference the data that is relevant to the question.
 
 If the data doesn't contain the answer, say so.
 

@@ -36,7 +36,7 @@ TAGS: due-diligence, multi-agent, web-scraping, tinyfish, parallel-agents, resea
 ### Prerequisites
 
 - Python 3.10+
-- An [OpenAI API key](https://platform.openai.com/api-keys)
+- A [Nebius API key](https://studio.nebius.com/) for open-source LLM inference
 - A [TinyFish API key](https://tinyfish.ai)
 
 ### Setup
@@ -44,43 +44,38 @@ TAGS: due-diligence, multi-agent, web-scraping, tinyfish, parallel-agents, resea
 1. Clone and navigate to the folder:
 
    ```bash
-   git clone https://github.com/ag2ai/build-with-ag2.git
-   cd build-with-ag2/due-diligence-with-tinyfish
+   git clone https://github.com/Arindam200/awesome-ai-apps.git
+   cd awesome-ai-apps/advance_ai_agents/due_diligence_agent
    ```
 
 2. Install dependencies:
 
    ```bash
-   pip install -r requirements.txt
+   pip install -e .
    ```
 
 3. Set environment variables:
 
    ```bash
-   export OPENAI_API_KEY=your-openai-key
-   export TINYFISH_API_KEY=your-tinyfish-key
+   cp .env.example .env
+   # Then edit .env with your API keys:
+   # NEBIUS_API_KEY=your-nebius-key
+   # TINYFISH_API_KEY=your-tinyfish-key
    ```
 
 ## Usage
 
-### Run the full pipeline
+### Run the Streamlit app
 
 ```bash
-python main.py --url https://example.com
+streamlit run main.py
 ```
 
-This will:
+This will launch a web UI where you can:
+- Enter a company URL
 - Run all 4 stages of the pipeline
-- Save structured JSON outputs and a final report to a timestamped directory (e.g., `due_diligence_acme_20260311_120000/`)
-- Enter interactive Q&A mode
-
-### Q&A on an existing report
-
-```bash
-python main.py --report-path ./due_diligence_acme_20260311_120000/
-```
-
-Skip the pipeline and jump straight into Q&A over a previously generated report.
+- View the final due diligence report
+- Reports are saved to a timestamped directory (e.g., `due_diligence_acme_20260311_120000/`)
 
 ### Output Structure
 

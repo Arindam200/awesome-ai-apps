@@ -19,7 +19,8 @@ st.markdown(
 
 with st.sidebar:
     st.header("Configuration")
-    openai_api_key = st.text_input("OpenAI API Key", type="password")
+    nebius_api_key = st.text_input("Nebius API Key", type="password")
+    tinyfish_api_key = st.text_input("TinyFish API Key", type="password")
     st.divider()
 
     st.header("About")
@@ -40,18 +41,24 @@ company_url = st.text_input(
 )
 
 if st.button("Run Due Diligence", type="primary", disabled=not company_url):
-    if openai_api_key:
-        os.environ["OPENAI_API_KEY"] = openai_api_key
+    if nebius_api_key:
+        os.environ["NEBIUS_API_KEY"] = nebius_api_key
+    if tinyfish_api_key:
+        os.environ["TINYFISH_API_KEY"] = tinyfish_api_key
 
     with st.status("Running due diligence pipeline...", expanded=True) as status:
-        status.write("**Stage 1:** Crawling company website for initial profile...")
+        stage_labels = {
+            1: "**Stage 1:** Crawling company website for initial profile...",
+            2: "**Stage 2:** Running 6 specialist agents in parallel...",
+            3: "**Stage 3:** Validating collected data...",
+            4: "**Stage 4:** Synthesizing final report...",
+        }
+
+        def on_progress(stage, msg):
+            status.write(stage_labels.get(stage, msg))
 
         try:
-            output_dir, report = run_due_diligence(company_url)
-
-            status.write("**Stage 2:** Running 6 specialist agents in parallel...")
-            status.write("**Stage 3:** Validating collected data...")
-            status.write("**Stage 4:** Synthesizing final report...")
+            output_dir, report = run_due_diligence(company_url, on_progress=on_progress)
             status.update(label="Due diligence complete!", state="complete")
         except Exception as e:
             status.update(label="Pipeline failed", state="error")
