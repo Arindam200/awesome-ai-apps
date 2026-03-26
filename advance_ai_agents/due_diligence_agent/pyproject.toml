@@ -1,0 +1,17 @@
+[project]
+name = "due-diligence-agent"
+version = "0.1.0"
+description = "A multi-stage due diligence pipeline powered by AG2 ConversableAgents"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "ag2[openai]",
+    "httpx",
+    "streamlit",
+    "tinyfish",
+]
+
+[project.urls]
+Homepage = "https://github.com/Arindam200/awesome-ai-apps"
+Repository = "https://github.com/Arindam200/awesome-ai-apps"
+Issues = "https://github.com/Arindam200/awesome-ai-apps/issues"
