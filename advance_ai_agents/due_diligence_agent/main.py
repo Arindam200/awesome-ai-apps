@@ -46,6 +46,7 @@ if st.button("Run Due Diligence", type="primary", disabled=not company_url):
     if tinyfish_api_key:
         os.environ["TINYFISH_API_KEY"] = tinyfish_api_key
 
+    output_dir = None
     with st.status("Running due diligence pipeline...", expanded=True) as status:
         stage_labels = {
             1: "**Stage 1:** Crawling company website for initial profile...",
