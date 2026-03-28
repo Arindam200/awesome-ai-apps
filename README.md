@@ -284,7 +284,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _14 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _17 projects_
 
 - [AgentField Financial Research Agent](advance_ai_agents/agentfield_finance_research_agent) - Financial Research Agent with AgentField
 - [Deep Researcher](advance_ai_agents/deep_researcher_agent) - Multi-stage research agent with Agno & ScrapeGraph AI
@@ -302,6 +302,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Car Finder Agent](advance_ai_agents/car_finder_agent) - AI-powered used car recommendation system with CrewAI and MongoDB
 - [Content Team Agent](advance_ai_agents/content_team_agent) - SEO content optimization workflow with Agno & SerpAPI for Google AI Search ranking
 - [Temporal Agents](advance_ai_agents/temporal_agents/) - Examples of Temporal based AI Agents
+- [Bernstein](https://github.com/chernistry/bernstein) - AI agent orchestrator — one command spawns parallel coding agents, verifies with tests, commits clean code
 
 ## 📺 Tutorials & Videos
 
