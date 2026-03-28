@@ -1,9 +1,0 @@
-[project]
-name = "dspy-starter"
-version = "0.1.0"
-description = "Add your description here"
-readme = "README.md"
-requires-python = ">=3.11"
-dependencies = [
-    "dspy>=3.0.3",
-]

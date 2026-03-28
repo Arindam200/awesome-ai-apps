@@ -1,0 +1,11 @@
+goal: "Add input validation, error handling, and tests to the TODO API"
+
+cli: claude       # or: codex, gemini, qwen — use whichever you have installed
+team: [backend, qa]
+budget: "$5"
+
+constraints:
+  - "Python 3.12+ with Flask"
+  - "pytest for all tests"
+  - "Return proper HTTP status codes for errors"
+  - "Validate request body fields before processing"

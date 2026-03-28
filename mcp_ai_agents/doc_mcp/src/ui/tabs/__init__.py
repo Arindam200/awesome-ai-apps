@@ -1,3 +1,0 @@
-"""
-UI tabs module initialization.
-"""

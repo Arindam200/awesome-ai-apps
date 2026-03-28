@@ -1,3 +1,0 @@
-"""
-UI module initialization.
-"""

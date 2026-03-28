@@ -1,0 +1,14 @@
+[project]
+name = "bernstein-todo-demo"
+version = "0.1.0"
+description = "Demo: Bernstein multi-agent orchestrator improving a Flask TODO API"
+requires-python = ">=3.12"
+dependencies = [
+    "flask>=3.0",
+    "pytest>=8.0",
+]
+
+[project.optional-dependencies]
+orchestrator = [
+    "bernstein",
+]
