@@ -8,4 +8,5 @@ dependencies = [
     "livekit-agents[google,images]~=1.4",
     "google-genai>=1.16.0",
     "python-dotenv>=1.0.0",
+    "openai>=1.40.0",
 ]

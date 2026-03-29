@@ -4,11 +4,14 @@
 
 This quick-start project wires together **LiveKit Agents** and **Google Gemini's multimodal live (realtime) model** so you can hold a natural voice conversation with a Gemini-powered assistant in just a few lines of Python.
 
+It now also supports an optional **Nebius Token Factory prompt-director step**: before each session starts, the app can call a Nebius LLM to generate compact speaking-style guidance that gets appended to the runtime system prompt.
+
 ## 🚀 Features
 
 - **Real-time voice conversation**: Sub-second, streaming audio exchange with Gemini using the `gemini-3.1-flash-live-preview` realtime model
 - **LiveKit-native transport**: Runs inside a LiveKit room — works with any LiveKit-compatible frontend, mobile app, or the hosted LiveKit Playground
 - **Pluggable voice**: Powered by the `Zephyr` voice by default; swap for any Gemini-supported voice in a single line
+- **Nebius prompt director (optional)**: Uses Nebius Token Factory (`deepseek-ai/DeepSeek-V3-0324` by default) to generate session-specific speaking instructions
 - **Minimal boilerplate**: The entire agent fits in one `main.py` — easy to extend with tools, guardrails, or additional logic
 - **Auto-reconnect & room lifecycle**: LiveKit Agents framework handles participant joining/leaving, reconnections, and graceful shutdown
 
@@ -17,6 +20,7 @@ This quick-start project wires together **LiveKit Agents** and **Google Gemini's
 - **Python 3.11+**: Core programming language
 - **LiveKit Agents** (`livekit-agents[google,images]~=1.4`): Agent framework and WebRTC transport
 - **Google Gemini Live API** (`google-genai>=1.16.0`): Multimodal realtime language model
+- **Nebius Token Factory** (OpenAI-compatible API): Optional instruction optimization before the realtime session
 - **LiveKit Cloud / Self-hosted**: Managed media server for the WebRTC room
 - **python-dotenv**: Environment variable management
 
@@ -51,8 +55,9 @@ User microphone
 - Python 3.11 or higher
 - [uv](https://github.com/astral-sh/uv) (recommended) or pip
 - API keys for:
-  - [LiveKit Cloud](https://cloud.livekit.io) (or a self-hosted LiveKit server) — for `LIVEKIT_URL`, `LIVEKIT_API_KEY`, and `LIVEKIT_API_SECRET`
-  - [Google AI Studio](https://aistudio.google.com/apikey) — for `GOOGLE_API_KEY`
+   - [LiveKit Cloud](https://cloud.livekit.io) (or a self-hosted LiveKit server) — for `LIVEKIT_URL`, `LIVEKIT_API_KEY`, and `LIVEKIT_API_SECRET`
+   - [Google AI Studio](https://aistudio.google.com/apikey) — for `GOOGLE_API_KEY`
+   - [Nebius AI Studio](https://studio.nebius.com/) — optional, for `NEBIUS_API_KEY`
 
 ### Environment Variables
 
@@ -63,9 +68,17 @@ LIVEKIT_URL=wss://<your-livekit-project>.livekit.cloud
 LIVEKIT_API_KEY=<your-livekit-api-key>
 LIVEKIT_API_SECRET=<your-livekit-api-secret>
 GOOGLE_API_KEY=<your-google-ai-studio-api-key>
+
+# Optional: Nebius Token Factory prompt director
+NEBIUS_API_KEY=<your-nebius-api-key>
+NEBIUS_BASE_URL=https://api.tokenfactory.nebius.com/v1
+NEBIUS_MODEL=deepseek-ai/DeepSeek-V3-0324
+NEBIUS_PROMPT_ENABLED=true
 ```
 
 > You can also use a `.env.local` file — it takes precedence over `.env`.
+
+If `NEBIUS_API_KEY` is missing or `NEBIUS_PROMPT_ENABLED=false`, the app runs in Gemini-only mode.
 
 ### Installation
 
@@ -132,6 +145,8 @@ livekit_gemini_agents/
 | System prompt / personality | `INSTRUCTIONS` constant in `main.py` |
 | Gemini model | `REALTIME_MODEL` constant in `main.py` |
 | Voice | `VOICE` constant in `main.py` (e.g., `"Puck"`, `"Charon"`, `"Kore"`) |
+| Nebius model for prompt hints | `NEBIUS_MODEL` env var |
+| Enable/disable Nebius hints | `NEBIUS_PROMPT_ENABLED` env var |
 | Add tools | Override methods on `VoiceAgent` or pass `tools=` to `AgentSession` |
 
 ## 🤝 Contributing
