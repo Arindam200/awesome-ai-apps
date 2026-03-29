@@ -41,7 +41,10 @@ def build_llm_service() -> OpenAILLMService:
         # Prefer explicit base_url, but support older Pipecat versions without that arg.
         try:
             llm = OpenAILLMService(api_key=api_key, model=model, base_url=base_url)
-        except TypeError:
+        except TypeError as e:
+            # Only fall back if the error is due to an unexpected 'base_url' kwarg.
+            if "base_url" not in str(e):
+                raise
             os.environ["OPENAI_BASE_URL"] = base_url
             llm = OpenAILLMService(api_key=api_key, model=model)
 
