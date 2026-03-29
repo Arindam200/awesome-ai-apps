@@ -35,7 +35,21 @@ def _generate_nebius_prompt_hint() -> str | None:
 
     client = OpenAI(base_url=NEBIUS_BASE_URL, api_key=nebius_api_key)
     completion = client.chat.completions.create(
+    client = OpenAI(base_url=NEBIUS_BASE_URL, api_key=nebius_api_key)
+    completion = client.chat.completions.create(
         model=NEBIUS_MODEL,
+        temperature=0.2,
+        max_tokens=120,
+        timeout=30.0,
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You are a prompt optimizer for a realtime voice assistant. "
+                    "Return 2-3 short bullets that improve speaking style, clarity, and "
+                    "conciseness. Keep output under 70 words."
+                ),
+            },
         temperature=0.2,
         max_tokens=120,
         messages=[
