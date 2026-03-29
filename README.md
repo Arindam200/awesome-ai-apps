@@ -8,7 +8,7 @@
 
 </div>
 
-This repository is a comprehensive collection of **70+ practical examples, tutorials, and recipes** for building powerful LLM-powered applications. From simple chatbots to advanced AI agents, these projects serve as a guide for developers working with various AI frameworks and tools.
+This repository is a comprehensive collection of **80+ practical examples, tutorials, and recipes** for building powerful LLM-powered applications — including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
 
 ## 📋 Table of Contents
 
@@ -16,6 +16,7 @@ This repository is a comprehensive collection of **70+ practical examples, tutor
 - [🚀 Featured AI Apps](#-featured-ai-apps)
   - [🧩 Starter Agents](#-starter-agents)
   - [🪶 Simple Agents](#-simple-agents)
+  - [🎙️ Voice Agents](#-voice-agents)
   - [🗂️ MCP Agents](#️-mcp-agents)
   - [🧠 Memory Agents](#-memory-agents)
   - [📚 RAG Applications](#-rag-applications)
@@ -231,6 +232,13 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Natural language database queries with GibsonAI & LangChain
 - [Agent Discovery Agent](simple_ai_agents/agent_discovery_agent) - Find and compare AI agents across NANDA, MCP, Virtuals, A2A, and ERC-8004 registries
 
+### 🎙️ Voice Agents
+
+**Real-time voice assistants and streaming speech pipelines.** _2 projects_
+
+- [LiveKit + Gemini Realtime](voice_agents/livekit_gemini_agents) - LiveKit Agents with Google Gemini Live (`gemini` multimodal realtime) for low-latency voice conversations in a LiveKit room
+- [Pipecat + Sarvam](voice_agents/pipecat_agent) - Pipecat voice pipeline with Sarvam STT/TTS and OpenAI for chat; WebRTC (browser) or Daily transport via the Pipecat runner
+
 ### 🗂️ MCP Agents
 
 **Examples using Model Context Protocol for external tool integration.** _12 projects_
@@ -267,7 +275,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 📚 RAG Applications
 
-**Retrieve-augmented generation examples for document understanding and knowledge bases.** _11 projects_
+**Retrieve-augmented generation examples for document understanding and knowledge bases.** _12 projects_
 
 - [Agentic RAG](rag_apps/agentic_rag) - Agentic RAG implementation with Agno & GPT-5
 - [Agentic RAG with Web Search](rag_apps/agentic_rag_with_web_search) - Advanced RAG with CrewAI, Qdrant, and Exa for hybrid search capabilities
@@ -284,9 +292,10 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _15 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _17 projects_
 
 - [AgentField Financial Research Agent](advance_ai_agents/agentfield_finance_research_agent) - Financial Research Agent with AgentField
+- [Due Diligence Agent](advance_ai_agents/due_diligence_agent) - Multi-agent company due diligence pipeline with AG2 and TinyFish deep web scraping
 - [Deep Researcher](advance_ai_agents/deep_researcher_agent) - Multi-stage research agent with Agno & ScrapeGraph AI
 - [Candilyzer](advance_ai_agents/candidate_analyser) - Candidate analysis tool for GitHub/LinkedIn profiles
 - [Job Finder](advance_ai_agents/job_finder_agent) - LinkedIn job search automation with Bright Data integration
@@ -408,7 +417,6 @@ This repository is licensed under the [MIT License](./LICENSE). Feel free to use
 This project is actively maintained by:
 
 - arindam200 (Arindam Majumder)
-
 - shivaylamba (Shivay Lamba)
 
 For any questions, suggestions, or contributions, feel free to reach out to the maintainers.
