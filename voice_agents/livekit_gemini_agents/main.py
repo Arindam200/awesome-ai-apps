@@ -3,7 +3,7 @@ import os
 import asyncio
 
 from dotenv import load_dotenv
-from livekit import agents, rtc
+from livekit import agents
 from livekit.agents import AgentServer, AgentSession, Agent
 from livekit.plugins import google
 from openai import OpenAI
