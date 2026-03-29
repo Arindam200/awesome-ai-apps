@@ -23,6 +23,12 @@ load_dotenv(override=True)
 def build_llm_service() -> OpenAILLMService:
     """Create OpenAI-compatible LLM service using OpenAI or Nebius provider."""
     llm_provider = os.getenv("LLM_PROVIDER", "openai").strip().lower()
+    allowed_providers = {"openai", "nebius"}
+    if llm_provider not in allowed_providers:
+        raise ValueError(
+            f"Unsupported LLM_PROVIDER '{llm_provider}'. "
+            f"Supported providers are: {', '.join(sorted(allowed_providers))}."
+        )
 
     if llm_provider == "nebius":
         api_key = os.getenv("NEBIUS_API_KEY")
