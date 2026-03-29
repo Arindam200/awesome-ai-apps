@@ -72,7 +72,9 @@ def _generate_nebius_prompt_hint() -> str | None:
     )
 
     message = completion.choices[0].message.content
-    if not message:
+    message = completion.choices[0].message.content
+    if not message or not message.strip():
+        return None
         return None
 
     return message.strip()
