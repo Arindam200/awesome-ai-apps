@@ -234,9 +234,10 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🎙️ Voice Agents
 
-**Real-time voice assistants and streaming speech pipelines.** _1 project_
+**Real-time voice assistants and streaming speech pipelines.** _2 projects_
 
 - [LiveKit + Gemini Realtime](voice_agents/livekit_gemini_agents) - LiveKit Agents with Google Gemini Live (`gemini` multimodal realtime) for low-latency voice conversations in a LiveKit room
+- [Pipecat + Sarvam](voice_agents/pipecat_agent) - Pipecat voice pipeline with Sarvam STT/TTS and OpenAI for chat; WebRTC (browser) or Daily transport via the Pipecat runner
 
 ### 🗂️ MCP Agents
 
