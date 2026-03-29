@@ -19,6 +19,37 @@ from pipecat.transports.daily.transport import DailyParams
 
 load_dotenv(override=True)
 
+
+def build_llm_service() -> OpenAILLMService:
+    """Create OpenAI-compatible LLM service using OpenAI or Nebius provider."""
+    llm_provider = os.getenv("LLM_PROVIDER", "openai").strip().lower()
+
+    if llm_provider == "nebius":
+        api_key = os.getenv("NEBIUS_API_KEY")
+        if not api_key:
+            raise ValueError("NEBIUS_API_KEY is required when LLM_PROVIDER=nebius")
+
+        model = os.getenv("NEBIUS_MODEL", "deepseek-ai/DeepSeek-V3-0324")
+        base_url = os.getenv("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1")
+
+        # Prefer explicit base_url, but support older Pipecat versions without that arg.
+        try:
+            llm = OpenAILLMService(api_key=api_key, model=model, base_url=base_url)
+        except TypeError:
+            os.environ["OPENAI_BASE_URL"] = base_url
+            llm = OpenAILLMService(api_key=api_key, model=model)
+
+        logger.info("Using Nebius Token Factory LLM model: {}", model)
+        return llm
+
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise ValueError("OPENAI_API_KEY is required when LLM_PROVIDER=openai")
+
+    model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    logger.info("Using OpenAI LLM model: {}", model)
+    return OpenAILLMService(api_key=api_key, model=model)
+
 async def bot(runner_args: RunnerArguments):
     """Main bot entry point."""
     
@@ -36,7 +67,7 @@ async def bot(runner_args: RunnerArguments):
     # Initialize AI services
     stt = SarvamSTTService(api_key=os.getenv("SARVAM_API_KEY"),)
     tts = SarvamTTSService(api_key=os.getenv("SARVAM_API_KEY"))
-    llm = OpenAILLMService(api_key=os.getenv("OPENAI_API_KEY"), model="gpt-4o-mini")
+    llm = build_llm_service()
 
     # Set up conversation context
     messages = [
