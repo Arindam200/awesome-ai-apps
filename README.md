@@ -241,7 +241,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🗂️ MCP Agents
 
-**Examples using Model Context Protocol for external tool integration.** _12 projects_
+**Examples using Model Context Protocol for external tool integration.** _13 projects_
 
 - [Doc-MCP](mcp_ai_agents/doc_mcp) - Semantic RAG documentation & Q&A system
 - [LangGraph MCP Agent](mcp_ai_agents/langchain_langgraph_mcp_agent) - LangChain ReAct agent with Couchbase integration
@@ -255,6 +255,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [ScaleKit Exa MCP Security](mcp_ai_agents/scalekit-exa-mcp-security) - Security-focused MCP integration with Exa search
 - [Docker E2B MCP Agent](mcp_ai_agents/e2b_docker_mcp_agent) - Secure AI agent for running agents in sandboxed Docker environments via MCP Gateway
 - [Taskade MCP Agent](mcp_ai_agents/taskade_mcp_agent) - AI-powered workspace agent for managing projects, tasks, and workflows via Taskade MCP
+- [ToolRouter](https://toolrouter.com) - All your AI tools in one place — 150+ tools including competitor research, video production, image generation, web search, flight search, job search, security scanning, document creation, and more. One account replaces managing dozens of provider accounts. Available as MCP server ([npm](https://www.npmjs.com/package/toolrouter-mcp)), CLI, and REST API. Works with Claude, ChatGPT, Cursor, Windsurf, Codex CLI, Gemini, and any MCP client
 
 ### 🧠 Memory Agents
 
