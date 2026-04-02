@@ -4,8 +4,10 @@ Exa AI Search MCP Server
 This server provides access to the Exa AI Search API through the Model Context Protocol (MCP).
 It exposes tools for intelligent web search using Exa's neural and keyword search capabilities.
 
+Exa is the fastest and most accurate web search API for AI.
+
 Features:
-- Neural and keyword search types
+- Auto, neural, keyword, fast, deep, and instant search types
 - Content retrieval with highlights and summaries
 - Category-specific searches
 - Date filtering
@@ -39,7 +41,7 @@ mcp = FastMCP(
 )
 
 # Supported search types
-SEARCH_TYPES = ["neural", "keyword", "auto", "fast"]
+SEARCH_TYPES = ["auto", "neural", "keyword", "fast", "deep", "instant"]
 
 # Supported categories
 CATEGORIES = [
@@ -124,9 +126,9 @@ async def make_exa_request(endpoint: str, payload: dict) -> dict:
 @mcp.tool()
 async def exa_search(
     query: str = Field(description="The search query string"),
-    search_type: Optional[Literal["neural", "keyword", "auto", "fast"]] = Field(
+    search_type: Optional[Literal["auto", "neural", "keyword", "fast", "deep", "instant"]] = Field(
         default="auto", 
-        description="Type of search: 'neural' (embeddings-based), 'keyword' (traditional), 'auto' (intelligent mix), 'fast' (streamlined)"
+        description="Type of search: 'auto' (default, intelligent mix), 'neural' (embeddings-based), 'keyword' (traditional), 'fast' (speed-optimized), 'deep' (thorough), 'instant' (near real-time)"
     ),
     category: Optional[Literal["company", "research paper", "news", "pdf", "github", "tweet", "personal site", "linkedin profile", "financial report"]] = Field(
         default=None,
@@ -196,10 +198,12 @@ async def exa_search(
     which can find relevant content based on meaning rather than just keywords.
     
     Search Types:
+    - auto: Intelligently picks the best search mode (default)
     - neural: Uses embeddings to find semantically similar content
     - keyword: Traditional Google-like search
-    - auto: Intelligently combines neural and keyword search
-    - fast: Streamlined versions of neural and keyword models
+    - fast: Speed-optimized search
+    - deep: Thorough search for comprehensive results
+    - instant: Near real-time results
     
     The tool supports various filtering options including domains, dates,
     content types, and text requirements. Results can include full content,
