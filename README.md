@@ -212,6 +212,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [cagent Starter](starter_ai_agents/cagent_starter) - Open-source customizable multi-agent runtime by Docker
 - [Sayna Voice Agent](starter_ai_agents/sayna_starter) - Real-time voice infrastructure with multi-provider STT/TTS (Deepgram, ElevenLabs, Azure, Google) and WebSocket streaming
 - [KAOS Starter](starter_ai_agents/kaos_starter) - Kubernetes-native multi-agent system with MCP tools and in-cluster LLM
+- [skill-taxonomy](https://github.com/SeeleAI/skill-taxonomy) - Structured taxonomy for AI agent skills: discovery, classification and routing across multi-agent workflows.
 
 ### 🪶 Simple Agents
 
