@@ -160,3 +160,6 @@ logs/
 
 # uv
 uv.lock
+
+# Cursor agent skills (local only; not published)
+.agents/skills/

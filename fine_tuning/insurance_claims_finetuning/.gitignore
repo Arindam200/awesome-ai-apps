@@ -1,0 +1,12 @@
+.env
+insurance_claims_demo_artifacts/
+__pycache__/
+.venv/
+nbconvert_run.log
+nbconvert_nohup.out
+*.nbconvert.ipynb
+_run_nb.py
+
+BLOG.md
+assets/*
+!assets/*.png

@@ -292,8 +292,9 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _17 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _18 projects_
 
+- [Nebius AutoResearch](advance_ai_agents/nebius-autoresearch-autoresearch-mar30) - NYC taxi analytics pipeline optimizer; iterative code search with Nebius Token Factory (real-time or batch inference)
 - [AgentField Financial Research Agent](advance_ai_agents/agentfield_finance_research_agent) - Financial Research Agent with AgentField
 - [Due Diligence Agent](advance_ai_agents/due_diligence_agent) - Multi-agent company due diligence pipeline with AG2 and TinyFish deep web scraping
 - [Deep Researcher](advance_ai_agents/deep_researcher_agent) - Multi-stage research agent with Agno & ScrapeGraph AI
@@ -415,8 +416,29 @@ This repository is licensed under the [MIT License](./LICENSE). Feel free to use
 
 This project is actively maintained by:
 
-- arindam200 (Arindam Majumder)
-- shivaylamba (Shivay Lamba)
+<p align="center">
+  <a href="https://github.com/Arindam200" title="Arindam Majumder">
+    <img src="https://avatars.githubusercontent.com/u/109217591?s=128&v=4" width="72" height="72" alt="Arindam Majumder" style="border-radius: 50%;" />
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/shivaylamba" title="Shivay Lamba">
+    <img src="https://avatars.githubusercontent.com/u/19529592?s=128&v=4" width="72" height="72" alt="Shivay Lamba" style="border-radius: 50%;" />
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/Astrodevil" title="Astrodevil">
+    <img src="https://avatars.githubusercontent.com/u/73425223?s=128&v=4" width="72" height="72" alt="Astrodevil" style="border-radius: 50%;" />
+  </a>
+</p>
+
+<p align="center">
+  <sub>
+    <a href="https://github.com/Arindam200">Arindam Majumder</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/shivaylamba">Shivay Lamba</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/Astrodevil">Astrodevil</a>
+  </sub>
+</p>
 
 For any questions, suggestions, or contributions, feel free to reach out to the maintainers.
 
