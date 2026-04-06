@@ -1,0 +1,12 @@
+[project]
+name = "mobile-ssh-agent"
+version = "0.1.0"
+description = "Set up and run AI coding agents on a remote server over SSH"
+requires-python = ">=3.10"
+dependencies = [
+    "python-dotenv>=1.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.backends"
