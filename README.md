@@ -323,6 +323,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [**Build with MCP**](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lolxax4L2HS54Me8gn1gkz4) - Model Context Protocol tutorials and examples
 - [**Build AI Agents**](https://www.youtube.com/playlist?list=PLMZM1DAlf0LqixhAG9BDk4O_FjqnaogK8) - General AI agent development tutorials
 - [**AI Agents, MCP and more...**](https://www.youtube.com/playlist?list=PL2ambAOfYA6-LDz0KpVKu9vJKAqhv0KKI) - Mixed tutorials and project demos
+- [guardian-agent-prompts](https://github.com/milkomida77/guardian-agent-prompts) - Production-tested multi-agent AI orchestration system with 49 specialized agents for Claude Code, covering coding, security, trading, OSINT, and business automation.
 
 ---
 
