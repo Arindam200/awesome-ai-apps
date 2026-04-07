@@ -272,6 +272,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Customer Support Voice Agent](memory_agents/customer_support_voice_agent) - Voice-enabled customer support assistant with Memori v3 and Firecrawl for knowledge base management
 - [YouTube Trend Agent](memory_agents/youtube_trend_agent) - YouTube channel analysis agent with Memori, Agno, and Exa for trend analysis and video ideas
 - [Study Coach Agent](memory_agents/study_coach_agent) - AI-powered study coach with Memori v3 and LangGraph for multi-step verification of understanding
+- [Deus](https://github.com/sliamh11/Deus) - A self-hosted personal AI assistant built on Claude Code (Claude Agent SDK) with semantic memory, container-isolated agents per conversation group, and multi-channel support (WhatsApp, Telegram, Slack, Discord, Gmail)
 
 ### 📚 RAG Applications
 
