@@ -1,4 +1,4 @@
-# Insurance Claims Fine-Tuning (Nebius Token Factory)
+# Insurance Claims Fine-Tuning (Nebius Token Factory) using Nebius [Agent Skills](https://skills.sh/arindam200/nebius-skills)
 
 End-to-end example: load an insurance chatbot dataset, distill labels with a **70B teacher** in **Data Lab**, **LoRA**-fine-tune an **8B** model on **Nebius Token Factory**, deploy the adapter as a **serverless** custom endpoint, and compare **base vs fine-tuned** answers in the notebook and in a small **Gradio** app.
 
