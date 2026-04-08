@@ -4,15 +4,15 @@ This Proof-of-Concept demonstrates **autonomous self-healing**: The agent fixes 
 
 Unlike the other POCs where the agent builds from scratch, this one starts with a **pre-built buggy `analyst.py`** that the agent must debug and fix using only trace analysis — no guessing allowed.
 
-![From ad-hoc debugging toward trace-driven, self-healing workflows](./images/evolution-of-software-engineering.png)
-
 _Context: observability evolves so agents can repair systems using platform traces, not only local logs._
+
+> Read full blog "[How to Build Self-Healing AI Agents with Monocle, Okahu MCP and OpenCode](https://dev.to/astrodevil/how-to-build-self-healing-ai-agents-with-monocle-okahu-mcp-and-opencode-1g4e)"
 
 ## Core Components
 
 - **Pre-built Buggy `analyst.py`**: Contains intentional bugs for the agent to discover and fix via trace analysis.
 - **The @analyst_v3 Agent**: Self-healing agent that uses **Okahu MCP** to analyze traces and fix bugs autonomously.
-- **Hosted Okahu MCP**: Cloud-native trace fetching and analysis (`/okahu:get_latest_traces`).
+- **Hosted [Okahu](https://www.okahu.ai) MCP**: Cloud-native trace fetching and analysis (`/okahu:get_latest_traces`).
 - **Test Suite**: `test_analyst.py` exposes the bugs through failing tests.
 
 ## Prerequisites
@@ -38,9 +38,11 @@ telemetry-mcp-okahu/
 └── README.md
 ```
 
+![Okahu and Monocle: traces flow from instrumented SDK calls into Okahu Cloud for MCP analysis](./images/okahu-monocle-flow.png)
+
 ## CRITICAL: Monocle Instrumentation Requirements
 
-**Monocle can only auto-instrument supported SDKs.** This is the most important concept:
+**[Monocle](https://github.com/monocle2ai/monocle) can only auto-instrument supported SDKs.** This is the most important concept:
 
 ### What Works ✅
 
@@ -67,8 +69,6 @@ response = client.chat.completions.create(
     messages=[...],
 )
 ```
-
-![Okahu and Monocle: traces flow from instrumented SDK calls into Okahu Cloud for MCP analysis](./images/okahu-monocle-flow.png)
 
 _Telemetry path: instrumented client → Monocle → Okahu Cloud → hosted MCP tools._
 
@@ -183,8 +183,7 @@ The agent must:
 3. Identify bugs from trace data
 4. Archive and fix iteratively
 
-## Why it's Different (telemetry-mcp-okahu)
-
+## Why it's Different?
 ![Self-healing loop: tests fail, traces explain why, agent patches code, repeat until green](./images/self-healing-loop.png)
 
 _Trace-driven repair: failures and Okahu traces drive each fix; no guessing from local logs._
