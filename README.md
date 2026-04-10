@@ -291,6 +291,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Simple RAG](rag_apps/simple_rag) - Basic RAG implementation with Nebius for quick starts
 - [WFGY 16 Problem Map LLM Debugger](rag_apps/wfgy_llm_debugger) - 16-mode map based debugger for LLM and RAG bugs
 
+- [Gitstar](https://dev.gitstar.ai?utm_medium=github_readme&utm_source=awesome_list&utm_campaign=Arindam200_awesome-ai-apps) - Follow developers on GitHub and get a feed of what they star and build.
 ### 🔬 Advanced Agents
 
 **Complex multi-agent pipelines for production-ready end-to-end workflows.** _18 projects_
