@@ -5,6 +5,16 @@ import logging
 import nest_asyncio
 import base64
 from dotenv import load_dotenv
+
+try:
+    import agents
+except ModuleNotFoundError:
+    raise ImportError(
+        "Missing the 'agents' package (PyPI: openai-agents). Run Streamlit with this "
+        "project's environment, e.g. `uv run streamlit run app.py` or "
+        "`source .venv/bin/activate` then `streamlit run app.py`."
+    ) from None
+
 from job_agents import run_analysis
 from mcp_server import wait_for_initialization, get_mcp_server
 
