@@ -290,6 +290,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Contextual AI RAG](rag_apps/contextual_ai_rag) - Enterprise-level RAG with managed datastores and quality evaluation
 - [Simple RAG](rag_apps/simple_rag) - Basic RAG implementation with Nebius for quick starts
 - [WFGY 16 Problem Map LLM Debugger](rag_apps/wfgy_llm_debugger) - 16-mode map based debugger for LLM and RAG bugs
+- [CCHub](https://github.com/Moresl/cchub) - A desktop control panel for the Claude Code / Codex / Gemini CLI ecosystem. Manage MCP servers, config profiles, agent skills, CLAUDE.md, hooks, and workflow templates from a single Tauri app (Windows / macOS / Linux).
 
 ### 🔬 Advanced Agents
 
