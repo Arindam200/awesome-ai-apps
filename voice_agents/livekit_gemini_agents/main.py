@@ -5,8 +5,7 @@ from livekit import agents, rtc
 from livekit.agents import AgentServer, AgentSession, Agent
 from livekit.plugins import google
 
-load_dotenv(".env.local")
-load_dotenv(".env", override=False)
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
