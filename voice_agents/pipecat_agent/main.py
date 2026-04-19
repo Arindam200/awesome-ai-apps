@@ -13,15 +13,16 @@ from pipecat.runner.types import RunnerArguments
 from pipecat.runner.utils import create_transport
 from pipecat.services.sarvam.stt import SarvamSTTService
 from pipecat.services.sarvam.tts import SarvamTTSService
-from pipecat.services.openai.llm import OpenAILLMService
+from pipecat.services.nebius.llm import NebiusLLMService
 from pipecat.transports.base_transport import TransportParams
 from pipecat.transports.daily.transport import DailyParams
 
 load_dotenv(override=True)
 
+
 async def bot(runner_args: RunnerArguments):
     """Main bot entry point."""
-    
+
     # Create transport (supports both Daily and WebRTC)
     transport = await create_transport(
         runner_args,
@@ -34,9 +35,26 @@ async def bot(runner_args: RunnerArguments):
     )
 
     # Initialize AI services
-    stt = SarvamSTTService(api_key=os.getenv("SARVAM_API_KEY"),)
-    tts = SarvamTTSService(api_key=os.getenv("SARVAM_API_KEY"))
-    llm = OpenAILLMService(api_key=os.getenv("OPENAI_API_KEY"), model="gpt-4o-mini")
+    stt = SarvamSTTService(
+        api_key=os.getenv("SARVAM_API_KEY"),
+        settings=SarvamSTTService.Settings(
+            model="saaras:v3",  # or "saarika:v2.5" / "saaras:v2.5"
+        ),
+    )
+
+    tts = SarvamTTSService(
+        api_key=os.getenv("SARVAM_API_KEY"),
+        settings=SarvamTTSService.Settings(
+            model="bulbul:v3",  # or "bulbul:v2" / "bulbul:v3-beta"
+            voice="shubh",
+        ),
+    )
+    llm = NebiusLLMService(
+        api_key=os.getenv("NEBIUS_API_KEY"),
+        settings=NebiusLLMService.Settings(
+            model="meta-llama/Meta-Llama-3.1-8B-Instruct"
+        ),
+    )
 
     # Set up conversation context
     messages = [
@@ -78,6 +96,7 @@ async def bot(runner_args: RunnerArguments):
 
     runner = PipelineRunner(handle_sigint=runner_args.handle_sigint)
     await runner.run(task)
+
 
 if __name__ == "__main__":
     from pipecat.runner.run import main
