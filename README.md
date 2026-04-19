@@ -391,6 +391,10 @@ Get easy-to-follow weekly tutorials and deep dives on AI, LLMs, and agent framew
    streamlit run app.py
    ```
 
+## 🔗 Related Resources
+
+- [AI Dev Tools](https://aidevtools-3qf.pages.dev) - Curated directory of AI-powered developer tools for discovering coding assistants, API tools, and more.
+
 ## 🤝 Contributing
 
 We welcome contributions from the community! Here's how you can help:
