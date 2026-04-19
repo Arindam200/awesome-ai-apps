@@ -23,17 +23,18 @@ This repo teaches the **mechanics** of distillation + fine-tuning on domain dial
 
 ## Workflow
 
-### Pipeline (high level)
+### Pipeline 
 
 Seven stages from raw dataset to Gradio comparison — Data Lab upload, 70B teacher batch, JSONL curation, LoRA fine-tune, serverless deploy, and before/after evaluation.
 
-![Pipeline diagram](assets/pipeline-diagram.png)
+<img width="1734" height="924" alt="image" src="https://github.com/user-attachments/assets/d2e76920-4f32-4417-ab95-b8fe741b61c0" />
 
 ### Architecture
 
 How the notebook talks to Token Factory: HuggingFace data flows in, Data Lab REST + OpenAI-compatible fine-tuning APIs do the work, artifacts land locally, and the Gradio app calls both the base and LoRA models.
 
-![Architecture diagram](assets/architecture-diagram.png)
+<img width="1555" height="949" alt="image" src="https://github.com/user-attachments/assets/4f668e09-a754-4256-8fb1-0068eebf9255" />
+
 
 The middle column summarizes **train vs chat** model ids on the fine-tuning card; see **[Model IDs (important)](#model-ids-important)** for the exact strings and table.
 
