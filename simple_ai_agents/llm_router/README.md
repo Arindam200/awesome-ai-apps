@@ -42,7 +42,7 @@ An intelligent AI chat application that automatically routes queries between cos
 
 - Python 3.11 or higher
 - OpenAI API key ([Get it here](https://platform.openai.com/api-keys))
-- Nebius Token Factory API key ([Get it here](https://studio.nebius.ai/))
+- Nebius Token Factory API key ([Get it here](https://dub.sh/nebius))
 - Internet connection for API calls
 
 ## 🚀 Quick Start
@@ -50,8 +50,8 @@ An intelligent AI chat application that automatically routes queries between cos
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Arindam200/awesome-llm-apps.git
-cd awesome-llm-apps/simple_ai_agents/llm_router
+git clone https://github.com/Arindam200/awesome-ai-apps.git
+cd awesome-ai-apps/simple_ai_agents/llm_router
 ```
 
 ### 2. Install Dependencies
@@ -76,14 +76,13 @@ NEBIUS_API_KEY=your_nebius_api_key_here
 **How to get your API keys:**
 
 1. **OpenAI API Key**:
-
    - Visit [OpenAI Platform](https://platform.openai.com/api-keys)
    - Sign up or log in
    - Create a new API key
    - Copy it to your `.env` file
 
 2. **Nebius API Key**:
-   - Visit [Nebius Studio](https://studio.nebius.ai/)
+   - Visit [Nebius Token Factory](https://dub.sh/nebius)
    - Sign up or log in
    - Navigate to API keys section
    - Generate a new API key
@@ -120,7 +119,6 @@ RouteLLM uses a **Model Forwarding (MF)** router that:
 Try these example queries to see RouteLLM in action:
 
 - **Simple queries** (likely routed to Nebius Llama):
-
   - "What is the capital of France?"
   - "Explain photosynthesis in one sentence"
   - "List three benefits of exercise"
@@ -205,19 +203,16 @@ The application uses color-coded badges to show which model handled each query:
 ### Common Issues
 
 1. **"Failed to initialize RouteLLM client"**
-
    - Ensure both API keys are correctly configured
    - Check that API keys are valid and have sufficient credits
    - Verify internet connection
 
 2. **"Please configure your API keys"**
-
    - Enter API keys in the sidebar
    - Click "Save API Keys" button
    - Refresh the page if needed
 
 3. **Model routing not working as expected**
-
    - RouteLLM's routing decisions are based on query complexity
    - Simple queries may still go to strong model if RouteLLM determines it's needed
    - This is expected behavior for optimal quality
@@ -268,7 +263,7 @@ We welcome contributions! To contribute:
 
 ## 📄 License
 
-This project is part of the [Awesome AI Apps](https://github.com/Arindam200/awesome-llm-apps) collection and is licensed under the MIT License.
+This project is part of the [Awesome AI Apps](https://github.com/Arindam200/awesome-ai-apps) collection and is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 

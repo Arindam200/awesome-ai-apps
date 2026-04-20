@@ -7,19 +7,16 @@ AI-powered content optimization workflow for Google AI Search ranking. This adva
 ## Features
 
 - **Two Operation Modes**:
-
   - **Existing Article Optimization**: Analyze and improve existing content (from URL or pasted text)
   - **Pre-Writing Content Brief**: Generate SEO-optimized guidelines before writing
 
 - **Comprehensive SEO Research**:
-
   - Google AI Mode & AI Overview analysis
   - Keyword extraction and clustering
   - Related questions and search intent analysis
   - Competitor content analysis
 
 - **Actionable Outputs**:
-
   - Search insights and keyword research reports
   - Content audit with prioritized recommendations
   - Section-level rewrites with keyword optimization
@@ -87,12 +84,10 @@ The UI provides:
 ### Input Methods
 
 1. **Topic Only (Pre-Writing Brief)**
-
    - Enter a topic you want to write about
    - Get comprehensive SEO content brief with keywords, structure, and guidelines
 
 2. **URL to Existing Article**
-
    - Provide a URL to an existing article
    - Article is automatically extracted and optimized
    - Full article content is saved for reference
@@ -122,14 +117,12 @@ All reports and articles are automatically generated and saved to `.tmp/` folder
 ### Reports Generated
 
 - **Search Insights & Keyword Research** (`search_insights.md`)
-
   - Primary and related keywords
   - Related questions and search intent
   - Competitor analysis
   - AI Overview patterns
 
 - **Content Brief** (`content_brief.md`) - Pre-Writing Mode
-
   - Complete content outline
   - Recommended headings structure
   - FAQ suggestions
@@ -137,7 +130,6 @@ All reports and articles are automatically generated and saved to `.tmp/` folder
   - Writing guidelines
 
 - **Article Audit** (`article_audit.md`) - Optimization Mode
-
   - Content gaps analysis
   - Keyword opportunities
   - E-E-A-T assessment
@@ -145,7 +137,6 @@ All reports and articles are automatically generated and saved to `.tmp/` folder
   - Prioritized recommendations
 
 - **Section Edits** (`section_edits.md`) - Optimization Mode
-
   - Optimized section rewrites
   - Natural keyword integration
   - Improved readability
@@ -167,7 +158,6 @@ The workflow uses specialized AI agents working together:
 3. **SERP Analysis Agent**: Analyzes raw search results and provides structured keyword insights
 
 4. **Content Strategist Agent**:
-
    - Generates content briefs (pre-writing mode)
    - Audits existing articles (optimization mode)
 
@@ -248,11 +238,11 @@ Content Audit → Section Optimization → Improved Article
 
 ## Contributing
 
-This project is part of the [awesome-llm-apps](https://github.com/arindammajumder/awesome-llm-apps) collection. Contributions are welcome!
+This project is part of the [awesome-ai-apps](https://github.com/arindammajumder/awesome-ai-apps) collection. Contributions are welcome!
 
 ## License
 
-Part of the awesome-llm-apps repository. See main repository for license information.
+Part of the awesome-ai-apps repository. See main repository for license information.
 
 ## Credits
 

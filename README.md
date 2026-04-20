@@ -197,18 +197,22 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🧩 Starter Agents
 
-**Quick-start agents for learning and extending different AI frameworks.** _13 projects_
+**Quick-start agents for learning and extending different AI frameworks.** _17 projects_
 
 - [Agno HackerNews Analysis](starter_ai_agents/agno_starter) - Agno-based agent for trend analysis on HackerNews
 - [OpenAI SDK Starter](starter_ai_agents/openai_agents_sdk) - OpenAI Agents SDK with email helper & haiku writer examples
 - [LlamaIndex Task Manager](starter_ai_agents/llamaindex_starter) - LlamaIndex-powered task assistant
 - [CrewAI Research Crew](starter_ai_agents/crewai_starter) - Multi-agent research team example
+- [Letta Starter](starter_ai_agents/letta_starter) - Stateful agent with persistent long-term memory across sessions
 - [PydanticAI Weather Bot](starter_ai_agents/pydantic_starter) - Real-time weather information agent
 - [LangChain-LangGraph Starter](starter_ai_agents/langchain_langgraph_starter) - LangChain + LangGraph workflow starter
 - [AWS Strands Agent Starter](starter_ai_agents/aws_strands_starter) - Weather report agent using AWS Strands SDK
+- [Mastra Starter](starter_ai_agents/mastra_starter) - TypeScript-first agent with a custom tool powered by Nebius Token Factory
 - [Camel AI Starter](starter_ai_agents/camel_ai_starter) - Performance benchmarking tool comparing various AI models
 - [DSPy Starter](starter_ai_agents/dspy_starter) - DSPy framework for building and optimizing AI systems
 - [Google ADK Starter](starter_ai_agents/google_adk_starter) - Google Agent Development Kit starter template
+- [Semantic Kernel Starter](starter_ai_agents/semantic_kernel_starter) - Microsoft Semantic Kernel `ChatCompletionAgent` with plugin-based tool calling
+- [smolagents Starter](starter_ai_agents/smolagents_starter) - Hugging Face smolagents code-first web-search agent
 - [cagent Starter](starter_ai_agents/cagent_starter) - Open-source customizable multi-agent runtime by Docker
 - [Sayna Voice Agent](starter_ai_agents/sayna_starter) - Real-time voice infrastructure with multi-provider STT/TTS (Deepgram, ElevenLabs, Azure, Google) and WebSocket streaming
 - [KAOS Starter](starter_ai_agents/kaos_starter) - Kubernetes-native multi-agent system with MCP tools and in-cluster LLM
@@ -234,10 +238,13 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🎙️ Voice Agents
 
-**Real-time voice assistants and streaming speech pipelines.** _2 projects_
+**Real-time voice assistants and streaming speech pipelines.** _5 projects_
 
+- [Healthcare Voice Contact Center](voice_agents/healthcare_contact_center) - Pipecat healthcare contact center with appointment booking, FAQ handling, and supervisor escalation
 - [LiveKit + Gemini Realtime](voice_agents/livekit_gemini_agents) - LiveKit Agents with Google Gemini Live (`gemini` multimodal realtime) for low-latency voice conversations in a LiveKit room
+- [LiveKit RSVP Confirmation Agent](voice_agents/livekit_rsvp_agent) - Outbound voice agent that calls attendees, confirms RSVPs, and updates a JSON-backed event database
 - [Pipecat + Sarvam](voice_agents/pipecat_agent) - Pipecat voice pipeline with Sarvam STT/TTS and OpenAI for chat; WebRTC (browser) or Daily transport via the Pipecat runner
+- [Speed-to-Lead Voice Agent](voice_agents/speed_to_lead_agent) - LiveKit-based voice agent that calls inbound leads instantly, routes them to specialists, and logs to a mock CRM
 
 ### 🗂️ MCP Agents
 
