@@ -1,0 +1,11 @@
+{
+  "available_slots": [
+    {"id": "S1", "date": "2026-04-22", "time": "09:00", "doctor": "Dr. Patel"},
+    {"id": "S2", "date": "2026-04-22", "time": "10:30", "doctor": "Dr. Patel"},
+    {"id": "S3", "date": "2026-04-22", "time": "14:00", "doctor": "Dr. Chen"},
+    {"id": "S4", "date": "2026-04-23", "time": "09:30", "doctor": "Dr. Chen"},
+    {"id": "S5", "date": "2026-04-23", "time": "11:00", "doctor": "Dr. Patel"},
+    {"id": "S6", "date": "2026-04-24", "time": "15:30", "doctor": "Dr. Chen"}
+  ],
+  "booked": []
+}
