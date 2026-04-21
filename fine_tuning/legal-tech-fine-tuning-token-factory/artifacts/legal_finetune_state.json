@@ -1,0 +1,55 @@
+{
+  "clean_dataset_path": "/Users/shivaylamba/Desktop/nebius/fine-tuning-new/artifacts/legislation_qa_clean.nebius.jsonl",
+  "dataset_path": "/Users/shivaylamba/Desktop/nebius/fine-tuning-new/legislation_qa_clean.jsonl",
+  "deployment_base_model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
+  "deployment_info": {
+    "checkpoint_id": "ftckpt_e06eb82e-b410-422b-a04a-642b8d4a4f39",
+    "context_window_k": 128,
+    "created_at": 1776771183,
+    "description": "Private legal QA LoRA adapter deployed from Nebius fine-tuning job.",
+    "file_id": null,
+    "job_id": "ftjob-49eb82e8fe1c4bbf8200d1f37bdfd8ba",
+    "name": "meta-llama/Meta-Llama-3.1-8B-Instruct-LoRa:legislation-qa-private-20260421-CnGS",
+    "quality": 73,
+    "size_b": 8.03,
+    "status": "active",
+    "status_reason": null,
+    "tags": [
+      "128K context",
+      "small",
+      "JSON mode",
+      "lora"
+    ],
+    "type": "text2text",
+    "url": null,
+    "use_cases": [
+      "lora"
+    ],
+    "vendor": "meta"
+  },
+  "deployment_legal_smoke_test_output": "Amended in 2004, The Company and Business Names (Chamber of Commerce, etc.) Act 1961 (amended in 1999 and 2004) extends to Northern Ireland including the Act and any Instrument that forms part of domestic legislation in that region.",
+  "deployment_legal_smoke_test_prompt": "Does the Company and Business Names (Chamber of Commerce, Etc.) Act 1999 extend to Northern Ireland? Answer briefly.",
+  "deployment_model_name": "meta-llama/Meta-Llama-3.1-8B-Instruct-LoRa:legislation-qa-private-20260421-CnGS",
+  "deployment_name": "legislation-qa-private-20260421",
+  "deployment_smoke_test_output": "This model was fine-tuned to generate human-like responses to user inputs.",
+  "deployment_status": "active",
+  "deployment_status_reason": null,
+  "fine_tuned_model": null,
+  "fine_tuning_job_id": "ftjob-49eb82e8fe1c4bbf8200d1f37bdfd8ba",
+  "fine_tuning_status": "succeeded",
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "sanitization_report": {
+    "dropped_records": 0,
+    "input_path": "legislation_qa_clean.jsonl",
+    "kept_records": 148,
+    "output_path": "/Users/shivaylamba/Desktop/nebius/fine-tuning-new/artifacts/legislation_qa_clean.nebius.jsonl",
+    "repair_counts": {
+      "promoted_invalid_role_to_user_content": 1
+    },
+    "repaired_records": 1,
+    "total_records": 148
+  },
+  "suffix": "legislation-qa-lora",
+  "trained_tokens": 238844,
+  "training_file_id": "file-019dafc3-e209-711c-9f60-2ce5a8c9e209"
+}
