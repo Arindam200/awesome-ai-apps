@@ -1,0 +1,20 @@
+{# Minimal Gemma 4 turn format (aligned with google/gemma-4-E4B-it), text-only, no tools. #}
+{%- set loop_messages = messages -%}
+{{- bos_token -}}
+{%- if messages[0]['role'] in ['system', 'developer'] -%}
+    {{- '<|turn>system\n' -}}
+    {{- messages[0]['content'] | trim -}}
+    {{- '<turn|>\n' -}}
+    {%- set loop_messages = messages[1:] -%}
+{%- endif -%}
+{%- for message in loop_messages -%}
+    {%- set role = 'model' if message['role'] == 'assistant' else message['role'] -%}
+    {{- '<|turn>' + role + '\n' -}}
+    {%- if message['content'] is string -%}
+        {{- message['content'] | trim -}}
+    {%- endif -%}
+    {{- '<turn|>\n' -}}
+{%- endfor -%}
+{%- if add_generation_prompt -%}
+    {{- '<|turn>model\n' -}}
+{%- endif -%}
