@@ -1,0 +1,14 @@
+[project]
+name = "video-rag"
+version = "0.1.0"
+description = "Native multimodal Video RAG using Gemini gemini-embedding-2-preview, Weaviate, and Nebius Token Factory"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit",
+    "openai",
+    "python-dotenv",
+    "google-genai",
+    "weaviate-client>=4.9.0",
+    "pydantic",
+]

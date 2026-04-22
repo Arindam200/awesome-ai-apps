@@ -1,0 +1,13 @@
+[project]
+name = "speed-to-lead-agent"
+version = "0.1.0"
+description = "Speed-to-lead voice agent: form submission triggers an outbound call that routes, qualifies, and logs the lead."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "livekit-agents[deepgram,cartesia,silero,openai,turn-detector]~=1.4",
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "python-dotenv>=1.0",
+    "pydantic>=2.0",
+]

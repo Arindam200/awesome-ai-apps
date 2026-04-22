@@ -1,0 +1,14 @@
+[project]
+name = "stock-portfolio-analyst"
+version = "0.1.0"
+description = "Agno + Nebius stock portfolio analyst with live market data"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "agno",
+    "openai",
+    "streamlit",
+    "python-dotenv",
+    "yfinance",
+    "duckduckgo-search",
+]

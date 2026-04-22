@@ -1,0 +1,16 @@
+[project]
+name = "trustworthy-rag"
+version = "0.1.0"
+description = "Citation verification and hallucination scoring layer on top of RAG, powered by Nebius Token Factory"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit",
+    "llama-index",
+    "llama-index-llms-nebius",
+    "llama-index-embeddings-nebius",
+    "openai",
+    "python-dotenv",
+    "PyPDF2",
+    "pydantic",
+]

@@ -1,0 +1,14 @@
+[project]
+name = "graphrag-neo4j"
+version = "0.1.0"
+description = "GraphRAG with Neo4j and Nebius Token Factory"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit",
+    "neo4j",
+    "openai",
+    "python-dotenv",
+    "PyPDF2",
+    "pydantic",
+]
