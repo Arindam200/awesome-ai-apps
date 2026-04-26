@@ -240,10 +240,11 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🎙️ Voice Agents
 
-**Real-time voice assistants and streaming speech pipelines.** _5 projects_
+**Real-time voice assistants and streaming speech pipelines.** _6 projects_
 
 - [Healthcare Voice Contact Center](voice_agents/healthcare_contact_center) - Pipecat healthcare contact center with appointment booking, FAQ handling, and supervisor escalation
 - [LiveKit + Gemini Realtime](voice_agents/livekit_gemini_agents) - LiveKit Agents with Google Gemini Live (`gemini` multimodal realtime) for low-latency voice conversations in a LiveKit room
+- [LiveKit Voice Agent with Web Search](voice_agents/livekit_web_search_agent) - LiveKit + Gemini realtime voice agent with an Olostep-backed `web_search` tool for fresh, source-cited answers
 - [LiveKit RSVP Confirmation Agent](voice_agents/livekit_rsvp_agent) - Outbound voice agent that calls attendees, confirms RSVPs, and updates a JSON-backed event database
 - [Pipecat + Sarvam](voice_agents/pipecat_agent) - Pipecat voice pipeline with Sarvam STT/TTS and OpenAI for chat; WebRTC (browser) or Daily transport via the Pipecat runner
 - [Speed-to-Lead Voice Agent](voice_agents/speed_to_lead_agent) - LiveKit-based voice agent that calls inbound leads instantly, routes them to specialists, and logs to a mock CRM
