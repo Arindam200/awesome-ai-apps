@@ -4,45 +4,16 @@ This Proof-of-Concept demonstrates **autonomous self-healing**: The agent fixes 
 
 Unlike the other POCs where the agent builds from scratch, this one starts with a **pre-built buggy `analyst.py`** that the agent must debug and fix using only trace analysis — no guessing allowed.
 
-_Context: observability evolves so agents can repair systems using platform traces, not only local logs._
-
-> Read full blog "[How to Build Self-Healing AI Agents with Monocle, Okahu MCP and OpenCode](https://dev.to/astrodevil/how-to-build-self-healing-ai-agents-with-monocle-okahu-mcp-and-opencode-1g4e)"
-
 ## Core Components
 
 - **Pre-built Buggy `analyst.py`**: Contains intentional bugs for the agent to discover and fix via trace analysis.
 - **The @analyst_v3 Agent**: Self-healing agent that uses **Okahu MCP** to analyze traces and fix bugs autonomously.
-- **Hosted [Okahu](https://www.okahu.ai) MCP**: Cloud-native trace fetching and analysis (`/okahu:get_latest_traces`).
+- **Hosted Okahu MCP**: Cloud-native trace fetching and analysis (`/okahu:get_latest_traces`).
 - **Test Suite**: `test_analyst.py` exposes the bugs through failing tests.
-
-## Prerequisites
-
-- **Python** 3.10 or newer
-- **API keys**: OpenAI (or compatible inference), Okahu (telemetry + hosted MCP)
-- **OpenCode** CLI with MCP support (for the `@analyst_v3` self-healing flow)
-
-## Project structure
-
-```
-telemetry-mcp-okahu/
-├── .opencode/agents/     # analyst_v3 agent definition
-├── images/               # Diagrams for this README
-├── analyst.py            # Buggy Text-to-SQL module (reset via reset_demo.py)
-├── boilerplate.py        # Reference patterns for fixes
-├── main.py               # FastAPI entry (if used)
-├── setup_db.py           # Creates sales.db
-├── reset_demo.py         # Restores intentional bugs in analyst.py
-├── test_analyst.py       # Failing tests until bugs are fixed
-├── requirements.txt
-├── .env.example
-└── README.md
-```
-
-![Okahu and Monocle: traces flow from instrumented SDK calls into Okahu Cloud for MCP analysis](./images/okahu-monocle-flow.png)
 
 ## CRITICAL: Monocle Instrumentation Requirements
 
-**[Monocle](https://github.com/monocle2ai/monocle) can only auto-instrument supported SDKs.** This is the most important concept:
+**Monocle can only auto-instrument supported SDKs.** This is the most important concept:
 
 ### What Works ✅
 
@@ -50,7 +21,6 @@ telemetry-mcp-okahu/
 - `google-genai` SDK
 - `langchain` framework
 - `llama-index` framework
-- **Nebius Token Factory** (and other OpenAI-compatible endpoints) when you still route calls through the **`openai` Python SDK**—same instrumentation rule as calling OpenAI directly; avoid raw HTTP to the model API.
 
 ### What Does NOT Work ❌
 
@@ -70,18 +40,18 @@ response = client.chat.completions.create(
 )
 ```
 
-_Telemetry path: instrumented client → Monocle → Okahu Cloud → hosted MCP tools._
-
 ## Step-by-Step Setup
 
 ### 1. Environment Variables
 
-Copy [`.env.example`](.env.example) to `.env` and fill in your keys. You need an **OpenAI API Key** (or compatible provider via the OpenAI SDK) and an **Okahu API Key** for telemetry.
+Set up your keys in the `telemetry-mcp-okahu/.env` file. You will need an **OpenAI API Key** and an **Okahu API Key** for telemetry.
 
 ```bash
 cd telemetry-mcp-okahu
-cp .env.example .env
-# Edit .env: OPENAI_API_KEY, OPENAI_MODEL, OKAHU_API_KEY, MONOCLE_EXPORTER=okahu
+echo 'OPENAI_API_KEY="your-openai-key"' > .env
+echo 'OPENAI_MODEL="gpt-4o"' >> .env
+echo 'OKAHU_API_KEY="your-okahu-key"' >> .env
+echo 'MONOCLE_EXPORTER="okahu"' >> .env
 ```
 
 ### 2. Install Dependencies
@@ -91,7 +61,7 @@ Create a virtual environment and install required packages:
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install monocle_apptrace monocle_test_tools openai fastapi uvicorn python-dotenv pytest
 ```
 
 ### 3. Initialize the Database
@@ -142,7 +112,7 @@ python reset_demo.py
 
 This restores `analyst.py` with all 3 bugs:
 
-1. Wrong API method (`completions.create` instead of `chat.completions.create`)
+1. Invalid model name (`gpt-5.4-typo` instead of a valid model like `gpt-4o`)
 2. Wrong response attribute (`.text` instead of `.message.content`)
 3. Wrong schema (`customers/products` instead of `users/orders`)
 
@@ -172,9 +142,9 @@ Open your OpenCode terminal in the `telemetry-mcp-okahu/` directory and run:
 
 This POC includes a **pre-built buggy `analyst.py`** with intentional bugs:
 
-1. **Bug 1 - Wrong OpenAI API**: Uses `client.completions.create()` instead of `client.chat.completions.create()`
-2. **Bug 2 - Wrong response access**: Uses `.text` on the response instead of `.message.content` (correct for chat completions)
-3. **Bug 3 - Schema mismatch**: System prompt references `customers` and `products` tables, but the actual DB has `users` and `orders`
+1. **Bug 1 - Invalid model name**: Uses `model="gpt-5.4-typo"` instead of a valid model like `gpt-4o`
+2. **Bug 2 - Wrong response attribute**: Uses `.text` instead of `.message.content` on the response
+3. **Bug 3 - Schema Mismatch**: System prompt references `customers` and `products` tables, but actual DB has `users` and `orders`
 
 The agent must:
 
@@ -183,10 +153,7 @@ The agent must:
 3. Identify bugs from trace data
 4. Archive and fix iteratively
 
-## Why it's Different?
-![Self-healing loop: tests fail, traces explain why, agent patches code, repeat until green](./images/self-healing-loop.png)
-
-_Trace-driven repair: failures and Okahu traces drive each fix; no guessing from local logs._
+## Why it's Different (telemetry-mcp-okahu)
 
 1. **Trace-Driven Debugging**: The agent cannot guess fixes. It must analyze Okahu Cloud traces to understand what went wrong.
 2. **Infrastructure Native**: The environment provides observability via hosted MCP. The agent queries the platform, not local logs.

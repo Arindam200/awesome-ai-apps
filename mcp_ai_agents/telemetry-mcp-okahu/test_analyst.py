@@ -24,19 +24,15 @@ from analyst import generate_sql, execute_query, text_to_sql
 # Test cases for monocle validation
 sql_generation_test_cases: list[TestCase] = [
     {
-        # Test 1: Basic SQL generation - verify inference span exists
+        # Test 1: Basic SQL generation
+        # Fails on Bug #1 (invalid model) and Bug #2 (.text attribute)
         "test_input": ["Show all users"],
-        "test_spans": [
-            {
-                "span_type": "inference",
-                "entities": [
-                    {"type": "inference", "name": "openai"}
-                ],
-            }
-        ]
+        "test_output": "SELECT * FROM users",
+        "comparer": "similarity",
     },
     {
-        # Test 2: Complex query - verify SQL output similarity
+        # Test 2: Complex query with similarity check
+        # Fails on Bug #1 (invalid model), Bug #2 (.text), and Bug #3 (wrong schema/tables)
         "test_input": ["Find all users who have made orders with amount greater than 100"],
         "test_output": "SELECT users.* FROM users JOIN orders ON users.user_id = orders.user_id WHERE orders.amount > 100",
         "comparer": "similarity",
@@ -88,32 +84,26 @@ def test_execute_query_orders_table():
 
 
 # End-to-end test using monocle
-e2e_test_cases: list[TestCase] = [
-    {
-        # End-to-end: Natural language to SQL execution
-        "test_input": ["Find all users who have made orders with amount greater than 100"],
-        "test_spans": [
-            {
-                "span_type": "inference",
-                "entities": [
-                    {"type": "inference", "name": "openai"}
-                ],
-            }
-        ]
-    },
+EXPECTED_HIGH_VALUE_USER_RESULTS = [
+    (1, "Alice", "alice@example.com"),
+    (2, "Bob", "bob@example.com"),
+    (3, "Charlie", "charlie@example.com"),
+    (3, "Charlie", "charlie@example.com"),
+    (4, "David", "david@example.com"),
+    (1, "Alice", "alice@example.com"),
+    (4, "David", "david@example.com"),
 ]
 
 
-@MonocleValidator().monocle_testcase(e2e_test_cases)
-def test_text_to_sql_e2e(my_test_case: TestCase):
+def test_text_to_sql_e2e():
     """
     End-to-end test: natural language query to SQL results.
     
     Validates the full pipeline including:
-    - OpenAI inference call exists in traces
     - Query executes successfully against database
     """
-    MonocleValidator().test_workflow(text_to_sql, my_test_case)
+    results = text_to_sql("Find all users who have made orders with amount greater than 100")
+    assert results == EXPECTED_HIGH_VALUE_USER_RESULTS
 
 
 if __name__ == "__main__":

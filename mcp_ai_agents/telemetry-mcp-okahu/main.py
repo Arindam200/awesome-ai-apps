@@ -42,7 +42,7 @@ async def api_query(request: QueryRequest):
     """
     try:
         sql_query = generate_sql(request.query)
-        results = execute_query(sql_query)
+        results = text_to_sql(request.query)
         return ResultsResponse(sql_query=sql_query, results=results)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -74,11 +74,10 @@ Natural Language Query: {natural_language_query}
 
 SQL Query:"""
 
-    # BUG: Using completions.create() instead of chat.completions.create()
-    # This will fail because gpt-4o requires the chat completions API
-    response = client.completions.create(
-        model=os.getenv("OPENAI_MODEL", "gpt-4o"),
-        prompt=prompt,
+    # BUG: Invalid chat model name to force model_not_found and keep traces inspectable
+    response = client.chat.completions.create(
+        model="gpt-5.4-typo",
+        messages=[{"role": "user", "content": prompt}],
         temperature=0.1,
         max_tokens=200,
     )
@@ -149,7 +148,7 @@ def main():
     print("✓ Reset analyst.py to buggy state")
     print()
     print("Bugs introduced:")
-    print("  1. Wrong API: client.completions.create() instead of client.chat.completions.create()")
+    print("  1. Invalid model: client.chat.completions.create() uses gpt-5.4-typo")
     print("  2. Wrong response: .text instead of .message.content")
     print("  3. Wrong schema: customers/products instead of users/orders")
     print()

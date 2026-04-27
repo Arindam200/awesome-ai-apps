@@ -1,0 +1,22 @@
+# Environments
+.env
+venv/
+
+# Telemetry Output
+.monocle/
+*.log
+
+# DB
+*.db
+
+# Archives
+versions/
+
+# Python Cache
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Misc
+.DS_Store
