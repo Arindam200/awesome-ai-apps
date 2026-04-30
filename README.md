@@ -298,6 +298,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Gemma3 OCR](rag_apps/gemma_ocr/) - OCR-based document and image processor using Gemma3 model
 - [Nvidia Nemotron OCR](rag_apps/nvidia_ocr/) - OCR-based document and image parsing using Nvidia Nemotron-Nano-V2-12b
 - [Contextual AI RAG](rag_apps/contextual_ai_rag) - Enterprise-level RAG with managed datastores and quality evaluation
+- [Advanced RAG with Reranking](rag_apps/advanced_rag_with_reranking) - Production-shaped PDF RAG with contextual retrieval, Qdrant hybrid search, reranking, streaming answers, upload ingestion, and clickable citations
 - [Simple RAG](rag_apps/simple_rag) - Basic RAG implementation with Nebius for quick starts
 - [WFGY 16 Problem Map LLM Debugger](rag_apps/wfgy_llm_debugger) - 16-mode map based debugger for LLM and RAG bugs
 
