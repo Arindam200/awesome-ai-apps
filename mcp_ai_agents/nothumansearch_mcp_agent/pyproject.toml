@@ -1,0 +1,9 @@
+[project]
+name = "nothumansearch-mcp-agent"
+version = "0.1.0"
+description = "Search agent-ready sites and verify MCP endpoints through Not Human Search"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "httpx>=0.25.0",
+]

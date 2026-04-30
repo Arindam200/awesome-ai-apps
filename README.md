@@ -251,7 +251,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🗂️ MCP Agents
 
-**Examples using Model Context Protocol for external tool integration.** _13 projects_
+**Examples using Model Context Protocol for external tool integration.** _14 projects_
 
 - [Doc-MCP](mcp_ai_agents/doc_mcp) - Semantic RAG documentation & Q&A system
 - [LangGraph MCP Agent](mcp_ai_agents/langchain_langgraph_mcp_agent) - LangChain ReAct agent with Couchbase integration
@@ -266,6 +266,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Docker E2B MCP Agent](mcp_ai_agents/e2b_docker_mcp_agent) - Secure AI agent for running agents in sandboxed Docker environments via MCP Gateway
 - [Taskade MCP Agent](mcp_ai_agents/taskade_mcp_agent) - AI-powered workspace agent for managing projects, tasks, and workflows via Taskade MCP
 - [Telemetry MCP Okahu](mcp_ai_agents/telemetry-mcp-okahu) - Self-healing Text-to-SQL demo using Okahu Cloud traces via hosted MCP
+- [Not Human Search MCP Agent](mcp_ai_agents/nothumansearch_mcp_agent) - Search agent-ready sites and verify live MCP endpoints through the Not Human Search MCP server
 
 ### 🧠 Memory Agents
 
