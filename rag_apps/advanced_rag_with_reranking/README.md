@@ -8,6 +8,61 @@ page previews and chunk highlighting.
 The app is intentionally domain-neutral even though the original local demo used Boeing
 annual and sustainability reports. Upload your own PDFs through the UI.
 
+```mermaid
+flowchart TD
+    A["Boeing PDF Corpus"] --> B["MarkItDown Page-Level Parsing"]
+
+    B --> C["Extract Markdown Content"]
+    C --> D1["Text Blocks"]
+    C --> D2["Markdown Tables"]
+    C --> D3["Images / Visual Pages"]
+
+    D3 --> E["Nebius VLM<br/>Qwen/Qwen2.5-VL-72B-Instruct"]
+    E --> F["Image/OCR Text Chunks"]
+
+    D1 --> G["Chunk Builder"]
+    D2 --> G
+    F --> G
+
+    G --> H["Metadata Enrichment<br/>PDF, Page, Year, Report Type, Section, Content Type"]
+
+    H --> I["Contextual Augmentation"]
+    I --> J["raw_text"]
+    I --> K["contextual_text<br/>Generated Context + Raw Chunk"]
+
+    K --> L1["Dense Embeddings<br/>Nebius Qwen/Qwen3-Embedding-8B"]
+    K --> L2["Sparse Vectors<br/>Qdrant/FastEmbed BM25"]
+
+    L1 --> M["Qdrant Hybrid Collection"]
+    L2 --> M
+    J --> M
+    H --> M
+
+    N["User Question"] --> O["Query API"]
+
+    O --> P1["Dense Query Embedding"]
+    O --> P2["Sparse Query Vector"]
+
+    P1 --> Q1["Qdrant Dense Search"]
+    P2 --> Q2["Qdrant Sparse Search"]
+
+    Q1 --> R["RRF Fusion"]
+    Q2 --> R
+
+    R --> S["Reranking"]
+    S --> T["Top Evidence Pack"]
+
+    T --> U["MiniMaxAI/MiniMax-M2.5<br/>Answer Synthesis"]
+
+    U --> V["Streaming Response<br/>/query/stream"]
+
+    V --> W["Frontend UI"]
+    W --> X["Answer With Sentence Citations"]
+    W --> Y["Clickable References"]
+    Y --> Z["PDF / Page / Chunk Preview"]
+
+```
+
 ## Features
 
 - Browser upload flow for a folder of PDFs or multiple selected PDFs.
