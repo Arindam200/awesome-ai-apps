@@ -304,7 +304,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _18 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _19 projects_
 
 - [Nebius AutoResearch](advance_ai_agents/nebius-autoresearch-autoresearch-mar30) - NYC taxi analytics pipeline optimizer; iterative code search with Nebius Token Factory (real-time or batch inference)
 - [AgentField Financial Research Agent](advance_ai_agents/agentfield_finance_research_agent) - Financial Research Agent with AgentField
@@ -319,6 +319,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Startup Idea Validator Agent](advance_ai_agents/startup_idea_validator_agent) - Agentic workflow to validate and analyze startup ideas
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent) - Automated meeting notes and task creation from conversations
 - [AI Hedgefund](advance_ai_agents/ai-hedgefund) - Agentic workflow for comprehensive financial analysis
+- [molten.bot/code](advance_ai_agents/coding_harness_agent) - Coding harness agent with file discovery, reading, and editing tools
 - [Smart GTM Agent](advance_ai_agents/smart_gtm_agent) - Go-to-market strategy and competitive analysis agent
 - [Conference Agnostic CFP Generator](advance_ai_agents/conference_agnositc_cfp_generator) - Automated conference proposal generation system
 - [Car Finder Agent](advance_ai_agents/car_finder_agent) - AI-powered used car recommendation system with CrewAI and MongoDB
