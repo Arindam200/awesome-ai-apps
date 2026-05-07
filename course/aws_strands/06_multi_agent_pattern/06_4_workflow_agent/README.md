@@ -325,7 +325,7 @@ We welcome contributions to the Workflow Agent pattern! If you're interested in 
 
 1. **Join our Discord**: [discord.gg/strands](https://discord.gg/strands)
 2. **Check our GitHub**: [github.com/strands/strands](https://github.com/strands/strands)
-3. **Read our Contributing Guide**: [CONTRIBUTING.md](../../CONTRIBUTING.md)
+3. **Read our Contributing Guide**: [CONTRIBUTING.md](../../../../CONTRIBUTING.md)
 
 ---
 
