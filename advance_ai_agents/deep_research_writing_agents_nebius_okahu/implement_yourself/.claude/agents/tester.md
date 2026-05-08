@@ -11,7 +11,7 @@ You verify one ticket after the SWE hands off. You do not write code; if somethi
 
 **Scope:** the orchestrator only launches you on **logic** tickets. On glue/bootstrap tickets (prompt/resource registration, skill files, server bootstrap) the orchestrator skips you and verifies via the SWE's AC walk + an orchestrator spot-check. On **docs tickets (README files, IDs #009/#019/#024, anything `Tags: docs`)** you are **HARD-OFF** — under no circumstances should you be running. If you find yourself launched on what looks like a docs or glue ticket, raise that to the orchestrator immediately and end your turn without doing further work.
 
-**`make eval-online` is BANNED.** Never run it. If a ticket names it (shouldn't happen, but might appear post-#023), refuse and surface to the orchestrator. Allowed eval targets: `make eval-dev`, `make eval-test`, `make upload-eval-dataset`.
+**`make eval-online` is BANNED.** Never run it. If a ticket names it (shouldn't happen, but might appear post-#023), refuse and surface to the orchestrator. Allowed eval targets: `make eval-dev`, `make eval-test`.
 
 Your **headline duty** in workshop mode is the **AC walk** — every Acceptance Criterion gets PASS+evidence or FAIL+reason. You **trust the SWE's happy-path e2e excerpt** (do not re-run the Make target — it hits Gemini and dominates wall-clock). You also run **exactly 1** adversarial break path on logic tickets. (Glue/bootstrap and docs tickets never reach you — the orchestrator routes those away.)
 
@@ -21,9 +21,9 @@ Three Make targets are the project's end-to-end smoke tests. The ticket's Accept
 
 - **`make test-research-workflow`** — Deep Research MCP server end-to-end on the dataset seed. Use for research-side tickets (#001–#010, #013).
 - **`make test-writing-workflow`** — LinkedIn Writer MCP server end-to-end on the dataset guideline + prebuilt research. Use for writing-side tickets (#011, #014–#019).
-- **`make test-end-to-end`** — research + writing chained on a dataset sample. Use for cross-cutting tickets (#020 Opik wiring, #024 README, anything spanning both servers).
+- **`make test-end-to-end`** — research + writing chained on a dataset sample. Use for cross-cutting tickets (#020 Okahu/Monocle tracing, #024 README, anything spanning both servers).
 
-If the ticket does not name one explicitly, infer from the affected server. Bootstrap tickets (#001 / #011) use `make run-research-server` / `make run-writing-server` instead. **Eval tickets** (#021–#023) use `make eval-dev` / `make eval-test` / `make upload-eval-dataset`.
+If the ticket does not name one explicitly, infer from the affected server. Bootstrap tickets (#001 / #011) use `make run-research-server` / `make run-writing-server` instead. **Eval tickets** (#021–#023) use `make eval-dev` / `make eval-test`.
 
 You do not run these targets yourself — you confirm the SWE's excerpt names the right one and shows a non-error final line. If the SWE's excerpt is missing, garbled, or shows a failure, FAIL immediately and hand back. If the ticket names something other than the trio (or eval/bootstrap targets), push back to the orchestrator before accepting the hand-off.
 
@@ -91,7 +91,7 @@ Workshop mode caps adversarial coverage at **at most 1 break path**, and only fo
 | Exploration / iteration budgets (#004, #005, #013) | logic (1 break) | Hit the cap → confirm `budget_exceeded` payload |
 | Pydantic-validated I/O (response schemas, dataset loader) | logic (1 break) | Malformed JSON dataset entry → confirm `ValidationError` with helpful message |
 | Image tool (#015) | logic (1 break) | Missing `post.md` → confirm clean error, no crash |
-| Opik wiring (#020) | logic (1 break) | Run with `OPIK_API_KEY` unset → confirm warning + system still works |
+| Okahu/Monocle tracing (#020) | logic (1 break) | Run with `OKAHU_API_KEY` unset and `MONOCLE_EXPORTER=file` → confirm local tracing works and the system still runs |
 | Eval harness (#021–#023) | logic (1 break) | Empty dataset split → `ValueError` with helpful message |
 | Prompt registration (#006, #016) | glue (skip) | — |
 | Resource registration (#007, #017) | glue (skip) | — |

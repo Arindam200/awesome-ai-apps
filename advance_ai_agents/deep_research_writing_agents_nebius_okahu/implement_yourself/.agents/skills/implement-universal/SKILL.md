@@ -38,7 +38,7 @@ The Makefile exposes three end-to-end targets that double as smoke tests. Most t
 
 - **`make test-research-workflow`** — exercises the Deep Research MCP server end-to-end on the dataset seed. Default smoke test for any research-side ticket (#001–#010, #013).
 - **`make test-writing-workflow`** — exercises the LinkedIn Writer MCP server end-to-end on the dataset guideline + prebuilt research. Default smoke test for any writing-side ticket (#011, #014–#019).
-- **`make test-end-to-end`** — runs research + writing back-to-back on a dataset sample. Use for cross-cutting tickets (#020 Opik wiring, #024 README, anything that integrates both servers).
+- **`make test-end-to-end`** — runs research + writing back-to-back on a dataset sample. Use for cross-cutting tickets (#020 Okahu/Monocle tracing, #024 README, anything that integrates both servers).
 
 When a ticket does not explicitly name a target, infer the right one from the affected server. Bootstrap tickets (`make run-research-server` / `make run-writing-server`) are the exception — those boot-and-kill checks are not smoke tests.
 
@@ -49,7 +49,7 @@ When a ticket does not explicitly name a target, infer the right one from the af
 - **Commit directly with `git commit -m`.** Hand-craft a one-line commit message from the ticket title (`feat: {Title} (#NNN)` or `docs: {Title} (#NNN)` for README tickets).
 - **One ticket per invocation.** No batching. If the user asks for multiple tickets, decline and tell them to invoke `/implement-universal` again per ticket.
 - **No worktree isolation.** The branch is created in the human's working tree; the SWE phase works directly there so the audience can watch the diff evolve.
-- **`make eval-online` is BANNED.** It hits production and burns budget. Never run it — not in the SWE phase, not in the Tester phase, not for any ticket. Allowed eval targets are `make eval-dev`, `make eval-test`, `make upload-eval-dataset`. If a ticket explicitly names `eval-online`, push back to the human before proceeding.
+- **`make eval-online` is BANNED.** It hits production and burns budget. Never run it — not in the SWE phase, not in the Tester phase, not for any ticket. Allowed eval targets are `make eval-dev` and `make eval-test`. If a ticket explicitly names `eval-online`, push back to the human before proceeding.
 
 ---
 

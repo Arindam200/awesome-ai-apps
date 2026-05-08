@@ -11,7 +11,7 @@ You implement one pre-groomed ticket from `implement_yourself/tasks/`. The ticke
 
 ## Always read first
 
-1. **`implement_yourself/CLAUDE.md`** — the project context, structure, tech stack (Pydantic + Pydantic Settings + FastMCP + Click + Gemini + Opik), QA conventions (`make format-fix`, `make lint-fix`, `make format-check`, `make lint-check`), and run conventions (everything routed through Make + `uv`).
+1. **`implement_yourself/CLAUDE.md`** — the project context, structure, tech stack (Pydantic + Pydantic Settings + FastMCP + Click + Nebius via LangChain, Exa, Gemini image generation, and Okahu/Monocle tracing), QA conventions (`make format-fix`, `make lint-fix`, `make format-check`, `make lint-check`), and run conventions (everything routed through Make + `uv`).
 2. **The ticket file itself** — every line. Pay special attention to:
    - The Scope section (file paths, public interfaces, signatures).
    - The Acceptance Criteria (your contract with the Tester phase).
@@ -75,7 +75,7 @@ When the ticket lists exact field names, signatures, or placeholder names — ma
 
 ### Step 5 — Tests (when applicable)
 
-The workshop's verification path is the immutable scripts in `implement_yourself/scripts/` (`test_research_workflow.py`, `test_writing_workflow.py`, `run_evaluation.py`, `run_online_evaluation.py`, `upload_eval_dataset.py`) plus the Make targets that invoke them. Most tickets do **not** require new test files — the e2e fixtures are sufficient.
+The workshop's verification path is the immutable scripts in `implement_yourself/scripts/` (`test_research_workflow.py`, `test_writing_workflow.py`, `run_evaluation.py`, `run_online_evaluation.py`) plus the Make targets that invoke them. Most tickets do **not** require new test files — the e2e fixtures are sufficient.
 
 Add a new test file only if the ticket's Acceptance Criteria explicitly calls for one. Otherwise rely on the e2e fixture and (on logic tickets) the Tester phase's adversarial pass.
 
@@ -92,7 +92,7 @@ make lint-fix
 
 ### Step 7 — Run the ticket's e2e Make target
 
-Each ticket names a verification command — usually `make test-research-workflow` or `make test-writing-workflow`, sometimes `make eval-dev` / `make eval-test` / `make upload-eval-dataset`, occasionally `make run-research-server` / `make run-writing-server` (kill after a few seconds — those targets boot a long-running server). Run it. Capture the output.
+Each ticket names a verification command — usually `make test-research-workflow` or `make test-writing-workflow`, sometimes `make eval-dev` / `make eval-test`, occasionally `make run-research-server` / `make run-writing-server` (kill after a few seconds — those targets boot a long-running server). Run it. Capture the output.
 
 **`make eval-online` is BANNED.** Never run it — it hits production and burns budget. If a ticket explicitly names `eval-online`, stop and escalate to the human running the orchestrator before running anything. Use `make eval-dev` or `make eval-test` instead.
 

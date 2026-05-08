@@ -23,7 +23,7 @@ The Makefile exposes three end-to-end targets that double as smoke tests. Most t
 
 - **`make test-research-workflow`** — exercises the Deep Research MCP server end-to-end on the dataset seed. Default smoke test for any research-side ticket (#001–#010, #013).
 - **`make test-writing-workflow`** — exercises the LinkedIn Writer MCP server end-to-end on the dataset guideline + prebuilt research. Default smoke test for any writing-side ticket (#011, #014–#019).
-- **`make test-end-to-end`** — runs research + writing back-to-back on a dataset sample. Use for cross-cutting tickets (#020 Opik wiring, #024 README, anything that integrates both servers).
+- **`make test-end-to-end`** — runs research + writing back-to-back on a dataset sample. Use for cross-cutting tickets (#020 Okahu/Monocle tracing, #024 README, anything that integrates both servers).
 
 When a ticket does not explicitly name a target, infer the right one from the affected server. Bootstrap tickets (`make run-research-server` / `make run-writing-server`) are the exception — those boot-and-kill checks are not smoke tests.
 
@@ -34,7 +34,7 @@ When a ticket does not explicitly name a target, infer the right one from the af
 - **Commit directly with `git commit -m`.** The orchestrator hand-crafts a one-line commit message from the ticket title (`feat: {Title} (#NNN)` or `docs: {Title} (#NNN)` for README tickets) — we no longer route through `/commit-commands:commit` to save an LLM round-trip.
 - **One ticket per invocation.** No batching. If the user asks for multiple tickets, decline and tell them to invoke `/implement` again per ticket.
 - **No worktree isolation.** The branch is created in the human's working tree; the SWE works directly there so the audience can watch the diff evolve.
-- **`make eval-online` is BANNED.** It hits production and burns budget. Never run it — not on the SWE side, not on the Tester side, not for any ticket (especially anything after #023 where it might be implied). Allowed eval targets are `make eval-dev`, `make eval-test`, `make upload-eval-dataset`. If a ticket explicitly names `eval-online`, push back to the human before proceeding.
+- **`make eval-online` is BANNED.** It hits production and burns budget. Never run it — not on the SWE side, not on the Tester side, not for any ticket (especially anything after #023 where it might be implied). Allowed eval targets are `make eval-dev` and `make eval-test`. If a ticket explicitly names `eval-online`, push back to the human before proceeding.
 
 ---
 
@@ -61,7 +61,7 @@ Once resolved:
 - Classify the ticket archetype (drives the step-5 routing). Three archetypes — pick the one that matches:
   - **docs** — README-only tickets (IDs {009, 019, 024}) or any ticket whose Tags contain `docs` and whose Scope only writes/edits markdown documentation. **Tester is HARD-OFF** under any condition — never launch it on a docs ticket. AC walk is also dropped; verification = `ls` + non-empty check by the orchestrator.
   - **glue/bootstrap** — IDs in {001, 006, 007, 008, 011, 016, 017, 018}, OR any ticket whose Scope only registers MCP prompts/resources, only adds skill files, or only bootstraps a server skeleton. Tester skipped; SWE provides an AC walk; orchestrator spot-checks it.
-  - **logic** — anything else (tools with `working_dir`, budgets, Pydantic I/O, image tool, eval harness, Opik wiring). The Tester runs as today.
+  - **logic** — anything else (tools with `working_dir`, budgets, Pydantic I/O, image tool, eval harness, Okahu/Monocle tracing). The Tester runs as today.
 - Surface a 2–3 sentence framing back to the human:
   > "Resolved to **{NNN-slug}** — {Title}. {1-sentence scope summary from the ticket's first paragraph}. Verification target: `{make target named in the ticket}`. Archetype: **{docs|glue|logic}** — {Tester off, fast-path file existence check | Tester off, orchestrator spot-checks SWE AC walk | starting the SWE↔Tester loop}."
 
@@ -154,7 +154,7 @@ Agent(
   Then run the e2e smoke-test Make target named in the ticket (one of
   `test-research-workflow`, `test-writing-workflow`, `test-end-to-end` for most
   tickets; bootstrap tickets use `run-research-server` / `run-writing-server`;
-  eval tickets use `eval-dev` / `eval-test` / `upload-eval-dataset`) and copy
+  eval tickets use `eval-dev` / `eval-test`) and copy
   the output into your hand-off — verifiers will trust this excerpt and not
   re-run the target, so include the final status line.
 
@@ -211,7 +211,7 @@ Agent(
 
   Adversarial pass policy: at most 1 break path, only when the ticket implements
   new logic with branching behaviour (tools with `working_dir`, budgets, Pydantic
-  I/O, image tool, eval harness, Opik wiring). For glue tickets (prompt
+  I/O, image tool, eval harness, Okahu/Monocle tracing). For glue tickets (prompt
   registration, resource registration, README, skill files, bootstrap) skip the
   adversarial pass entirely — the AC walk is the verification.
 
