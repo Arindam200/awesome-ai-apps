@@ -1,0 +1,9 @@
+python-dotenv>=1.0.1
+pydantic>=2.7.0
+langchain-core>=0.3.0
+langchain-openai>=1.2.1
+streamlit>=1.54.0
+fastapi>=0.125.0
+uvicorn>=0.46.0
+python-multipart>=0.0.27
+gradium @ git+https://github.com/gradium-ai/gradium-py.git@4461b2e177dfbba0e1f60bfa8c1066468eb15140

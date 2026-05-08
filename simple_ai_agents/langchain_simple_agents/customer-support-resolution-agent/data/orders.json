@@ -1,0 +1,16 @@
+[
+  {
+    "order_id": "O-88319",
+    "customer_id": "cus_4481",
+    "item": "USB-C laptop dock",
+    "amount_usd": 289,
+    "status": "label_created",
+    "warehouse": "NJ-2",
+    "promised_delivery": "2026-05-08",
+    "inventory_available": true,
+    "payment_events": [
+      {"type": "authorization", "amount_usd": 289, "status": "pending", "ts": "2026-05-06T14:02:10Z"},
+      {"type": "authorization", "amount_usd": 289, "status": "pending", "ts": "2026-05-06T14:03:42Z"}
+    ]
+  }
+]

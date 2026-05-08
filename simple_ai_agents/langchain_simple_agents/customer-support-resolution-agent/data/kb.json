@@ -1,0 +1,17 @@
+[
+  {
+    "id": "kb_double_auth",
+    "title": "Duplicate card authorization",
+    "text": "A duplicate pending authorization can appear if a payment retry occurs. Pending holds usually drop within 24-72 hours. Do not promise a refund until settlement is confirmed."
+  },
+  {
+    "id": "kb_expedite_business",
+    "title": "Business-tier shipping recovery",
+    "text": "Business-tier customers are eligible for free expedited replacement when delivery is at risk and inventory is available in a regional warehouse."
+  },
+  {
+    "id": "kb_refund_policy",
+    "title": "Refund approval policy",
+    "text": "Agents may recommend refunds under $500 for settled duplicate charges. Refunds over $500 or unsettled holds require billing review."
+  }
+]

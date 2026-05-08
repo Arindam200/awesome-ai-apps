@@ -1,0 +1,11 @@
+{
+  "id": "inc_2026_0507_checkout_latency",
+  "service": "checkout-api",
+  "severity": "sev2",
+  "region": "us-east-1",
+  "trigger": "p95 latency above 1800ms for 12 minutes",
+  "started_at": "2026-05-07T05:48:00Z",
+  "slo_burn": "8.1x",
+  "customer_impact": "15% of checkout attempts slower than 4 seconds; payment success rate down 2.4%",
+  "recent_change": "payment-routing feature flag enabled for 25% of traffic"
+}

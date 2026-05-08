@@ -1,0 +1,4 @@
+run_id,date,pipeline,status,duration_s,code_version,notes
+run_701,2026-05-06,event_ingest,success,412,ingest-2.8.1,normal
+run_702,2026-05-07,event_ingest,success,438,ingest-2.8.2,added stricter web schema validation
+run_801,2026-05-07,identity_stitch,success,290,identity-1.4.0,normal

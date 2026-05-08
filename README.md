@@ -221,7 +221,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🪶 Simple Agents
 
-**Straightforward, practical use-cases for everyday AI applications.** _14 projects_
+**Straightforward, practical use-cases for everyday AI applications.** _18 projects_
 
 - [Agno AI Examples](simple_ai_agents/agno_ai_examples) - Simple to multi-agent examples with web search & knowledge base
 - [Finance Agent](simple_ai_agents/finance_agent) - Real-time stock & market data tracking agent
@@ -236,12 +236,14 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Nebius Chat](simple_ai_agents/nebius_chat) - Chat interface for Nebius Token Factory
 - [RouteLLM Chat](simple_ai_agents/llm_router) - Intelligent model routing with RouteLLM (GPT-4o-mini vs Nebius Llama) for cost optimization
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Natural language database queries with GibsonAI & LangChain
+- [LangChain Simple Agents](simple_ai_agents/langchain_simple_agents) - Nebius-powered incident response, support, vendor risk, and data quality agents with typed outputs and guarded tools
 - [Agent Discovery Agent](simple_ai_agents/agent_discovery_agent) - Find and compare AI agents across NANDA, MCP, Virtuals, A2A, and ERC-8004 registries
 
 ### 🎙️ Voice Agents
 
-**Real-time voice assistants and streaming speech pipelines.** _6 projects_
+**Real-time voice assistants and streaming speech pipelines.** _7 projects_
 
+- [Gradium + Nebius Voice Coach](voice_agents/voice-agent-gradium-nebius-langchain) - Conversational pitch coach using Gradium STT/TTS, LangChain orchestration, and Nebius reasoning
 - [Healthcare Voice Contact Center](voice_agents/healthcare_contact_center) - Pipecat healthcare contact center with appointment booking, FAQ handling, and supervisor escalation
 - [LiveKit + Gemini Realtime](voice_agents/livekit_gemini_agents) - LiveKit Agents with Google Gemini Live (`gemini` multimodal realtime) for low-latency voice conversations in a LiveKit room
 - [LiveKit Voice Agent with Web Search](voice_agents/livekit_web_search_agent) - LiveKit + Gemini realtime voice agent with an Olostep-backed `web_search` tool for fresh, source-cited answers

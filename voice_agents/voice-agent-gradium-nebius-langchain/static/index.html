@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PitchLoop Voice Agent</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="intro">
+        <div>
+          <p class="eyebrow">Gradium + Nebius + LangChain</p>
+          <h1>PitchLoop Voice Agent</h1>
+          <p class="lede">
+            Speak a short answer, then hear the coach respond out loud with feedback and the next
+            question. Each turn stays in the conversation.
+          </p>
+        </div>
+        <div class="status-pill" id="connectionStatus">Ready</div>
+      </section>
+
+      <section class="workspace">
+        <aside class="setup" aria-label="Practice setup">
+          <label>
+            Scenario
+            <select id="scenario">
+              <option>startup pitch</option>
+              <option>job interview</option>
+              <option>product demo intro</option>
+              <option>sales discovery</option>
+              <option>conference talk</option>
+            </select>
+          </label>
+          <label>
+            Audience
+            <input id="audience" value="early-stage investors" />
+          </label>
+          <label>
+            Goal
+            <textarea id="goal">make the idea clear, sound credible, and earn a follow-up conversation</textarea>
+          </label>
+
+          <div class="prompt-box">
+            <span>Current prompt</span>
+            <strong id="currentPrompt">Give me your 45-second opening pitch.</strong>
+          </div>
+
+          <button id="recordButton" class="record-button" type="button">
+            <span class="record-dot" aria-hidden="true"></span>
+            <span id="recordLabel">Start speaking</span>
+          </button>
+          <p class="hint" id="recordHint">Use Chrome or Edge and allow microphone access.</p>
+        </aside>
+
+        <section class="conversation" aria-label="Conversation">
+          <div class="timeline" id="timeline">
+            <article class="bubble coach">
+              <p class="role">Coach</p>
+              <p>Give me your 45-second opening pitch.</p>
+            </article>
+          </div>
+
+          <div class="scoreboard" id="scoreboard" hidden>
+            <div>
+              <span>Score</span>
+              <strong id="overallScore">--</strong>
+            </div>
+            <div id="scoreGrid" class="score-grid"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
