@@ -306,8 +306,9 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _18 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _19 projects_
 
+- [Deep Research + Writing Agents Workshop](advance_ai_agents/deep_research_writing_agents_nebius_okahu) - Nebius-powered LangChain MCP workshop with Exa research, Gemini image generation, and Okahu/Monocle eval observability
 - [Nebius AutoResearch](advance_ai_agents/nebius-autoresearch-autoresearch-mar30) - NYC taxi analytics pipeline optimizer; iterative code search with Nebius Token Factory (real-time or batch inference)
 - [AgentField Financial Research Agent](advance_ai_agents/agentfield_finance_research_agent) - Financial Research Agent with AgentField
 - [Due Diligence Agent](advance_ai_agents/due_diligence_agent) - Multi-agent company due diligence pipeline with AG2 and TinyFish deep web scraping
