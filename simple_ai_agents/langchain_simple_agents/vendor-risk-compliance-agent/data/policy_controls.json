@@ -1,0 +1,22 @@
+[
+  {
+    "id": "DP-01",
+    "title": "Personal data minimization",
+    "requirement": "Collect only fields needed for the approved business purpose. Email and IP address require explicit justification."
+  },
+  {
+    "id": "DP-03",
+    "title": "Deletion SLA",
+    "requirement": "Vendors processing personal data must support deletion within 30 days unless Legal approves an exception."
+  },
+  {
+    "id": "SEC-02",
+    "title": "Security assurance",
+    "requirement": "SOC 2 Type II or equivalent independent assurance is required before production data transfer."
+  },
+  {
+    "id": "XFER-01",
+    "title": "Regional data transfer",
+    "requirement": "EU customer data may not be transferred to US-only vendors without DPA, SCCs, and business approval."
+  }
+]

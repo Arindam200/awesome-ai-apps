@@ -1,0 +1,9 @@
+{
+  "ticket_id": "cx_91042",
+  "customer_id": "cus_4481",
+  "channel": "email",
+  "subject": "Charged twice and order still delayed",
+  "body": "I placed order O-88319 yesterday. My bank shows two charges, but tracking still says label created. I need the laptop dock by Friday or I want a refund.",
+  "customer_tier": "business",
+  "created_at": "2026-05-07T06:05:00Z"
+}

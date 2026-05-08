@@ -1,0 +1,4 @@
+python-dotenv>=1.0.1
+pydantic>=2.7.0
+langchain-core>=0.3.0
+langchain-openai>=1.2.1
