@@ -1,0 +1,13 @@
+ticket_id,created_date,customer_id,category,priority,status,resolution_hours
+T-501,2026-01-05,C-001,shipping,normal,closed,7.5
+T-502,2026-01-09,C-002,billing,high,closed,18.0
+T-503,2026-01-16,C-004,damaged_item,urgent,closed,5.0
+T-504,2026-01-25,C-006,refund,normal,closed,28.0
+T-505,2026-02-04,C-008,cancellation,low,closed,3.5
+T-506,2026-02-11,C-002,return,normal,closed,16.0
+T-507,2026-02-19,C-003,shipping,normal,closed,12.0
+T-508,2026-02-27,C-004,billing,high,open,0.0
+T-509,2026-03-05,C-007,damaged_item,urgent,closed,6.0
+T-510,2026-03-13,C-006,refund,high,open,0.0
+T-511,2026-03-20,C-003,shipping,normal,pending_customer,22.5
+T-512,2026-03-30,C-001,account,low,closed,9.0

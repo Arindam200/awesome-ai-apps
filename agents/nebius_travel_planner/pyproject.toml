@@ -1,0 +1,16 @@
+[project]
+name = "nebius-travel-planner"
+version = "0.1.0"
+description = "A Streamlit travel planning agent built with LangChain and Nebius"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "langchain>=1.0",
+    "langchain-core>=1.0",
+    "langchain-nebius>=0.1.0",
+    "streamlit>=1.36.0",
+    "python-dotenv>=1.0.1",
+    "requests>=2.32.0",
+    "ddgs>=9.0.0",
+    "duckduckgo-search>=6.3.0",
+]

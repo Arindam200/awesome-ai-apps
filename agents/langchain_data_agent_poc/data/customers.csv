@@ -1,0 +1,9 @@
+customer_id,customer_name,segment,region,signup_date
+C-001,Ava Patel,consumer,West,2025-01-11
+C-002,Liam Chen,consumer,East,2025-02-03
+C-003,Maya Johnson,small_business,South,2025-02-19
+C-004,Noah Smith,enterprise,West,2025-03-04
+C-005,Sophia Garcia,consumer,Midwest,2025-03-22
+C-006,Ethan Brown,small_business,East,2025-04-10
+C-007,Isabella Martinez,enterprise,South,2025-04-18
+C-008,Lucas Wilson,consumer,West,2025-05-02
