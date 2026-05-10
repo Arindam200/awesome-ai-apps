@@ -21,7 +21,7 @@ def create_models():
         (ModelPlatformType.NEBIUS, "zai-org/GLM-4.5-Air", NebiusConfig(temperature=0.0, max_tokens=2000), "Nebius GLM-4.5-Air")
     ]
 
-    models = [(ModelFactory.create(model_platform=platform, model_type=model_type, model_config_dict=config.as_dict(), url="https://api.studio.nebius.com/v1/" if platform == ModelPlatformType.NEBIUS else None), name)
+    models = [(ModelFactory.create(model_platform=platform, model_type=model_type, model_config_dict=config.as_dict(), url="https://api.tokenfactory.nebius.com/v1" if platform == ModelPlatformType.NEBIUS else None), name)
               for platform, model_type, config, name in model_configs]
     return models
 

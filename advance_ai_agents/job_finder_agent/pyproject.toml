@@ -1,0 +1,13 @@
+[project]
+name = "job-finder-agent"
+version = "0.1.0"
+description = "LinkedIn job search with Bright Data"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit",
+    "python-dotenv",
+    "openai",
+    "openai-agents",
+    "pydantic",
+]

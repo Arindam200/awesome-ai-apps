@@ -1,0 +1,12 @@
+[project]
+name = "06-2-swarm-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "litellm>=1.77.7",
+    "strands-agents>=1.11.0",
+    "strands-agents-builder>=0.1.10",
+    "strands-agents-tools>=0.2.10",
+]

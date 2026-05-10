@@ -1,0 +1,6 @@
+streamlit==1.50.0
+memorisdk==2.3.0
+python-dotenv==1.1.1
+brightdata-sdk==1.1.3
+pydantic==2.12.3
+agno==2.2.1

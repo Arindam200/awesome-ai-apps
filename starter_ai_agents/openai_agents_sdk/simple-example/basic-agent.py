@@ -12,7 +12,7 @@ if not api_key:
 
 # Get model name and base URL from environment variables with defaults
 model_name = os.getenv("EXAMPLE_MODEL_NAME", "openai/meta-llama/Meta-Llama-3.1-8B-Instruct")
-base_url = os.getenv("EXAMPLE_BASE_URL", "https://api.studio.nebius.ai/v1")
+base_url = os.getenv("EXAMPLE_BASE_URL", "https://api.tokenfactory.nebius.com/v1")
 
 model = OpenAIChatCompletionsModel(
     model=model_name,

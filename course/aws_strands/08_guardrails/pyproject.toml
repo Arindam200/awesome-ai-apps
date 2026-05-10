@@ -1,0 +1,11 @@
+[project]
+name = "08-guardrails"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "litellm>=1.78.7",
+    "strands-agents>=1.13.0",
+    "strands-agents-tools>=0.2.12",
+]

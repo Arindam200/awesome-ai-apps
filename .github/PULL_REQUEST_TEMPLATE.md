@@ -1,79 +1,51 @@
-# Pull Request
+<!--
+Thank you for your contribution! Please ensure your pull request is linked to an existing issue.
+If it is not, please create an issue first.
+-->
 
-## Type of Change
+## 🔗 Linked Issue
 
-- [ ] Project Addition
-- [ ] Bug Fix
-- [ ] Feature Implementation
-- [ ] Documentation Update
-- [ ] Other (please describe)
+<!-- Link to the issue that this pull request addresses. e.g., "Closes #123" -->
+Closes #
 
-## Project Details
+## ✅ Type of Change
 
-- Project Name: <!-- Use descriptive name with underscores (e.g., job_searching_agent) -->
-- Target Directory: <!-- Choose one: @advance_ai_agents, @mcp_ai_agents, @rag_apps, @starter_ai_agents -->
+- [ ] ✨ New Project/Feature
+- [ ] 🐞 Bug Fix
+- [ ] 📚 Documentation Update
+- [ ] 🔨 Refactor or Other
 
-## Description
+## 📝 Summary
 
-<!-- Provide a detailed description of your changes -->
+<!--
+Provide a clear and concise summary of the changes.
+What is the purpose of this PR?
+-->
 
-## Technical Details
+## 📖 README Checklist
 
-<!-- List key technical aspects of your changes -->
+<!--
+For new projects, a high-quality README is essential. Please confirm the following.
+-->
 
-- Primary Language/Framework:
-- Key Dependencies:
-- API Requirements:
-- Changes to existing code:
-- New files added:
-- Dependencies added/removed:
+- [ ] I have created a `README.md` file for my project.
+- [ ] My `README.md` follows the official `.github/README_TEMPLATE.md`.
+- [ ] I have included clear installation and usage instructions in my `README.md`.
+- [ ] I have added a GIF or screenshot to the `assets` folder and included it in my `README.md`.
 
-## Installation Steps (if applicable)
+## ✔️ Contributor Checklist
 
-<!-- Provide step-by-step installation instructions -->
+<!--
+Please confirm that you have followed these guidelines.
+-->
 
-```bash
-1.
-2.
-3.
-```
+- [ ] I have read the [**CONTRIBUTING.md**](https://github.com/Arindam200/awesome-llm-apps/blob/main/CONTRIBUTING.md) document.
+- [ ] My code follows the project's coding standards.
+- [ ] I have placed my project in the correct directory (e.g., `advance_ai_agents`, `rag_apps`).
+- [ ] I have included a `requirements.txt` or `pyproject.toml` for dependencies.
+- [ ] I have added a `.env.example` file if environment variables are needed and ensured no secrets are committed.
+- [ ] My pull request is focused on a single project or change.
 
-## Usage Examples (if applicable)
+## 💬 Additional Comments
 
-<!-- Provide code examples or usage instructions -->
-
-```python
-# Example code here
-```
-
-## Testing Done
-
-<!-- Describe how you tested your changes -->
-
-## Affected Files
-
-<!-- List the files that were modified or added -->
-
--
--
-
-## Screenshots/Demo
-
-<!-- Add screenshots or GIFs of your changes in action -->
-
-## Checklist
-
-- [ ] Project name follows naming convention (descriptive with underscores)
-- [ ] Added to the correct directory
-- [ ] Includes comprehensive README.md (if new project)
-- [ ] Code follows project structure and conventions
-- [ ] All dependencies are properly listed in requirements.txt
-- [ ] Added appropriate documentation
-- [ ] Code is properly formatted and linted
-- [ ] Added necessary tests (if applicable)
-- [ ] No breaking changes introduced
-- [ ] Documentation updated (if necessary)
-
-## Additional Notes
-
-<!-- Any other information that might be helpful -->
+<!-- Add any other context or information for the reviewers here. -->

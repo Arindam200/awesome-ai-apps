@@ -1,0 +1,6 @@
+streamlit
+openai
+python-dotenv
+google-genai
+weaviate-client>=4.9.0
+pydantic

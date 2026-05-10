@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nebius AutoResearch</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <style>
+    /* ── Design tokens ───────────────────────────────────────────────── */
+    :root {
+      --bg:          #0a0c10;
+      --sidebar-bg:  #0d1117;
+      --surface:     #161b22;
+      --surface-2:   #1c2128;
+      --border:      #21262d;
+      --border-light:#30363d;
+      --text:        #e6edf3;
+      --muted:       #7d8590;
+      --muted2:      #484f58;
+      --green:       #3fb950;
+      --green-dim:   rgba(63,185,80,0.12);
+      --red:         #f85149;
+      --red-dim:     rgba(248,81,73,0.12);
+      --yellow:      #d29922;
+      --yellow-dim:  rgba(210,153,34,0.12);
+      --blue:        #58a6ff;
+      --blue-dim:    rgba(88,166,255,0.1);
+      --purple:      #bc8cff;
+      --nebius:      #7c5ae0;
+      --nebius-lt:   #9b7de8;
+      --nebius-dim:  rgba(124,90,224,0.15);
+      --radius:      8px;
+      --sidebar-w:   220px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ─────────────────────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .sidebar-brand {
+      padding: 20px 18px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 2px;
+    }
+    .brand-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--nebius);
+      box-shadow: 0 0 10px var(--nebius);
+      flex-shrink: 0;
+    }
+    .brand-name {
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+      color: var(--text);
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: var(--muted);
+      padding-left: 19px;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 10px 8px;
+      overflow-y: auto;
+    }
+
+    .nav-section-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--muted2);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 10px 10px 5px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+      user-select: none;
+      margin-bottom: 1px;
+    }
+    .nav-item:hover { background: var(--surface); color: var(--text); }
+    .nav-item.active {
+      background: var(--nebius-dim);
+      color: var(--nebius-lt);
+    }
+    .nav-icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+
+    .sidebar-footer {
+      padding: 14px 18px;
+      border-top: 1px solid var(--border);
+    }
+    .agent-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--muted2);
+      flex-shrink: 0;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .status-dot.running {
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    /* ── Main area ───────────────────────────────────────────────────── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .topbar {
+      height: 52px;
+      flex-shrink: 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: var(--sidebar-bg);
+    }
+    .topbar-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .topbar-meta {
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .topbar-pill {
+      background: var(--surface-2);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 11px;
+    }
+
+    .page-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+    }
+
+    /* ── Pages ───────────────────────────────────────────────────────── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Cards ───────────────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+    }
+    .card-body { padding: 18px; }
+
+    /* ── Overview page ───────────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 5px;
+    }
+    .stat-value.green  { color: var(--green); }
+    .stat-value.blue   { color: var(--blue); }
+    .stat-value.purple { color: var(--purple); }
+    .stat-value.nebius { color: var(--nebius-lt); }
+    .stat-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .stat-change {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .stat-change.up   { color: var(--green); }
+    .stat-change.down { color: var(--red); }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 16px;
+    }
+    .chart-wrap {
+      position: relative;
+      height: 300px;
+    }
+
+    /* breakdown list */
+    .breakdown-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .breakdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+    .breakdown-label { color: var(--muted); }
+    .breakdown-bar-wrap {
+      flex: 1;
+      height: 5px;
+      background: var(--border);
+      border-radius: 3px;
+      margin: 0 12px;
+      overflow: hidden;
+    }
+    .breakdown-bar { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+    .breakdown-val { font-variant-numeric: tabular-nums; font-weight: 600; min-width: 28px; text-align: right; }
+
+    /* ── Experiments page ────────────────────────────────────────────── */
+    .exp-filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .filter-btn {
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border-light);
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { border-color: var(--nebius); color: var(--text); }
+    .filter-btn.active { background: var(--nebius-dim); border-color: var(--nebius); color: var(--nebius-lt); }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      white-space: nowrap;
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(33,38,45,0.8);
+      transition: background 0.1s;
+    }
+    tbody tr:hover { background: rgba(255,255,255,0.025); }
+    tbody td { padding: 10px 14px; font-variant-numeric: tabular-nums; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-keep    { background: var(--green-dim);  color: var(--green); }
+    .badge-discard { background: var(--yellow-dim); color: var(--yellow); }
+    .badge-crash   { background: var(--red-dim);    color: var(--red); }
+    .score-hi { color: var(--blue); font-weight: 700; }
+    .commit-tag {
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: 11px;
+      color: var(--yellow);
+      background: var(--yellow-dim);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+    /* ── Code page ───────────────────────────────────────────────────── */
+    .code-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .code-meta {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: monospace;
+    }
+    .code-wrap {
+      background: #0d1117;
+      overflow: auto;
+      max-height: calc(100vh - 220px);
+    }
+    .code-wrap pre { margin: 0; }
+    .code-wrap code {
+      font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.65;
+      tab-size: 4;
+    }
+
+    /* ── Logs page ───────────────────────────────────────────────────── */
+    .log-body {
+      background: #0d1117;
+      font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.65;
+      padding: 16px 20px;
+      min-height: 200px;
+      max-height: calc(100vh - 220px);
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #c9d1d9;
+    }
+    .log-body .log-ok   { color: var(--green); }
+    .log-body .log-err  { color: var(--red); }
+    .log-body .log-info { color: var(--blue); }
+    .log-body .log-dim  { color: var(--muted); }
+
+    /* ── Controls page ───────────────────────────────────────────────── */
+    .controls-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 900px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    input[type="text"],
+    input[type="number"],
+    input[type="password"] {
+      background: var(--bg);
+      border: 1px solid var(--border-light);
+      border-radius: 6px;
+      color: var(--text);
+      padding: 9px 12px;
+      font-size: 13px;
+      font-family: monospace;
+      width: 100%;
+      transition: border-color 0.2s;
+    }
+    input:focus { outline: none; border-color: var(--nebius); }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .toggle { position: relative; width: 38px; height: 21px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0;
+      background: var(--border-light);
+      border-radius: 21px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle-slider:before {
+      content: "";
+      position: absolute;
+      width: 15px; height: 15px;
+      left: 3px; top: 3px;
+      background: white; border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--nebius); }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(17px); }
+    .toggle-desc { font-size: 13px; color: var(--text); }
+    .toggle-badge { font-size: 11px; font-weight: 600; color: var(--green); margin-left: 4px; }
+
+    .btn {
+      padding: 9px 18px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .btn:hover:not(:disabled)  { opacity: 0.85; }
+    .btn:active:not(:disabled) { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .btn-primary { background: var(--nebius); color: white; }
+    .btn-danger  { background: var(--red);    color: white; }
+    .btn-ghost   {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border-light);
+    }
+    .btn-ghost:hover:not(:disabled) { color: var(--text); border-color: var(--border-light); opacity: 1; background: var(--surface); }
+
+    .btn-row { display: flex; gap: 10px; margin-top: 6px; }
+
+    .toast {
+      margin-top: 12px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      display: none;
+      line-height: 1.4;
+    }
+    .toast.ok  { background: var(--green-dim); border: 1px solid rgba(63,185,80,0.3); color: var(--green); }
+    .toast.err { background: var(--red-dim);   border: 1px solid rgba(248,81,73,0.3);  color: var(--red); }
+
+    .info-box {
+      background: var(--blue-dim);
+      border: 1px solid rgba(88,166,255,0.2);
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .info-box strong { color: var(--text); }
+
+    /* ── Scrollbar ───────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ──────────────────────────────────────────────────────────── -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <div class="brand-dot"></div>
+      <span class="brand-name">AutoResearch</span>
+    </div>
+    <div class="brand-sub">Nebius · NYC Taxi Analytics</div>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Monitor</div>
+    <div class="nav-item active" data-page="overview" onclick="navigate(this)">
+      <span class="nav-icon">📊</span> Overview
+    </div>
+    <div class="nav-item" data-page="experiments" onclick="navigate(this)">
+      <span class="nav-icon">🔬</span> Experiments
+    </div>
+
+    <div class="nav-section-label" style="margin-top:10px">Inspect</div>
+    <div class="nav-item" data-page="code" onclick="navigate(this)">
+      <span class="nav-icon">📄</span> solve.py
+    </div>
+    <div class="nav-item" data-page="logs" onclick="navigate(this)">
+      <span class="nav-icon">📋</span> Run Logs
+    </div>
+
+    <div class="nav-section-label" style="margin-top:10px">Agent</div>
+    <div class="nav-item" data-page="controls" onclick="navigate(this)">
+      <span class="nav-icon">⚙️</span> Controls
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="agent-status">
+      <div class="status-dot" id="status-dot"></div>
+      <span id="status-text">Agent idle</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Main ─────────────────────────────────────────────────────────────── -->
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title" id="topbar-title">Overview</span>
+    <div class="topbar-meta">
+      <span class="topbar-pill">Qwen3-235B-A22B-Thinking</span>
+      <span id="refresh-indicator" style="color:var(--muted2)">—</span>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <!-- ── Overview ───────────────────────────────────────────────────── -->
+    <div class="page active" id="page-overview">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Baseline</div>
+          <div class="stat-value" id="stat-baseline">—</div>
+          <div class="stat-sub">trips / second</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Best Score</div>
+          <div class="stat-value green" id="stat-best">—</div>
+          <div class="stat-sub">trips / second</div>
+          <div class="stat-change up" id="stat-best-delta"></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Speedup</div>
+          <div class="stat-value blue" id="stat-speedup">—</div>
+          <div class="stat-sub">over baseline</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Experiments</div>
+          <div class="stat-value purple" id="stat-total">0</div>
+          <div class="stat-sub" id="stat-breakdown">—</div>
+        </div>
+      </div>
+
+      <div class="overview-grid">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Score Progression</span>
+            <span style="font-size:11px;color:var(--muted)">trips / second · higher is better</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap">
+              <canvas id="scoreChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Experiment Outcomes</span>
+          </div>
+          <div class="card-body">
+            <div class="breakdown-list" id="breakdown-list">
+              <div style="color:var(--muted);font-size:13px">No data yet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Experiments ────────────────────────────────────────────────── -->
+    <div class="page" id="page-experiments">
+      <div class="exp-filters">
+        <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+        <button class="filter-btn" onclick="setFilter('keep', this)">✅ Kept</button>
+        <button class="filter-btn" onclick="setFilter('discard', this)">↩ Discarded</button>
+        <button class="filter-btn" onclick="setFilter('crash', this)">💥 Crashed</button>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Experiment History</span>
+          <span id="exp-count" style="font-size:11px;color:var(--muted)">0 experiments</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Commit</th>
+                <th>Score (t/s)</th>
+                <th>Time (s)</th>
+                <th>Status</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody id="exp-table-body">
+              <tr><td colspan="6"><div class="empty-state"><div class="empty-icon">🔬</div>No experiments yet. Start the agent from Controls.</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Code ──────────────────────────────────────────────────────── -->
+    <div class="page" id="page-code">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">solve.py — current best version</span>
+          <div class="code-toolbar">
+            <span class="code-meta" id="code-meta">Loading...</span>
+          </div>
+        </div>
+        <div class="code-wrap">
+          <pre><code class="language-python" id="code-block"># Loading...</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Logs ──────────────────────────────────────────────────────── -->
+    <div class="page" id="page-logs">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Run Log</span>
+          <span style="font-size:11px;color:var(--muted)">last 60 lines · auto-refreshing</span>
+        </div>
+        <div class="log-body" id="log-body">Waiting for first benchmark run...</div>
+      </div>
+    </div>
+
+    <!-- ── Controls ──────────────────────────────────────────────────── -->
+    <div class="page" id="page-controls">
+      <div class="controls-layout">
+        <div>
+          <div class="card" style="margin-bottom:16px">
+            <div class="card-header"><span class="card-title">Start Agent</span></div>
+            <div class="card-body">
+              <div class="form-group">
+                <label>NEBIUS API KEY</label>
+                <input type="password" id="api-key" placeholder="v1.eyJ..." autocomplete="off" />
+              </div>
+              <div class="form-group">
+                <label>NUMBER OF EXPERIMENTS</label>
+                <input type="number" id="n-experiments" value="10" min="1" max="200" />
+              </div>
+              <div class="toggle-row">
+                <label class="toggle">
+                  <input type="checkbox" id="use-batch" />
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-desc">
+                  Batch inference
+                  <span class="toggle-badge">50% cheaper</span>
+                </span>
+              </div>
+              <div class="btn-row">
+                <button class="btn btn-primary" id="btn-start" onclick="startAgent()">▶ Start</button>
+                <button class="btn btn-danger"  id="btn-stop"  onclick="stopAgent()" disabled>■ Stop</button>
+              </div>
+              <div class="toast" id="toast"></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">About this setup</span></div>
+            <div class="card-body">
+              <div class="info-box">
+                <strong>Model:</strong> Qwen3-235B-A22B-Thinking<br>
+                <strong>Inference:</strong> Nebius Token Factory API<br>
+                <strong>Data:</strong> 500K real NYC Yellow Taxi trips<br>
+                <strong>Benchmark:</strong> ~30s per experiment<br><br>
+                Batch mode submits all proposals as one async JSONL job — 50% cost reduction with no rate-limit impact. Results are downloaded and evaluated after the batch completes.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+</div><!-- /main -->
+
+<script>
+if (typeof hljs !== 'undefined') {
+  hljs.configure({ ignoreUnescapedHTML: true });
+}
+
+function highlightCode(el) {
+  if (typeof hljs !== 'undefined') hljs.highlightElement(el);
+}
+
+// ── State ──────────────────────────────────────────────────────────────────
+var allRows   = [];
+var activeFilter = 'all';
+var lastCode  = '';
+var isRunning = false;
+var currentFilter = 'all';
+
+var PAGE_TITLES = {
+  overview: 'Overview',
+  experiments: 'Experiments',
+  code: 'solve.py',
+  logs: 'Run Logs',
+  controls: 'Agent Controls',
+};
+
+function navigate(el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  const page = el.dataset.page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('topbar-title').textContent = PAGE_TITLES[page];
+}
+
+// ── Chart ──────────────────────────────────────────────────────────────────
+const scoreChart = new Chart(
+  document.getElementById('scoreChart').getContext('2d'),
+  {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        {
+          label: 'Score',
+          data: [],
+          borderColor: '#58a6ff',
+          backgroundColor: 'rgba(88,166,255,0.07)',
+          fill: true,
+          tension: 0.3,
+          pointBackgroundColor: [],
+          pointBorderColor: 'transparent',
+          pointRadius: 5,
+          pointHoverRadius: 7,
+        },
+        {
+          label: 'Best so far',
+          data: [],
+          borderColor: '#3fb950',
+          borderDash: [5, 4],
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 500 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: '#7d8590', boxWidth: 12, font: { size: 11 } } },
+        tooltip: {
+          backgroundColor: '#161b22',
+          borderColor: '#21262d',
+          borderWidth: 1,
+          titleColor: '#e6edf3',
+          bodyColor: '#7d8590',
+          callbacks: {
+            label: c => c.dataset.label + ': ' + (c.raw ? Math.round(c.raw).toLocaleString() + ' t/s' : '—')
+          }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(33,38,45,0.8)' }, ticks: { color: '#7d8590', font: { size: 10 } } },
+        y: {
+          grid: { color: 'rgba(33,38,45,0.8)' },
+          ticks: { color: '#7d8590', font: { size: 10 }, callback: v => Math.round(v).toLocaleString() }
+        }
+      }
+    }
+  }
+);
+
+// ── Data refresh ───────────────────────────────────────────────────────────
+async function refreshAll() {
+  await Promise.all([fetchResults(), fetchCode(), fetchLog(), fetchStatus()]);
+}
+
+async function fetchResults() {
+  try {
+    const data = await (await fetch('/api/results')).json();
+    allRows = data.rows || [];
+    updateStats(data);
+    updateChart(allRows);
+    updateTable(allRows);
+    updateBreakdown(data);
+    document.getElementById('exp-count').textContent =
+      `${data.total} experiment${data.total !== 1 ? 's' : ''}`;
+  } catch {}
+}
+
+async function fetchCode() {
+  try {
+    const data = await (await fetch('/api/code')).json();
+    if (data.code !== lastCode) {
+      lastCode = data.code;
+      const block = document.getElementById('code-block');
+      block.textContent = data.code;
+      highlightCode(block);
+      const lines = data.code.split('\n').length;
+      document.getElementById('code-meta').textContent = `${lines} lines`;
+    }
+  } catch {}
+}
+
+async function fetchLog() {
+  try {
+    const data = await (await fetch('/api/log')).json();
+    if (!data.log) return;
+    const el = document.getElementById('log-body');
+    const colored = data.log
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/(✅[^\n]*|IMPROVED[^\n]*)/g, '<span class="log-ok">$1</span>')
+      .replace(/(💥[^\n]*|❌[^\n]*|FAIL[^\n]*|CRASH[^\n]*)/g, '<span class="log-err">$1</span>')
+      .replace(/(🤖[^\n]*|📝[^\n]*|📦[^\n]*|EXPERIMENT[^\n]*|BATCH[^\n]*|BASELINE[^\n]*)/g, '<span class="log-info">$1</span>')
+      .replace(/(---[^\n]*|score:[^\n]*|correctness:[^\n]*)/g, '<span class="log-dim">$1</span>');
+    el.innerHTML = colored;
+    el.scrollTop = el.scrollHeight;
+  } catch {}
+}
+
+async function fetchStatus() {
+  try {
+    const data = await (await fetch('/api/status')).json();
+    isRunning = data.running;
+    const dot = document.getElementById('status-dot');
+    const txt = document.getElementById('status-text');
+    if (isRunning) {
+      dot.classList.add('running');
+      txt.textContent = 'Agent running…';
+    } else {
+      dot.classList.remove('running');
+      txt.textContent = 'Agent idle';
+    }
+    document.getElementById('btn-start').disabled = isRunning;
+    document.getElementById('btn-stop').disabled  = !isRunning;
+  } catch {}
+}
+
+// ── Stats update ───────────────────────────────────────────────────────────
+function updateStats(data) {
+  const fmt = v => v > 0 ? Math.round(v).toLocaleString() : '—';
+  document.getElementById('stat-baseline').textContent = fmt(data.baseline);
+  document.getElementById('stat-best').textContent     = fmt(data.best);
+  document.getElementById('stat-speedup').textContent  = data.speedup > 1 ? data.speedup.toFixed(2) + 'x' : '—';
+  document.getElementById('stat-total').textContent    = data.total;
+  document.getElementById('stat-breakdown').textContent =
+    `${data.kept} kept · ${data.discarded} discarded · ${data.crashed} crashed`;
+  if (data.best > data.baseline && data.baseline > 0) {
+    const delta = Math.round(data.best - data.baseline).toLocaleString();
+    document.getElementById('stat-best-delta').textContent = `+${delta} over baseline`;
+  }
+}
+
+// ── Breakdown panel ────────────────────────────────────────────────────────
+function updateBreakdown(data) {
+  const total = data.total || 1;
+  const items = [
+    { label: 'Kept',      val: data.kept,      color: 'var(--green)',  pct: data.kept / total },
+    { label: 'Discarded', val: data.discarded,  color: 'var(--yellow)', pct: data.discarded / total },
+    { label: 'Crashed',   val: data.crashed,    color: 'var(--red)',    pct: data.crashed / total },
+  ];
+  const el = document.getElementById('breakdown-list');
+  if (data.total === 0) {
+    el.innerHTML = '<div style="color:var(--muted);font-size:13px">No experiments yet.</div>';
+    return;
+  }
+  el.innerHTML = items.map(i => `
+    <div class="breakdown-item">
+      <span class="breakdown-label">${i.label}</span>
+      <div class="breakdown-bar-wrap">
+        <div class="breakdown-bar" style="width:${Math.round(i.pct*100)}%;background:${i.color}"></div>
+      </div>
+      <span class="breakdown-val" style="color:${i.color}">${i.val}</span>
+    </div>
+  `).join('');
+}
+
+// ── Chart update ───────────────────────────────────────────────────────────
+function updateChart(rows) {
+  const labels = [], scores = [], colors = [], best = [];
+  let runBest = 0;
+  rows.forEach((r, i) => {
+    labels.push(r.description.toLowerCase().includes('baseline') ? 'Base' : `#${i}`);
+    const s = r.score > 0 ? r.score : null;
+    scores.push(s);
+    colors.push(r.status === 'keep' ? '#3fb950' : r.status === 'crash' ? '#f85149' : '#d29922');
+    if (r.score > runBest) runBest = r.score;
+    best.push(runBest);
+  });
+  scoreChart.data.labels = labels;
+  scoreChart.data.datasets[0].data = scores;
+  scoreChart.data.datasets[0].pointBackgroundColor = colors;
+  scoreChart.data.datasets[1].data = best;
+  scoreChart.update('none');
+}
+
+// ── Table update ───────────────────────────────────────────────────────────
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  updateTable(allRows);
+}
+
+function updateTable(rows) {
+  const filtered = currentFilter === 'all' ? rows : rows.filter(r => r.status === currentFilter);
+  const tbody = document.getElementById('exp-table-body');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">🔬</div>No ${currentFilter === 'all' ? '' : currentFilter + ' '}experiments yet.</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = [...filtered].reverse().map((r, i) => {
+    const idx    = rows.indexOf(r) + 1;
+    const badge  = r.status === 'keep' ? 'badge-keep' : r.status === 'crash' ? 'badge-crash' : 'badge-discard';
+    const icon   = r.status === 'keep' ? '✅' : r.status === 'crash' ? '💥' : '↩';
+    const score  = r.score > 0
+      ? `<span class="score-hi">${Math.round(r.score).toLocaleString()}</span>`
+      : `<span style="color:var(--red)">—</span>`;
+    const desc   = r.description.length > 72 ? r.description.slice(0, 72) + '…' : r.description;
+    const time   = r.processing_time > 0 ? r.processing_time.toFixed(2) + 's' : '—';
+    return `<tr>
+      <td style="color:var(--muted)">${idx}</td>
+      <td><span class="commit-tag">${r.commit}</span></td>
+      <td>${score}</td>
+      <td style="color:var(--muted)">${time}</td>
+      <td><span class="badge ${badge}">${icon} ${r.status}</span></td>
+      <td style="color:var(--muted);font-size:12px">${desc}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Agent controls ─────────────────────────────────────────────────────────
+async function startAgent() {
+  const apiKey = document.getElementById('api-key').value.trim();
+  const n      = parseInt(document.getElementById('n-experiments').value) || 10;
+  const batch  = document.getElementById('use-batch').checked;
+  if (!apiKey) { showToast('Enter your Nebius API key first.', 'err'); return; }
+  try {
+    const data = await (await fetch('/api/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_key: apiKey, n_experiments: n, batch }),
+    })).json();
+    if (data.ok) {
+      showToast(`Agent started (PID ${data.pid}) · ${n} experiments${batch ? ' via batch' : ''}.`, 'ok');
+      fetchStatus();
+    } else {
+      showToast(data.error || 'Failed to start.', 'err');
+    }
+  } catch (e) {
+    showToast('Server error: ' + e.message, 'err');
+  }
+}
+
+async function stopAgent() {
+  try {
+    const data = await (await fetch('/api/stop', { method: 'POST' })).json();
+    showToast(data.message, data.ok ? 'ok' : 'err');
+    fetchStatus();
+  } catch (e) {
+    showToast('Server error: ' + e.message, 'err');
+  }
+}
+
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast ${type}`;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+
+// ── Auto-refresh every 3s ──────────────────────────────────────────────────
+let countdown = 3;
+function tick() {
+  countdown--;
+  document.getElementById('refresh-indicator').textContent = `refresh in ${countdown}s`;
+  if (countdown <= 0) {
+    countdown = 3;
+    document.getElementById('refresh-indicator').textContent = 'refreshing…';
+    refreshAll();
+  }
+}
+
+refreshAll();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>

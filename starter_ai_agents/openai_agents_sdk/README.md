@@ -1,8 +1,8 @@
-
 ![banner](./banner.png)
+
 # OpenAI Agents SDK Starter Agent
 
-A simple demonstration of using OpenAI's Agents SDK with Nebius Studio's API to create an AI assistant that can send emails.
+A simple demonstration of using OpenAI's Agents SDK with Nebius Token Factory's API to create an AI assistant that can send emails.
 
 ## Features
 
@@ -21,9 +21,9 @@ A simple demonstration of using OpenAI's Agents SDK with Nebius Studio's API to 
 
 The application requires the following environment variables:
 
-- `NEBIUS_API_KEY`: Your Nebius Studio API key
+- `NEBIUS_API_KEY`: Your Nebius Token Factory API key
 - `RESEND_API_KEY`: Your Resend API key
-- `EXAMPLE_BASE_URL`: Nebius API base URL (defaults to "https://api.studio.nebius.ai/v1")
+- `EXAMPLE_BASE_URL`: Nebius API base URL (defaults to "https://api.tokenfactory.nebius.com/v1")
 - `EXAMPLE_MODEL_NAME`: Model to use (defaults to "meta-llama/Meta-Llama-3.1-8B-Instruct")
 
 ## Installation
@@ -32,7 +32,11 @@ The application requires the following environment variables:
 2. Install the required dependencies:
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 3. Set up your environment variables
@@ -59,5 +63,3 @@ Modify the `main.py` file to:
 - Add more tools
 - Alter the example query
 - Configure different LLM models
-
-

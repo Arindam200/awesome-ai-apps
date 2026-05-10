@@ -184,7 +184,7 @@ Contributions are welcome! Please feel free to submit a Pull Request or open an 
 
 - [Agno](https://www.agno.com/) for agent orchestration
 - [Scrapegraph](https://dub.sh/scrapegraphai) for web scraping
-- [Nebius AI Studio](https://studio.nebius.com/) for AI model access
+- [Nebius Token Factory](https://tokenfactory.nebius.com/) for AI model access
 - [Streamlit](https://streamlit.io/) for the web interface
 
 

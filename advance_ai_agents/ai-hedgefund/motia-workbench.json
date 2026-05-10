@@ -1,0 +1,94 @@
+[
+  {
+    "id": "default",
+    "config": {
+      "steps/00-noop.step.ts": {
+        "x": -507,
+        "y": 111,
+        "sourceHandlePosition": "right"
+      },
+      "steps/01-api.step.ts": {
+        "x": -281,
+        "y": 94,
+        "sourceHandlePosition": "right",
+        "targetHandlePosition": "left"
+      },
+      "steps/02-test-state.step.ts": {
+        "x": 60,
+        "y": 36,
+        "sourceHandlePosition": "bottom",
+        "targetHandlePosition": "left"
+      },
+      "steps/03-check-state-change.step.ts": {
+        "x": 78,
+        "y": 199,
+        "targetHandlePosition": "top"
+      }
+    }
+  },
+  {
+    "id": "aihedgefund-workflow",
+    "config": {
+      "steps/parallel/technical-analyst.step.ts": {
+        "x": 1340,
+        "y": 53
+      },
+      "steps/parallel/risk-manager.step.ts": {
+        "x": 1353,
+        "y": 206
+      },
+      "steps/parallel/portfolio-manager.step.ts": {
+        "x": 1360,
+        "y": 406
+      },
+      "steps/parallel/parallel-analysis-coordinator.step.ts": {
+        "x": 2067,
+        "y": 243,
+        "sourceHandlePosition": "bottom"
+      },
+      "steps/parallel/fundamental-analyst.step.ts": {
+        "x": 1349,
+        "y": 577
+      },
+      "steps/noop/01-noop.step.ts": {
+        "x": 2785,
+        "y": -164
+      },
+      "steps/noop/00-noop.step.ts": {
+        "x": -504,
+        "y": 111
+      },
+      "steps/general/web-search.step.ts": {
+        "x": 220,
+        "y": -64
+      },
+      "steps/general/save-result.step.ts": {
+        "x": 2068,
+        "y": 538,
+        "targetHandlePosition": "top"
+      },
+      "steps/general/response-coordinator.step.ts": {
+        "x": 711,
+        "y": -80
+      },
+      "steps/general/nebius-ai-analysis.step.ts": {
+        "x": 771,
+        "y": 433
+      },
+      "steps/general/finance-data.step.ts": {
+        "x": 206,
+        "y": 495
+      },
+      "steps/api/result-api.step.ts": {
+        "x": 2674,
+        "y": 502,
+        "sourceHandlePosition": "right"
+      },
+      "steps/api/query-api.step.ts": {
+        "x": 247,
+        "y": 160,
+        "sourceHandlePosition": "bottom"
+      }
+    }
+  }
+]

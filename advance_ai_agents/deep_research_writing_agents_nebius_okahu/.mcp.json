@@ -1,0 +1,36 @@
+{
+  "mcpServers": {
+    "deep-research": {
+      "command": "uv",
+      "args": [
+        "run",
+        "fastmcp",
+        "run",
+        "src/research/server.py"
+      ],
+      "env": {
+        "ENV_FILE_PATH": ".env"
+      }
+    },
+    "linkedin-writer": {
+      "command": "uv",
+      "args": [
+        "run",
+        "fastmcp",
+        "run",
+        "src/writing/server.py"
+      ],
+      "env": {
+        "ENV_FILE_PATH": ".env"
+      }
+    },
+    "okahu": {
+      "type": "http",
+      "url": "https://mcp.okahu.co/mcp",
+      "headers": {
+        "x-api-key": "<OKAHU_API_KEY>"
+      }
+    }
+  },
+  "inputs": []
+}

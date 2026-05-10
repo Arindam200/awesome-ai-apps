@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "okahu": {
+      "type": "http",
+      "url": "https://mcp.okahu.co/mcp",
+      "headers": {
+        "x-api-key": "<OKAHU_API_KEY>"
+      }
+    }
+  },
+  "inputs": []
+}

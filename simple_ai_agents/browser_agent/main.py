@@ -17,7 +17,7 @@ async def run_search():
     agent = Agent(
         task=("Go to flipkart.com, search for laptop, sort by best rating, and give me the price of the first result in markdown"),
         llm=ChatOpenAI(
-            base_url='https://api.studio.nebius.com/v1/',
+            base_url='https://api.tokenfactory.nebius.com/v1',
             model='Qwen/Qwen3-235B-A22B-Instruct-2507',
             api_key=api_key,
         ),

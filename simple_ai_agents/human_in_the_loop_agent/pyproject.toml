@@ -1,0 +1,11 @@
+[project]
+name = "human-in-the-loop-agent"
+version = "0.1.0"
+description = "Human-in-the-Loop Agent for safe AI tasks"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "agno",
+    "openai",
+    "rich",
+]

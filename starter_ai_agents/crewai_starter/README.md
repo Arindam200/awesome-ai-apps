@@ -15,7 +15,7 @@ A powerful AI research crew built with CrewAI that leverages multiple specialize
 ## Prerequisites
 
 - Python 3.10 or higher
-- Nebius API key (get it from [Nebius AI Studio](https://studio.nebius.ai/))
+- Nebius API key (get it from [Nebius Token Factory](https://studio.nebius.ai/))
 
 ## Installation
 
@@ -29,7 +29,11 @@ cd starter_ai_agents/crewai_starter
 2. Install dependencies:
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 3. Create a `.env` file in the project root and add your Nebius API key:
@@ -79,4 +83,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Acknowledgments
 
 - [CrewAI Framework](https://github.com/joaomdmoura/crewAI)
-- [Nebius AI](https://studio.nebius.ai/)
+- [Nebius Token Factory](https://studio.nebius.ai/)

@@ -5,7 +5,7 @@ import os
 lm = dspy.LM(
     "nebius/moonshotai/Kimi-K2-Instruct",
     api_key=os.environ.get("NEBIUS_API_KEY"),
-    api_base="https://api.studio.nebius.com/v1/",
+    api_base="https://api.tokenfactory.nebius.com/v1",
 )
 
 dspy.configure(lm=lm)

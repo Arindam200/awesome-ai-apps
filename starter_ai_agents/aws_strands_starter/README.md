@@ -2,7 +2,7 @@
 
 # AWS Strands Starter Agent
 
-A simple demonstration of using the Strands library with Nebius Studio's API to create an AI assistant that can fetch weather information.
+A simple demonstration of using the Strands library with Nebius Token Factory's API to create an AI assistant that can fetch weather information.
 
 ## Features
 
@@ -20,7 +20,7 @@ A simple demonstration of using the Strands library with Nebius Studio's API to 
 
 The application requires the following environment variable. You can create a `.env` file in the project root to store it.
 
-- `NEBIUS_API_KEY`: Your Nebius Studio API key.
+- `NEBIUS_API_KEY`: Your Nebius Token Factory API key.
 
 ## Installation
 

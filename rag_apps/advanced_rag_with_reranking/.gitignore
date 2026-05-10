@@ -1,0 +1,27 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+
+# Generated ingestion artifacts
+data/parsed/
+data/pages/
+data/cache/
+data/context_cache/
+data/smoke/
+data/uploads/
+data/vision-only/
+data/sample_pdfs/
+
+web/node_modules/
+web/dist/
+web/.env.local
+web/tsconfig.tsbuildinfo
+
+evals/__pycache__/
+evals/results/
+
+# Local OS noise
+.DS_Store

@@ -1,0 +1,328 @@
+{
+  "companyMappings": [
+    {
+      "companyName": "APPLE",
+      "tickerSymbol": "AAPL",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "MICROSOFT",
+      "tickerSymbol": "MSFT",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "GOOGLE",
+      "tickerSymbol": "GOOGL",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "ALPHABET",
+      "tickerSymbol": "GOOGL",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "AMAZON",
+      "tickerSymbol": "AMZN",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "META",
+      "tickerSymbol": "META",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "FACEBOOK",
+      "tickerSymbol": "META",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "TESLA",
+      "tickerSymbol": "TSLA",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "NVIDIA",
+      "tickerSymbol": "NVDA",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "NETFLIX",
+      "tickerSymbol": "NFLX",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "IBM",
+      "tickerSymbol": "IBM",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "INTEL",
+      "tickerSymbol": "INTC",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "AMD",
+      "tickerSymbol": "AMD",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "COCA-COLA",
+      "tickerSymbol": "KO",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "DISNEY",
+      "tickerSymbol": "DIS",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "WALMART",
+      "tickerSymbol": "WMT",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "NIKE",
+      "tickerSymbol": "NKE",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "MCDONALDS",
+      "tickerSymbol": "MCD",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "STARBUCKS",
+      "tickerSymbol": "SBUX",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "COSTCO",
+      "tickerSymbol": "COST",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "VISA",
+      "tickerSymbol": "V",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "MASTERCARD",
+      "tickerSymbol": "MA",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "PAYPAL",
+      "tickerSymbol": "PYPL",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "UBER",
+      "tickerSymbol": "UBER",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "LYFT",
+      "tickerSymbol": "LYFT",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "AIRBNB",
+      "tickerSymbol": "ABNB",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "PINTEREST",
+      "tickerSymbol": "PINS",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "SNAPCHAT",
+      "tickerSymbol": "SNAP",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "TWITTER",
+      "tickerSymbol": null,
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    },
+    {
+      "companyName": "SPOTIFY",
+      "tickerSymbol": "SPOT",
+      "lastUpdated": "2025-08-21T08:10:14.996Z"
+    }
+  ],
+  "knownTickers": [
+    "AAPL",
+    "MSFT",
+    "GOOGL",
+    "GOOG",
+    "AMZN",
+    "META",
+    "TSLA",
+    "NVDA",
+    "NFLX",
+    "IBM",
+    "INTC",
+    "AMD",
+    "KO",
+    "DIS",
+    "WMT",
+    "NKE",
+    "MCD",
+    "SBUX",
+    "COST",
+    "V",
+    "MA",
+    "PYPL",
+    "UBER",
+    "LYFT",
+    "ABNB",
+    "PINS",
+    "SNAP",
+    "SPOT",
+    "JPM",
+    "BAC",
+    "GS",
+    "MS",
+    "C",
+    "WFC",
+    "BRK.A",
+    "BRK.B",
+    "JNJ",
+    "PG",
+    "UNH",
+    "HD",
+    "VZ",
+    "T",
+    "PFE",
+    "MRK",
+    "XOM",
+    "CVX",
+    "BA",
+    "CAT"
+  ],
+  "commonWords": [
+    "A",
+    "I",
+    "ME",
+    "MY",
+    "IT",
+    "IS",
+    "BE",
+    "AM",
+    "PM",
+    "THE",
+    "AND",
+    "OR",
+    "IF",
+    "IN",
+    "ON",
+    "AT",
+    "TO",
+    "OF",
+    "BY",
+    "FOR",
+    "AS",
+    "SO",
+    "BUT",
+    "OUT",
+    "UP",
+    "FAQ",
+    "CEO",
+    "CFO",
+    "CTO",
+    "COO",
+    "SVP",
+    "VP",
+    "USA",
+    "UK",
+    "EU",
+    "WHAT",
+    "WHO",
+    "WHY",
+    "HOW",
+    "WHEN",
+    "WHERE",
+    "WHICH",
+    "THAT",
+    "THESE",
+    "THOSE",
+    "THEY",
+    "THIS",
+    "WILL",
+    "ABOUT",
+    "FROM",
+    "WITH",
+    "SHOW",
+    "GET",
+    "CAN",
+    "MAY",
+    "HAS",
+    "HAD",
+    "WAS",
+    "WERE",
+    "BEEN",
+    "NEW",
+    "OLD",
+    "BIG",
+    "TOP",
+    "DOW",
+    "STOCK",
+    "STOCKS",
+    "PRICE",
+    "PRICES",
+    "MARKET",
+    "MARKETS",
+    "TRADE",
+    "TRADES",
+    "TRADING",
+    "BUY",
+    "SELL",
+    "GAIN",
+    "GAINS",
+    "LOSS",
+    "LOSSES",
+    "PROFIT",
+    "PROFITS",
+    "DIVIDEND",
+    "DIVIDENDS",
+    "YIELD",
+    "YIELDS",
+    "FUND",
+    "FUNDS",
+    "ETF",
+    "ETFS",
+    "BOND",
+    "BONDS",
+    "VALUE",
+    "GROWTH",
+    "INCOME",
+    "RETURN",
+    "RETURNS",
+    "HIGH",
+    "LOW",
+    "OPEN",
+    "CLOSE",
+    "VOLUME",
+    "INFO",
+    "NEWS",
+    "DATA",
+    "REPORT",
+    "TELL",
+    "MOST",
+    "BEST",
+    "YES",
+    "NO",
+    "NOW",
+    "THEN",
+    "HERE",
+    "THERE",
+    "YOUR",
+    "HIS",
+    "HER",
+    "THEIR",
+    "OUR"
+  ],
+  "lastUpdated": "2025-08-21T08:10:14.996Z",
+  "version": "1.0.0"
+}

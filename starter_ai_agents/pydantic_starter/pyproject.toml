@@ -1,0 +1,11 @@
+[project]
+name = "pydantic-starter"
+version = "0.1.0"
+description = "PydanticAI Weather Bot - Real-time weather info"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic-ai",
+    "pydantic-ai-slim[duckduckgo]",
+    "python-dotenv",
+]

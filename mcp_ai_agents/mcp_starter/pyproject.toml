@@ -1,0 +1,11 @@
+[project]
+name = "mcp-starter"
+version = "0.1.0"
+description = "GitHub repo analyzer starter"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openai-agents",
+    "python-dotenv",
+    "openai",
+]

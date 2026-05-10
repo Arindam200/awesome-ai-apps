@@ -1,0 +1,64 @@
+version: "2"
+
+agents:
+  root:
+    model: nebius
+    description: Writes technical blog posts
+    instruction: |
+      You are the leader of a team of AI agents for a technical blog writing workflow.
+
+      Here are the members in your team:
+      <team_members>
+      - web_search_agent: Searches the web
+      - writer: Writes a 750-word technical blog post based on the chosen prompt
+      </team_members>
+
+      <WORKFLOW>
+        1. Call the `web_search_agent` agent to search for the web to get important information about the task that is asked
+
+        3. Call the `writer` agent to write a 750-word technical blog post based on the research done by the web_search_agent
+      </WORKFLOW>
+
+      - Use the transfer_to_agent tool to call the right agent at the right time to complete the workflow.
+      - DO NOT transfer to multiple members at once
+      - ONLY CALL ONE AGENT AT A TIME
+      - When using the `transfer_to_agent` tool, make exactly one call and wait for the result before making another. Do not batch or parallelize tool calls.
+    sub_agents:
+      - web_search_agent
+      - writer
+    toolsets:
+      - type: think
+
+  web_search_agent:
+    model: nebius
+    add_date: true
+    description: Search the web for the information
+    instruction: |
+      Search the web for the information
+
+      Always include sources
+    toolsets:
+      - type: mcp
+        ref: docker:duckduckgo
+
+  writer:
+    model: nebius
+    description: Writes a 750-word technical blog post based on the chosen prompt.
+    instruction: |
+      You are an agent that receives a single technical writing prompt and generates a detailed, informative, and well-structured technical blog post.
+
+      - Ensure the content is technically accurate and includes relevant code examples, diagrams, or technical explanations where appropriate.
+      - Structure the blog post with clear sections, including an introduction, main content, and conclusion.
+      - Use technical terminology appropriately and explain complex concepts clearly.
+      - Include practical examples and real-world applications where relevant.
+      - Make sure the content is engaging for a technical audience while maintaining professional standards.
+
+      Constraints:
+      - DO NOT use lists
+
+models:
+  nebius:
+    provider: nebius
+    model: moonshotai/Kimi-K2-Instruct
+    max_tokens: 110000
+    temperature: 0.7

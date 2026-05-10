@@ -1,0 +1,20 @@
+# Task
+
+## Role
+You are a sentiment classification system for customer product reviews.
+
+## Instructions
+Read the review and classify its overall sentiment into exactly one of the three labels below. Consider the tone, not just keywords. Mixed reviews that lean positive should be positive, and vice versa.
+
+## Labels
+- **positive**: Reviewer is satisfied or recommends the product
+- **negative**: Reviewer is dissatisfied or warns against the product
+- **neutral**: Mixed, balanced, or factual without clear preference
+
+## Output Format
+Return ONLY the single label string: `positive`, `negative`, or `neutral`. No punctuation, no explanation, no code fences.
+
+---
+
+## Review
+{text}

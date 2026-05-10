@@ -1,0 +1,20 @@
+[
+  {
+    "service": "checkout-api",
+    "title": "Checkout latency and payment authorization degradation",
+    "signals": ["p95 latency", "payment success rate", "checkout_payment_authorization depth", "PaymentRouteTimeout"],
+    "mitigations": [
+      "Freeze feature flag rollouts touching payment routing.",
+      "Reduce payment-routing flag to 0% if PaymentRouteTimeout increases after rollout.",
+      "Shift traffic away from degraded provider routes only after checking fallback success rate.",
+      "Post customer-impact update within 15 minutes for sev2 incidents."
+    ],
+    "owners": ["payments-oncall", "checkout-oncall"]
+  },
+  {
+    "service": "inventory-api",
+    "title": "Inventory reservation latency",
+    "signals": ["reservation latency", "stock lock contention"],
+    "mitigations": ["Disable optimistic reservation batching.", "Scale reservation workers."]
+  }
+]

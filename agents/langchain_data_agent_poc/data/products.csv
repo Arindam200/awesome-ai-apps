@@ -1,0 +1,9 @@
+product_id,product_name,category,unit_price,inventory,reorder_level
+P-1001,Atlas Backpack,Bags,79.00,42,25
+P-1002,Metro Tote,Bags,54.00,18,20
+P-1003,Cloud Runner,Shoes,129.00,31,15
+P-1004,Trail Runner,Shoes,149.00,12,18
+P-1005,Everyday Hoodie,Apparel,68.00,56,30
+P-1006,Merino Tee,Apparel,42.00,27,35
+P-1007,Travel Mug,Accessories,24.00,83,40
+P-1008,Laptop Sleeve,Accessories,36.00,21,25

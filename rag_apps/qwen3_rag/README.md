@@ -17,8 +17,8 @@ A powerful RAG (Retrieval-Augmented Generation) chat application built with Stre
 ## Prerequisites
 
 - Python 3.10
-- [Nebius AI Studio](https://studio.nebius.com/) Account
-- Nebius AI [API Keys](https://studio.nebius.com/?modals=create-api-key)
+- [Nebius Token Factory](https://tokenfactory.nebius.com/) Account
+- Nebius AI [API Keys](https://tokenfactory.nebius.com/)
 
 ## Installation
 
@@ -32,7 +32,11 @@ cd rag_apps/qwen3_rag
 2. Install the required packages:
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 3. Set up your environment variables:

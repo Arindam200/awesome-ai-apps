@@ -1,0 +1,13 @@
+[project]
+name = "paralegal-crew"
+version = "0.1.0"
+description = "CrewAI paralegal crew: contract review, clause extraction, risk scoring"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "crewai",
+    "litellm",
+    "streamlit",
+    "python-dotenv",
+    "pypdf",
+]

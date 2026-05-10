@@ -1,0 +1,16 @@
+[
+  {
+    "ts": "2026-05-07T05:43:12Z",
+    "service": "checkout-api",
+    "version": "2026.05.07.2",
+    "changes": ["payment route abstraction", "smart retry flag plumbing"],
+    "author": "checkout-platform"
+  },
+  {
+    "ts": "2026-05-07T04:11:18Z",
+    "service": "checkout-api",
+    "version": "2026.05.07.1",
+    "changes": ["tax rounding fix"],
+    "author": "checkout-platform"
+  }
+]

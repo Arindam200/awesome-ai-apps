@@ -32,7 +32,11 @@ A powerful calendar management assistant built using Agno framework that helps u
 2. Install the required dependencies:
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 ## Environment Setup

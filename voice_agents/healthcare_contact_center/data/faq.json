@@ -1,0 +1,22 @@
+{
+  "clinic_hours": {
+    "keywords": ["hours", "open", "close", "timing", "when"],
+    "answer": "The clinic is open Monday through Friday from 8 AM to 6 PM, and Saturdays from 9 AM to 1 PM. We are closed on Sundays."
+  },
+  "insurance": {
+    "keywords": ["insurance", "coverage", "covered", "provider", "network"],
+    "answer": "We accept most major insurance plans including Blue Cross, Aetna, Cigna, and UnitedHealthcare. Please bring your insurance card to your visit. For Medicare and Medicaid, please call ahead to confirm."
+  },
+  "billing": {
+    "keywords": ["bill", "billing", "payment", "pay", "charge", "cost"],
+    "answer": "You can pay your bill online through our patient portal, by phone, or in person at the clinic. We accept credit cards, debit cards, and HSA or FSA accounts. Payment plans are available on request."
+  },
+  "location": {
+    "keywords": ["where", "location", "address", "directions"],
+    "answer": "We are located at 123 Wellness Avenue, Suite 200. Free parking is available in the rear lot, and we are a five-minute walk from the Central Station."
+  },
+  "new_patient": {
+    "keywords": ["new patient", "first visit", "register", "sign up"],
+    "answer": "New patients should arrive 15 minutes early to complete intake forms. You can also fill them out in advance through our patient portal. Please bring a photo ID and your insurance card."
+  }
+}

@@ -1,75 +1,6 @@
-# Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
-
 ![Banner](/assets/banner_new.png)
 
-This repository is a comprehensive collection of practical examples, tutorials, and recipes for building powerful LLM-powered applications. From simple chatbots to advanced AI agents, these projects serve as a guide for developers working with various AI frameworks and tools.
-
-Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform for building and deploying AI applications.
-
-## 🚀 Featured AI Agent Frameworks
-
-- [<img src="https://raw.githubusercontent.com/google/adk-python/main/assets/agent-development-kit.png" alt="Google ADK logo" width="20" height="20"> Google Agent Development Kit (ADK)](https://google.github.io/adk-docs/)
-- [<img src="https://avatars.githubusercontent.com/u/14957082?s=200&v=4" alt="OpenAI Agents SDK logo" width="20" height="20"> OpenAI Agents SDK](https://openai.github.io/openai-agents-python/)
-- [<img src="https://cdn.simpleicons.org/langchain" alt="LangChain logo" width="25" height="25"> LangChain ](https://python.langchain.com/)
-- [<img src="https://avatars.githubusercontent.com/u/130722866?s=200&v=4" alt="Llamaindex logo" width="20" height="20"> LlamaIndex](https://www.llamaindex.ai/)
-- [<img src="https://avatars.githubusercontent.com/u/104874993?s=48&v=4" alt="Agno logo" width="20" height="20"> Agno](https://www.agno.com/)
-- [<img src="https://cdn.prod.website-files.com/66cf2bfc3ed15b02da0ca770/66d07240057721394308addd_Logo%20(1).svg" alt="CrewAI logo" width="35" height="25"> CrewAI](https://www.crewai.com/)
-- [<img src="https://avatars.githubusercontent.com/u/209155962?s=200&v=4" alt="AWS Strands Agents logo" width="20" height="20"> AWS Strands Agent](https://strandsagents.com/)
-- [<img src="https://avatars.githubusercontent.com/u/110818415?s=200&v=4" alt="Pydantic AI logo" width="20" height="20"> Pydantic AI](https://ai.pydantic.dev/)
-- [<img src="https://avatars.githubusercontent.com/u/134388954?s=200&v=4" alt="Camel AI logo" width="20" height="20"> CAMEL‑AI](https://www.camel-ai.org/)
-- [<img src="assets/DSPy.png" alt="DSPy logo" width="20" height="20"> DSPy](https://dspy.ai/)
-
-## 🧩 Starter Agents
-
-**Quick-start agents for learning and extending:**
-
-- [Agno HackerNews Analysis](starter_ai_agents/agno_starter) - Agno-based agent for trend analysis on HackerNews.
-- [OpenAI SDK Starter](starter_ai_agents/openai_agents_sdk) - OpenAI Agents SDK based email helper & haiku writer.
-- [LlamaIndex Task Manager](starter_ai_agents/llamaindex_starter) - LlamaIndex-powered task assistant.
-- [CrewAI Research Crew](starter_ai_agents/crewai_starter) - Multi-agent research team.
-- [PydanticAI Weather Bot](starter_ai_agents/pydantic_starter) - Real-time weather info.
-- [LangChain-LangGraph Starter](starter_ai_agents/langchain_langgraph_starter) - LangChain + LangGraph starter.
-- [AWS Strands Agent Starter](starter_ai_agents/aws_strands_starter) - Weather report Agent.
-- [Camel AI Starter](starter_ai_agents/camel_ai_starter) - Performance benchmarking tool that compares the performance of various AI models.
-
-## 🪶 Simple Agents
-
-**Straightforward, practical use-cases:**
-
-- [Finance Agent](simple_ai_agents/finance_agent) - Tracks live stock & market data.
-- [Human-in-the-Loop Agent](simple_ai_agents/human_in_the_loop_agent) - HITL actions for safe AI tasks.
-- [Newsletter Generator](simple_ai_agents/newsletter_agent) - AI newsletter builder with Firecrawl.
-- [Reasoning Agent](simple_ai_agents/reasoning_agent) - Financial reasoning step-by-step.
-- [Agno UI Example](simple_ai_agents/agno_ui_agent) - UI for web & finance agents.
-- [Mastra Weather Bot](simple_ai_agents/mastra_ai_weather_agent) - Weather updates with Mastra AI.
-- [Calendar Assistant](simple_ai_agents/cal_scheduling_agent) - Calendar scheduling with Cal.com.
-- [Web Automation Agent](simple_ai_agents/browser_agent) - Simple Browser Agent implementation with Nebius & browser use.
-- [Nebius Chat](simple_ai_agents/nebius_chat) - Nebius AI Studio Chat interface.
-- [Talk to Your DB](simple_ai_agents/talk_to_db) - Talk to your Database with GibsonAI & Langchain
-
-## 🗂️ MCP Agents
-
-**Examples using Model Context Protocol:**
-
-- [Doc-MCP](mcp_ai_agents/doc_mcp) - Semantic RAG docs & Q\&A.
-- [LangGraph MCP Agent](mcp_ai_agents/langchain_langgraph_mcp_agent) - LangChain ReAct agent with Couchbase.
-- [GitHub MCP Agent](mcp_ai_agents/github_mcp_agent) - Repo insights via MCP.
-- [MCP Starter](mcp_ai_agents/mcp_starter) - GitHub repo analyzer starter.
-- [Talk to your Docs](mcp_ai_agents/docs_qna_agent) - Documentation QnA Agent
-- [Database MCP Agent](mcp_ai_agents/database_mcp_agent) - A conversational AI agent for managing GibsonAI database projects and schemas.
-
-## 🧠 Memory Agents
-
-**Agents with advanced memory capabilities:**
-
-- [Agno Memory Agent](memory_agents/agno_memory_agent) - Agno-based agent with persistent memory.
-- [arXiv Researcher Agent with Memori](memory_agents/arxiv_researcher_agent_with_memori) - Research assistant using OpenAI Agents and GibsonAI Memori.
-- [AWS Strands Agent with Memori](memory_agents/aws_strands_agent_with_memori) - AWS Strands agent enhanced with Memori memory.
-- [Blog Writing Agent](memory_agents/blog_writing_agent) - Personalized blog writing agent with memory.
-- [Social Media Agent](memory_agents/social_media_agent) - Social media automation agent with memory.
-
-
-## 📚 RAG Applications
+<div align="center">
 
 **Retrieve-augmented generation examples:**
 
@@ -98,55 +29,463 @@ Powered by [Nebius AI Studio](https://dub.sh/nebius) - your one-stop platform fo
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent) - Agentic Workflow that send meeting notes and creates task based on conversation.
 
 ## 📺 Playlist of Demo Videos & Tutorials
+# Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-- [Build with MCP](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lolxax4L2HS54Me8gn1gkz4)
-- [Build AI Agents](https://www.youtube.com/playlist?list=PLMZM1DAlf0LqixhAG9BDk4O_FjqnaogK8)
-- [AI Agents, MCP and more...](https://www.youtube.com/playlist?list=PL2ambAOfYA6-LDz0KpVKu9vJKAqhv0KKI)
+<a href="https://trendshift.io/repositories/14662" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14662" alt="Arindam200%2Fawesome-ai-apps | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+
+</div>
+
+This repository is a comprehensive collection of **80+ practical examples, tutorials, and recipes** for building powerful LLM-powered applications — including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
+
+## 📋 Table of Contents
+
+- [🎓 Courses](#-courses)
+- [🚀 Featured AI Apps](#-featured-ai-apps)
+  - [🧩 Starter Agents](#-starter-agents)
+  - [🪶 Simple Agents](#-simple-agents)
+  - [🎙️ Voice Agents](#-voice-agents)
+  - [🗂️ MCP Agents](#️-mcp-agents)
+  - [🧠 Memory Agents](#-memory-agents)
+  - [📚 RAG Applications](#-rag-applications)
+  - [🔬 Advanced Agents](#-advanced-agents)
+- [📺 Tutorials & Videos](#-tutorials--videos)
+- [🚀 Getting Started](#getting-started)
+- [🤝 Contributing](#-contributing)
+
+---
+
+<div align="center">
+
+## 💎 Sponsors
+
+<p align="center">
+  A huge thank you to our sponsors for their generous support!
+</p>
+
+<table align="center" cellpadding="10" style="width:100%; border-collapse:collapse;">
+  <tr align="center">
+    <td width="300" valign="middle" align="center">
+      <a href="https://dub.sh/brightdata" target="_blank" title="Visit Bright Data">
+        <img src="https://mintlify.s3.us-west-1.amazonaws.com/brightdata/logo/light.svg" height="35" style="max-width:180px;" alt="Bright Data - Web Data Platform">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">Web Data Platform</span>
+        <br>
+        <a href="https://dub.sh/brightdata" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Bright Data website">
+        </a>
+      </sub>
+    </td>
+    <td width="300" valign="middle" align="center">
+      <a href="https://dub.sh/nebius" target="_blank" title="Visit Nebius Token Factory">
+        <img src="./assets/nebius.png" height="36" style="max-width:180px;" alt="Nebius Token Factory">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">AI Inference Provider</span>
+        <br>
+        <a href="https://dub.sh/nebius" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Nebius Token Factory">
+        </a>
+      </sub>
+    </td>
+    <td width="300" valign="middle" align="center">
+      <a href="https://dub.sh/scrapegraphai" target="_blank" title="Visit ScrapeGraphAI on GitHub">
+        <img src="https://raw.githubusercontent.com/ScrapeGraphAI/ScrapeGraph-AI/main/docs/assets/scrapegraphai_logo.png" height="44" style="max-width:180px;" alt="ScrapeGraphAI - Web Scraping Library">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">AI Web Scraping framework</span>
+        <br>
+        <a href="https://dub.sh/scrapegraphai" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="View ScrapeGraphAI on GitHub">
+        </a>
+      </sub>
+    </td>
+  </tr>
+  <tr align="center">
+    <td width="300" valign="middle" align="center">
+      <a href="https://dub.sh/memorilabs" target="_blank" title="Visit Memorilabs">
+        <img src="assets/memori.png" height="36" style="max-width:180px;" alt="Memori - SQL Native Memory for AI">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">SQL Native Memory for AI</span>
+        <br>
+        <a href="https://dub.sh/memorilabs" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Memorilabs website">
+        </a>
+      </sub>
+    </td>
+    <td width="300" valign="middle" align="center">
+      <a href="https://dub.sh/copilotkit" target="_blank" title="Visit CopilotKit">
+        <img src="assets/copilot-kit-logo.svg" height="36" style="max-width:180px;" alt="CopilotKit - Agentic Application Platform">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">Agentic Application Platform</span>
+        <br>
+        <a href="https://dub.sh/copilotkit" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit CopilotKit website">
+        </a>
+      </sub>
+    </td>
+    <td width="300" valign="middle" align="center">
+      <a href="https://dub.sh/scalekitt" target="_blank" title="Visit ScaleKit">
+        <img src="assets/scalekit.svg" height="36" style="max-width:180px;" alt="ScaleKit - Auth Stack for AI">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">Auth Stack for AI</span>
+        <br>
+        <a href="https://dub.sh/scalekitt" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit ScaleKit website">
+        </a>
+      </sub>
+    </td>
+  </tr>
+  <tr align="center">
+    <td width="200" valign="middle" align="center">
+      <a href="https://okahu.ai" target="_blank" title="Visit Okahu">
+        <img src="assets/okahu.png" height="36" style="max-width:180px;" alt="Okahu - AI Platform">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">AI Observability Platform</span>
+        <br>
+        <a href="https://okahu.ai" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Okahu website">
+        </a>
+      </sub>
+    </td>
+    <td width="200" valign="middle" align="center">
+      <a href="https://dub.sh/serpApi" target="_blank" title="Visit SerpApi">
+        <img src="assets/serpapi.png" height="36" style="max-width:180px;" alt="SerpApi - Google Search API">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">Google Search API</span>
+        <br>
+        <a href="https://dub.sh/serpApi" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit SerpApi website">
+        </a>
+      </sub>
+    </td>
+    <td width="200" valign="middle" align="center">
+      <a href="https://dub.sh/agentfield" target="_blank" title="Visit AgentField">
+        <img src="assets/agentfield.png" height="40" style="max-width:180px;" alt="AgentField - Kubernetes for AI Agents">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">Kubernetes for AI Agents</span>
+        <br>
+        <a href="https://dub.sh/agentfield" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit AgentField website">
+        </a>
+      </sub>
+    </td>
+  </tr>
+
+   
+
+</table>
+
+### 💎 Become a Sponsor
+
+<p align="center">
+Interested in sponsoring this project? Feel free to reach out!
+<br/>
+<a href="https://dub.sh/arindam-linkedin" target="_blank">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn">
+</a>
+<a href="mailto:arindammajumder2020@gmail.com">
+    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
+</a>
+</p>
+
+</div>
+
+---
+
+## 🎓 Courses
+
+### AWS Strands Course for Beginners
+
+**Comprehensive hands-on course on building AI agents with AWS Strands SDK:**
+
+- [**AWS Strands Course**](course/aws_strands) - Complete 8-lesson course covering agent fundamentals to production patterns
+  - **Foundation**: Basic agents, session management, structured output
+  - **Integration**: MCP agents, human-in-the-loop patterns
+  - **Multi-Agent**: Orchestrator agents, swarm intelligence, graph workflows
+  - **Production**: Observability, safety guardrails, and best practices
+
+## 🚀 Featured AI Apps
+
+### 🧩 Starter Agents
+
+**Quick-start agents for learning and extending different AI frameworks.** _19 projects_
+
+- [Agno HackerNews Analysis](starter_ai_agents/agno_starter) - Agno-based agent for trend analysis on HackerNews
+- [OpenAI SDK Starter](starter_ai_agents/openai_agents_sdk) - OpenAI Agents SDK with email helper & haiku writer examples
+- [LlamaIndex Task Manager](starter_ai_agents/llamaindex_starter) - LlamaIndex-powered task assistant
+- [CrewAI Research Crew](starter_ai_agents/crewai_starter) - Multi-agent research team example
+- [Letta Starter](starter_ai_agents/letta_starter) - Stateful agent with persistent long-term memory across sessions
+- [PydanticAI Weather Bot](starter_ai_agents/pydantic_starter) - Real-time weather information agent
+- [LangChain Starter](starter_ai_agents/langchain_starter) - LangChain tool-calling agent with `create_tool_calling_agent` + `AgentExecutor`, powered by Nebius
+- [LangGraph Starter](starter_ai_agents/langgraph_starter) - LangGraph prebuilt ReAct agent (`create_react_agent`) with custom tools, powered by Nebius
+- [AWS Strands Agent Starter](starter_ai_agents/aws_strands_starter) - Weather report agent using AWS Strands SDK
+- [Mastra Starter](starter_ai_agents/mastra_starter) - TypeScript-first agent with a custom tool powered by Nebius Token Factory
+- [Camel AI Starter](starter_ai_agents/camel_ai_starter) - Performance benchmarking tool comparing various AI models
+- [DSPy Starter](starter_ai_agents/dspy_starter) - DSPy framework for building and optimizing AI systems
+- [Google ADK Starter](starter_ai_agents/google_adk_starter) - Google Agent Development Kit starter template
+- [Semantic Kernel Starter](starter_ai_agents/semantic_kernel_starter) - Microsoft Semantic Kernel `ChatCompletionAgent` with plugin-based tool calling
+- [smolagents Starter](starter_ai_agents/smolagents_starter) - Hugging Face smolagents code-first web-search agent
+- [AutoGen Starter](starter_ai_agents/autogen_starter) - Microsoft AutoGen `AssistantAgent` with a custom tool, powered by Nebius Token Factory
+- [cagent Starter](starter_ai_agents/cagent_starter) - Open-source customizable multi-agent runtime by Docker
+- [Sayna Voice Agent](starter_ai_agents/sayna_starter) - Real-time voice infrastructure with multi-provider STT/TTS (Deepgram, ElevenLabs, Azure, Google) and WebSocket streaming
+- [KAOS Starter](starter_ai_agents/kaos_starter) - Kubernetes-native multi-agent system with MCP tools and in-cluster LLM
+
+### 🪶 Simple Agents
+
+**Straightforward, practical use-cases for everyday AI applications.** _17 projects_
+
+- [Agno AI Examples](simple_ai_agents/agno_ai_examples) - Simple to multi-agent examples with web search & knowledge base
+- [Finance Agent](simple_ai_agents/finance_agent) - Real-time stock & market data tracking agent
+- [Human-in-the-Loop Agent](simple_ai_agents/human_in_the_loop_agent) - HITL actions for safe AI task execution
+- [Newsletter Generator](simple_ai_agents/newsletter_agent) - AI-powered newsletter builder with Firecrawl integration
+- [Reasoning Agent](simple_ai_agents/reasoning_agent) - Step-by-step financial reasoning demonstration
+- [Agno UI Example](simple_ai_agents/agno_ui_agent) - Interactive UI for web & finance agents
+- [Mastra Weather Bot](simple_ai_agents/mastra_ai_weather_agent) - Weather updates using Mastra AI framework
+- [Calendar Assistant](simple_ai_agents/cal_scheduling_agent) - Calendar scheduling integration with Cal.com
+- [Smart Scheduler Assistant](simple_ai_agents/email_to_calendar_scheduler) - AI-powered Gmail reader and Google Calendar manager
+- [Web Automation Agent](simple_ai_agents/browser_agent) - Browser automation agent using Nebius & browser-use
+- [Nebius Chat](simple_ai_agents/nebius_chat) - Chat interface for Nebius Token Factory
+- [RouteLLM Chat](simple_ai_agents/llm_router) - Intelligent model routing with RouteLLM (GPT-4o-mini vs Nebius Llama) for cost optimization
+- [Talk to Your DB](simple_ai_agents/talk_to_db) - Natural language database queries with GibsonAI & LangChain
+- [LangChain Simple Agents](simple_ai_agents/langchain_simple_agents) - Nebius-powered incident response, support, vendor risk, and data quality agents with typed outputs and guarded tools
+- [Agent Discovery Agent](simple_ai_agents/agent_discovery_agent) - Find and compare AI agents across NANDA, MCP, Virtuals, A2A, and ERC-8004 registries
+- [LangChain Data Agent PoC](agents/langchain_data_agent_poc) - Natural-language-to-SQL data agent with LangGraph, Nebius, read-only SQL safety, and Streamlit charts
+- [VoyageCompass Travel Planner](agents/nebius_travel_planner) - LangChain and Nebius travel planner with weather, research, currency conversion, budgets, and packing tools
+
+### 🎙️ Voice Agents
+
+**Real-time voice assistants and streaming speech pipelines.** _7 projects_
+
+- [Gradium + Nebius Voice Coach](voice_agents/voice-agent-gradium-nebius-langchain) - Conversational pitch coach using Gradium STT/TTS, LangChain orchestration, and Nebius reasoning
+- [Healthcare Voice Contact Center](voice_agents/healthcare_contact_center) - Pipecat healthcare contact center with appointment booking, FAQ handling, and supervisor escalation
+- [LiveKit + Gemini Realtime](voice_agents/livekit_gemini_agents) - LiveKit Agents with Google Gemini Live (`gemini` multimodal realtime) for low-latency voice conversations in a LiveKit room
+- [LiveKit Voice Agent with Web Search](voice_agents/livekit_web_search_agent) - LiveKit + Gemini realtime voice agent with an Olostep-backed `web_search` tool for fresh, source-cited answers
+- [LiveKit RSVP Confirmation Agent](voice_agents/livekit_rsvp_agent) - Outbound voice agent that calls attendees, confirms RSVPs, and updates a JSON-backed event database
+- [Pipecat + Sarvam](voice_agents/pipecat_agent) - Pipecat voice pipeline with Sarvam STT/TTS and OpenAI for chat; WebRTC (browser) or Daily transport via the Pipecat runner
+- [Speed-to-Lead Voice Agent](voice_agents/speed_to_lead_agent) - LiveKit-based voice agent that calls inbound leads instantly, routes them to specialists, and logs to a mock CRM
+
+### 🗂️ MCP Agents
+
+**Examples using Model Context Protocol for external tool integration.** _13 projects_
+
+- [Doc-MCP](mcp_ai_agents/doc_mcp) - Semantic RAG documentation & Q&A system
+- [LangGraph MCP Agent](mcp_ai_agents/langchain_langgraph_mcp_agent) - LangChain ReAct agent with Couchbase integration
+- [GitHub MCP Agent](mcp_ai_agents/github_mcp_agent) - Repository insights and analysis via MCP
+- [MCP Starter](mcp_ai_agents/mcp_starter) - GitHub repository analyzer starter template
+- [Talk to your Docs](mcp_ai_agents/docs_qna_agent) - Documentation Q&A agent with MCP
+- [Database MCP Agent](mcp_ai_agents/database_mcp_agent) - Conversational AI agent for managing GibsonAI database projects and schemas
+- [Hotel Finder Agent](mcp_ai_agents/hotel_finder_agent) - Hotel search and booking using MCP integration
+- [Custom MCP Server](mcp_ai_agents/custom_mcp_server) - Custom MCP server implementation example
+- [Couchbase MCP Server](mcp_ai_agents/couchbase_mcp_server) - Couchbase database integration with MCP protocol
+- [ScaleKit Exa MCP Security](mcp_ai_agents/scalekit-exa-mcp-security) - Security-focused MCP integration with Exa search
+- [Docker E2B MCP Agent](mcp_ai_agents/e2b_docker_mcp_agent) - Secure AI agent for running agents in sandboxed Docker environments via MCP Gateway
+- [Taskade MCP Agent](mcp_ai_agents/taskade_mcp_agent) - AI-powered workspace agent for managing projects, tasks, and workflows via Taskade MCP
+- [Telemetry MCP Okahu](mcp_ai_agents/telemetry-mcp-okahu) - Self-healing Text-to-SQL demo using Okahu Cloud traces via hosted MCP
+
+### 🧠 Memory Agents
+
+**Agents with advanced memory capabilities for context retention and personalization.** _12 projects_
+
+- [Agno Memory Agent](memory_agents/agno_memory_agent) - Agno-based agent with persistent memory capabilities
+- [arXiv Researcher Agent with Memori](memory_agents/arxiv_researcher_agent_with_memori) - Research assistant using OpenAI Agents and GibsonAI Memori
+- [AWS Strands Agent with Memori](memory_agents/aws_strands_agent_with_memori) - AWS Strands agent enhanced with Memori memory system
+- [Blog Writing Agent](memory_agents/blog_writing_agent) - Personalized blog writing agent with memory for style consistency
+- [Social Media Agent](memory_agents/social_media_agent) - Social media automation agent with memory for brand voice
+- [Job Search Agent](memory_agents/job_search_agent) - Job search agent with memory for preference tracking
+- [Brand Reputation Monitor](memory_agents/brand_reputation_monitor) - AI-powered brand reputation monitoring with news analysis and sentiment tracking
+- [Product Launch Agent](memory_agents/product_launch_agent) - Competitive intelligence tool for analyzing competitor product launches
+- [AI Consultant Agent](memory_agents/ai_consultant_agent/) - AI-powered consulting agent using **Memori v3** as long-term memory fabric and **ExaAI** for research
+- [Customer Support Voice Agent](memory_agents/customer_support_voice_agent) - Voice-enabled customer support assistant with Memori v3 and Firecrawl for knowledge base management
+- [YouTube Trend Agent](memory_agents/youtube_trend_agent) - YouTube channel analysis agent with Memori, Agno, and Exa for trend analysis and video ideas
+- [Study Coach Agent](memory_agents/study_coach_agent) - AI-powered study coach with Memori v3 and LangGraph for multi-step verification of understanding
+
+### 📚 RAG Applications
+
+**Retrieve-augmented generation examples for document understanding and knowledge bases.** _12 projects_
+
+- [Agentic RAG](rag_apps/agentic_rag) - Agentic RAG implementation with Agno & GPT-5
+- [Agentic RAG with Web Search](rag_apps/agentic_rag_with_web_search) - Advanced RAG with CrewAI, Qdrant, and Exa for hybrid search capabilities
+- [Resume Optimizer](rag_apps/resume_optimizer) - AI-powered resume optimization and enhancement tool
+- [LlamaIndex RAG Starter](rag_apps/llamaIndex_starter) - LlamaIndex + Nebius RAG starter template
+- [PDF RAG Analyzer](rag_apps/pdf_rag_analyser) - Multi-PDF chat and analysis system
+- [Qwen3 RAG Chat](rag_apps/qwen3_rag) - PDF chatbot interface built with Streamlit
+- [Chat with Code](rag_apps/chat_with_code) - Conversational code explorer and documentation assistant
+- [Gemma3 OCR](rag_apps/gemma_ocr/) - OCR-based document and image processor using Gemma3 model
+- [Nvidia Nemotron OCR](rag_apps/nvidia_ocr/) - OCR-based document and image parsing using Nvidia Nemotron-Nano-V2-12b
+- [Contextual AI RAG](rag_apps/contextual_ai_rag) - Enterprise-level RAG with managed datastores and quality evaluation
+- [Advanced RAG with Reranking](rag_apps/advanced_rag_with_reranking) - Production-shaped PDF RAG with contextual retrieval, Qdrant hybrid search, reranking, streaming answers, upload ingestion, and clickable citations
+- [Simple RAG](rag_apps/simple_rag) - Basic RAG implementation with Nebius for quick starts
+- [WFGY 16 Problem Map LLM Debugger](rag_apps/wfgy_llm_debugger) - 16-mode map based debugger for LLM and RAG bugs
+
+### 🔬 Advanced Agents
+
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _20 projects_
+
+- [Deep Research + Writing Agents Workshop](advance_ai_agents/deep_research_writing_agents_nebius_okahu) - Nebius-powered LangChain MCP workshop with Exa research, Gemini image generation, and Okahu/Monocle eval observability
+- [Nebius AutoResearch](advance_ai_agents/nebius-autoresearch-autoresearch-mar30) - NYC taxi analytics pipeline optimizer; iterative code search with Nebius Token Factory (real-time or batch inference)
+- [AgentField Financial Research Agent](advance_ai_agents/agentfield_finance_research_agent) - Financial Research Agent with AgentField
+- [Due Diligence Agent](advance_ai_agents/due_diligence_agent) - Multi-agent company due diligence pipeline with AG2 and TinyFish deep web scraping
+- [Deep Researcher](advance_ai_agents/deep_researcher_agent) - Multi-stage research agent with Agno & ScrapeGraph AI
+- [Candilyzer](advance_ai_agents/candidate_analyser) - Candidate analysis tool for GitHub/LinkedIn profiles
+- [Job Finder](advance_ai_agents/job_finder_agent) - LinkedIn job search automation with Bright Data integration
+- [AI Trend Analyzer](advance_ai_agents/trend_analyzer_agent) - AI trend mining and analysis with Google ADK
+- [Conference Talk Generator](advance_ai_agents/conference_talk_abstract_generator) - Automated talk abstract generation with Google ADK & Couchbase
+- [Finance Service Agent](advance_ai_agents/finance_service_agent) - FastAPI server for stock data and predictions with Agno
+- [Price Monitoring Agent](advance_ai_agents/price_monitoring_agent) - Price monitoring and alerting agent powered by CrewAI, Twilio & Nebius
+- [Startup Idea Validator Agent](advance_ai_agents/startup_idea_validator_agent) - Agentic workflow to validate and analyze startup ideas
+- [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent) - Automated meeting notes and task creation from conversations
+- [AI Hedgefund](advance_ai_agents/ai-hedgefund) - Agentic workflow for comprehensive financial analysis
+- [Smart GTM Agent](advance_ai_agents/smart_gtm_agent) - Go-to-market strategy and competitive analysis agent
+- [Conference Agnostic CFP Generator](advance_ai_agents/conference_agnositc_cfp_generator) - Automated conference proposal generation system
+- [Car Finder Agent](advance_ai_agents/car_finder_agent) - AI-powered used car recommendation system with CrewAI and MongoDB
+- [Content Team Agent](advance_ai_agents/content_team_agent) - SEO content optimization workflow with Agno & SerpAPI for Google AI Search ranking
+- [Customer Support Resolution Agent](advance_ai_agents/customer_support_resolution_agent) - LangChain and Nebius support agent with knowledge-base retrieval, order lookup, and human ticket escalation
+- [Temporal Agents](advance_ai_agents/temporal_agents/) - Examples of Temporal based AI Agents
+
+## 📺 Tutorials & Videos
+
+### 🎓 Course Playlists
+
+- [**AWS Strands Course**](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lrc43ZtUXAwYu9DhnqxzRKZ) - Complete 8-lesson course on building AI agents with AWS Strands SDK
+
+### 🔧 Framework Tutorials
+
+- [**Build with MCP**](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lolxax4L2HS54Me8gn1gkz4) - Model Context Protocol tutorials and examples
+- [**Build AI Agents**](https://www.youtube.com/playlist?list=PLMZM1DAlf0LqixhAG9BDk4O_FjqnaogK8) - General AI agent development tutorials
+- [**AI Agents, MCP and more...**](https://www.youtube.com/playlist?list=PL2ambAOfYA6-LDz0KpVKu9vJKAqhv0KKI) - Mixed tutorials and project demos
+
+---
+
+<div align="center">
+
+## 📥 Stay Updated with Daily AI Insight!
+
+Get easy-to-follow weekly tutorials and deep dives on AI, LLMs, and agent frameworks. Perfect for developers who want to learn, build, and stay ahead with new tech. Subscribe our Newsletter!
+
+[![Subscribe to our Newsletter](https://github.com/user-attachments/assets/990d1947-337b-4e87-a7e6-e619ec19dee6)](https://mranand.substack.com/subscribe)
+
+</div>
+
+---
 
 ## Getting Started
 
 ### Prerequisites
 
-- Python 3.10 or higher
-- Git
-- pip (Python package manager) or uv
+- **Python 3.10+** (Python 3.11+ recommended for newer projects)
+- **Git** for cloning the repository
+- **Package Manager**: `pip` or `uv` (recommended for faster installs)
+- **API Keys**: Most projects require API keys (see individual project READMEs)
 
-### Installation Steps
+### Quick Start
 
 1. **Clone the repository**
 
    ```bash
    git clone https://github.com/Arindam200/awesome-ai-apps.git
+   cd awesome-ai-apps
    ```
 
-2. **Navigate to the desired project directory**
+2. **Choose a project** and navigate to its directory
 
    ```bash
-   cd awesome-ai-apps/starter_ai_agents/agno_starter
+   cd starter_ai_agents/agno_starter  # Example: Start with Agno starter
    ```
 
-3. **Install the required dependencies**
+3. **Set up environment variables**
 
    ```bash
+   cp .env.example .env  # Copy example environment file
+   # Edit .env with your API keys
+   ```
+
+4. **Install dependencies**
+
+   ```bash
+   # Using pip
    pip install -r requirements.txt
+
+   # OR using uv (recommended - faster)
+   uv sync
+   # or
+   uv pip install -e .
    ```
 
-4. **Follow project-specific instructions**
-   - Each project has its own README.md with detailed setup and usage instructions
-   - Make sure to read the project-specific documentation before running the application
+5. **Run the project**
+
+   ```bash
+   python main.py
+   # or for Streamlit apps
+   streamlit run app.py
+   ```
 
 ## 🤝 Contributing
 
-We welcome contributions from the community! Whether you're a beginner or an expert, your examples and tutorials can help others learn and grow. Here's how you can contribute:
+We welcome contributions from the community! Here's how you can help:
 
-1. Submit a Pull Request with your LLM application example
-2. Add detailed documentation and setup instructions
-3. Include requirements.txt or environment.yml
-4. Share your experience and best practices
+- 🐛 **Report bugs** or suggest improvements via [GitHub Issues](https://github.com/Arindam200/awesome-ai-apps/issues)
+- 💡 **Add new projects** - Submit your own AI agent examples
+- 📝 **Improve documentation** - Help make projects more accessible
+- 🔧 **Fix issues** - Contribute code improvements and bug fixes
+
+**Before contributing:**
+
+- Read our [Contributing Guidelines](CONTRIBUTING.md) for detailed information
+- Check existing issues to avoid duplicates
+- Follow the project structure and naming conventions
+- Ensure your project includes a comprehensive README.md
+
+**Important:** This project follows a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to abide by its terms.
 
 ## 📜 License
 
 This repository is licensed under the [MIT License](./LICENSE). Feel free to use and modify the examples for your projects.
+
+## 👥 Core Maintainers
+
+This project is actively maintained by:
+
+<p align="center">
+  <a href="https://github.com/Arindam200" title="Arindam Majumder">
+    <img src="https://avatars.githubusercontent.com/u/109217591?s=128&v=4" width="72" height="72" alt="Arindam Majumder" style="border-radius: 50%;" />
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/shivaylamba" title="Shivay Lamba">
+    <img src="https://avatars.githubusercontent.com/u/19529592?s=128&v=4" width="72" height="72" alt="Shivay Lamba" style="border-radius: 50%;" />
+  </a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/Astrodevil" title="Astrodevil">
+    <img src="https://avatars.githubusercontent.com/u/73425223?s=128&v=4" width="72" height="72" alt="Astrodevil" style="border-radius: 50%;" />
+  </a>
+</p>
+
+<p align="center">
+  <sub>
+    <a href="https://github.com/Arindam200">Arindam Majumder</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/shivaylamba">Shivay Lamba</a>
+    &nbsp;·&nbsp;
+    <a href="https://github.com/Astrodevil">Astrodevil</a>
+  </sub>
+</p>
+
+For any questions, suggestions, or contributions, feel free to reach out to the maintainers.
 
 ## Thank You for the Support! 🙏
 

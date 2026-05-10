@@ -1,0 +1,4 @@
+temporalio>=1.7.0
+docker>=7.0.0
+strands-agents
+pytest>=7.0.0

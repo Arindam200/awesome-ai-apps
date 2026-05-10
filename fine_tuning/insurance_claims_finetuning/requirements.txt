@@ -1,0 +1,5 @@
+openai>=1.40.0
+requests>=2.31.0
+gradio>=4.44.0
+python-dotenv>=1.0.0
+datasets>=2.19.0

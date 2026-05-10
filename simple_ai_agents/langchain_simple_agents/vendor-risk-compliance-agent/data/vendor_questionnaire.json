@@ -1,0 +1,14 @@
+{
+  "vendor": "Acme Analytics Cloud",
+  "use_case": "Product analytics for enterprise customer events",
+  "data_types": ["user_id", "email", "workspace_id", "event metadata", "ip_address"],
+  "hosting_region": "US only",
+  "subprocessors": ["MetricPipe", "LogForge"],
+  "claims": [
+    "SOC 2 Type II report available under NDA",
+    "Data retained for 24 months by default",
+    "Deletion requests completed within 45 days",
+    "Encryption at rest and in transit",
+    "No EU data residency option until Q4"
+  ]
+}

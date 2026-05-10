@@ -1,0 +1,12 @@
+[project]
+name = "07-observability"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "langfuse>=3.8.1",
+    "litellm>=1.78.7",
+    "strands-agents-tools>=0.2.12",
+    "strands-agents[otel]>=1.13.0",
+]

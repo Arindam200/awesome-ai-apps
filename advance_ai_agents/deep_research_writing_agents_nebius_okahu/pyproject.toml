@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "designing-real-world-ai-agents-workshop"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    {name = "Paul Iusztin", email = "p.b.iusztin@gmail.com"},
+]
+requires-python = ">=3.12"
+dependencies = [
+    "click>=8.3.1",
+    "exa-py>=2.6.1",
+    "fastmcp>=2.0.0",
+    "google-genai>=1.68.0",
+    "langchain-openai>=1.1.2",
+    "monocle-apptrace>=0.8.0",
+    "openai>=2.11.0",
+    "pillow>=12.2.0",
+    "pydantic>=2.12.5",
+    "pydantic-settings>=2.13.1",
+    "pyyaml>=6.0.3",
+    "streamlit>=1.40.0",
+    "tenacity>=9.1.2",
+    "youtube-transcript-api>=1.2.3",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.2",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/research", "src/writing"]

@@ -1,0 +1,13 @@
+[project]
+name = "healthcare-contact-center"
+version = "0.1.0"
+description = "Voice AI healthcare contact center built with Pipecat, Cartesia, and Nebius Token Factory."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "aiortc>=1.14.0",
+    "fastapi>=0.135.2",
+    "loguru>=0.7.3",
+    "pipecat-ai[cartesia,daily,nebius,runner,silero,webrtc]>=1.0.0",
+    "python-dotenv>=1.2.2",
+]

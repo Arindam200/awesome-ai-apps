@@ -12,7 +12,7 @@ class NebiusLLM:
     def __init__(self, api_key, model="nebius/Qwen/Qwen3-14B"):
         self.api_key = api_key
         self.model = model
-        self.api_base = "https://api.studio.nebius.com/v1/"
+        self.api_base = "https://api.tokenfactory.nebius.com/v1"
 
     def __call__(self, prompt, **kwargs):
         try:

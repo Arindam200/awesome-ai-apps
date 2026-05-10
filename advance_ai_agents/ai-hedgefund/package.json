@@ -1,0 +1,36 @@
+{
+  "name": "ai-hedgefund",
+  "description": "AI Hedge Fund",
+  "version": "1.0.0",
+  "scripts": {
+    "postinstall": "motia install",
+    "dev": "motia dev",
+    "dev:debug": "motia dev --verbose",
+    "generate-types": "motia generate-types",
+    "build": "motia build",
+    "clean": "rm -rf dist node_modules python_modules .motia .mermaid",
+    "test-config": "tsx scripts/test-config.ts",
+    "update-mappings": "tsx scripts/update-mappings.ts"
+  },
+  "keywords": [
+    "motia"
+  ],
+  "dependencies": {
+    "@motiadev/ui": "0.5.5-beta.113",
+    "@motiadev/workbench": "0.6.4-beta.130",
+    "alpha-vantage-cli": "^1.0.8",
+    "axios": "^1.11.0",
+    "dotenv": "^16.6.1",
+    "motia": "0.6.4-beta.130",
+    "openai": "^4.104.0",
+    "react": "^19.1.0",
+    "yahoo-finance2": "^2.13.3",
+    "zod": "^3.24.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.4"
+  }
+}

@@ -1,0 +1,12 @@
+[project]
+name = "livekit-web-search-agent"
+version = "0.1.0"
+description = "LiveKit + Gemini realtime voice agent with web search via Olostep"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "livekit-agents[google]~=1.4",
+    "google-genai>=1.16.0",
+    "python-dotenv>=1.0.0",
+    "olostep>=1.0.4",
+]

@@ -23,19 +23,31 @@ Human-in-the-Loop (HITL) workflows integrate human judgment and oversight into a
 ## Prerequisites
 
 - Python 3.10
-- [Nebius API key](https://studio.nebius.com/?modals=create-api-key) (set in .env file)
+- [Nebius API key](https://tokenfactory.nebius.com/) (set in .env file)
 
 ## Setup
 
 1. Clone the repository
 2. Install dependencies:
    ```bash
-   pip install -r requirements.txt
+
    ```
+
+# Using pip
+
+pip install -r requirements.txt
+
+# Or using uv (recommended)
+
+uv sync
+
+```
 3. Create a `.env` file with your Nebius API key:
-   ```
-   NEBIUS_API_KEY=your_api_key_here
-   ```
+```
+
+NEBIUS_API_KEY=your_api_key_here
+
+````
 
 ## Usage
 
@@ -43,7 +55,7 @@ Run the agent using:
 
 ```bash
 python main.py
-```
+````
 
 The agent will:
 

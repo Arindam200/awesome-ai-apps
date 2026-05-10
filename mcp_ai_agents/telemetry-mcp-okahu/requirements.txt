@@ -1,0 +1,7 @@
+monocle_apptrace
+monocle_test_tools
+openai
+fastapi
+uvicorn
+python-dotenv
+pytest

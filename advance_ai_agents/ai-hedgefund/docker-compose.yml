@@ -1,0 +1,20 @@
+services:
+  ai-hedgefund:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - NEBIUS_API_KEY=${NEBIUS_API_KEY}
+      - NEBIUS_BASE_URL=${NEBIUS_BASE_URL}
+      - NEBIUS_MODEL=${NEBIUS_MODEL}
+      - ALPHA_VINTAGE_KEY=${ALPHA_VINTAGE_KEY}
+      - SERPER_API_KEY=${SERPER_API_KEY}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

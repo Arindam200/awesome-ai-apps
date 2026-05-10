@@ -1,0 +1,18 @@
+[project]
+name = "langchain-data-agent-poc"
+version = "0.1.0"
+description = "A small NL-to-SQL data agent PoC built with LangChain, LangGraph, Nebius, and Streamlit"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "langchain>=1.0",
+    "langchain-core>=1.0",
+    "langchain-nebius>=0.1.0",
+    "langgraph>=1.0",
+    "pandas>=2.0.0",
+    "plotly>=5.24.0",
+    "streamlit>=1.36.0",
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.7.0",
+    "sqlglot>=26.0.0",
+]

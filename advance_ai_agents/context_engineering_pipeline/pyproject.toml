@@ -1,0 +1,20 @@
+[project]
+name = "context-engineering-pipeline"
+version = "0.1.0"
+description = "Compare XML vs JSON vs Markdown prompt formats on accuracy, latency, and tokens using Nebius Token Factory."
+authors = [
+    {name = "Arindam Majumder", email = "arindammajumder2020@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openai>=1.40.0",
+    "streamlit>=1.36.0",
+    "pandas>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Arindam200/awesome-ai-apps"
+Repository = "https://github.com/Arindam200/awesome-ai-apps"
+Issues = "https://github.com/Arindam200/awesome-ai-apps/issues"

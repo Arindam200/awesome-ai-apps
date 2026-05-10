@@ -130,6 +130,6 @@ def run_research(query: str) -> str:
 
 
 if __name__ == "__main__":
-    topic = "Extract information about Nebius AI Studio, including its features, capabilities, and applications from available sources."
+    topic = "Extract information about Nebius Token Factory, including its features, capabilities, and applications from available sources."
     response = run_research(topic)
     print(response)

@@ -136,7 +136,7 @@ CB_SEARCH_INDEX=kubecontalks
 
 # AI APIs
 NEBIUS_API_KEY=your-nebius-api-key
-NEBIUS_API_BASE=https://api.studio.nebius.com/v1/
+NEBIUS_API_BASE=https://api.tokenfactory.nebius.com/v1
 OPENAI_API_KEY=your-openai-key  # Optional fallback
 ```
 

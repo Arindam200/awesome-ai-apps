@@ -11,7 +11,7 @@ load_dotenv()
 model = OpenAIModel(
     model_name='meta-llama/Meta-Llama-3.1-70B-Instruct',
     provider=OpenAIProvider(
-        base_url='https://api.studio.nebius.com/v1/',
+        base_url='https://api.tokenfactory.nebius.com/v1',
         api_key=os.environ['NEBIUS_API_KEY']
     )
 )

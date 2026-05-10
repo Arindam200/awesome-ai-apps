@@ -8,8 +8,8 @@
   <a href="https://streamlit.io" target="_blank">
     <img src="https://img.shields.io/badge/Built%20With-Streamlit-%23FF4B4B?style=for-the-badge" alt="Streamlit">
   </a>
-  <a href="https://studio.nebius.com/" target="_blank">
-  <img src="https://img.shields.io/badge/Built%20With-Nebius-%230073e6?style=for-the-badge" alt="Nebius">
+  <a href="https://tokenfactory.nebius.com/" target="_blank">
+  <img src="https://img.shields.io/badge/Built%20With-Nebius%20Token%20Factory-%230073e6?style=for-the-badge" alt="Nebius Token Factory">
 </a>
   <a href="https://agno.com" target="_blank">
     <img src="https://img.shields.io/badge/Agno-Agent%20Framework-orange?style=for-the-badge" alt="Agno">
@@ -27,7 +27,7 @@
 ## ⚡ Features
 
 - ✅ **Multi-Candidate Analyzer**  
-  Analyze *multiple* GitHub users side-by-side for any job role.
+  Analyze _multiple_ GitHub users side-by-side for any job role.
 
 - ✅ **Single Candidate Profiler**  
   Deep analysis of one candidate's GitHub + optional LinkedIn profile.
@@ -45,14 +45,14 @@
 
 ## 🧰 Tech Stack
 
-| Component         | Tool/Library                        |
-|-------------------|-------------------------------------|
-| **UI**            | 🧼 Streamlit                        |
-| **AI Model** | 🧠 DeepSeek via Nebius |
-| **Agent Framework** | 🧠 Agno Agents                    |
-| **GitHub Analysis**| 🛠️ GitHubTools                    |
-| **LinkedIn Parsing**| 🔎 ExaTools                       |
-| **Reasoning Engine**| 🧩 ReasoningTools + ThinkingTools |
+| Component            | Tool/Library                      |
+| -------------------- | --------------------------------- |
+| **UI**               | 🧼 Streamlit                      |
+| **AI Model**         | 🧠 DeepSeek via Nebius            |
+| **Agent Framework**  | 🧠 Agno Agents                    |
+| **GitHub Analysis**  | 🛠️ GitHubTools                    |
+| **LinkedIn Parsing** | 🔎 ExaTools                       |
+| **Reasoning Engine** | 🧩 ReasoningTools + ThinkingTools |
 
 ---
 
@@ -68,14 +68,18 @@ cd advance_ai_agents/candidate_analyser
 ### 2. Install Requirements
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 ### 3. Get API Keys
 
 You'll need:
 
-- 🔑 **Nebius API Key** → [Get from Nebius AI Studio](https://studio.nebius.com/?modals=create-api-key)
+- 🔑 **Nebius API Key** → [Get from Nebius Token Factory](https://tokenfactory.nebius.com/)
 - 🔑 **GitHub API Key** → [Generate Here](https://github.com/settings/tokens)
 - 🔑 **Exa API Key** → [Get from Exa](https://exa.ai)
 
@@ -133,12 +137,11 @@ Agent(
 ```
 
 **This agent:**
+
 - Thinks before evaluating (🧠)
 - Gathers accurate GitHub + LinkedIn info (🔍)
 - Reasons like an expert hiring manager (📈)
 - Provides a final score with strict justification (✅❌)
-
-
 
 ## 🔗 Links
 

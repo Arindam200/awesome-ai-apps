@@ -1,0 +1,10 @@
+[project]
+name = "letta-starter"
+version = "0.1.0"
+description = "Letta (formerly MemGPT) starter — a stateful agent with long-term memory"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "letta-client>=1.10.0",
+    "python-dotenv>=1.0.1",
+]

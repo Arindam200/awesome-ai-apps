@@ -7,6 +7,7 @@ A simple agent demonstrating email integration with ADK. Built using Google's Ag
 ## Overview
 
 This agent showcases:
+
 - Integration with Resend API for sending emails
 - How to structure and format email content
 - Implementing external APIs with ADK agents
@@ -15,24 +16,32 @@ This agent showcases:
 ## Technical Pattern
 
 Uses a single agent with a specialized tool:
+
 - **EmailAgent**: Uses the `send_email` tool to send emails via Resend
 
 ## Installation
 
 1. Install dependencies:
+
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 
 # Verify ADK installation
 adk --version
 ```
 
 2. Set up environment variables:
+
 ```bash
 cp .env.example .env
 ```
 
 3. Edit the `.env` file with your API keys:
+
 ```
 NEBIUS_API_KEY="your_nebius_api_key_here"
 NEBIUS_API_BASE="https://api.studio.nebius.ai/v1"
@@ -42,6 +51,7 @@ RESEND_API_KEY="your_resend_api_key_here"
 ## Usage
 
 Run with ADK CLI:
+
 ```bash
 # Terminal - Run directly in the terminal
 adk run email_adk_agent
@@ -66,4 +76,4 @@ params = {
     "subject": "Custom Email Subject",
     "html": "<p>Your custom email content here</p>",
 }
-``` 
+```

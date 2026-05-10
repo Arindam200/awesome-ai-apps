@@ -1,0 +1,12 @@
+[project]
+name = "newsletter-agent"
+version = "0.1.0"
+description = "AI newsletter builder with Firecrawl"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit",
+    "python-dotenv",
+    "agno",
+    "openai",
+]

@@ -1,0 +1,443 @@
+# Dataset Index - 20 sampled LinkedIn posts (>150 engagement, last 6 months)
+
+- slug: 90-of-engineers-think-context-engineering-is-just-about-writ
+  urn: urn:li:share:7388477724312428545
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7390379616282169344
+  local_post: ./90-of-engineers-think-context-engineering-is-just-about-writ.md
+  local_media:
+    - ./90-of-engineers-think-context-engineering-is-just-about-writ.gif
+  reactions: 687
+  comments: 52
+  shares: 86
+  local_guideline: ./90-of-engineers-think-context-engineering-is-just-about-writ_guideline.md
+  local_seed: ./90-of-engineers-think-context-engineering-is-just-about-writ_seed.md
+  scope:
+    - train_generator
+    - train_evaluator
+  local_generated_post: ./90-of-engineers-think-context-engineering-is-just-about-writ_generated.md
+  label: fail
+  critique:
+    The post is saturated with banned AI slop expressions ("delve", "tapestry",
+    "multifaceted", "paradigm shift", "game-changing", "revolutionize") and banned
+    marketing terms ("leverage", "robust", "seamlessly", "holistic", "comprehensive",
+    "groundbreaking", "pivotal"). It also uses 3 emojis in the body text and 7 hashtags,
+    violating both the terminology and structure profiles.
+  local_research: ./90-of-engineers-think-context-engineering-is-just-about-writ_research.md
+- slug: ive-spent-the-past-2-years-productionizing-ai-agents
+  urn: urn:li:ugcPost:7429078482841849856
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7430242368211066881
+  local_post: ./ive-spent-the-past-2-years-productionizing-ai-agents.md
+  local_media:
+    - ./ive-spent-the-past-2-years-productionizing-ai-agents.jpg
+  reactions: 145
+  comments: 33
+  shares: 14
+  local_guideline: ./ive-spent-the-past-2-years-productionizing-ai-agents_guideline.md
+  local_seed: ./ive-spent-the-past-2-years-productionizing-ai-agents_seed.md
+  scope:
+    - dev_evaluator
+  local_generated_post: ./ive-spent-the-past-2-years-productionizing-ai-agents_generated.md
+  label: fail
+  critique:
+    The generated post is completely off-topic from the ground truth. The
+    original discusses AI agent durability and production orchestration, but the generated
+    post is about a vacation in Bali and work-life balance. The core message is entirely
+    missing.
+  local_research: ./ive-spent-the-past-2-years-productionizing-ai-agents_research.md
+- slug: ive-switched-from-claude-code-to-opencode-and-im-loving-it
+  urn: urn:li:share:7440113143269445634
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7440113143810396160
+  local_post: ./ive-switched-from-claude-code-to-opencode-and-im-loving-it.md
+  local_media: null
+  reactions: 194
+  comments: 37
+  shares: 2
+  local_guideline: ./ive-switched-from-claude-code-to-opencode-and-im-loving-it_guideline.md
+  local_seed: ./ive-switched-from-claude-code-to-opencode-and-im-loving-it_seed.md
+  scope:
+    - test_evaluator
+  local_generated_post: ./ive-switched-from-claude-code-to-opencode-and-im-loving-it_generated.md
+  label: pass
+  critique:
+    The generated post successfully conveys the core message of preferring
+    OpenCode over Claude Code, elaborating on the reasons (agent orchestration, open
+    source, UI). It adheres to all structural, terminology, and character profile
+    guidelines, including the hook, paragraph formatting, lack of hashtags, and appropriate
+    tone. The post provides more detail than the ground truth but remains concise
+    and on-brand.
+  local_research: ./ive-switched-from-claude-code-to-opencode-and-im-loving-it_research.md
+- slug: ive-been-an-engineer-in-the-ai-space-for-8-years
+  urn: urn:li:share:7380972895499513856
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7382754438337327104
+  local_post: ./ive-been-an-engineer-in-the-ai-space-for-8-years.md
+  local_media:
+    - ./ive-been-an-engineer-in-the-ai-space-for-8-years.jpg
+  reactions: 285
+  comments: 34
+  shares: 24
+  local_guideline: ./ive-been-an-engineer-in-the-ai-space-for-8-years_guideline.md
+  local_seed: ./ive-been-an-engineer-in-the-ai-space-for-8-years_seed.md
+  scope:
+    - train_evaluator
+  local_generated_post: ./ive-been-an-engineer-in-the-ai-space-for-8-years_generated.md
+  label: pass
+  critique:
+    The generated post effectively captures the core message and key points
+    of the ground truth regarding what aspiring AI engineers should focus on. It adheres
+    well to the structure, terminology, and character profiles, maintaining a direct,
+    confident, and minimalist tone without using banned expressions or marketing terms.
+    The slight stylistic variation in not explicitly using "I" does not constitute
+    a major violation.
+  local_research: ./ive-been-an-engineer-in-the-ai-space-for-8-years_research.md
+- slug: 99-of-engineers-skip-the-most-important-part-of-building-age
+  urn: urn:li:share:7413859494163685376
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7415746744321552384
+  local_post: ./99-of-engineers-skip-the-most-important-part-of-building-age.md
+  local_media:
+    - ./99-of-engineers-skip-the-most-important-part-of-building-age.gif
+  reactions: 158
+  comments: 19
+  shares: 22
+  local_guideline: ./99-of-engineers-skip-the-most-important-part-of-building-age_guideline.md
+  local_seed: ./99-of-engineers-skip-the-most-important-part-of-building-age_seed.md
+  scope:
+    - dev_evaluator
+  local_generated_post: ./99-of-engineers-skip-the-most-important-part-of-building-age_generated.md
+  label: fail
+  critique:
+    The entire post is a single wall-of-text paragraph with no line breaks,
+    violating the structure profile rule of 1-3 sentences per paragraph. It far exceeds
+    the 3000 character limit and is unreadable on LinkedIn mobile.
+  local_research: ./99-of-engineers-skip-the-most-important-part-of-building-age_research.md
+- slug: i-was-a-true-believer-in-clean-architecture
+  urn: urn:li:share:7418940003684237312
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7419733046591000576
+  local_post: ./i-was-a-true-believer-in-clean-architecture.md
+  local_media:
+    - ./i-was-a-true-believer-in-clean-architecture.gif
+  reactions: 123
+  comments: 34
+  shares: 14
+  local_guideline: ./i-was-a-true-believer-in-clean-architecture_guideline.md
+  local_seed: ./i-was-a-true-believer-in-clean-architecture_seed.md
+  scope:
+    - train_generator
+    - train_evaluator
+  local_generated_post: ./i-was-a-true-believer-in-clean-architecture_generated.md
+  label: fail
+  critique:
+    The post reads as a corporate sales pitch with a salesy, promotional tone
+    ("EXCITING NEWS", "Book a demo", "30% off"), which is explicitly off-brand per
+    the character profile. It uses excessive emojis, banned marketing terms ("revolutionary",
+    "cutting-edge", "seamlessly", "game-changing", "supercharge", "innovative"), and
+    is fundamentally different from the ground truth's personal story about architecture
+    patterns.
+  local_research: ./i-was-a-true-believer-in-clean-architecture_research.md
+- slug: my-linkedin-tells-you-that-im-a-successful-ai-engineer-and-b
+  urn: urn:li:share:7421472574041280512
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7421544977643704321
+  local_post: ./my-linkedin-tells-you-that-im-a-successful-ai-engineer-and-b.md
+  local_media:
+    - ./my-linkedin-tells-you-that-im-a-successful-ai-engineer-and-b.jpg
+  reactions: 206
+  comments: 66
+  shares: 7
+  local_guideline: ./my-linkedin-tells-you-that-im-a-successful-ai-engineer-and-b_guideline.md
+  local_seed: ./my-linkedin-tells-you-that-im-a-successful-ai-engineer-and-b_seed.md
+  scope:
+    # - online_test
+  local_generated_post: ./my-linkedin-tells-you-that-im-a-successful-ai-engineer-and-b_generated.md
+  label: pass
+  critique:
+    The generated post perfectly captures the ground truth's core message
+    of overcoming adversity through self-discipline and learning. It adheres to all
+    structure, terminology, and character profiles, maintaining an authentic, direct,
+    and professional tone without any banned expressions or marketing terms. The CTA
+    is also excellent for engagement.
+  local_research: ./my-linkedin-tells-you-that-im-a-successful-ai-engineer-and-b_research.md
+- slug: in-2023-it-was-predicted-that-ai-would-replace-up-to-80-of-d
+  urn: urn:li:ugcPost:7426545500646064128
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7427705774124167169
+  local_post: ./in-2023-it-was-predicted-that-ai-would-replace-up-to-80-of-d.md
+  local_media:
+    - ./in-2023-it-was-predicted-that-ai-would-replace-up-to-80-of-d.jpg
+  reactions: 109
+  comments: 53
+  shares: 12
+  local_guideline: ./in-2023-it-was-predicted-that-ai-would-replace-up-to-80-of-d_guideline.md
+  local_seed: ./in-2023-it-was-predicted-that-ai-would-replace-up-to-80-of-d_seed.md
+  scope:
+    - test_evaluator
+  local_generated_post: ./in-2023-it-was-predicted-that-ai-would-replace-up-to-80-of-d_generated.md
+  label: fail
+  critique:
+    The post uses passive voice throughout ("was predicted", "has been proven",
+    "is being generated"), violating the terminology profile's active voice rule.
+    It also uses semicolons extensively, which are explicitly banned, and refers to
+    the reader as "one" instead of "you".
+  local_research: ./in-2023-it-was-predicted-that-ai-would-replace-up-to-80-of-d_research.md
+- slug: if-theres-one-thing-thats-helped-me-more-than-anything-as-an
+  urn: urn:li:share:7429080008817725440
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7430604758542860289
+  local_post: ./if-theres-one-thing-thats-helped-me-more-than-anything-as-an.md
+  local_media:
+    - ./if-theres-one-thing-thats-helped-me-more-than-anything-as-an.jpg
+  reactions: 142
+  comments: 21
+  shares: 12
+  local_guideline: ./if-theres-one-thing-thats-helped-me-more-than-anything-as-an_guideline.md
+  local_seed: ./if-theres-one-thing-thats-helped-me-more-than-anything-as-an_seed.md
+  scope:
+    - dev_evaluator
+  local_generated_post: ./if-theres-one-thing-thats-helped-me-more-than-anything-as-an_generated.md
+  label: pass
+  critique:
+    The generated post perfectly captures the ground truth's core message
+    about building from scratch for true understanding, aligning with the character's
+    builder mindset and 'escape PoC purgatory' mission. It adheres to all structural
+    and terminology profiles, even following the link placement rule more strictly
+    than the ground truth.
+  local_research: ./if-theres-one-thing-thats-helped-me-more-than-anything-as-an_research.md
+- slug: the-biggest-challenge-for-those-working-in-ai-right-now
+  urn: urn:li:share:7385934319598395392
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7387103049535709184
+  local_post: ./the-biggest-challenge-for-those-working-in-ai-right-now.md
+  local_media:
+    - ./the-biggest-challenge-for-those-working-in-ai-right-now.jpg
+  reactions: 114
+  comments: 31
+  shares: 7
+  local_guideline: ./the-biggest-challenge-for-those-working-in-ai-right-now_guideline.md
+  local_seed: ./the-biggest-challenge-for-those-working-in-ai-right-now_seed.md
+  scope:
+    - online_test
+  local_generated_post: ./the-biggest-challenge-for-those-working-in-ai-right-now_generated.md
+  label: fail
+  critique:
+    The generated post misses critical elements of Paul's personal endorsement
+    and involvement, such as his explicit role on stage with prominent figures and
+    the exclusive book preview mentioned in the ground truth. This omission significantly
+    weakens the personal brand connection and unique value proposition Paul brings
+    to the event.
+  local_research: ./the-biggest-challenge-for-those-working-in-ai-right-now_research.md
+- slug: stop-wiring-apis-directly-into-your-llm
+  urn: urn:li:share:7396108911453417472
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7397989810415587328
+  local_post: ./stop-wiring-apis-directly-into-your-llm.md
+  local_media:
+    - ./stop-wiring-apis-directly-into-your-llm.gif
+  reactions: 301
+  comments: 34
+  shares: 35
+  local_guideline: ./stop-wiring-apis-directly-into-your-llm_guideline.md
+  local_seed: ./stop-wiring-apis-directly-into-your-llm_seed.md
+  scope:
+    - train_generator
+    - train_evaluator
+  local_generated_post: ./stop-wiring-apis-directly-into-your-llm_generated.md
+  label: fail
+  critique:
+    The post is dismissive, condescending, and aggressive ("maybe AI engineering
+    isn't for you", "stick to CRUD apps", "I honestly don't care"), violating the
+    character profile's off-brand tones list which explicitly bans dismissive, condescending,
+    and overconfident tones.
+  local_research: ./stop-wiring-apis-directly-into-your-llm_research.md
+- slug: heres-the-ingestion-architecture-we-used-to-build-a-digital
+  urn: urn:li:share:7431615347486769153
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7432054336589021184
+  local_post: ./heres-the-ingestion-architecture-we-used-to-build-a-digital.md
+  local_media:
+    - ./heres-the-ingestion-architecture-we-used-to-build-a-digital.gif
+  reactions: 167
+  comments: 31
+  shares: 16
+  local_guideline: ./heres-the-ingestion-architecture-we-used-to-build-a-digital_guideline.md
+  local_seed: ./heres-the-ingestion-architecture-we-used-to-build-a-digital_seed.md
+  scope:
+    - test_evaluator
+  local_generated_post: ./heres-the-ingestion-architecture-we-used-to-build-a-digital_generated.md
+  label: fail
+  critique:
+    The post uses H1 and H2 markdown headers ("# GraphRAG...", "## Section
+    1...") which LinkedIn does not render, violating the structure profile. It has
+    no hook in the first 2 lines, no call-to-action, no hashtags, and reads like a
+    formal article rather than a LinkedIn post.
+  local_research: ./heres-the-ingestion-architecture-we-used-to-build-a-digital_research.md
+- slug: linkedin-is-flooded-with-ai-experts-sharing-tips
+  urn: urn:li:share:7391040856180539392
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7393278713590784000
+  local_post: ./linkedin-is-flooded-with-ai-experts-sharing-tips.md
+  local_media:
+    - ./linkedin-is-flooded-with-ai-experts-sharing-tips.jpg
+  reactions: 647
+  comments: 60
+  shares: 32
+  local_guideline: ./linkedin-is-flooded-with-ai-experts-sharing-tips_guideline.md
+  local_seed: ./linkedin-is-flooded-with-ai-experts-sharing-tips_seed.md
+  scope:
+    - train_image_generator
+    - test_evaluator
+  local_generated_post: ./linkedin-is-flooded-with-ai-experts-sharing-tips_generated.md
+  label: pass
+  critique:
+    The generated post perfectly captures the core message and tone of the
+    ground truth, adhering to all structural and terminology profiles. It maintains
+    Paul's confident, direct, and builder-focused voice while asking for engagement.
+    Minor stylistic differences, such as the absence of an explicit list of names,
+    are acceptable variations.
+  local_research: ./linkedin-is-flooded-with-ai-experts-sharing-tips_research.md
+- slug: last-week-liquid-ai-cto-mathias-lechner-made-a-huge-announce
+  urn: urn:li:share:7403710241101500416
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7404150490361507840
+  local_post: ./last-week-liquid-ai-cto-mathias-lechner-made-a-huge-announce.md
+  local_media:
+    - ./last-week-liquid-ai-cto-mathias-lechner-made-a-huge-announce.gif
+  reactions: 201
+  comments: 22
+  shares: 14
+  local_guideline: ./last-week-liquid-ai-cto-mathias-lechner-made-a-huge-announce_guideline.md
+  local_seed: ./last-week-liquid-ai-cto-mathias-lechner-made-a-huge-announce_seed.md
+  scope:
+    - dev_evaluator
+  local_generated_post: ./last-week-liquid-ai-cto-mathias-lechner-made-a-huge-announce_generated.md
+  label: pass
+  critique:
+    The generated post accurately captures the core message of the ground
+    truth while adhering to all structure, terminology, and character profile guidelines.
+    It effectively transforms the list into flowing prose, bold key phrases, and places
+    the link instruction in the first comment, aligning perfectly with the provided
+    profiles.
+  local_research: ./last-week-liquid-ai-cto-mathias-lechner-made-a-huge-announce_research.md
+- slug: if-youre-building-ai-agents-in-2026-save-this-cheatsheet
+  urn: urn:li:share:7439222987939065856
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7439664436648374272
+  local_post: ./if-youre-building-ai-agents-in-2026-save-this-cheatsheet.md
+  local_media:
+    - ./if-youre-building-ai-agents-in-2026-save-this-cheatsheet.gif
+  reactions: 163
+  comments: 146
+  shares: 16
+  local_guideline: ./if-youre-building-ai-agents-in-2026-save-this-cheatsheet_guideline.md
+  local_seed: ./if-youre-building-ai-agents-in-2026-save-this-cheatsheet_seed.md
+  scope:
+    # - online_test
+  local_generated_post: ./if-youre-building-ai-agents-in-2026-save-this-cheatsheet_generated.md
+  label: fail
+  critique:
+    The generated post fundamentally misattributes the authorship of the "AI
+    Agent Architecture Cheatsheet", claiming "I’ve put together" it. This contradicts
+    the ground truth, which clearly credits Louis-François Bouchard, violating the
+    character's core principles of "Real" and "Trust" by misrepresenting the source.
+  local_research: ./if-youre-building-ai-agents-in-2026-save-this-cheatsheet_research.md
+- slug: im-currently-designing-a-second-brain-ai-agent
+  urn: urn:li:share:7421474286340653056
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7421907398329667585
+  local_post: ./im-currently-designing-a-second-brain-ai-agent.md
+  local_media:
+    - ./im-currently-designing-a-second-brain-ai-agent.gif
+  reactions: 781
+  comments: 96
+  shares: 80
+  local_guideline: ./im-currently-designing-a-second-brain-ai-agent_guideline.md
+  local_seed: ./im-currently-designing-a-second-brain-ai-agent_seed.md
+  scope:
+    - dev_evaluator
+  local_generated_post: ./im-currently-designing-a-second-brain-ai-agent_generated.md
+  label: pass
+  critique:
+    The generated post effectively captures the core concept of building a
+    personal AI agent with structured memory and orchestration. It adheres to all
+    structural and terminology guidelines, including a strong hook, appropriate formatting,
+    and the Paul Iusztin character profile's direct and slightly controversial voice.
+    Minor stylistic differences are acceptable.
+  local_research: ./im-currently-designing-a-second-brain-ai-agent_research.md
+- slug: before-you-think-about-rag-agents-or-fine-tuning-you-need-to
+  urn: urn:li:share:7418947845006757889
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7420820179036581888
+  local_post: ./before-you-think-about-rag-agents-or-fine-tuning-you-need-to.md
+  local_media:
+    - ./before-you-think-about-rag-agents-or-fine-tuning-you-need-to.gif
+  reactions: 127
+  comments: 17
+  shares: 9
+  local_guideline: ./before-you-think-about-rag-agents-or-fine-tuning-you-need-to_guideline.md
+  local_seed: ./before-you-think-about-rag-agents-or-fine-tuning-you-need-to_seed.md
+  scope:
+    - test_evaluator
+  local_generated_post: ./before-you-think-about-rag-agents-or-fine-tuning-you-need-to_generated.md
+  label: pass
+  critique:
+    The generated post effectively conveys the critical importance of data
+    pipeline architecture before advanced AI techniques, mirroring the ground truth's
+    core message. It adheres to all specified profiles, including structure, terminology,
+    and character voice. The minor variations in formatting and explanation detail
+    are acceptable stylistic choices.
+  local_research: ./before-you-think-about-rag-agents-or-fine-tuning-you-need-to_research.md
+- slug: 6-months-ago-i-never-imagined-id-be-hosting-my-own-ai-event
+  urn: urn:li:share:7396110404210376704
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7398352208578355200
+  local_post: ./6-months-ago-i-never-imagined-id-be-hosting-my-own-ai-event.md
+  local_media:
+    - ./6-months-ago-i-never-imagined-id-be-hosting-my-own-ai-event_generated.png
+  reactions: 179
+  comments: 38
+  shares: 4
+  local_guideline: ./6-months-ago-i-never-imagined-id-be-hosting-my-own-ai-event_guideline.md
+  local_seed: ./6-months-ago-i-never-imagined-id-be-hosting-my-own-ai-event_seed.md
+  scope:
+    # - online_test
+    - train_image_generator
+  local_generated_post: ./6-months-ago-i-never-imagined-id-be-hosting-my-own-ai-event_generated.md
+  label: pass
+  critique:
+    The generated post effectively captures the core message of personal growth
+    and redefining success from an imperfect event. It adheres well to the structural
+    guidelines, including length, paragraphing, bolding, and a clear call-to-action.
+    The tone and voice are perfectly aligned with the character profile, maintaining
+    a confident, direct, and minimalist approach.
+  local_research: ./6-months-ago-i-never-imagined-id-be-hosting-my-own-ai-event_research.md
+- slug: how-do-you-stay-up-to-date-with-everything-in-ai
+  urn: urn:li:share:7391035711216324608
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7391466756621451264
+  local_post: ./how-do-you-stay-up-to-date-with-everything-in-ai.md
+  local_media:
+    - ./how-do-you-stay-up-to-date-with-everything-in-ai.jpg
+  reactions: 168
+  comments: 24
+  shares: 8
+  local_guideline: ./how-do-you-stay-up-to-date-with-everything-in-ai_guideline.md
+  local_seed: ./how-do-you-stay-up-to-date-with-everything-in-ai_seed.md
+  scope:
+    # - online_test
+  local_generated_post: ./how-do-you-stay-up-to-date-with-everything-in-ai_generated.md
+  label: fail
+  critique:
+    The generated post contains critical factual errors regarding the event
+    details, including incorrect dates and a different discount code and percentage.
+    It also omits key information about the author's direct involvement as a speaker
+    and the promotion of his book at the summit, which is a significant departure
+    from the ground truth's purpose.
+  local_research: ./how-do-you-stay-up-to-date-with-everything-in-ai_research.md
+- slug: in-the-early-days-of-llms-context-just-meant-plugging-a-few
+  urn: urn:li:share:7393581106031267840
+  linkedin_url: https://www.linkedin.com/feed/update/urn:li:activity:7395453100196614144
+  local_post: ./in-the-early-days-of-llms-context-just-meant-plugging-a-few.md
+  local_media:
+    - ./in-the-early-days-of-llms-context-just-meant-plugging-a-few.jpg
+  reactions: 482
+  comments: 29
+  shares: 56
+  local_guideline: ./in-the-early-days-of-llms-context-just-meant-plugging-a-few_guideline.md
+  local_seed: ./in-the-early-days-of-llms-context-just-meant-plugging-a-few_seed.md
+  scope:
+    - train_image_generator
+    - train_evaluator
+  local_generated_post: ./in-the-early-days-of-llms-context-just-meant-plugging-a-few_generated.md
+  label: pass
+  critique:
+    The generated post effectively captures the core message and tone of the
+    ground truth while adhering strictly to all profiles. It successfully addresses
+    major violations present in the ground truth, such as placing links in the post
+    body, by providing an engaging question-based call-to-action and avoiding external
+    references in the main content.
+  local_research: ./in-the-early-days-of-llms-context-just-meant-plugging-a-few_research.md

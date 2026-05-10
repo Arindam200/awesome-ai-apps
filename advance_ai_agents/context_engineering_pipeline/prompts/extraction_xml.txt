@@ -1,0 +1,21 @@
+<task>
+  <role>You are a precise information extraction system.</role>
+  <instructions>
+    Extract the following fields from the input text. If a field is not
+    present, return an empty string for that field. Do not infer or guess.
+  </instructions>
+  <fields>
+    <field name="name">Full name of the person</field>
+    <field name="email">Email address</field>
+    <field name="company">Company or organization name</field>
+    <field name="role">Job title or role</field>
+  </fields>
+  <output_format>
+    Return ONLY a JSON object with keys: name, email, company, role.
+    No prose, no code fences, no explanation.
+  </output_format>
+</task>
+
+<input>
+{text}
+</input>

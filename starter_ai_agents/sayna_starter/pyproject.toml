@@ -1,0 +1,10 @@
+[project]
+name = "sayna-starter"
+version = "0.1.0"
+description = "Sayna voice agent starter for real-time STT/TTS with AI agents"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "sayna-client",
+    "python-dotenv",
+]

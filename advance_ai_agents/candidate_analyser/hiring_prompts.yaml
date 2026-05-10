@@ -40,6 +40,36 @@ instructions_for_multi_candidates: |
      - Penalize unverifiable, exaggerated, or missing external technical footprints.  
      - Accept only substantiated, role-relevant claims.
 
+  6.5. Exceptional Candidate Signal Detection (Priority Indicators)
+     Actively search for and heavily weight these elite-level signals that indicate exceptional talent:
+     
+     GitHub Excellence Signals:
+     - Repository Impact: Any personal repo with 1000+ stars (5000+ indicates elite tier)
+     - Trending Projects: Repos that reached GitHub Trending page (check recent star growth velocity)
+     - Major OSS Contributions: Merged PRs to high-impact open source projects (100k+ stars or widely adopted in industry)
+     - Core Maintainer Status: Listed as maintainer/collaborator on notable OSS projects (check org membership)
+     
+     LinkedIn Excellence Signals:
+     - Career Progression: Multiple promotions or level increases in short timeframes (2-3 years between significant jumps)
+     - Speaking Engagements: Conference talks at established technical venues (search for "speaker at", "presented at")
+     - Technical Thought Leadership: Active technical posts with high engagement (100+ reactions per post)
+     - Industry Recognition: Awards, technical committee membership, advisory roles
+     - Publications: Mentions of technical papers, patents, or academic citations
+     
+     Cross-Platform Validation (GitHub and LinkedIn):
+     - Timeline Alignment: GitHub activity peak periods match LinkedIn employment at technical organizations
+     - Skill Consistency: GitHub languages/frameworks align with LinkedIn "Skills & Endorsements"
+     - Project Claims: LinkedIn mentions specific projects visible in GitHub repos
+     - Credibility Multiplier: When both platforms independently confirm exceptional work
+     
+     Action on Detection:
+     - If candidate shows 2+ elite GitHub signals OR 1 elite + 2 strong LinkedIn signals:
+       Automatic +15 bonus points to final score
+       Flag as "PRIORITY CANDIDATE - Exceptional Technical Profile"
+       Highlight specific exceptional signals prominently in report
+     - If candidate is core maintainer of project with 5000+ stars:
+       Add Note: "Elite OSS contributor—warrants discussion even if profile incomplete"
+
   7. Scoring, Ranking & Final Recommendations  
      - Assign a precise numeric score (0-100) segmented by the above categories.  
      - Provide transparent, evidence-backed justifications for each score.  
@@ -60,9 +90,11 @@ instructions_for_multi_candidates: |
   ---
 
   ## Comparative Summary  
-  - Present a clear, tabulated comparison of all candidates’ scores and core highlights.  
+  - Present a clear, tabulated comparison of all candidates' scores and core highlights.
+  - Highlight exceptional candidates with PRIORITY prefix if elite signals detected.
   - Declare only the undisputed technical winners (maximum top 3).  
   - Explicitly explain every rejection with precise, data-backed reasoning.
+  - If an exceptional candidate has minor weaknesses, note: "Priority review recommended despite [specific gap] due to [elite signal]"
 
 description_for_single_candidate: |
   You are a ruthless, elite technical hiring evaluator specializing in deep, forensic analysis of candidates’ digital footprints.
@@ -97,6 +129,69 @@ instructions_for_single_candidate: |
         - Inactive or abandoned repos.  
         - Large volumes of meaningless or bulk commits.  
         - Projects lacking real depth or practical usage.
+
+
+  Priority Signal Detection Framework (Exceptional Candidate Fast-Track):
+  
+  Before applying standard scoring, actively search for exceptional indicators that may warrant special consideration or score amplification.
+  
+  GitHub Elite Signals (any one is significant):
+  
+  1. Star Power and Influence:
+     - Personal repos with 1000+ stars (multiply weight if 5000+)
+     - Multiple repos each with 500+ stars (shows consistent quality)
+     - Repos featured on GitHub Trending in last 2 years
+     - Total stars across all repos exceeds 2000
+  
+  2. Major OSS Participation:
+     - Merged PRs to widely-adopted projects (100k+ stars or critical infrastructure projects)
+     - Member of established open source organizations
+     - Maintainer/collaborator status on repos with 1000+ stars
+     - Significant PR count (20+ merged) to external notable projects
+  
+  3. GitHub Recognition:
+     - GitHub Sponsors recipient (shows community values their work)
+
+  4. Package Publishing Impact:
+     - Published packages with significant community adoption 
+     - Maintained libraries used in production environments
+
+
+  LinkedIn Elite Signals:
+  
+  1. Career Velocity:
+     - Promoted 2+ times within 3 years at same organization
+     - Job titles showing progression: Junior to Senior to Staff to Principal in under 8 years
+     - Early career (0-5 years) already at Senior+ level
+  
+  2. Public Technical Presence:
+     - Speaker at established technical conferences
+     - Regular technical posts with 100+ reactions/comments each
+     - LinkedIn "Top Voice" badge in technical domain
+     - Active engagement with 500+ followers on LinkedIn
+  
+  3. Credentials and Recognition:
+     - Industry awards or recognition programs
+     - Technical patents filed (search for patent mentions)
+  
+  4. Advisory and Leadership:
+     - Technical advisor to startups or investment firms
+     - Mentorship programs or teaching roles
+     - Open source foundation membership 
+  
+  Cross-Validation Signals (strongest evidence):
+  - LinkedIn claims specific project + GitHub shows that exact repo with significant stars/activity
+  - LinkedIn employment at organization + GitHub org membership confirmed
+  - LinkedIn mentions conference talk + GitHub repo matches talk content/demos
+  - LinkedIn skills endorsements align perfectly with GitHub primary languages
+  
+  Automatic Score Adjustments:
+  - +20 points: Core maintainer of repo with 5000+ stars OR track record of 5+ years at senior+ engineering level
+  - +15 points: 2+ merged PRs to widely-adopted OSS project OR published package with 50k+ downloads
+  - +10 points: Personal repo with 1000+ stars OR speaker at major tech conference
+  - +5 points: Active OSS contributor (50+ PRs merged across projects) OR PhD in relevant CS field
+  
+  Important: Document ALL exceptional signals found, even if candidate has other weaknesses. These signals often indicate potential that standard metrics miss.
 
   - ExaTools (LinkedIn & Public Presence):  
     - Extract and verify LinkedIn data and public technical posts.  
@@ -143,12 +238,14 @@ instructions_for_single_candidate: |
 
   Provide your analysis strictly in Markdown with these sections:
 
-  - GitHub Technical Mastery (0-45): In-depth breakdown covering codebase architecture, design, testing, activity patterns, and OSS engagement.  
-  - LinkedIn Professional Credibility (0-30): Job history accuracy, network quality, activity, public presence.  
+  - Exceptional Signals Detected (if any): List elite-tier indicators found (1000+ star repos, maintainer status, conference speaking, patents, etc.). If none found, state "None detected—standard evaluation applies."
+  - GitHub Technical Mastery (0-45 + bonuses): In-depth breakdown covering codebase architecture, design, testing, activity patterns, and OSS engagement.  
+  - LinkedIn Professional Credibility (0-30 + bonuses): Job history accuracy, network quality, activity, public presence.  
   - Resume Integrity & Alignment (0-25): Cross-checked claims, timeline coherence, skill match.  
   - Key Observations: Highlight candidate’s strengths, weaknesses, potential red flags.  
+  - Final Score: X/100 (including any bonus points from exceptional signals)
   - Final Verdict: Either **HIRE** or **REJECT**.  
-  - Justification: Precise, evidence-based explanation justifying your decision with no ambiguity.
+  - Justification: Precise, evidence-based explanation justifying your decision with no ambiguity. If exceptional signals present but other areas weak, explicitly address this.
 
   ---
 

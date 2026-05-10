@@ -1,0 +1,61 @@
+{
+  "NC-10234": {
+    "customer_email": "alex@example.com",
+    "status": "shipped",
+    "items": [
+      {"sku": "NB-MUG-01", "name": "Nimbus Mug", "qty": 2, "price": 14.99},
+      {"sku": "NB-TEE-BLK-M", "name": "Nimbus Tee (Black, M)", "qty": 1, "price": 24.99}
+    ],
+    "subtotal": 54.97,
+    "shipping": 0.0,
+    "total": 54.97,
+    "placed_at": "2026-04-28T14:12:00Z",
+    "shipped_at": "2026-04-29T18:40:00Z",
+    "carrier": "UPS",
+    "tracking": "1Z999AA10123456784",
+    "estimated_delivery": "2026-05-03"
+  },
+  "NC-10235": {
+    "customer_email": "priya@example.com",
+    "status": "processing",
+    "items": [
+      {"sku": "NB-HOODIE-NVY-L", "name": "Nimbus Hoodie (Navy, L)", "qty": 1, "price": 64.0}
+    ],
+    "subtotal": 64.0,
+    "shipping": 4.99,
+    "total": 68.99,
+    "placed_at": "2026-05-06T09:30:00Z",
+    "shipped_at": null,
+    "carrier": null,
+    "tracking": null,
+    "estimated_delivery": null
+  },
+  "NC-10236": {
+    "customer_email": "jordan@example.com",
+    "status": "delivered",
+    "items": [
+      {"sku": "NB-BOTTLE-22", "name": "Nimbus Bottle 22oz", "qty": 1, "price": 28.0}
+    ],
+    "subtotal": 28.0,
+    "shipping": 4.99,
+    "total": 32.99,
+    "placed_at": "2026-04-15T11:02:00Z",
+    "shipped_at": "2026-04-15T20:11:00Z",
+    "carrier": "USPS",
+    "tracking": "9400111899223197428347",
+    "estimated_delivery": "2026-04-19",
+    "delivered_at": "2026-04-19T15:48:00Z"
+  },
+  "NC-10240": {
+    "customer_email": "sam@example.com",
+    "status": "cancelled",
+    "items": [
+      {"sku": "NB-CAP-RED", "name": "Nimbus Cap (Red)", "qty": 1, "price": 22.0}
+    ],
+    "subtotal": 22.0,
+    "shipping": 4.99,
+    "total": 26.99,
+    "placed_at": "2026-05-02T08:00:00Z",
+    "cancelled_at": "2026-05-02T08:14:00Z"
+  }
+}

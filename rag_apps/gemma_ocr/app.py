@@ -40,7 +40,7 @@ with col1:
         <div style="display: flex; align-items: center; gap: 10px;">
             <h1 style="margin: 0;">
             <img src="data:image/png;base64,{gemma_base64}" style="height: 56px; margin: 0;">
-             <span style="color: #2E96FF;"> Gemma 3 </span> OCR with Nebius AI Studio
+             <span style="color: #2E96FF;"> Gemma 3 </span> OCR with Nebius Token Factory
             </h1>
         </div>
         """
@@ -97,7 +97,7 @@ with st.sidebar:
         file_type = file.type
         file_bytes = file.getvalue()
         client = OpenAI(
-            base_url="https://api.studio.nebius.com/v1/",
+            base_url="https://api.tokenfactory.nebius.com/v1",
             api_key=api_key or os.environ.get("NEBIUS_API_KEY"),
         )
         if file_type in ["image/png", "image/jpeg", "image/jpg"]:

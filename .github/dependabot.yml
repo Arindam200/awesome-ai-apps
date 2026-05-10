@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Enable version updates for pip
+  - package-ecosystem: "pip"
+    # Look for requirements.txt files in the root directory and all subdirectories
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # Group all updates into a single pull request to reduce noise
+    groups:
+      all-pip-dependencies:
+        patterns:
+          - "*"

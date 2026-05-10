@@ -1,0 +1,8 @@
+{"ts":"2026-05-07T05:43:12Z","service":"checkout-api","level":"info","message":"release 2026.05.07.2 deployed","region":"us-east-1"}
+{"ts":"2026-05-07T05:47:03Z","service":"checkout-api","level":"info","message":"feature_flag payment-routing rollout set to 25%","region":"us-east-1"}
+{"ts":"2026-05-07T05:50:31Z","service":"checkout-api","level":"warn","message":"payment_provider stripe_connect retry_count=3 latency_ms=2700","region":"us-east-1"}
+{"ts":"2026-05-07T05:52:44Z","service":"checkout-api","level":"error","message":"PaymentRouteTimeout provider=stripe_connect route=smart_retry duration_ms=5000","region":"us-east-1"}
+{"ts":"2026-05-07T05:55:02Z","service":"checkout-api","level":"warn","message":"queue checkout_payment_authorization depth=1472 oldest_age_s=78","region":"us-east-1"}
+{"ts":"2026-05-07T05:56:19Z","service":"inventory-api","level":"info","message":"reservation latency normal p95=82ms","region":"us-east-1"}
+{"ts":"2026-05-07T05:57:37Z","service":"checkout-api","level":"error","message":"PaymentRouteTimeout provider=stripe_connect route=smart_retry duration_ms=5000","region":"us-east-1"}
+{"ts":"2026-05-07T05:58:09Z","service":"checkout-api","level":"warn","message":"fallback_route paypal latency_ms=430 status=ok","region":"us-east-1"}

@@ -1,0 +1,10 @@
+[project]
+name = "semantic-kernel-starter"
+version = "0.1.0"
+description = "Microsoft Semantic Kernel starter — ChatCompletionAgent with a custom plugin, powered by Nebius"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "semantic-kernel>=1.41.0",
+    "python-dotenv>=1.0.1",
+]

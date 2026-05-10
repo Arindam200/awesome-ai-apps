@@ -1,0 +1,15 @@
+[project]
+name = "chat-with-code"
+version = "0.1.0"
+description = "Conversational code explorer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit",
+    "python-dotenv",
+    "llama-index-llms-nebius",
+    "llama-index-embeddings-nebius",
+    "llama-index-readers-github",
+    "llama-index",
+    "nest-asyncio",
+]

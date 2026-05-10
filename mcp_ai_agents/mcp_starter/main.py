@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 api_key = os.environ["NEBIUS_API_KEY"]
-base_url = "https://api.studio.nebius.ai/v1" 
+base_url = "https://api.tokenfactory.nebius.com/v1" 
 client = AsyncOpenAI(base_url=base_url, api_key=api_key)
 set_tracing_disabled(disabled=True)
 

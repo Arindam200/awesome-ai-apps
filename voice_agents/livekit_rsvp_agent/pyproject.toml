@@ -1,0 +1,16 @@
+[project]
+name = "livekit-rsvp-agent"
+version = "0.1.0"
+description = "Outbound voice agent that calls RSVP'd event attendees to confirm attendance and updates the database."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "livekit-agents>=1.0.0",
+    "livekit-plugins-openai>=1.0.0",
+    "livekit-plugins-cartesia>=1.0.0",
+    "livekit-plugins-deepgram>=1.0.0",
+    "livekit-plugins-silero>=1.0.0",
+    "livekit-api>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "loguru>=0.7.3",
+]

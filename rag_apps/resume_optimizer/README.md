@@ -23,8 +23,8 @@ A powerful AI-powered resume optimization tool that helps job seekers enhance th
 
 - Python 3.10 or higher
 - PDF resume file
-- Create an account at [Nebius Studio](https://studio.nebius.com/)
-- Get Nebius [API Keys](https://studio.nebius.com/?modals=create-api-key)
+- Create an account at [Nebius Token Factory](https://tokenfactory.nebius.com/)
+- Get Nebius [API Keys](https://tokenfactory.nebius.com/)
 
 ## Installation
 
@@ -38,7 +38,11 @@ cd rag_apps/resume_optimizer
 2. Install the required dependencies:
 
 ```bash
+# Using pip
 pip install -r requirements.txt
+
+# Or using uv (recommended)
+uv sync
 ```
 
 3. Create a `.env` file in the project root and add your Nebius API key:
