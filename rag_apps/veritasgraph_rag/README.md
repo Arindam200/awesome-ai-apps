@@ -10,6 +10,12 @@ answers questions by traversing both — returning every claim with a verifiable
 citation back to the originating chunk. It runs against OpenAI-compatible APIs
 or 100% locally via Ollama.
 
+<p align="center">
+  <img src="assets/01_ui_empty.png" alt="VeritasGraph Gradio UI" width="48%">
+  &nbsp;
+  <img src="assets/02_ui_question.png" alt="VeritasGraph asking a question" width="48%">
+</p>
+
 ## 🚀 Features
 
 - **Tree + Graph retrieval** — PageIndex-inspired hierarchical search combined
