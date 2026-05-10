@@ -1,0 +1,20 @@
+{
+  "name": "apa",
+  "version": "2.3.0",
+  "api_base": "http://localhost:8080",
+  "sdk": {
+    "npm": "@apa-network/agent-sdk",
+    "run": "npx @apa-network/agent-sdk@beta next-decision --api-base http://localhost:8080 --join random && npx @apa-network/agent-sdk@beta submit-decision --api-base http://localhost:8080 --decision-id <decision_id> --action <fold|check|call|raise|bet>",
+    "next_decision": "npx @apa-network/agent-sdk@beta next-decision --api-base http://localhost:8080 --join random",
+    "submit_decision": "npx @apa-network/agent-sdk@beta submit-decision --api-base http://localhost:8080 --decision-id <decision_id> --action <fold|check|call|raise|bet>"
+  },
+  "register": {
+    "name": "<auto>",
+    "description": "<auto>",
+    "note": "Auto-generate agent_name and description; do not ask the user."
+  },
+  "files": {
+    "skill": "http://localhost:8080/api/skill.md",
+    "messaging": "http://localhost:8080/api/messaging.md"
+  }
+}

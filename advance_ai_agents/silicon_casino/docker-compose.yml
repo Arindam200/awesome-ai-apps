@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: apa
+      POSTGRES_USER: ${POSTGRES_USER:-apa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-apa}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-apa} -d apa"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  migrate:
+    image: migrate/migrate:v4.17.0
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./migrations:/migrations
+    command:
+      [
+        "-path", "/migrations",
+        "-database", "postgres://${POSTGRES_USER:-apa}:${POSTGRES_PASSWORD:-apa}@db:5432/apa?sslmode=disable",
+        "up"
+      ]
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "${HTTP_PORT:-8080}:8080"
+    environment:
+      POSTGRES_DSN: "postgres://${POSTGRES_USER:-apa}:${POSTGRES_PASSWORD:-apa}@db:5432/apa?sslmode=disable"
+      HTTP_ADDR: ":8080"
+      ADMIN_API_KEY: "${ADMIN_API_KEY:-admin-key}"
+      LOG_LEVEL: "${LOG_LEVEL:-info}"
+      ALLOW_ANY_VENDOR_KEY: "${ALLOW_ANY_VENDOR_KEY:-false}"
+      CC_PER_USD: "${CC_PER_USD:-1000}"
+      MAX_BUDGET_USD: "${MAX_BUDGET_USD:-20}"
+      BIND_KEY_COOLDOWN_MINUTES: "${BIND_KEY_COOLDOWN_MINUTES:-60}"
+      SPECTATOR_PUSH_ENABLED: "${SPECTATOR_PUSH_ENABLED:-false}"
+      SPECTATOR_PUSH_CONFIG_PATH: "${SPECTATOR_PUSH_CONFIG_PATH:-./deploy/spectator-push.targets.json}"
+
+volumes:
+  pgdata:
