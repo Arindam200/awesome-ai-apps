@@ -146,7 +146,7 @@ Agent(
 ## 🔗 Links
 
 - [Agno Documentation](https://docs.agno.ai)
-- [Nebius](Nebius.com)
+- [Nebius](https://nebius.com)
 - [Exa Search](https://exa.ai)
 - [GitHubTools Docs](https://github.com/features/copilot)
 
