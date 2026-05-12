@@ -255,11 +255,12 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🗂️ MCP Agents
 
-**Examples using Model Context Protocol for external tool integration.** _13 projects_
+**Examples using Model Context Protocol for external tool integration.** _14 projects_
 
 - [Doc-MCP](mcp_ai_agents/doc_mcp) - Semantic RAG documentation & Q&A system
 - [LangGraph MCP Agent](mcp_ai_agents/langchain_langgraph_mcp_agent) - LangChain ReAct agent with Couchbase integration
 - [GitHub MCP Agent](mcp_ai_agents/github_mcp_agent) - Repository insights and analysis via MCP
+- [Helium MCP](https://github.com/connerlambden/helium-mcp) - Remote MCP server for market intelligence, ML options pricing, and news bias analysis ([hosted endpoint](https://heliumtrades.com/mcp))
 - [MCP Starter](mcp_ai_agents/mcp_starter) - GitHub repository analyzer starter template
 - [Talk to your Docs](mcp_ai_agents/docs_qna_agent) - Documentation Q&A agent with MCP
 - [Database MCP Agent](mcp_ai_agents/database_mcp_agent) - Conversational AI agent for managing GibsonAI database projects and schemas
