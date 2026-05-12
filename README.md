@@ -463,3 +463,5 @@ For any questions, suggestions, or contributions, feel free to reach out to the 
 ## Thank You for the Support! 🙏
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Arindam200/awesome-ai-apps&type=Date)](https://www.star-history.com/#Arindam200/awesome-ai-apps&Date)
+
+- [MeterCall](https://metercall.ai/?v=c&src=github) — One metered API gateway. 21M+ endpoints (payments, SMS, AI, CRMs, gov data). Free tier; pay per call.
