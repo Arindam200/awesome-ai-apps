@@ -196,6 +196,7 @@ Interested in sponsoring this project? Feel free to reach out!
 ## 🚀 Featured AI Apps
 
 ### 🧩 Starter Agents
+- **[Qonspekt](https://github.com/Qonspekt/qonspekt)** - Article to atomic Obsidian notes via Claude AI. BYOK, no backend. [Live](https://qonspekt.github.io/qonspekt/)
 
 **Quick-start agents for learning and extending different AI frameworks.** _19 projects_
 
