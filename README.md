@@ -308,8 +308,9 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _20 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _21 projects_
 
+- [Cosmos Arena Debate Council](advance_ai_agents/cosmos_arena_debate_council) - Multi-agent debate council with LangChain Deep Agents and NVIDIA Cosmos reasoning model via Nebius Token Factory
 - [Deep Research + Writing Agents Workshop](advance_ai_agents/deep_research_writing_agents_nebius_okahu) - Nebius-powered LangChain MCP workshop with Exa research, Gemini image generation, and Okahu/Monocle eval observability
 - [Nebius AutoResearch](advance_ai_agents/nebius-autoresearch-autoresearch-mar30) - NYC taxi analytics pipeline optimizer; iterative code search with Nebius Token Factory (real-time or batch inference)
 - [AgentField Financial Research Agent](advance_ai_agents/agentfield_finance_research_agent) - Financial Research Agent with AgentField
