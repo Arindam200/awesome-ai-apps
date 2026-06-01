@@ -14,7 +14,7 @@ flow:
 ## Setup
 
 ```bash
-cd agents/nebius_travel_planner
+cd simple_ai_agents/nebius_travel_planner
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt

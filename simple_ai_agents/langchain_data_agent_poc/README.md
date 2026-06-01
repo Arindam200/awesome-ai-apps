@@ -29,7 +29,7 @@ plus **LangGraph** for the pipeline and **Streamlit** for the UI.
 ## Setup
 
 ```bash
-cd agents/langchain_data_agent_poc
+cd simple_ai_agents/langchain_data_agent_poc
 python -m venv .venv && source .venv/bin/activate
 pip install -e .
 cp env.example .env

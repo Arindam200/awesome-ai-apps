@@ -221,7 +221,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🪶 Simple Agents
 
-**Straightforward, practical use-cases for everyday AI applications.** _17 projects_
+**Straightforward, practical use-cases for everyday AI applications.** _19 projects_
 
 - [Agno AI Examples](simple_ai_agents/agno_ai_examples) - Simple to multi-agent examples with web search & knowledge base
 - [Finance Agent](simple_ai_agents/finance_agent) - Real-time stock & market data tracking agent
@@ -238,8 +238,8 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Natural language database queries with GibsonAI & LangChain
 - [LangChain Simple Agents](simple_ai_agents/langchain_simple_agents) - Nebius-powered incident response, support, vendor risk, and data quality agents with typed outputs and guarded tools
 - [Agent Discovery Agent](simple_ai_agents/agent_discovery_agent) - Find and compare AI agents across NANDA, MCP, Virtuals, A2A, and ERC-8004 registries
-- [LangChain Data Agent PoC](agents/langchain_data_agent_poc) - Natural-language-to-SQL data agent with LangGraph, Nebius, read-only SQL safety, and Streamlit charts
-- [VoyageCompass Travel Planner](agents/nebius_travel_planner) - LangChain and Nebius travel planner with weather, research, currency conversion, budgets, and packing tools
+- [LangChain Data Agent PoC](simple_ai_agents/langchain_data_agent_poc) - Natural-language-to-SQL data agent with LangGraph, Nebius, read-only SQL safety, and Streamlit charts
+- [VoyageCompass Travel Planner](simple_ai_agents/nebius_travel_planner) - LangChain and Nebius travel planner with weather, research, currency conversion, budgets, and packing tools
 
 ### 🎙️ Voice Agents
 
