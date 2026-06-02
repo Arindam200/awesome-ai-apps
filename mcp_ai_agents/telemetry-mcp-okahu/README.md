@@ -1,6 +1,6 @@
 # Telemetry-MCP-Okahu: Self-Healing Agent Demo (GPT-4o)
 
-This Proof-of-Concept demonstrates **autonomous self-healing**: The agent fixes a buggy Text-to-SQL API by analyzing traces from **Okahu Cloud** via the **hosted Okahu MCP**.
+This Proof-of-Concept demonstrates **autonomous self-healing**: The agent fixes a buggy Text-to-SQL API by analyzing traces from **[Okahu Cloud](https://www.okahu.ai/)** via the **hosted Okahu MCP**.
 
 Unlike the other POCs where the agent builds from scratch, this one starts with a **pre-built buggy `analyst.py`** that the agent must debug and fix using only trace analysis — no guessing allowed.
 
@@ -13,7 +13,7 @@ Unlike the other POCs where the agent builds from scratch, this one starts with 
 
 ## CRITICAL: Monocle Instrumentation Requirements
 
-**Monocle can only auto-instrument supported SDKs.** This is the most important concept:
+**[Monocle](https://github.com/monocle2ai/monocle) can only auto-instrument supported SDKs.** This is the most important concept:
 
 ### What Works ✅
 
