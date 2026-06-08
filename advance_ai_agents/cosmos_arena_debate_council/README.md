@@ -1,28 +1,28 @@
 # 🪐 Cosmos Arena: Multi-Agent Debate Council
 
-A multi-agent **debate council** built with [LangChain Deep Agents](https://docs.langchain.com/oss/python/deepagents/overview) and powered by **`nvidia/Cosmos3-Super-Reasoner`** served by **[Nebius Token Factory](https://dub.sh/nebius)**.
+A multi-agent **debate council** built with [LangGraph](https://langchain-ai.github.io/langgraph/) and powered by **`nvidia/Cosmos3-Super-Reasoner`** served by **[Nebius Token Factory](https://dub.sh/nebius)**.
 
-Give it a motion and a Moderator agent convenes a council: an Advocate argues *for*, a Skeptic argues *against*, an optional Pragmatist stress-tests both, and an Arbiter delivers a scored verdict, all streamed live in a Streamlit UI.
+Give it a motion and the council convenes: an Advocate argues *for*, a Skeptic argues *against*, an optional Pragmatist stress-tests both, and an Arbiter delivers a scored verdict, all streamed live in a Streamlit UI.
 
 ## How It Works
 
-The app uses the Deep Agents harness, where a single **Moderator** orchestrates context-isolated **subagents**:
+The app is a **LangGraph state machine** (`StateGraph`). Each council member is a node that calls the Cosmos model with a role-specific prompt, and a shared `DebateState` carries the motion, the current round, and the growing transcript between nodes:
 
-| Agent | Role |
-|-------|------|
-| 🎙️ **Moderator** (main agent) | Plans the debate with `write_todos`, delegates to council members via the built-in `task` tool, saves each argument to the virtual filesystem, and writes the final report |
+| Node | Role |
+|------|------|
+| 🧭 **Graph routing** | A `StateGraph` orchestrates the debate: opening cases → alternating rebuttal rounds → optional Pragmatist → Arbiter. Conditional edges decide when to loop another round vs. proceed to the verdict |
 | 🟢 **The Advocate** (`proponent`) | Argues **for** the motion; rebuts the opposition each round |
 | 🔴 **The Skeptic** (`opponent`) | Argues **against** the motion; rebuts the proponent each round |
 | 🟡 **The Pragmatist** (`pragmatist`) | Independent realist who stress-tests both sides *(optional)* |
 | ⚖️ **The Arbiter** (`judge`) | Scores each side on logic, evidence, and rebuttal, then delivers a verdict |
 
-The Moderator threads each round's arguments into the next delegation, so rebuttals genuinely respond to prior points, making it a real exchange rather than parallel monologues. Every agent reasons on the same NVIDIA Cosmos model.
+The flow runs `START → proponent → opponent →` then either `increment_round → proponent` for another round, or on to `pragmatist`/`judge`. Each node reads the opponent's latest turn from the shared transcript, so rebuttals genuinely respond to prior points, making it a real exchange rather than parallel monologues. Every node reasons on the same NVIDIA Cosmos model.
 
 ## Features
 
 - Structured, multi-round debate (1–4 rounds) on any motion
-- Specialized council member subagents via LangChain Deep Agents
-- Built-in planning (`write_todos`) and virtual filesystem for context management
+- Specialized council member nodes orchestrated by a LangGraph `StateGraph`
+- Shared debate state (motion, round, transcript) threaded across nodes, with conditional routing between rounds
 - Impartial judge with a transparent scorecard and verdict
 - Live streaming of each council member's actual argument in the UI
 - Powered by `nvidia/Cosmos3-Super-Reasoner` via the OpenAI-compatible Nebius Token Factory API
@@ -79,7 +79,7 @@ Then open your browser at: [http://localhost:8501](http://localhost:8501)
 
 ## Architecture
 
-- **Agent framework:** LangChain Deep Agents (`deepagents`)
+- **Orchestration:** LangGraph (`StateGraph`) — one node per council member, with conditional edges for rounds
 - **Model:** `nvidia/Cosmos3-Super-Reasoner` via Nebius Token Factory
 - **LLM integration:** `langchain-nebius` (`ChatNebius`), OpenAI-compatible
 - **Frontend:** Streamlit
@@ -91,7 +91,7 @@ Then open your browser at: [http://localhost:8501](http://localhost:8501)
 ```
 cosmos_arena_debate_council/
 ├── app.py              # Streamlit UI + live debate streaming
-├── cosmos_council.py   # Deep Agents council: moderator + subagents + model
+├── cosmos_council.py   # LangGraph debate graph: council nodes + routing + model
 ├── pyproject.toml      # Dependencies
 ├── .env.example        # Environment variable template
 └── assets/             # NVIDIA + Nebius logos

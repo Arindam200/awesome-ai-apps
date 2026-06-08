@@ -221,7 +221,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🪶 Simple Agents
 
-**Straightforward, practical use-cases for everyday AI applications.** _17 projects_
+**Straightforward, practical use-cases for everyday AI applications.** _19 projects_
 
 - [Agno AI Examples](simple_ai_agents/agno_ai_examples) - Simple to multi-agent examples with web search & knowledge base
 - [Finance Agent](simple_ai_agents/finance_agent) - Real-time stock & market data tracking agent
@@ -238,8 +238,8 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Natural language database queries with GibsonAI & LangChain
 - [LangChain Simple Agents](simple_ai_agents/langchain_simple_agents) - Nebius-powered incident response, support, vendor risk, and data quality agents with typed outputs and guarded tools
 - [Agent Discovery Agent](simple_ai_agents/agent_discovery_agent) - Find and compare AI agents across NANDA, MCP, Virtuals, A2A, and ERC-8004 registries
-- [LangChain Data Agent PoC](agents/langchain_data_agent_poc) - Natural-language-to-SQL data agent with LangGraph, Nebius, read-only SQL safety, and Streamlit charts
-- [VoyageCompass Travel Planner](agents/nebius_travel_planner) - LangChain and Nebius travel planner with weather, research, currency conversion, budgets, and packing tools
+- [LangChain Data Agent PoC](simple_ai_agents/langchain_data_agent_poc) - Natural-language-to-SQL data agent with LangGraph, Nebius, read-only SQL safety, and Streamlit charts
+- [VoyageCompass Travel Planner](simple_ai_agents/nebius_travel_planner) - LangChain and Nebius travel planner with weather, research, currency conversion, budgets, and packing tools
 
 ### 🎙️ Voice Agents
 
@@ -311,13 +311,13 @@ Interested in sponsoring this project? Feel free to reach out!
 
 **Complex multi-agent pipelines for production-ready end-to-end workflows.** _22 projects_
 
-- [Cosmos Arena Debate Council](advance_ai_agents/cosmos_arena_debate_council) - Multi-agent debate council with LangChain Deep Agents and NVIDIA Cosmos reasoning model via Nebius Token Factory
 - [Deep Research + Writing Agents Workshop](advance_ai_agents/deep_research_writing_agents_nebius_okahu) - Nebius-powered LangChain MCP workshop with Exa research, Gemini image generation, and Okahu/Monocle eval observability
 - [Nebius AutoResearch](advance_ai_agents/nebius-autoresearch-autoresearch-mar30) - NYC taxi analytics pipeline optimizer; iterative code search with Nebius Token Factory (real-time or batch inference)
 - [AgentField Financial Research Agent](advance_ai_agents/agentfield_finance_research_agent) - Financial Research Agent with AgentField
 - [Due Diligence Agent](advance_ai_agents/due_diligence_agent) - Multi-agent company due diligence pipeline with AG2 and TinyFish deep web scraping
 - [Deep Researcher](advance_ai_agents/deep_researcher_agent) - Multi-stage research agent with Agno & ScrapeGraph AI
 - [Candilyzer](advance_ai_agents/candidate_analyser) - Candidate analysis tool for GitHub/LinkedIn profiles
+- [Cosmos Arena Debate Council](advance_ai_agents/cosmos_arena_debate_council) - Multi-agent debate council built with LangGraph and the NVIDIA Cosmos reasoning model via Nebius Token Factory
 - [Job Finder](advance_ai_agents/job_finder_agent) - LinkedIn job search automation with Bright Data integration
 - [AI Trend Analyzer](advance_ai_agents/trend_analyzer_agent) - AI trend mining and analysis with Google ADK
 - [Conference Talk Generator](advance_ai_agents/conference_talk_abstract_generator) - Automated talk abstract generation with Google ADK & Couchbase
