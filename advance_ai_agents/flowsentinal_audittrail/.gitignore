@@ -1,0 +1,42 @@
+node_modules/
+
+# Root repo .gitignore ignores lib/ — keep this project's src/lib tracked
+!src/lib/
+!src/lib/**
+
+# Env secrets (keep .env.example)
+.env
+.env.*
+!.env.example
+.env.local
+.env*.local
+
+# Next.js build/cache output
+.next/
+out/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Coverage
+coverage/
+
+# Vercel / Turbo
+.vercel
+.turbo
+
+# Misc build/runtime noise
+dist/
+*.pem
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

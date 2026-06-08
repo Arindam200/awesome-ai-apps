@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300;0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+* {
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #252532 transparent;
+}
+*::-webkit-scrollbar { width: 4px; height: 4px; }
+*::-webkit-scrollbar-track { background: transparent; }
+*::-webkit-scrollbar-thumb { background: #252532; border-radius: 4px; }
+*::-webkit-scrollbar-thumb:hover { background: #2e2e40; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: #0c0c10;
+  color: #f1f5f9;
+  font-family: "Inter", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  /* Gradient text */
+  .text-gradient-violet {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 50%, #c4b5fd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .text-gradient-subtle {
+    background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Gradient border */
+  .border-gradient-violet {
+    position: relative;
+    background: #13131a;
+    border-radius: 16px;
+  }
+  .border-gradient-violet::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 17px;
+    background: linear-gradient(135deg, rgba(139,92,246,0.4) 0%, rgba(139,92,246,0.08) 50%, transparent 100%);
+    z-index: -1;
+  }
+
+  /* Glass morphism */
+  .glass {
+    background: rgba(19, 19, 26, 0.8);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  }
+
+  /* Dot indicator */
+  .live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 0 0 rgba(16,185,129,0.4);
+    animation: livePulse 2s ease-out infinite;
+  }
+
+  /* Divider with gradient */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.07) 30%, rgba(255,255,255,0.07) 70%, transparent);
+  }
+}
+
+@keyframes livePulse {
+  0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+
+/* Tab indicator slide */
+.tab-indicator {
+  transition: left 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              width 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Message appear */
+@keyframes messageIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.message-in {
+  animation: messageIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Step connector line */
+.step-connector {
+  position: absolute;
+  left: 11px;
+  top: 24px;
+  bottom: -4px;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(139,92,246,0.3), transparent);
+}

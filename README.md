@@ -309,7 +309,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _21 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _22 projects_
 
 - [Cosmos Arena Debate Council](advance_ai_agents/cosmos_arena_debate_council) - Multi-agent debate council with LangChain Deep Agents and NVIDIA Cosmos reasoning model via Nebius Token Factory
 - [Deep Research + Writing Agents Workshop](advance_ai_agents/deep_research_writing_agents_nebius_okahu) - Nebius-powered LangChain MCP workshop with Exa research, Gemini image generation, and Okahu/Monocle eval observability
@@ -322,6 +322,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [AI Trend Analyzer](advance_ai_agents/trend_analyzer_agent) - AI trend mining and analysis with Google ADK
 - [Conference Talk Generator](advance_ai_agents/conference_talk_abstract_generator) - Automated talk abstract generation with Google ADK & Couchbase
 - [Finance Service Agent](advance_ai_agents/finance_service_agent) - FastAPI server for stock data and predictions with Agno
+- [FlowSentinel Audit Trail](advance_ai_agents/flowsentinal_audittrail) - Next.js workflow command center: Nebius Nemotron reasoning, n8n orchestration, Velt immutable activity logs, optional Tailscale Funnel exposure
 - [Price Monitoring Agent](advance_ai_agents/price_monitoring_agent) - Price monitoring and alerting agent powered by CrewAI, Twilio & Nebius
 - [Startup Idea Validator Agent](advance_ai_agents/startup_idea_validator_agent) - Agentic workflow to validate and analyze startup ideas
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent) - Automated meeting notes and task creation from conversations
