@@ -1,0 +1,599 @@
+[{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "74d8fd8b49678022698b5d61aad37dac",
+        "span_id": "ead85dfef1f8b9a7",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "ec330f4ddc655136",
+    "start_time": "2026-06-11T19:02:09.614184Z",
+    "end_time": "2026-06-11T19:02:13.389961Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "fcb98d51cfd08b046004b4234a09e882",
+        "scope.agentic.invocation": "e6d2e452f3bb8b8b8dc83ab5e98ccb6c",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:02:09.614410Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": [{\"type\": \"input_text\", \"text\": \"You are a budget expert. For the given trip, list realistic cost ranges and 3 concrete money-saving tactics. Be concise.\"}]}",
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"We are planning a 5-day trip from Chicago to Tokyo in October 2026 for two people with a mid-range budget.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:02:13.389735Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:02:13.389824Z",
+            "attributes": {
+                "completion_tokens": 230,
+                "prompt_tokens": 63,
+                "total_tokens": 293
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "74d8fd8b49678022698b5d61aad37dac",
+        "span_id": "ec330f4ddc655136",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "d0277adfdabe6e2d",
+    "start_time": "2026-06-11T19:02:09.605297Z",
+    "end_time": "2026-06-11T19:02:13.430896Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "BudgetExpert",
+        "entity.1.description": "unknown_model",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "fcb98d51cfd08b046004b4234a09e882",
+        "scope.agentic.invocation": "e6d2e452f3bb8b8b8dc83ab5e98ccb6c",
+        "entity.count": 1,
+        "span.subtype": "content_processing"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:02:09.605355Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=AgentExecutorRequest(messages=[<agent_framework._types.Message object at 0x10bc5c2f0>], should_respond=True), source_id='dispatcher', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-fadf7f6999374c32c58e99bced7eccdb-2a92fa5d7329117e-03', 'baggage': 'monocle.scope.agentic.turn=0xfcb98d51cfd08b046004b4234a09e882'}], source_span_ids=['2a92fa5d7329117e'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:02:13.430868Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "74d8fd8b49678022698b5d61aad37dac",
+        "span_id": "137731d75cb5d7e2",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "4e2c6bb540ac476c",
+    "start_time": "2026-06-11T19:02:09.587398Z",
+    "end_time": "2026-06-11T19:02:13.669156Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "fcb98d51cfd08b046004b4234a09e882",
+        "scope.agentic.invocation": "67f8b3c0f061f5245241d3bb178af87a",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:02:09.587502Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": [{\"type\": \"input_text\", \"text\": \"You are a flight expert. For the given trip, recommend the smartest routing, ideal booking window, and cabin/airline tips. Be concise.\"}]}",
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"We are planning a 5-day trip from Chicago to Tokyo in October 2026 for two people with a mid-range budget.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:02:13.669011Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:02:13.669108Z",
+            "attributes": {
+                "completion_tokens": 269,
+                "prompt_tokens": 67,
+                "total_tokens": 336
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "74d8fd8b49678022698b5d61aad37dac",
+        "span_id": "4e2c6bb540ac476c",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "d0277adfdabe6e2d",
+    "start_time": "2026-06-11T19:02:09.582408Z",
+    "end_time": "2026-06-11T19:02:13.670254Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "FlightExpert",
+        "entity.1.description": "unknown_model",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "fcb98d51cfd08b046004b4234a09e882",
+        "scope.agentic.invocation": "67f8b3c0f061f5245241d3bb178af87a",
+        "entity.count": 1,
+        "span.subtype": "content_processing"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:02:09.582489Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=AgentExecutorRequest(messages=[<agent_framework._types.Message object at 0x10bc5c2f0>], should_respond=True), source_id='dispatcher', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-fadf7f6999374c32c58e99bced7eccdb-2a92fa5d7329117e-03', 'baggage': 'monocle.scope.agentic.turn=0xfcb98d51cfd08b046004b4234a09e882'}], source_span_ids=['2a92fa5d7329117e'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:02:13.670237Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "74d8fd8b49678022698b5d61aad37dac",
+        "span_id": "d630769293114a8c",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "d8c8a721fefc0818",
+    "start_time": "2026-06-11T19:02:09.603908Z",
+    "end_time": "2026-06-11T19:02:13.834935Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "fcb98d51cfd08b046004b4234a09e882",
+        "scope.agentic.invocation": "ce52b10457664c5e38e1a2c4f5c6b0e4",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:02:09.604032Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": [{\"type\": \"input_text\", \"text\": \"You are an activities expert. For the given trip, suggest the top 5 experiences and any seasonal events worth catching. Be concise.\"}]}",
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"We are planning a 5-day trip from Chicago to Tokyo in October 2026 for two people with a mid-range budget.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:02:13.834825Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:02:13.834892Z",
+            "attributes": {
+                "completion_tokens": 263,
+                "prompt_tokens": 64,
+                "total_tokens": 327
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "74d8fd8b49678022698b5d61aad37dac",
+        "span_id": "d8c8a721fefc0818",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "d0277adfdabe6e2d",
+    "start_time": "2026-06-11T19:02:09.601642Z",
+    "end_time": "2026-06-11T19:02:13.836285Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "ActivitiesExpert",
+        "entity.1.description": "unknown_model",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "fcb98d51cfd08b046004b4234a09e882",
+        "scope.agentic.invocation": "ce52b10457664c5e38e1a2c4f5c6b0e4",
+        "entity.count": 1,
+        "span.subtype": "content_processing"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:02:09.601869Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=AgentExecutorRequest(messages=[<agent_framework._types.Message object at 0x10bc5c2f0>], should_respond=True), source_id='dispatcher', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-fadf7f6999374c32c58e99bced7eccdb-2a92fa5d7329117e-03', 'baggage': 'monocle.scope.agentic.turn=0xfcb98d51cfd08b046004b4234a09e882'}], source_span_ids=['2a92fa5d7329117e'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:02:13.836268Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "74d8fd8b49678022698b5d61aad37dac",
+        "span_id": "99be0866368c4238",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "14e289ae88362c07",
+    "start_time": "2026-06-11T19:02:09.597343Z",
+    "end_time": "2026-06-11T19:02:14.345031Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "fcb98d51cfd08b046004b4234a09e882",
+        "scope.agentic.invocation": "10864e27d4fcebfc39b64e8a2f7577f",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:02:09.597478Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": [{\"type\": \"input_text\", \"text\": \"You are a hotel expert. For the given trip, recommend the best neighborhoods to stay in and the type of lodging that fits. Be concise.\"}]}",
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"We are planning a 5-day trip from Chicago to Tokyo in October 2026 for two people with a mid-range budget.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:02:14.344986Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:02:14.345015Z",
+            "attributes": {
+                "completion_tokens": 262,
+                "prompt_tokens": 66,
+                "total_tokens": 328
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "74d8fd8b49678022698b5d61aad37dac",
+        "span_id": "14e289ae88362c07",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "d0277adfdabe6e2d",
+    "start_time": "2026-06-11T19:02:09.594634Z",
+    "end_time": "2026-06-11T19:02:14.345642Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "HotelExpert",
+        "entity.1.description": "unknown_model",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "fcb98d51cfd08b046004b4234a09e882",
+        "scope.agentic.invocation": "10864e27d4fcebfc39b64e8a2f7577f",
+        "entity.count": 1,
+        "span.subtype": "content_processing"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:02:09.594969Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=AgentExecutorRequest(messages=[<agent_framework._types.Message object at 0x10bc5c2f0>], should_respond=True), source_id='dispatcher', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-fadf7f6999374c32c58e99bced7eccdb-2a92fa5d7329117e-03', 'baggage': 'monocle.scope.agentic.turn=0xfcb98d51cfd08b046004b4234a09e882'}], source_span_ids=['2a92fa5d7329117e'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:02:14.345628Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "74d8fd8b49678022698b5d61aad37dac",
+        "span_id": "35b29ac4a6ba3c4b",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "d0277adfdabe6e2d",
+    "start_time": "2026-06-11T19:02:14.403015Z",
+    "end_time": "2026-06-11T19:02:25.498324Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "fcb98d51cfd08b046004b4234a09e882",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:02:14.403176Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": [{\"type\": \"input_text\", \"text\": \"You consolidate multiple travel experts' notes into one cohesive, well-structured travel brief with clear sections. Keep it under 250 words.\"}]}",
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"## FlightExpert\\n### Smart Routing:\\n1. **Direct or One-Stop Flights**: Look for direct flights from Chicago (ORD) to Tokyo (NRT or HND). If those are expensive, consider one-stop options through hubs like Los Angeles (LAX) or San Francisco (SFO).\\n\\n### Ideal Booking Window:\\n- **Booking Time**: Aim to book 6-9 months in advance, ideally around January to March 2026 for October travel. This window often offers the best fares.\\n- **Flexible Dates**: Check a few days before/after your intended dates for better pricing.\\n\\n### Cabin/Airline Tips:\\n1. **Cabin Class**: Aim for premium economy if available for more comfort at a reasonable price.\\n2. **Airlines**: Consider airlines with strong reputations for service and reliability, such as:\\n   - Japan Airlines (JAL)\\n   - All Nippon Airways (ANA)\\n   - United Airlines (for direct flights)\\n3. **Frequent Flyer Programs**: Join relevant loyalty programs to earn miles, especially if traveling on major airlines.\\n\\n### Additional Tips:\\n- **Monitor Prices**: Use flight trackers or fare alerts to keep an eye on price drops.\\n- **Consider Travel Insurance**: As it's a long-haul trip and plans may change.\\n\\nHave a fantastic trip!\\n\\n## HotelExpert\\nFor your trip to Tokyo, here are the best neighborhoods and lodging options:\\n\\n### Neighborhoods:\\n\\n1. **Shinjuku**\\n   - **Vibe:** Lively and bustling, convenient for nightlife and dining.\\n   - **Lodging:** Mid-range hotels like **Hotel Gracery Shinjuku** or **Shinjuku Granbell Hotel**.\\n\\n2. **Shibuya**\\n   - **Vibe:** Trendy and youthful, great for shopping and entertainment.\\n   - **Lodging:** Boutique hotels such as **SHIBUYA HOTEL EN** or mid-range options like **Shibuya Tokyu REI Hotel**.\\n\\n3. **Ginza**\\n   - **Vibe:** Upscale shopping and dining, quieter nights.\\n   - **Lodging:** Mid-range options like **Hotel Gracery Ginza** or **Ginza Capital Hotel**.\\n\\n4. **Asakusa**\\n   - **Vibe:** Traditional, with historic sites like Senso-ji Temple.\\n   - **Lodging:** Mid-range hotels such as **Asakusa View Hotel** or **Rich Hotel Asakusa**.\\n\\n### Tip:\\nBook early to secure the best deals and consider getting a Japan Rail Pass for easy travel around the city. Enjoy your trip!\\n\\n## ActivitiesExpert\\nThat sounds exciting! Here are the top 5 experiences for your trip to Tokyo in October 2026, along with seasonal events to consider:\\n\\n### Top 5 Experiences:\\n\\n1. **Shibuya Crossing & Hachiko Statue**: Experience the iconic Shibuya Crossing and visit the famous Hachiko Statue, a symbol of loyalty.\\n\\n2. **Asakusa & Senso-ji Temple**: Explore Tokyo\\u2019s oldest temple, Senso-ji, and stroll through Nakamise Street for traditional snacks and souvenirs.\\n\\n3. **Tsukiji Outer Market**: Enjoy fresh seafood and sample local delicacies at this bustling market, known for its vibrant food scene.\\n\\n4. **Shinjuku Gyoen National Garden**: Visit this beautiful garden for autumn foliage, offering stunning views and a peaceful escape amidst the city.\\n\\n5. **Akihabara Experience**: Dive into the anime and gaming culture of Akihabara. Visit themed cafes and shops, perfect for pop culture enthusiasts.\\n\\n### Seasonal Events:\\n\\n- **Tokyo International Film Festival (Late October)**: Catch screenings of international films and enjoy various cinematic events.\\n  \\n- **Aki Matsuri (Autumn Festivals)**: Experience local festivals celebrating the harvest season throughout Tokyo, featuring traditional performances and food stalls.\\n\\nEnjoy your trip!\\n\\n## BudgetExpert\\n### Cost Estimates for 5-Day Trip (2 People)\\n\\n1. **Flights (Round-trip Chicago to Tokyo)**: $1,200 - $1,800\\n2. **Accommodation (Mid-range hotels)**: $600 - $1,200 ($120 - $240 per night)\\n3. **Food**: $400 - $600 ($40 - $60 per person per day)\\n4. **Transportation (Public transport, taxis)**: $100 - $200\\n5. **Attractions/Activities**: $200 - $400\\n\\n**Total Estimated Cost**: $2,600 - $4,200\\n\\n### Money-Saving Tactics\\n\\n1. **Book Flights Early**: Monitor fares and book 6-9 months in advance to secure better prices.\\n  \\n2. **Use Public Transportation**: Rely on trains and buses instead of taxis; consider getting a Japan Rail Pass if planning to travel outside Tokyo.\\n\\n3. **Dine at Local Eateries**: Choose affordable local restaurants or convenience stores (like 7-Eleven or FamilyMart) for meals to save significantly on food costs.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:02:25.498212Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:02:25.498283Z",
+            "attributes": {
+                "completion_tokens": 456,
+                "prompt_tokens": 1074,
+                "total_tokens": 1530
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._workflow.Workflow.run",
+    "context": {
+        "trace_id": "74d8fd8b49678022698b5d61aad37dac",
+        "span_id": "d0277adfdabe6e2d",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "b1d22d42e32f791b",
+    "start_time": "2026-06-11T19:02:09.581320Z",
+    "end_time": "2026-06-11T19:02:25.552109Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/agents/orchestrations/concurrent_travel.py:127",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "agent.microsoft",
+        "monocle.last.agent.invocation.id": "14e289ae88362c07",
+        "monocle.last.agent.name": "HotelExpert",
+        "span.type": "agentic.turn",
+        "scope.agentic.turn": "fcb98d51cfd08b046004b4234a09e882",
+        "entity.count": 1,
+        "span.subtype": "turn"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:02:09.581366Z",
+            "attributes": {
+                "input": "We are planning a 5-day trip from Chicago to Tokyo in October 2026 for two people with a mid-range budget."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:02:25.552038Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "workflow",
+    "context": {
+        "trace_id": "74d8fd8b49678022698b5d61aad37dac",
+        "span_id": "b1d22d42e32f791b",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": null,
+    "start_time": "2026-06-11T19:02:09.581250Z",
+    "end_time": "2026-06-11T19:02:25.552152Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/agents/orchestrations/concurrent_travel.py:127",
+        "scope.agentic.turn": "fcb98d51cfd08b046004b4234a09e882",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "span.type": "workflow",
+        "entity.1.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "workflow.generic",
+        "entity.2.type": "app_hosting.generic",
+        "entity.2.name": "generic"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+]

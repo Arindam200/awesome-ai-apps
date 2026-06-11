@@ -1,0 +1,426 @@
+[{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "91a6b83d0ec4d895ce67d40d5cd9e1e1",
+        "span_id": "0cf73cb19c4b5a03",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c9b87493c5c6ca4f",
+    "start_time": "2026-06-11T16:24:01.218592Z",
+    "end_time": "2026-06-11T16:24:10.360616Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "48565631556ccc6b098e057ea51ea5a3",
+        "scope.agentic.invocation": "df6fa92e87a183091fbdf8622765521",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T16:24:01.218702Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": [{\"type\": \"input_text\", \"text\": \"You are a helpful travel planning assistant. Use the available tools to find flights and hotels, then summarize the best options with a short itinerary.\"}]}",
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"Plan a trip from New York to San Francisco, departing 2026-07-10 and returning 2026-07-14.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T16:24:10.360410Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T16:24:10.360521Z",
+            "attributes": {
+                "completion_tokens": 112,
+                "prompt_tokens": 172,
+                "total_tokens": 284
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._tools.FunctionTool.invoke",
+    "context": {
+        "trace_id": "91a6b83d0ec4d895ce67d40d5cd9e1e1",
+        "span_id": "3e2085e1e8b4c1b8",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c9b87493c5c6ca4f",
+    "start_time": "2026-06-11T16:24:10.443431Z",
+    "end_time": "2026-06-11T16:24:10.444463Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/agent_framework/_tools.py:1541",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "tool.microsoft",
+        "entity.1.name": "search_flights",
+        "entity.1.description": "Search for flights between two cities on a given date.",
+        "entity.2.name": "TravelAgent",
+        "entity.2.type": "agent.microsoft",
+        "span.type": "agentic.tool.invocation",
+        "scope.agentic.turn": "48565631556ccc6b098e057ea51ea5a3",
+        "scope.agentic.invocation": "df6fa92e87a183091fbdf8622765521",
+        "entity.count": 2,
+        "span.subtype": "content_generation"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T16:24:10.443518Z",
+            "attributes": {
+                "input": "{'origin': 'New York', 'destination': 'San Francisco', 'date': '2026-07-10'}"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T16:24:10.444445Z",
+            "attributes": {
+                "response": "Found 3 flights from New York to San Francisco on 2026-07-10: Delta $320, United $290, JetBlue $275"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._tools.FunctionTool.invoke",
+    "context": {
+        "trace_id": "91a6b83d0ec4d895ce67d40d5cd9e1e1",
+        "span_id": "2c71304f61b62b7d",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c9b87493c5c6ca4f",
+    "start_time": "2026-06-11T16:24:10.443888Z",
+    "end_time": "2026-06-11T16:24:10.444539Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/agent_framework/_tools.py:1541",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "tool.microsoft",
+        "entity.1.name": "search_flights",
+        "entity.1.description": "Search for flights between two cities on a given date.",
+        "entity.2.name": "TravelAgent",
+        "entity.2.type": "agent.microsoft",
+        "span.type": "agentic.tool.invocation",
+        "scope.agentic.turn": "48565631556ccc6b098e057ea51ea5a3",
+        "scope.agentic.invocation": "df6fa92e87a183091fbdf8622765521",
+        "entity.count": 2,
+        "span.subtype": "content_generation"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T16:24:10.443943Z",
+            "attributes": {
+                "input": "{'origin': 'San Francisco', 'destination': 'New York', 'date': '2026-07-14'}"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T16:24:10.444531Z",
+            "attributes": {
+                "response": "Found 3 flights from San Francisco to New York on 2026-07-14: Delta $320, United $290, JetBlue $275"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._tools.FunctionTool.invoke",
+    "context": {
+        "trace_id": "91a6b83d0ec4d895ce67d40d5cd9e1e1",
+        "span_id": "3cfc688f2eade9c2",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c9b87493c5c6ca4f",
+    "start_time": "2026-06-11T16:24:10.444192Z",
+    "end_time": "2026-06-11T16:24:10.444606Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/agent_framework/_tools.py:1541",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "tool.microsoft",
+        "entity.1.name": "search_hotels",
+        "entity.1.description": "Search for hotels in a city for given dates.",
+        "entity.2.name": "TravelAgent",
+        "entity.2.type": "agent.microsoft",
+        "span.type": "agentic.tool.invocation",
+        "scope.agentic.turn": "48565631556ccc6b098e057ea51ea5a3",
+        "scope.agentic.invocation": "df6fa92e87a183091fbdf8622765521",
+        "entity.count": 2,
+        "span.subtype": "content_generation"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T16:24:10.444235Z",
+            "attributes": {
+                "input": "{'city': 'San Francisco', 'checkin': '2026-07-10', 'checkout': '2026-07-14'}"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T16:24:10.444598Z",
+            "attributes": {
+                "response": "Found hotels in San Francisco (2026-07-10 to 2026-07-14): Marriott $180/night, Hilton $165/night, Airbnb $120/night"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "91a6b83d0ec4d895ce67d40d5cd9e1e1",
+        "span_id": "575054623bee06ed",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c9b87493c5c6ca4f",
+    "start_time": "2026-06-11T16:24:10.445008Z",
+    "end_time": "2026-06-11T16:24:17.327797Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "48565631556ccc6b098e057ea51ea5a3",
+        "scope.agentic.invocation": "df6fa92e87a183091fbdf8622765521",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T16:24:10.445107Z",
+            "attributes": {
+                "input": [
+                    "{\"call_id\": \"call_I6dLsi2hy6yf9hrnSKSYSsAU\", \"output\": \"Found 3 flights from New York to San Francisco on 2026-07-10: Delta $320, United $290, JetBlue $275\"}",
+                    "{\"call_id\": \"call_rAZnN2rRoXKkGOuWGcNHOQvb\", \"output\": \"Found 3 flights from San Francisco to New York on 2026-07-14: Delta $320, United $290, JetBlue $275\"}",
+                    "{\"call_id\": \"call_30Bc8PNvmBISsLWD53SNrKm5\", \"output\": \"Found hotels in San Francisco (2026-07-10 to 2026-07-14): Marriott $180/night, Hilton $165/night, Airbnb $120/night\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T16:24:17.327648Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T16:24:17.327749Z",
+            "attributes": {
+                "completion_tokens": 259,
+                "prompt_tokens": 385,
+                "total_tokens": 644
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._agents.Agent.run",
+    "context": {
+        "trace_id": "91a6b83d0ec4d895ce67d40d5cd9e1e1",
+        "span_id": "c9b87493c5c6ca4f",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "2364d27ef788db4d",
+    "start_time": "2026-06-11T16:24:01.214458Z",
+    "end_time": "2026-06-11T16:24:17.329320Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/agents/travel_agents.py:108",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "TravelAgent",
+        "entity.1.description": "gpt-4o-mini",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "48565631556ccc6b098e057ea51ea5a3",
+        "scope.agentic.invocation": "df6fa92e87a183091fbdf8622765521",
+        "entity.count": 1,
+        "span.subtype": "content_processing"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T16:24:01.214511Z",
+            "attributes": {
+                "input": "Plan a trip from New York to San Francisco, departing 2026-07-10 and returning 2026-07-14."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T16:24:17.329299Z",
+            "attributes": {
+                "response": "Here's your trip plan from New York to San Francisco:\n\n### **Flight Options**\n- **Outbound Flight (July 10, 2026):**\n  - **JetBlue:** $275\n  - **United:** $290\n  - **Delta:** $320\n  \n- **Return Flight (July 14, 2026):**\n  - **JetBlue:** $275\n  - **United:** $290\n  - **Delta:** $320\n\n### **Hotel Options in San Francisco (July 10 - July 14, 2026)**\n- **Airbnb:** $120/night\n- **Hilton:** $165/night\n- **Marriott:** $180/night\n\n### **Summary Itinerary**\n- **Departure:** New York to San Francisco via JetBlue at $275\n- **Return:** San Francisco to New York via JetBlue at $275\n- **Accommodation:** Airbnb at $120/night for 4 nights\n\n### **Total Estimated Cost**\n- **Flights:** $275 + $275 = **$550**\n- **Hotel (Airbnb):** $120 x 4 nights = **$480**\n- **Overall Total:** **$1030**\n\nLet me know if you would like to book or make any changes!"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._agents.Agent.run",
+    "context": {
+        "trace_id": "91a6b83d0ec4d895ce67d40d5cd9e1e1",
+        "span_id": "2364d27ef788db4d",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "2bc2299ede9593d6",
+    "start_time": "2026-06-11T16:24:01.214385Z",
+    "end_time": "2026-06-11T16:24:17.329372Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/agents/travel_agents.py:108",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "agent.microsoft",
+        "span.type": "agentic.turn",
+        "scope.agentic.turn": "48565631556ccc6b098e057ea51ea5a3",
+        "entity.count": 1,
+        "span.subtype": "turn"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T16:24:01.214432Z",
+            "attributes": {
+                "input": "Plan a trip from New York to San Francisco, departing 2026-07-10 and returning 2026-07-14."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T16:24:17.329357Z",
+            "attributes": {
+                "response": "Here's your trip plan from New York to San Francisco:\n\n### **Flight Options**\n- **Outbound Flight (July 10, 2026):**\n  - **JetBlue:** $275\n  - **United:** $290\n  - **Delta:** $320\n  \n- **Return Flight (July 14, 2026):**\n  - **JetBlue:** $275\n  - **United:** $290\n  - **Delta:** $320\n\n### **Hotel Options in San Francisco (July 10 - July 14, 2026)**\n- **Airbnb:** $120/night\n- **Hilton:** $165/night\n- **Marriott:** $180/night\n\n### **Summary Itinerary**\n- **Departure:** New York to San Francisco via JetBlue at $275\n- **Return:** San Francisco to New York via JetBlue at $275\n- **Accommodation:** Airbnb at $120/night for 4 nights\n\n### **Total Estimated Cost**\n- **Flights:** $275 + $275 = **$550**\n- **Hotel (Airbnb):** $120 x 4 nights = **$480**\n- **Overall Total:** **$1030**\n\nLet me know if you would like to book or make any changes!"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "workflow",
+    "context": {
+        "trace_id": "91a6b83d0ec4d895ce67d40d5cd9e1e1",
+        "span_id": "2bc2299ede9593d6",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": null,
+    "start_time": "2026-06-11T16:24:01.214301Z",
+    "end_time": "2026-06-11T16:24:17.329379Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/agents/travel_agents.py:108",
+        "scope.agentic.turn": "48565631556ccc6b098e057ea51ea5a3",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "span.type": "workflow",
+        "entity.1.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "workflow.generic",
+        "entity.2.type": "app_hosting.generic",
+        "entity.2.name": "generic"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+]

@@ -1,0 +1,16 @@
+[project]
+name = "microsfot-agent-framework"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+	"agent-framework-azure-ai==1.0.0rc6",
+	"agent-framework-core",
+	"agent-framework-orchestrations",
+	"opentelemetry-semantic-conventions",
+	"opentelemetry-semantic-conventions-ai",
+	"openai",
+	"python-dotenv",
+	"monocle-apptrace==0.8.4",
+]

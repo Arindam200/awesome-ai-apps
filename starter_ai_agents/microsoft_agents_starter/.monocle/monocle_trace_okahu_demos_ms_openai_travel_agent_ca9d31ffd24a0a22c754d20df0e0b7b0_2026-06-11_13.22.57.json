@@ -1,0 +1,200 @@
+[{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "ca9d31ffd24a0a22c754d20df0e0b7b0",
+        "span_id": "3f0d35cbbbe52a52",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "08902491151be009",
+    "start_time": "2026-06-11T17:22:51.549601Z",
+    "end_time": "2026-06-11T17:22:57.096250Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "6ff06554eb82e8a2a076072fef065254",
+        "scope.agentic.invocation": "d3138a8d432e2384a1bc49184c94a630",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T17:22:51.549878Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": [{\"type\": \"input_text\", \"text\": \"You are a critic. Evaluate the provided itinerary for completeness, accuracy, and user-fit. Return a short critique and a score from 1 to 10.\"}]}",
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"Itinerary:\\n### Itinerary: New York to San Francisco\\n\\n- **Departure:** July 10, 2026  \\n  - **Flight:** JetBlue  \\n  - **Cost:** $275  \\n\\n- **Return:** July 14, 2026  \\n  - **Flight:** JetBlue (roundtrip, same price)  \\n  - **Cost:** Included in roundtrip total  \\n\\n- **Hotel:** Airbnb  \\n  - **Stay:** July 10 - July 14 (4 nights)  \\n  - **Cost:** $120/night x 4 nights = $480  \\n\\n- **Total Estimated Cost:**\\n  - **Flights:** $275 (roundtrip)  \\n  - **Hotel:** $480  \\n  - ****Total:** $755**  \\n\\nEnjoy your trip to San Francisco!\\n\\nEvaluate the itinerary, list any issues or missing details, and give a score 1-10 with a one-line rationale.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T17:22:57.096024Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T17:22:57.096161Z",
+            "attributes": {
+                "completion_tokens": 245,
+                "prompt_tokens": 229,
+                "total_tokens": 474
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._agents.Agent.run",
+    "context": {
+        "trace_id": "ca9d31ffd24a0a22c754d20df0e0b7b0",
+        "span_id": "08902491151be009",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "399d56d26bebf23a",
+    "start_time": "2026-06-11T17:22:51.549053Z",
+    "end_time": "2026-06-11T17:22:57.098361Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/agents/multi_travel_agents.py:68",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "CriticAgent",
+        "entity.1.description": "gpt-4o-mini",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "6ff06554eb82e8a2a076072fef065254",
+        "scope.agentic.invocation": "d3138a8d432e2384a1bc49184c94a630",
+        "entity.count": 1,
+        "span.subtype": "content_processing"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T17:22:51.549093Z",
+            "attributes": {
+                "input": "Itinerary:\n### Itinerary: New York to San Francisco\n\n- **Departure:** July 10, 2026  \n  - **Flight:** JetBlue  \n  - **Cost:** $275  \n\n- **Return:** July 14, 2026  \n  - **Flight:** JetBlue (roundtrip, same price)  \n  - **Cost:** Included in roundtrip total  \n\n- **Hotel:** Airbnb  \n  - **Stay:** July 10 - July 14 (4 nights)  \n  - **Cost:** $120/night x 4 nights = $480  \n\n- **Total Estimated Cost:**\n  - **Flights:** $275 (roundtrip)  \n  - **Hotel:** $480  \n  - ****Total:** $755**  \n\nEnjoy your trip to San Francisco!\n\nEvaluate the itinerary, list any issues or missing details, and give a score 1-10 with a one-line rationale."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T17:22:57.098314Z",
+            "attributes": {
+                "response": "### Critique:\n\nThe itinerary provides a basic framework for a trip from New York to San Francisco but is incomplete in several key areas:\n\n1. **Hotel Specifics:** The itinerary mentions \"Airbnb\" without providing a location, amenities, or cancellation policy, which are critical for planning.\n  \n2. **Flight Details:** While it lists the airline and cost, there is no information on flight times or duration, which is essential for travel planning.\n  \n3. **Transportation:** There\u2019s no mention of transportation from the airport to the hotel, or local transport during the stay (e.g., car rentals, public transit).\n  \n4. **Attractions/Itinerary:** There are no suggested activities, sights to see, or restaurants to try in San Francisco, limiting its usefulness for maximizing the trip experience.\n\n5. **Dining and Additional Costs:** It does not account for daily food expenses or any other incidentals that may arise while traveling.\n\n6. **Travel Insurance:** Recommendations on travel insurance or safety tips could enhance the itinerary's completeness.\n\n### Score: 5/10\n**Rationale:** The itinerary serves as a basic outline but lacks essential details and planning elements necessary for an enjoyable and stress-free trip."
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._agents.Agent.run",
+    "context": {
+        "trace_id": "ca9d31ffd24a0a22c754d20df0e0b7b0",
+        "span_id": "399d56d26bebf23a",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "5caf02dfe15d3e67",
+    "start_time": "2026-06-11T17:22:51.549000Z",
+    "end_time": "2026-06-11T17:22:57.098516Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/agents/multi_travel_agents.py:68",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "agent.microsoft",
+        "span.type": "agentic.turn",
+        "scope.agentic.turn": "6ff06554eb82e8a2a076072fef065254",
+        "entity.count": 1,
+        "span.subtype": "turn"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T17:22:51.549033Z",
+            "attributes": {
+                "input": "Itinerary:\n### Itinerary: New York to San Francisco\n\n- **Departure:** July 10, 2026  \n  - **Flight:** JetBlue  \n  - **Cost:** $275  \n\n- **Return:** July 14, 2026  \n  - **Flight:** JetBlue (roundtrip, same price)  \n  - **Cost:** Included in roundtrip total  \n\n- **Hotel:** Airbnb  \n  - **Stay:** July 10 - July 14 (4 nights)  \n  - **Cost:** $120/night x 4 nights = $480  \n\n- **Total Estimated Cost:**\n  - **Flights:** $275 (roundtrip)  \n  - **Hotel:** $480  \n  - ****Total:** $755**  \n\nEnjoy your trip to San Francisco!\n\nEvaluate the itinerary, list any issues or missing details, and give a score 1-10 with a one-line rationale."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T17:22:57.098439Z",
+            "attributes": {
+                "response": "### Critique:\n\nThe itinerary provides a basic framework for a trip from New York to San Francisco but is incomplete in several key areas:\n\n1. **Hotel Specifics:** The itinerary mentions \"Airbnb\" without providing a location, amenities, or cancellation policy, which are critical for planning.\n  \n2. **Flight Details:** While it lists the airline and cost, there is no information on flight times or duration, which is essential for travel planning.\n  \n3. **Transportation:** There\u2019s no mention of transportation from the airport to the hotel, or local transport during the stay (e.g., car rentals, public transit).\n  \n4. **Attractions/Itinerary:** There are no suggested activities, sights to see, or restaurants to try in San Francisco, limiting its usefulness for maximizing the trip experience.\n\n5. **Dining and Additional Costs:** It does not account for daily food expenses or any other incidentals that may arise while traveling.\n\n6. **Travel Insurance:** Recommendations on travel insurance or safety tips could enhance the itinerary's completeness.\n\n### Score: 5/10\n**Rationale:** The itinerary serves as a basic outline but lacks essential details and planning elements necessary for an enjoyable and stress-free trip."
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "workflow",
+    "context": {
+        "trace_id": "ca9d31ffd24a0a22c754d20df0e0b7b0",
+        "span_id": "5caf02dfe15d3e67",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": null,
+    "start_time": "2026-06-11T17:22:51.548942Z",
+    "end_time": "2026-06-11T17:22:57.098544Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/agents/multi_travel_agents.py:68",
+        "scope.agentic.turn": "6ff06554eb82e8a2a076072fef065254",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "span.type": "workflow",
+        "entity.1.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "workflow.generic",
+        "entity.2.type": "app_hosting.generic",
+        "entity.2.name": "generic"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+]
