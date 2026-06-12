@@ -1,12 +1,6 @@
-# Nebius FlowSentinel — AI Workflow Command Center
-
-> Based on [Studio1HQ/flow-sentinel](https://github.com/Studio1HQ/flow-sentinel), adapted for the Awesome AI Apps monorepo at `advance_ai_agents/flowsentinal_audittrail`.
+# FlowSentinel — AI Workflow Command Center
 
 A Next.js dashboard that orchestrates AI agent workflows through n8n, powered by Nebius LLMs, with every human and AI action tracked in Velt's immutable activity log, all exposed securely through Tailscale Funnel.
-
-![Next.js 14](https://img.shields.io/badge/Next.js-14-black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue)
-![License MIT](https://img.shields.io/badge/license-MIT-green)
 
 ---
 
