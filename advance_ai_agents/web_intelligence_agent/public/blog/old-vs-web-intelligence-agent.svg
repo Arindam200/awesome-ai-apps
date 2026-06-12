@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="960" viewBox="0 0 1680 960" role="img" aria-labelledby="title desc">
+  <title id="title">Existing web research compared with Web Intelligence Agent</title>
+  <desc id="desc">Excalidraw style diagram comparing scattered web research with the Web Intelligence Agent approach of evidence collection, reasoning, review, audit trail, and final usable document.</desc>
+  <defs>
+    <filter id="wobble"><feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2"/></filter>
+    <pattern id="blueHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#8dbbe8" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="greenHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#9bd7aa" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="yellowHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#e8c55b" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="purpleHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#c9a9e8" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="redHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#eea2a2" stroke-width="1" opacity=".45"/></pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#111"/></marker>
+    <style>
+      .hand{font-family:"Comic Sans MS","Comic Neue","Bradley Hand",cursive}
+      .ink{stroke:#111;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:url(#wobble)}
+      .thin{stroke:#111;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:url(#wobble)}
+      .muted{fill:#333}
+    </style>
+  </defs>
+  <rect width="1680" height="960" fill="#fffefa"/>
+  <text x="840" y="76" class="hand" text-anchor="middle" font-size="58" font-weight="700" fill="#111">Web Intelligence Agent</text>
+  <text x="840" y="122" class="hand" text-anchor="middle" font-size="25" fill="#111">From scattered links to source-aware research documents people can review</text>
+
+  <text x="86" y="171" class="hand" font-size="28" font-weight="700" fill="#111">Typical web research</text>
+  <path d="M82 184 C180 174 280 181 388 178" class="thin" fill="none"/>
+  <g>
+    <rect x="80" y="220" width="320" height="72" rx="14" fill="#f7eefb" class="ink"/>
+    <rect x="80" y="220" width="320" height="72" rx="14" fill="url(#purpleHatch)" opacity=".65"/>
+    <text x="135" y="265" class="hand" font-size="27" fill="#111">Search result tabs</text>
+    <circle cx="108" cy="255" r="20" fill="#fff" class="thin"/><path d="M99 255 L107 263 L121 246" class="thin" fill="none"/>
+    <rect x="80" y="314" width="320" height="72" rx="14" fill="#edf8ec" class="ink"/>
+    <rect x="80" y="314" width="320" height="72" rx="14" fill="url(#greenHatch)" opacity=".65"/>
+    <text x="135" y="359" class="hand" font-size="27" fill="#111">Quick summaries</text>
+    <circle cx="108" cy="349" r="20" fill="#fff" class="thin"/><path d="M98 349 H119 M98 358 H113" class="thin"/>
+    <rect x="80" y="408" width="320" height="72" rx="14" fill="#f3f8ff" class="ink"/>
+    <rect x="80" y="408" width="320" height="72" rx="14" fill="url(#blueHatch)" opacity=".65"/>
+    <text x="135" y="453" class="hand" font-size="27" fill="#111">Manual notes</text>
+    <circle cx="108" cy="443" r="20" fill="#fff" class="thin"/><path d="M99 453 L117 435 M103 435 L121 453" class="thin"/>
+    <rect x="80" y="502" width="320" height="72" rx="14" fill="#fff5d9" class="ink"/>
+    <rect x="80" y="502" width="320" height="72" rx="14" fill="url(#yellowHatch)" opacity=".65"/>
+    <text x="135" y="547" class="hand" font-size="27" fill="#111">One-off answer</text>
+    <circle cx="108" cy="537" r="20" fill="#fff" class="thin"/><text x="98" y="548" class="hand" font-size="30" fill="#111">?</text>
+  </g>
+  <text x="81" y="619" class="hand" font-size="22" fill="#111">Fine for quick reading, risky for decisions</text>
+  <g>
+    <rect x="86" y="648" width="330" height="188" rx="4" fill="#fff2bd" class="ink"/>
+    <rect x="86" y="648" width="330" height="188" rx="4" fill="url(#yellowHatch)" opacity=".55"/>
+    <path d="M377 805 L416 775 L416 835 Z" fill="#ead184" class="thin"/>
+    <text x="251" y="690" class="hand" text-anchor="middle" font-size="29" font-weight="700" fill="#111">What breaks</text>
+    <path d="M165 701 C224 696 281 700 337 696" class="thin" fill="none"/>
+    <text x="116" y="733" class="hand" font-size="20" fill="#111">- Evidence is scattered</text>
+    <text x="116" y="764" class="hand" font-size="20" fill="#111">- Tool choice is hidden</text>
+    <text x="116" y="795" class="hand" font-size="20" fill="#111">- Review happens elsewhere</text>
+  </g>
+
+  <path d="M445 468 C514 452 558 453 620 468" class="thin" fill="none" marker-end="url(#arrow)"/>
+  <text x="515" y="430" class="hand" font-size="22" fill="#111">same inputs,</text>
+  <text x="504" y="458" class="hand" font-size="22" fill="#111">better workflow</text>
+
+  <g>
+    <rect x="626" y="172" width="500" height="610" rx="30" fill="#f4f9ff" class="ink"/>
+    <rect x="626" y="172" width="500" height="610" rx="30" fill="url(#blueHatch)" opacity=".55"/>
+    <text x="876" y="223" class="hand" text-anchor="middle" font-size="38" font-weight="700" fill="#111">Evidence pipeline</text>
+    <g class="hand" font-size="25" fill="#111">
+      <rect x="680" y="260" width="390" height="54" rx="14" fill="#fff" class="thin"/><circle cx="714" cy="287" r="17" fill="#2e86de"/><path d="M706 287 L713 295 L724 277" stroke="#fff" stroke-width="4" fill="none"/><text x="750" y="296">Ask: define research goal</text>
+      <rect x="680" y="331" width="390" height="54" rx="14" fill="#fff" class="thin"/><circle cx="714" cy="358" r="17" fill="#2e86de"/><path d="M706 358 L713 366 L724 348" stroke="#fff" stroke-width="4" fill="none"/><text x="750" y="367">Collect: Olostep live evidence</text>
+      <rect x="680" y="402" width="390" height="54" rx="14" fill="#fff" class="thin"/><circle cx="714" cy="429" r="17" fill="#2e86de"/><path d="M706 429 L713 437 L724 419" stroke="#fff" stroke-width="4" fill="none"/><text x="750" y="438">Reason: Nemotron Ultra</text>
+      <rect x="680" y="473" width="390" height="54" rx="14" fill="#fff" class="thin"/><circle cx="714" cy="500" r="17" fill="#2e86de"/><path d="M706 500 L713 508 L724 490" stroke="#fff" stroke-width="4" fill="none"/><text x="750" y="509">Verify: gaps and contradictions</text>
+      <rect x="680" y="544" width="390" height="54" rx="14" fill="#fff" class="thin"/><circle cx="714" cy="571" r="17" fill="#2e86de"/><path d="M706 571 L713 579 L724 561" stroke="#fff" stroke-width="4" fill="none"/><text x="750" y="580">Review: Velt comments</text>
+      <rect x="680" y="615" width="390" height="54" rx="14" fill="#fff" class="thin"/><circle cx="714" cy="642" r="17" fill="#2e86de"/><path d="M706 642 L713 650 L724 632" stroke="#fff" stroke-width="4" fill="none"/><text x="750" y="651">Save: case study and audit</text>
+    </g>
+  </g>
+
+  <text x="1246" y="171" class="hand" font-size="28" font-weight="700" fill="#111">Usable outputs</text>
+  <path d="M1243 184 C1340 176 1422 181 1519 176" class="thin" fill="none"/>
+  <g class="hand" fill="#111">
+    <rect x="1230" y="221" width="330" height="118" rx="18" fill="#edf8ec" class="ink"/>
+    <rect x="1230" y="221" width="330" height="118" rx="18" fill="url(#greenHatch)" opacity=".55"/>
+    <text x="1395" y="267" text-anchor="middle" font-size="29" font-weight="700">Readable case study</text>
+    <text x="1395" y="304" text-anchor="middle" font-size="20">source-aware Markdown doc</text>
+    <rect x="1230" y="368" width="330" height="118" rx="18" fill="#f7eefb" class="ink"/>
+    <rect x="1230" y="368" width="330" height="118" rx="18" fill="url(#purpleHatch)" opacity=".55"/>
+    <text x="1395" y="414" text-anchor="middle" font-size="29" font-weight="700">Collaborative review</text>
+    <text x="1395" y="451" text-anchor="middle" font-size="20">Analyst and Reviewer comments</text>
+    <rect x="1230" y="515" width="330" height="118" rx="18" fill="#fff5d9" class="ink"/>
+    <rect x="1230" y="515" width="330" height="118" rx="18" fill="url(#yellowHatch)" opacity=".55"/>
+    <text x="1395" y="561" text-anchor="middle" font-size="29" font-weight="700">Audit trail</text>
+    <text x="1395" y="598" text-anchor="middle" font-size="20">human + agent events from Velt</text>
+  </g>
+  <path d="M1127 482 C1162 482 1194 482 1222 482" class="thin" fill="none" marker-end="url(#arrow)"/>
+  <g>
+    <rect x="430" y="850" width="820" height="64" rx="8" fill="#fff2bd" class="ink"/>
+    <rect x="430" y="850" width="820" height="64" rx="8" fill="url(#yellowHatch)" opacity=".55"/>
+    <text x="840" y="891" class="hand" text-anchor="middle" font-size="30" font-weight="700" fill="#111">Policy: keep claims tied to evidence and review.</text>
+  </g>
+</svg>

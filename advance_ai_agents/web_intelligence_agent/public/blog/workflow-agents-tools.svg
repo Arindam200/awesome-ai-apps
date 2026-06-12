@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="960" viewBox="0 0 1680 960" role="img" aria-labelledby="title desc">
+  <title id="title">Workflow architecture for Web Intelligence Agent</title>
+  <desc id="desc">Excalidraw style architecture diagram showing the Ask, Collect, Reason, Verify, Code pipeline mapped to Mastra agents, Olostep tools, Nebius Nemotron, SQLite, and Velt.</desc>
+  <defs>
+    <filter id="wobble"><feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="2.1"/></filter>
+    <pattern id="blueHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#8dbbe8" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="greenHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#9bd7aa" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="yellowHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#e8c55b" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="purpleHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#c9a9e8" stroke-width="1" opacity=".45"/></pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#111"/></marker>
+    <style>
+      .hand{font-family:"Comic Sans MS","Comic Neue","Bradley Hand",cursive}
+      .ink{stroke:#111;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:url(#wobble)}
+      .thin{stroke:#111;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:url(#wobble)}
+    </style>
+  </defs>
+  <rect width="1680" height="960" fill="#fffefa"/>
+  <text x="840" y="72" class="hand" text-anchor="middle" font-size="56" font-weight="700" fill="#111">Workflow Architecture</text>
+  <text x="840" y="116" class="hand" text-anchor="middle" font-size="25" fill="#111">A controlled Mastra pipeline, not an open-ended autonomous crawler</text>
+
+  <g>
+    <rect x="74" y="170" width="280" height="560" rx="26" fill="#f7eefb" class="ink"/>
+    <rect x="74" y="170" width="280" height="560" rx="26" fill="url(#purpleHatch)" opacity=".55"/>
+    <text x="214" y="220" class="hand" text-anchor="middle" font-size="32" font-weight="700" fill="#111">Inputs</text>
+    <rect x="112" y="265" width="204" height="90" rx="18" fill="#fff" class="thin"/>
+    <text x="214" y="304" class="hand" text-anchor="middle" font-size="24" fill="#111">Research prompt</text>
+    <text x="214" y="335" class="hand" text-anchor="middle" font-size="18" fill="#333">goal and constraints</text>
+    <rect x="112" y="395" width="204" height="90" rx="18" fill="#fff" class="thin"/>
+    <text x="214" y="434" class="hand" text-anchor="middle" font-size="24" fill="#111">Optional URL</text>
+    <text x="214" y="465" class="hand" text-anchor="middle" font-size="18" fill="#333">known page or source</text>
+    <rect x="112" y="535" width="204" height="120" rx="8" fill="#fff2bd" class="thin"/>
+    <text x="214" y="577" class="hand" text-anchor="middle" font-size="24" font-weight="700" fill="#111">Run record</text>
+    <text x="214" y="612" class="hand" text-anchor="middle" font-size="18" fill="#333">created immediately</text>
+    <text x="214" y="641" class="hand" text-anchor="middle" font-size="18" fill="#333">so progress is live</text>
+  </g>
+
+  <path d="M360 450 C418 441 443 443 485 450" class="thin" fill="none" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect x="492" y="158" width="690" height="610" rx="32" fill="#f4f9ff" class="ink"/>
+    <rect x="492" y="158" width="690" height="610" rx="32" fill="url(#blueHatch)" opacity=".5"/>
+    <text x="837" y="210" class="hand" text-anchor="middle" font-size="38" font-weight="700" fill="#111">Mastra workflow</text>
+    <text x="837" y="244" class="hand" text-anchor="middle" font-size="22" fill="#111">Ask -> Collect -> Reason -> Verify -> Code</text>
+    <g class="hand" font-size="20" fill="#111">
+      <rect x="548" y="294" width="570" height="58" rx="14" fill="#fff" class="thin"/><circle cx="583" cy="323" r="17" fill="#2e86de"/><path d="M575 323 L582 331 L594 313" stroke="#fff" stroke-width="4" fill="none"/><text x="622" y="331">Signals Planner Agent decides intent and operation</text>
+      <rect x="548" y="367" width="570" height="58" rx="14" fill="#fff" class="thin"/><circle cx="583" cy="396" r="17" fill="#2e86de"/><path d="M575 396 L582 404 L594 386" stroke="#fff" stroke-width="4" fill="none"/><text x="622" y="404">Olostep Evidence Agent collects live source material</text>
+      <rect x="548" y="440" width="570" height="58" rx="14" fill="#fff" class="thin"/><circle cx="583" cy="469" r="17" fill="#2e86de"/><path d="M575 469 L582 477 L594 459" stroke="#fff" stroke-width="4" fill="none"/><text x="622" y="477">Nebius Reasoning Agent structures evidence</text>
+      <rect x="548" y="513" width="570" height="58" rx="14" fill="#fff" class="thin"/><circle cx="583" cy="542" r="17" fill="#2e86de"/><path d="M575 542 L582 550 L594 532" stroke="#fff" stroke-width="4" fill="none"/><text x="622" y="550">Nebius Verification Agent checks gaps and claims</text>
+      <rect x="548" y="586" width="570" height="58" rx="14" fill="#fff" class="thin"/><circle cx="583" cy="615" r="17" fill="#2e86de"/><path d="M575 615 L582 623 L594 605" stroke="#fff" stroke-width="4" fill="none"/><text x="622" y="623">Nebius Case Study Agent writes the document</text>
+      <rect x="548" y="659" width="570" height="58" rx="14" fill="#fff" class="thin"/><circle cx="583" cy="688" r="17" fill="#2e86de"/><path d="M575 688 L582 696 L594 678" stroke="#fff" stroke-width="4" fill="none"/><text x="622" y="696">Deterministic helper emits reusable TypeScript</text>
+    </g>
+  </g>
+
+  <g>
+    <text x="1285" y="168" class="hand" font-size="29" font-weight="700" fill="#111">Olostep tool shelf</text>
+    <path d="M1283 182 C1390 174 1494 181 1586 176" class="thin" fill="none"/>
+    <rect x="1262" y="215" width="300" height="252" rx="22" fill="#edf8ec" class="ink"/>
+    <rect x="1262" y="215" width="300" height="252" rx="22" fill="url(#greenHatch)" opacity=".55"/>
+    <text x="1304" y="265" class="hand" font-size="24" fill="#111">Search</text>
+    <text x="1304" y="303" class="hand" font-size="24" fill="#111">Scrape</text>
+    <text x="1304" y="341" class="hand" font-size="24" fill="#111">Answers</text>
+    <text x="1304" y="379" class="hand" font-size="24" fill="#111">Map</text>
+    <text x="1304" y="417" class="hand" font-size="24" fill="#111">Crawl</text>
+    <path d="M1187 335 C1212 335 1234 335 1256 335" class="thin" fill="none" marker-end="url(#arrow)"/>
+    <text x="1208" y="310" class="hand" font-size="20" fill="#111">tool call</text>
+  </g>
+
+  <g>
+    <text x="1285" y="525" class="hand" font-size="29" font-weight="700" fill="#111">State and review</text>
+    <path d="M1284 539 C1397 530 1494 536 1588 532" class="thin" fill="none"/>
+    <rect x="1262" y="572" width="300" height="95" rx="18" fill="#fff5d9" class="ink"/>
+    <rect x="1262" y="572" width="300" height="95" rx="18" fill="url(#yellowHatch)" opacity=".55"/>
+    <text x="1412" y="613" class="hand" text-anchor="middle" font-size="26" font-weight="700" fill="#111">SQLite</text>
+    <text x="1412" y="645" class="hand" text-anchor="middle" font-size="18" fill="#333">runs, docs, code</text>
+    <rect x="1262" y="697" width="300" height="95" rx="18" fill="#f7eefb" class="ink"/>
+    <rect x="1262" y="697" width="300" height="95" rx="18" fill="url(#purpleHatch)" opacity=".55"/>
+    <text x="1412" y="738" class="hand" text-anchor="middle" font-size="26" font-weight="700" fill="#111">Velt</text>
+    <text x="1412" y="770" class="hand" text-anchor="middle" font-size="18" fill="#333">comments, presence, audit</text>
+    <path d="M1188 640 C1217 640 1234 640 1256 640" class="thin" fill="none" marker-end="url(#arrow)"/>
+    <path d="M1188 748 C1217 748 1234 748 1256 748" class="thin" fill="none" marker-end="url(#arrow)"/>
+  </g>
+
+  <g>
+    <rect x="300" y="850" width="1080" height="64" rx="8" fill="#fff2bd" class="ink"/>
+    <rect x="300" y="850" width="1080" height="64" rx="8" fill="url(#yellowHatch)" opacity=".55"/>
+    <text x="840" y="890" class="hand" text-anchor="middle" font-size="27" font-weight="700" fill="#111">Rule: workflow controls agents. Agents operate tools. Humans review docs.</text>
+  </g>
+</svg>

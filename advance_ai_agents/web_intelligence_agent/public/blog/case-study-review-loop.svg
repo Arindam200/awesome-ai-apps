@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="960" viewBox="0 0 1680 960" role="img" aria-labelledby="title desc">
+  <title id="title">Case study review loop with Velt and SQLite</title>
+  <desc id="desc">Excalidraw style diagram showing a saved case study document, Analyst and Reviewer collaboration, Velt comments, Velt immutable audit, SQLite edits, and browser PDF export.</desc>
+  <defs>
+    <filter id="wobble"><feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="2.1"/></filter>
+    <pattern id="blueHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#8dbbe8" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="greenHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#9bd7aa" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="yellowHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#e8c55b" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="purpleHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#c9a9e8" stroke-width="1" opacity=".45"/></pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#111"/></marker>
+    <style>
+      .hand{font-family:"Comic Sans MS","Comic Neue","Bradley Hand",cursive}
+      .ink{stroke:#111;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:url(#wobble)}
+      .thin{stroke:#111;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:url(#wobble)}
+    </style>
+  </defs>
+  <rect width="1680" height="960" fill="#fffefa"/>
+  <text x="840" y="72" class="hand" text-anchor="middle" font-size="56" font-weight="700" fill="#111">Case Study Review Loop</text>
+  <text x="840" y="116" class="hand" text-anchor="middle" font-size="25" fill="#111">SQLite stores the editable doc. Velt owns comments, presence, notifications, and immutable audit.</text>
+
+  <g>
+    <rect x="610" y="180" width="460" height="470" rx="18" fill="#fffdfa" class="ink"/>
+    <rect x="646" y="224" width="220" height="18" rx="4" fill="#111" opacity=".75"/>
+    <rect x="646" y="268" width="360" height="12" rx="4" fill="#111" opacity=".25"/>
+    <rect x="646" y="295" width="330" height="12" rx="4" fill="#111" opacity=".25"/>
+    <rect x="646" y="322" width="350" height="12" rx="4" fill="#111" opacity=".25"/>
+    <rect x="646" y="378" width="140" height="18" rx="4" fill="#111" opacity=".65"/>
+    <rect x="646" y="421" width="360" height="12" rx="4" fill="#111" opacity=".25"/>
+    <rect x="646" y="448" width="310" height="12" rx="4" fill="#111" opacity=".25"/>
+    <rect x="646" y="502" width="380" height="76" rx="10" fill="#edf8ec" class="thin"/>
+    <text x="840" y="628" class="hand" text-anchor="middle" font-size="24" font-weight="700" fill="#111">Saved Markdown case study</text>
+  </g>
+
+  <g>
+    <text x="180" y="188" class="hand" font-size="30" font-weight="700" fill="#111">Reviewers</text>
+    <path d="M177 202 C270 194 344 199 430 193" class="thin" fill="none"/>
+    <rect x="126" y="240" width="330" height="128" rx="24" fill="#f7eefb" class="ink"/>
+    <rect x="126" y="240" width="330" height="128" rx="24" fill="url(#purpleHatch)" opacity=".55"/>
+    <circle cx="181" cy="304" r="28" fill="#1f7a68" class="thin"/><text x="181" y="314" class="hand" text-anchor="middle" font-size="28" fill="#fff">A</text>
+    <text x="232" y="299" class="hand" font-size="30" font-weight="700" fill="#111">Analyst</text>
+    <text x="232" y="331" class="hand" font-size="19" fill="#333">writes and saves edits</text>
+    <rect x="126" y="398" width="330" height="128" rx="24" fill="#f3f8ff" class="ink"/>
+    <rect x="126" y="398" width="330" height="128" rx="24" fill="url(#blueHatch)" opacity=".55"/>
+    <circle cx="181" cy="462" r="28" fill="#3157d5" class="thin"/><text x="181" y="472" class="hand" text-anchor="middle" font-size="28" fill="#fff">R</text>
+    <text x="232" y="457" class="hand" font-size="30" font-weight="700" fill="#111">Reviewer</text>
+    <text x="232" y="489" class="hand" font-size="18" fill="#333">comments and replies</text>
+  </g>
+  <path d="M460 370 C520 332 560 300 606 278" class="thin" fill="none" marker-end="url(#arrow)"/>
+  <path d="M460 493 C526 526 560 547 606 560" class="thin" fill="none" marker-end="url(#arrow)"/>
+
+  <g>
+    <text x="1248" y="188" class="hand" font-size="30" font-weight="700" fill="#111">Velt collaboration</text>
+    <path d="M1245 202 C1367 194 1472 199 1577 193" class="thin" fill="none"/>
+    <rect x="1218" y="240" width="340" height="118" rx="22" fill="#edf8ec" class="ink"/>
+    <rect x="1218" y="240" width="340" height="118" rx="22" fill="url(#greenHatch)" opacity=".55"/>
+    <text x="1388" y="287" class="hand" text-anchor="middle" font-size="29" font-weight="700" fill="#111">Text comments</text>
+    <text x="1388" y="323" class="hand" text-anchor="middle" font-size="20" fill="#333">anchored to selected text</text>
+    <rect x="1218" y="386" width="340" height="118" rx="22" fill="#f7eefb" class="ink"/>
+    <rect x="1218" y="386" width="340" height="118" rx="22" fill="url(#purpleHatch)" opacity=".55"/>
+    <text x="1388" y="433" class="hand" text-anchor="middle" font-size="29" font-weight="700" fill="#111">Presence and notifications</text>
+    <text x="1388" y="469" class="hand" text-anchor="middle" font-size="20" fill="#333">only Analyst and Reviewer</text>
+    <rect x="1218" y="532" width="340" height="118" rx="22" fill="#fff5d9" class="ink"/>
+    <rect x="1218" y="532" width="340" height="118" rx="22" fill="url(#yellowHatch)" opacity=".55"/>
+    <text x="1388" y="579" class="hand" text-anchor="middle" font-size="29" font-weight="700" fill="#111">Immutable audit trail</text>
+    <text x="1388" y="615" class="hand" text-anchor="middle" font-size="20" fill="#333">human and agent activity</text>
+  </g>
+  <path d="M1074 300 C1125 293 1168 291 1210 295" class="thin" fill="none" marker-end="url(#arrow)"/>
+  <path d="M1074 545 C1125 581 1168 587 1210 586" class="thin" fill="none" marker-end="url(#arrow)"/>
+
+  <g>
+    <rect x="384" y="758" width="292" height="98" rx="18" fill="#fff5d9" class="ink"/>
+    <rect x="384" y="758" width="292" height="98" rx="18" fill="url(#yellowHatch)" opacity=".55"/>
+    <text x="530" y="800" class="hand" text-anchor="middle" font-size="28" font-weight="700" fill="#111">SQLite</text>
+    <text x="530" y="835" class="hand" text-anchor="middle" font-size="19" fill="#333">versions, edits, run docs</text>
+    <rect x="732" y="758" width="292" height="98" rx="18" fill="#f3f8ff" class="ink"/>
+    <rect x="732" y="758" width="292" height="98" rx="18" fill="url(#blueHatch)" opacity=".55"/>
+    <text x="878" y="800" class="hand" text-anchor="middle" font-size="28" font-weight="700" fill="#111">Clean PDF</text>
+    <text x="878" y="835" class="hand" text-anchor="middle" font-size="19" fill="#333">print article, not the app UI</text>
+    <path d="M715 650 C654 704 597 731 562 754" class="thin" fill="none" marker-end="url(#arrow)"/>
+    <path d="M945 650 C936 701 914 730 895 754" class="thin" fill="none" marker-end="url(#arrow)"/>
+  </g>
+
+  <g>
+    <rect x="422" y="888" width="836" height="48" rx="8" fill="#fff2bd" class="ink"/>
+    <rect x="422" y="888" width="836" height="48" rx="8" fill="url(#yellowHatch)" opacity=".55"/>
+    <text x="840" y="920" class="hand" text-anchor="middle" font-size="23" font-weight="700" fill="#111">Review rule: Velt owns comments and audit. SQLite owns article text.</text>
+  </g>
+</svg>

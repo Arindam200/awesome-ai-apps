@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="960" viewBox="0 0 1680 960" role="img" aria-labelledby="title desc">
+  <title id="title">Evidence, Plan, and Code tabs in Web Intelligence Agent</title>
+  <desc id="desc">Excalidraw style diagram explaining how the Evidence, Plan, and Code tabs make each workflow run inspectable, debuggable, and reusable.</desc>
+  <defs>
+    <filter id="wobble"><feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="2.1"/></filter>
+    <pattern id="blueHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#8dbbe8" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="greenHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#9bd7aa" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="yellowHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#e8c55b" stroke-width="1" opacity=".45"/></pattern>
+    <pattern id="purpleHatch" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(24)"><path d="M0 6 L12 6" stroke="#c9a9e8" stroke-width="1" opacity=".45"/></pattern>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#111"/></marker>
+    <style>
+      .hand{font-family:"Comic Sans MS","Comic Neue","Bradley Hand",cursive}
+      .ink{stroke:#111;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:url(#wobble)}
+      .thin{stroke:#111;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:url(#wobble)}
+    </style>
+  </defs>
+  <rect width="1680" height="960" fill="#fffefa"/>
+  <text x="840" y="76" class="hand" text-anchor="middle" font-size="56" font-weight="700" fill="#111">Why the extra tabs matter</text>
+  <text x="840" y="122" class="hand" text-anchor="middle" font-size="25" fill="#111">Briefs are for reading. Evidence, Plan, and Code are for trust, debugging, and reuse.</text>
+
+  <g>
+    <rect x="86" y="184" width="410" height="520" rx="28" fill="#edf8ec" class="ink"/>
+    <rect x="86" y="184" width="410" height="520" rx="28" fill="url(#greenHatch)" opacity=".55"/>
+    <text x="291" y="244" class="hand" text-anchor="middle" font-size="42" font-weight="700" fill="#111">Evidence</text>
+    <text x="291" y="289" class="hand" text-anchor="middle" font-size="24" fill="#111">What did the app actually find?</text>
+    <rect x="130" y="330" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="160" y="365" class="hand" font-size="23" fill="#111">Structured facts</text>
+    <rect x="130" y="404" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="160" y="439" class="hand" font-size="23" fill="#111">Source URLs</text>
+    <rect x="130" y="478" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="160" y="513" class="hand" font-size="23" fill="#111">Extracted page data</text>
+    <rect x="130" y="552" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="160" y="587" class="hand" font-size="23" fill="#111">Grounding for claims</text>
+    <path d="M156 651 C232 629 340 631 426 651" class="thin" fill="none" marker-end="url(#arrow)"/>
+    <text x="291" y="680" class="hand" text-anchor="middle" font-size="20" fill="#111">use before quoting claims</text>
+  </g>
+
+  <g>
+    <rect x="635" y="184" width="410" height="520" rx="28" fill="#fff5d9" class="ink"/>
+    <rect x="635" y="184" width="410" height="520" rx="28" fill="url(#yellowHatch)" opacity=".55"/>
+    <text x="840" y="244" class="hand" text-anchor="middle" font-size="42" font-weight="700" fill="#111">Plan</text>
+    <text x="840" y="289" class="hand" text-anchor="middle" font-size="24" fill="#111">Why did the workflow run this way?</text>
+    <rect x="679" y="330" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="709" y="365" class="hand" font-size="23" fill="#111">Intent and operation</text>
+    <rect x="679" y="404" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="709" y="439" class="hand" font-size="23" fill="#111">Selected Olostep tool</text>
+    <rect x="679" y="478" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="709" y="513" class="hand" font-size="23" fill="#111">Target URL or query</text>
+    <rect x="679" y="552" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="709" y="587" class="hand" font-size="23" fill="#111">Schema and assumptions</text>
+    <path d="M706 651 C781 629 890 631 976 651" class="thin" fill="none" marker-end="url(#arrow)"/>
+    <text x="840" y="680" class="hand" text-anchor="middle" font-size="20" fill="#111">use when a run feels wrong</text>
+  </g>
+
+  <g>
+    <rect x="1184" y="184" width="410" height="520" rx="28" fill="#f3f8ff" class="ink"/>
+    <rect x="1184" y="184" width="410" height="520" rx="28" fill="url(#blueHatch)" opacity=".55"/>
+    <text x="1389" y="244" class="hand" text-anchor="middle" font-size="42" font-weight="700" fill="#111">Code</text>
+    <text x="1389" y="289" class="hand" text-anchor="middle" font-size="24" fill="#111">How can the pattern be reused?</text>
+    <rect x="1228" y="330" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="1258" y="365" class="hand" font-size="23" fill="#111">TypeScript sample</text>
+    <rect x="1228" y="404" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="1258" y="439" class="hand" font-size="23" fill="#111">Olostep payload</text>
+    <rect x="1228" y="478" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="1258" y="513" class="hand" font-size="23" fill="#111">Endpoint and method</text>
+    <rect x="1228" y="552" width="320" height="54" rx="13" fill="#fff" class="thin"/><text x="1258" y="587" class="hand" font-size="23" fill="#111">Developer handoff</text>
+    <path d="M1255 651 C1330 629 1439 631 1525 651" class="thin" fill="none" marker-end="url(#arrow)"/>
+    <text x="1389" y="680" class="hand" text-anchor="middle" font-size="20" fill="#111">use to repeat the collection</text>
+  </g>
+
+  <g>
+    <rect x="380" y="790" width="920" height="76" rx="8" fill="#f7eefb" class="ink"/>
+    <rect x="380" y="790" width="920" height="76" rx="8" fill="url(#purpleHatch)" opacity=".5"/>
+    <text x="840" y="838" class="hand" text-anchor="middle" font-size="31" font-weight="700" fill="#111">Trust rule: inspect the run before sharing the doc.</text>
+  </g>
+</svg>
