@@ -1,4 +1,4 @@
-# microsfot_agent_framework
+# microsoft_agent_framework
 
 Multi-agent **travel planning** demos built on the
 [Microsoft Agent Framework](https://github.com/microsoft/agent-framework), showing
