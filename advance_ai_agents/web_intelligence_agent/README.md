@@ -1,7 +1,5 @@
 # Web Intelligence Agent
 
-> Web Intelligence Agent — local research-to-case-study pipeline in `advance_ai_agents/web_intelligence_agent`.
-
 Web Intelligence Agent turns live web evidence into source-aware intelligence documents.
 
 Ask a plain-English research question, optionally add a URL, and the app collects evidence, reasons over it with Nemotron Ultra on Nebius, verifies gaps and contradictions, saves the run, and creates an editable case-study document for review.
