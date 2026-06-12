@@ -1,0 +1,113 @@
+import json
+import shutil
+import subprocess
+
+import streamlit as st
+
+
+REMIO_URL = "https://remio.ai/"
+
+
+def run_remio(args):
+    if not shutil.which("remio"):
+        return {
+            "ok": False,
+            "error": "Remio CLI was not found. Install or open Remio from https://remio.ai/.",
+        }
+
+    try:
+        completed = subprocess.run(
+            ["remio", *args],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=90,
+        )
+    except subprocess.TimeoutExpired:
+        return {"ok": False, "error": "Remio command timed out."}
+
+    output = completed.stdout.strip() or completed.stderr.strip()
+    if not output:
+        return {"ok": completed.returncode == 0, "data": None}
+
+    try:
+        parsed = json.loads(output)
+    except json.JSONDecodeError:
+        parsed = output
+
+    if completed.returncode != 0:
+        error = parsed.get("error") if isinstance(parsed, dict) else None
+        return {"ok": False, "data": parsed, "error": error or output}
+
+    if isinstance(parsed, dict) and "ok" in parsed:
+        return {
+            "ok": bool(parsed.get("ok")),
+            "data": parsed.get("data", parsed),
+            "error": parsed.get("error"),
+        }
+
+    return {"ok": True, "data": parsed, "error": None}
+
+
+def show_remio_error(message):
+    st.error(message)
+    st.link_button("Download or open Remio", REMIO_URL)
+
+
+st.set_page_config(page_title="Remio Personal Knowledge Agent", page_icon="🔎")
+st.title("Remio Personal Knowledge Agent")
+st.caption("Search and ask questions over your local-first Remio knowledge base.")
+
+with st.sidebar:
+    st.header("Remio Status")
+    if st.button("Check Remio"):
+        status = run_remio(["doctor"])
+        if status.get("ok"):
+            st.success("Remio is available.")
+        else:
+            show_remio_error(status.get("error", "Remio is unavailable."))
+
+    mode = st.radio("Mode", ["RAG answer", "Search notes"])
+    limit = st.slider("Result limit", min_value=3, max_value=20, value=8)
+
+query = st.text_area(
+    "Ask about your notes, files, recordings, emails, messages, images, or saved webpages",
+    placeholder="What did we decide about the product launch timeline?",
+)
+
+if st.button("Run") and query.strip():
+    question = query.strip()
+
+    if mode == "RAG answer":
+        result = run_remio(["rag", question, "--limit", str(limit)])
+        if not result.get("ok"):
+            show_remio_error(result.get("error", "Remio RAG failed."))
+        else:
+            data = result.get("data") or {}
+            if isinstance(data, str):
+                st.markdown(data)
+            else:
+                st.markdown(data.get("content", "No answer returned."))
+                citations = data.get("citations") or []
+                if citations:
+                    st.subheader("Citations")
+                    for citation in citations:
+                        title = citation.get("title", "Untitled")
+                        note_id = citation.get("noteId", "")
+                        st.write(f"- {title} ({note_id})")
+    else:
+        result = run_remio(["search_notes", "--query", question, "--limit", str(limit)])
+        if not result.get("ok"):
+            show_remio_error(result.get("error", "Remio search failed."))
+        else:
+            data = result.get("data") or {}
+            results = data.get("results") if isinstance(data, dict) else []
+            if not results:
+                st.info("No matching notes found.")
+            for item in results:
+                st.subheader(item.get("title", "Untitled"))
+                st.caption(item.get("noteType", "note"))
+                if item.get("preview"):
+                    st.write(item["preview"])
+                if item.get("noteId"):
+                    st.code(item["noteId"], language="text")

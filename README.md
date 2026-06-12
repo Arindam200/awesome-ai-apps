@@ -274,7 +274,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🧠 Memory Agents
 
-**Agents with advanced memory capabilities for context retention and personalization.** _12 projects_
+**Agents with advanced memory capabilities for context retention and personalization.** _13 projects_
 
 - [Agno Memory Agent](memory_agents/agno_memory_agent) - Agno-based agent with persistent memory capabilities
 - [arXiv Researcher Agent with Memori](memory_agents/arxiv_researcher_agent_with_memori) - Research assistant using OpenAI Agents and GibsonAI Memori
@@ -288,6 +288,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Customer Support Voice Agent](memory_agents/customer_support_voice_agent) - Voice-enabled customer support assistant with Memori v3 and Firecrawl for knowledge base management
 - [YouTube Trend Agent](memory_agents/youtube_trend_agent) - YouTube channel analysis agent with Memori, Agno, and Exa for trend analysis and video ideas
 - [Study Coach Agent](memory_agents/study_coach_agent) - AI-powered study coach with Memori v3 and LangGraph for multi-step verification of understanding
+- [Remio Personal Knowledge Agent](memory_agents/remio_personal_knowledge_agent) - Remio-powered local-first personal knowledge agent for indexed memory retrieval and RAG
 
 ### 📚 RAG Applications
 
