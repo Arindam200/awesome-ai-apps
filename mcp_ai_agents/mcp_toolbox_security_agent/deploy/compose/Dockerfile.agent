@@ -1,0 +1,20 @@
+# Image for the agent + FastAPI web app (and the catalog bootstrap job).
+FROM python:3.11-slim
+
+WORKDIR /app
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app
+
+# System deps kept minimal; psycopg[binary] ships its own libpq.
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Application code (the 70MB embeddings file is NOT baked in — it is mounted for
+# the one-off catalog bootstrap; see deploy/compose/docker-compose.yaml).
+COPY agent/ ./agent/
+COPY web/ ./web/
+COPY scripts/ ./scripts/
+
+EXPOSE 8080
+CMD ["uvicorn", "web.app:app", "--host", "0.0.0.0", "--port", "8080"]

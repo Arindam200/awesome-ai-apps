@@ -1,0 +1,148 @@
+# =============================================================================
+# Online Groceries — full local stack (laptop demo)
+# =============================================================================
+#   browser ─▶ agent-web (FastAPI + ADK/Gemini) ─▶ [ TOOLBOX ] ─▶ postgres
+#                         │                                       └▶ mongo
+#                         └─ logs in via ─▶ keycloak (OIDC)
+#   toolbox ─ traces/metrics ─▶ otel-collector ─▶ jaeger / prometheus
+#
+# The agent reaches every database ONLY through Toolbox. Postgres credentials
+# live only in the toolbox service's environment; the agent never sees them.
+#
+# Usage: ../../scripts/bootstrap_local.sh   (brings this up + seeds the catalog)
+# =============================================================================
+
+name: groceries-toolbox
+
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${PG_DATABASE}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    # initdb runs ONLY the top-level *.sql (00..03); the demo cart/order seed in
+    # ./demo/ is applied later by the catalog job (it needs the catalog loaded).
+    volumes:
+      - ../../db/postgres:/docker-entrypoint-initdb.d:ro
+      - pgdata:/var/lib/postgresql/data        # persist orders/carts across restarts
+    ports: ["5544:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${PG_DATABASE}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  mongo:
+    image: mongodb/mongodb-atlas-local:latest   # bundles mongot for $vectorSearch
+    ports: ["27117:27017"]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ping:1}).ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+    volumes:
+      - ../../auth/keycloak/realm-grocery.json:/opt/keycloak/data/import/realm-grocery.json:ro
+    ports: ["8085:8080"]
+
+  toolbox:
+    image: us-central1-docker.pkg.dev/database-toolbox/toolbox/toolbox:1.4.0
+    command:
+      - "--config"
+      - "/config/tools.yaml"
+      - "--address"
+      - "0.0.0.0"
+      - "--enable-api"
+      - "--telemetry-otlp"
+      - "otel-collector:4318"          # bare host:port; Toolbox adds the scheme
+      - "--allowed-origins"
+      - "http://localhost:8080,http://127.0.0.1:8080"
+      - "--allowed-hosts"
+      - "toolbox:5000,localhost:5000,127.0.0.1:5000"
+    environment:
+      OTEL_EXPORTER_OTLP_INSECURE: "true"   # plaintext OTLP to the local collector
+      PG_HOST: ${PG_HOST}
+      PG_PORT: ${PG_PORT}
+      PG_DATABASE: ${PG_DATABASE}
+      PG_APP_USER: ${PG_APP_USER}
+      PG_APP_PASSWORD: ${PG_APP_PASSWORD}
+      PG_ADMIN_USER: ${PG_ADMIN_USER}
+      PG_ADMIN_PASSWORD: ${PG_ADMIN_PASSWORD}
+      MONGO_URI: ${MONGO_URI}
+      OIDC_ISSUER: ${OIDC_ISSUER}
+    volumes:
+      - ../../toolbox/tools.yaml:/config/tools.yaml:ro
+    ports: ["5055:5000"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      mongo: { condition: service_healthy }
+      keycloak: { condition: service_started }
+    # Toolbox is distroless (no shell -> no in-container healthcheck) and inits
+    # its sources + OIDC discovery eagerly. If Keycloak's realm isn't ready yet
+    # it exits; restart lets it converge once Keycloak is serving.
+    restart: on-failure
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.116.1
+    command: ["--config", "/etc/otel/config.yaml"]
+    volumes:
+      - ../../observability/otel-collector-config.yaml:/etc/otel/config.yaml:ro
+    ports: ["8899:8889"]   # prometheus metrics
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.62.0
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports: ["16687:16686"]  # Jaeger UI
+
+  agent-web:
+    build:
+      context: ../..
+      dockerfile: deploy/compose/Dockerfile.agent
+    environment:
+      TOOLBOX_URL: ${TOOLBOX_URL}
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT_ID: ${KEYCLOAK_CLIENT_ID}
+      STORE_REGION: ${STORE_REGION}
+      AGENT_PROVIDER: ${AGENT_PROVIDER}
+      AGENT_MODEL: ${AGENT_MODEL}
+      NEBIUS_API_KEY: ${NEBIUS_API_KEY}
+      NEBIUS_BASE_URL: ${NEBIUS_BASE_URL}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+    ports: ["8080:8080"]
+    depends_on:
+      toolbox: { condition: service_started }
+    restart: unless-stopped
+
+  # One-off catalog bootstrap: derives an aligned Postgres+Mongo catalog from the
+  # embeddings dataset, builds the vector index, and seeds the demo cart/order.
+  # The 67MB dataset is downloaded on first run (INVENTORY_URL); nothing large is
+  # committed to this repo. Run by scripts/bootstrap_local.sh.
+  catalog:
+    profiles: ["bootstrap"]
+    build:
+      context: ../..
+      dockerfile: deploy/compose/Dockerfile.agent
+    command: ["python", "scripts/build_catalog.py"]
+    environment:
+      PG_DSN: postgresql://postgres:${POSTGRES_PASSWORD}@${PG_HOST}:${PG_PORT}/${PG_DATABASE}
+      MONGO_URI: ${MONGO_URI}
+      INVENTORY: /app/data/grocery_store.inventory.json   # downloaded here on first run
+      CATALOG_SIZE: ${CATALOG_SIZE}
+      RESET: ${RESET:-}        # RESET=1 wipes + reseeds; default is safe/idempotent
+    volumes:
+      - ../../db:/app/db:ro
+    depends_on:
+      postgres: { condition: service_healthy }
+      mongo: { condition: service_healthy }
+    restart: "no"
+
+volumes:
+  pgdata:        # Postgres data persists across `up`/`down` (NOT `down -v`)

@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MCP Toolbox — Security Architecture Overview</title>
+<style>
+  :root{
+    --bg:#080b10; --bg2:#0c1219; --surface:#111a24; --surface2:#16212e; --surface3:#1d2c3c;
+    --line:#22303f; --line2:#2d3f52;
+    --text:#eaf2fa; --muted:#90a2b4; --faint:#5f7286;
+    --brand:#34d399; --brand2:#10b981; --blue:#5b9dff; --violet:#a78bfa;
+    --gold:#fbbf24; --ok:#34d399; --bad:#f87171;
+    --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;color:var(--text);font:15px/1.6 ui-sans-serif,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1100px 540px at 82% -8%, rgba(52,211,153,.10), transparent 60%),
+      radial-gradient(900px 460px at -5% 0%, rgba(91,157,255,.07), transparent 55%),
+      var(--bg);}
+  .wrap{max-width:1120px;margin:0 auto;padding:56px 26px 80px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--brand);background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.25);
+    padding:5px 12px;border-radius:999px}
+  h1{font-size:40px;line-height:1.12;letter-spacing:-.02em;margin:18px 0 12px;font-weight:760}
+  h1 .g{background:linear-gradient(95deg,var(--brand),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .lede{font-size:18px;color:var(--muted);max-width:760px;margin:0}
+  .lede b{color:var(--text)}
+  section{margin-top:64px}
+  .sec-h{display:flex;align-items:baseline;gap:14px;margin-bottom:22px}
+  .sec-h .n{font-family:var(--mono);font-size:13px;color:var(--brand);font-weight:700}
+  .sec-h h2{font-size:24px;margin:0;letter-spacing:-.01em}
+  .sec-h .sub{color:var(--faint);font-size:14px;margin-left:auto}
+  .card{background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--line);border-radius:16px}
+  code{font-family:var(--mono);font-size:.86em;background:#0a131c;border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+  .muted{color:var(--muted)} .faint{color:var(--faint)}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;border:1px solid var(--line2)}
+  .pill.ok{color:var(--ok);background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.3)}
+
+  /* ---------- the trust-boundary diagram ---------- */
+  .diagram{padding:26px}
+  .lanes{display:grid;grid-template-columns:1fr 64px 1.25fr 1fr;gap:0;align-items:stretch}
+  .lane{padding:6px 16px}
+  .lane-h{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px;color:var(--faint)}
+  .node{border-radius:12px;padding:13px 14px;margin-bottom:12px;border:1px solid var(--line2);background:var(--surface2)}
+  .node .t{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
+  .node .d{font-size:12px;color:var(--muted);margin-top:3px}
+  .zone-untrusted .node{border-color:#4a2b30;background:linear-gradient(180deg,#1a1216,#120d10)}
+  .zone-untrusted .lane-h{color:#e08a92}
+  .tb{position:relative;display:flex;align-items:center;justify-content:center}
+  .tb .rule{position:absolute;top:6px;bottom:6px;width:0;border-left:2px dashed var(--gold)}
+  .tb .lbl{position:relative;writing-mode:vertical-rl;transform:rotate(180deg);font-size:10.5px;font-weight:800;
+    letter-spacing:.22em;color:var(--gold);text-transform:uppercase;background:var(--bg);padding:10px 2px;border-radius:6px}
+  .toolbox{border:1px solid rgba(52,211,153,.45)!important;background:linear-gradient(180deg,#0e231c,#0b1814)!important;
+    box-shadow:0 0 0 1px rgba(52,211,153,.12),0 14px 40px rgba(16,185,129,.10)}
+  .toolbox .t{color:var(--brand)}
+  .ctl{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:6px 0;border-top:1px solid rgba(52,211,153,.14)}
+  .ctl:first-of-type{margin-top:8px}
+  .ctl .k{color:var(--brand);font-family:var(--mono);font-size:11px}
+  .zone-data .node{border-color:#26405e;background:linear-gradient(180deg,#0f1c2b,#0b1622)}
+  .zone-data .t{color:var(--blue)}
+  .flowlabel{font-size:11px;color:var(--gold);text-align:center;margin:2px 0 10px;font-family:var(--mono)}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:10px;height:10px;border-radius:3px}
+
+  /* ---------- lifecycle ---------- */
+  .steps{counter-reset:s;display:grid;gap:0}
+  .step{display:grid;grid-template-columns:42px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .step:last-child{border-bottom:none}
+  .step .num{counter-increment:s;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:800;
+    font-family:var(--mono);background:var(--surface3);border:1px solid var(--line2)}
+  .step.key .num{background:linear-gradient(180deg,var(--brand),var(--brand2));color:#04241a;border-color:transparent}
+  .step h3{margin:2px 0 3px;font-size:15.5px}
+  .step p{margin:0;color:var(--muted);font-size:13.5px}
+  .step.key h3::after{content:'enforcement';font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--brand);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);padding:2px 8px;border-radius:999px;margin-left:10px;vertical-align:middle}
+
+  /* ---------- mechanisms grid ---------- */
+  .mechs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .mech{padding:16px 18px}
+  .mech .top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .mech .id{font-family:var(--mono);font-size:12px;font-weight:800;color:var(--brand);width:26px;height:26px;border-radius:8px;
+    display:grid;place-items:center;background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3)}
+  .mech h3{margin:0;font-size:15px;flex:1}
+  .mech .stops{font-size:13px;color:var(--text);margin:0 0 8px}
+  .mech .where{font-size:12px;color:var(--faint);font-family:var(--mono)}
+  .mech .v{font-size:10.5px}
+
+  /* ---------- model vs toolbox ---------- */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .vs .col{padding:18px}
+  .vs h3{margin:0 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .toolrow{font-family:var(--mono);font-size:12.5px;padding:7px 0;border-bottom:1px solid var(--line);display:flex;gap:8px;align-items:center}
+  .toolrow:last-child{border:none}
+  .lock{font-family:ui-sans-serif;font-size:10px;font-weight:800;color:var(--gold);background:rgba(251,191,36,.14);
+    border:1px solid rgba(251,191,36,.4);padding:1px 7px;border-radius:999px}
+  .sig{color:var(--brand)}
+  .vs .col.model{border:1px solid rgba(52,211,153,.3)}
+
+  /* ---------- defense in depth ---------- */
+  .layers{display:flex;flex-direction:column;gap:8px}
+  .layer{display:flex;align-items:center;gap:14px;padding:13px 18px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+  .layer .ic{font-size:18px;width:24px;text-align:center}
+  .layer .nm{font-weight:700;font-size:14px;min-width:230px}
+  .layer .ds{font-size:13px;color:var(--muted)}
+  .layer:nth-child(1){margin:0 0%}
+  .layer:nth-child(2){margin:0 3%}
+  .layer:nth-child(3){margin:0 6%}
+  .layer:nth-child(4){margin:0 9%}
+  .layer:nth-child(5){margin:0 12%}
+
+  /* ---------- table ---------- */
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  td .k{color:var(--brand);font-family:var(--mono);font-size:12px}
+  tbody tr:hover{background:rgba(255,255,255,.015)}
+
+  /* ---------- stack chips ---------- */
+  .stack{display:flex;flex-wrap:wrap;gap:10px}
+  .chip{display:flex;align-items:center;gap:9px;padding:9px 14px;border:1px solid var(--line2);border-radius:11px;background:var(--surface)}
+  .chip .ic{font-size:15px} .chip b{font-size:13.5px} .chip span{font-size:11.5px;color:var(--faint)}
+
+  footer{margin-top:70px;padding-top:24px;border-top:1px solid var(--line);color:var(--faint);font-size:13px;display:flex;gap:16px;flex-wrap:wrap}
+
+  @media(max-width:860px){.lanes{grid-template-columns:1fr}.tb{display:none}.mechs,.vs{grid-template-columns:1fr}
+    .layer{margin:0!important}.layer .nm{min-width:0}h1{font-size:30px}}
+  @media print{body{background:#fff;color:#111}.card,.node,.layer,.chip{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===== HERO ===== -->
+  <span class="eyebrow">🛡️ Reference Architecture · KubeCon</span>
+  <h1>MCP Toolbox as a<br><span class="g">Security Control Plane</span></h1>
+  <p class="lede">An AI agent shops across <b>PostgreSQL</b> and <b>MongoDB</b> through one gateway —
+  and <b>cannot</b> read another user's data, see a credential, or run raw SQL. The agent lives
+  <b>outside the trust boundary</b>; every guarantee is enforced by <b>MCP Toolbox</b> and the database.</p>
+
+  <!-- ===== DIAGRAM ===== -->
+  <section>
+    <div class="sec-h"><span class="n">01</span><h2>The trust boundary</h2>
+      <span class="sub">agent → Toolbox → databases</span></div>
+    <div class="card diagram">
+      <div class="lanes">
+        <!-- untrusted -->
+        <div class="lane zone-untrusted">
+          <div class="lane-h">⚠ Untrusted zone</div>
+          <div class="node"><div class="t">🖥️ Web UI + Agent</div>
+            <div class="d">FastAPI · Google ADK · <b>Kimi-K2.6</b> (Nebius)</div></div>
+          <div class="node"><div class="t">🧠 LLM reasoning</div>
+            <div class="d">Decides which tool to call. Sees only typed tool signatures — no identity, no SQL, no creds.</div></div>
+          <div class="flowlabel">— keycloak_token (JWT) →</div>
+        </div>
+        <!-- boundary -->
+        <div class="tb"><div class="rule"></div><div class="lbl">Trust boundary</div></div>
+        <!-- control plane -->
+        <div class="lane">
+          <div class="lane-h" style="color:var(--brand)">🛡 Control plane</div>
+          <div class="node toolbox">
+            <div class="t">⚙️ MCP Toolbox</div>
+            <div class="d">Validates the token, binds identity, runs curated tools as a least-priv role.</div>
+            <div class="ctl"><span class="k">#1</span> custom tools, no execute_sql</div>
+            <div class="ctl"><span class="k">#2</span> authenticated params (OIDC claim)</div>
+            <div class="ctl"><span class="k">#3</span> authRequired (admin gate)</div>
+            <div class="ctl"><span class="k">#5</span> parameterized SQL ($1…$n)</div>
+            <div class="ctl"><span class="k">#9</span> OpenTelemetry on every call</div>
+          </div>
+        </div>
+        <!-- data -->
+        <div class="lane zone-data">
+          <div class="lane-h">🗄 Data (system of record)</div>
+          <div class="node"><div class="t">🐘 PostgreSQL</div>
+            <div class="d">users · products · carts · orders. Role <code>toolbox_app</code> (least-priv).</div></div>
+          <div class="node"><div class="t">🍃 MongoDB</div>
+            <div class="d">$vectorSearch over Gemini embeddings. Role <code>toolbox_ro</code>.</div></div>
+          <div class="node"><div class="t">🔑 Keycloak (OIDC)</div>
+            <div class="d">Issues the JWT. Prod swap → Google Sign-In.</div></div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><span class="dot" style="background:#e08a92"></span> Untrusted — the model &amp; its arguments</span>
+        <span><span class="dot" style="background:var(--gold)"></span> Trust boundary — token validated here</span>
+        <span><span class="dot" style="background:var(--brand)"></span> Toolbox — the only thing that touches data</span>
+        <span><span class="dot" style="background:var(--blue)"></span> Databases — least-privilege roles</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== LIFECYCLE ===== -->
+  <section>
+    <div class="sec-h"><span class="n">02</span><h2>Request lifecycle</h2>
+      <span class="sub">"show my orders"</span></div>
+    <div class="card" style="padding:8px 22px">
+      <div class="steps">
+        <div class="step"><div class="num"></div><div>
+          <h3>Browser → agent-web</h3><p>The signed-in user's JWT is attached server-side. The user never handles raw tokens.</p></div></div>
+        <div class="step"><div class="num"></div><div>
+          <h3>Agent picks a tool</h3><p>The LLM calls <code>list_my_orders()</code>. Its schema has <b>no <code>username</code></b> — it cannot ask "as whom".</p></div></div>
+        <div class="step key"><div class="num"></div><div>
+          <h3>Toolbox validates &amp; binds</h3><p>Verifies JWT signature, issuer &amp; audience against the OIDC provider; extracts <code>preferred_username</code>; binds it into the SQL parameter. The token header is <code>keycloak_token</code>.</p></div></div>
+        <div class="step key"><div class="num"></div><div>
+          <h3>Parameterized SQL as a least-priv role</h3><p>Runs <code>… WHERE u.username = $1</code> as <code>toolbox_app</code>. A forged body value is ignored — the claim wins. No token → <code>401</code>.</p></div></div>
+        <div class="step"><div class="num"></div><div>
+          <h3>Audited result</h3><p>Rows return; an OpenTelemetry span records the tool, source, duration &amp; outcome. Another user's data is simply unreachable.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MECHANISMS ===== -->
+  <section>
+    <div class="sec-h"><span class="n">03</span><h2>Ten security mechanisms</h2>
+      <span class="sub">all verified · <code>scripts/verify_security.sh</code> → 11/11</span></div>
+    <div class="mechs">
+      <div class="card mech"><div class="top"><span class="id">1</span><h3>Custom tools, not <code>execute_sql</code></h3></div>
+        <p class="stops">The agent gets 8 purpose-built tools, never arbitrary query power. Vector index/path are hardcoded.</p>
+        <div class="where">toolbox/tools.yaml</div></div>
+      <div class="card mech"><div class="top"><span class="id">2</span><h3>Authenticated parameters</h3><span class="pill ok">verified</span></div>
+        <p class="stops"><code>username</code> is bound from the OIDC claim &amp; stripped from the model's schema. It can't be supplied or forged.</p>
+        <div class="where">authServices:[{name:keycloak, field:preferred_username}]</div></div>
+      <div class="card mech"><div class="top"><span class="id">3</span><h3>Authorized invocations</h3><span class="pill ok">verified</span></div>
+        <p class="stops">Admin tools need a <code>grocery-admin</code> audience only carol holds (role-driven in Keycloak).</p>
+        <div class="where">authRequired:[keycloak_admin]</div></div>
+      <div class="card mech"><div class="top"><span class="id">4</span><h3>Bound parameters (SDK)</h3></div>
+        <p class="stops"><code>store_region</code> is fixed by the app, absent from the model signature. (App-layer trust — the confused-deputy line.)</p>
+        <div class="where">agent/agent.py · bind_param()</div></div>
+      <div class="card mech"><div class="top"><span class="id">5</span><h3>Parameterized queries</h3><span class="pill ok">verified</span></div>
+        <p class="stops">Every statement uses <code>$1…$n</code>; tool args are values, never SQL. Injection → treated as a literal.</p>
+        <div class="where">toolbox/tools.yaml statements</div></div>
+      <div class="card mech"><div class="top"><span class="id">6</span><h3>Least-privilege roles</h3><span class="pill ok">verified</span></div>
+        <p class="stops"><code>toolbox_app</code> can't UPDATE the catalog, DELETE orders, or DROP. One role per source.</p>
+        <div class="where">db/postgres/01_roles.sql</div></div>
+      <div class="card mech"><div class="top"><span class="id">7</span><h3>IAM / Workload Identity</h3></div>
+        <p class="stops">On GKE, Cloud SQL via IAM — <b>no DB password exists in the cluster</b>.</p>
+        <div class="where">deploy/k8s · cloud-sql-postgres (no password)</div></div>
+      <div class="card mech"><div class="top"><span class="id">8</span><h3>Secrets handling</h3></div>
+        <p class="stops">Credentials live only in Toolbox via <code>${ENV}</code> — never reach the model; Secret Manager in prod.</p>
+        <div class="where">.env (local) · Secret/CSI (GKE)</div></div>
+      <div class="card mech"><div class="top"><span class="id">9</span><h3>Observability</h3><span class="pill ok">verified</span></div>
+        <p class="stops">Every tool call is a traced, audited event. A blocked read is a logged 0-row call, not a silent drop.</p>
+        <div class="where">--telemetry-otlp → OTel · Jaeger</div></div>
+      <div class="card mech"><div class="top"><span class="id">10</span><h3>Network hardening</h3></div>
+        <p class="stops">Only agent→Toolbox→DB. The agent can't reach the database directly.</p>
+        <div class="where">--allowed-hosts · k8s NetworkPolicy</div></div>
+    </div>
+  </section>
+
+  <!-- ===== MODEL VS TOOLBOX ===== -->
+  <section>
+    <div class="sec-h"><span class="n">04</span><h2>What the model can &amp; can't set</h2>
+      <span class="sub">the deterministic guarantee</span></div>
+    <div class="vs">
+      <div class="card col">
+        <h3>🔐 What Toolbox enforces</h3>
+        <div class="toolrow"><span class="muted">view_cart</span>(<span class="lock">username 🔒</span>)</div>
+        <div class="toolrow"><span class="muted">add_to_cart</span>(<span class="lock">username 🔒</span>, sku, <span class="lock">store_region 🔒</span>, quantity)</div>
+        <div class="toolrow"><span class="muted">checkout</span>(<span class="lock">username 🔒</span>)</div>
+        <div class="toolrow"><span class="muted">get_order_details</span>(order_id, <span class="lock">username 🔒</span>)</div>
+        <div class="faint" style="margin-top:12px;font-size:12.5px">🔒 = bound by Toolbox from the verified token / app — invisible to the LLM.</div>
+      </div>
+      <div class="card col model">
+        <h3>🤖 What the model sees</h3>
+        <div class="toolrow"><span class="sig">view_cart</span>()</div>
+        <div class="toolrow"><span class="sig">add_to_cart</span>(quantity, sku)</div>
+        <div class="toolrow"><span class="sig">checkout</span>()</div>
+        <div class="toolrow"><span class="sig">get_order_details</span>(order_id)</div>
+        <div class="faint" style="margin-top:12px;font-size:12.5px">No <code>username</code>, no <code>store_region</code>. The agent cannot pass what isn't there.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DEFENSE IN DEPTH ===== -->
+  <section>
+    <div class="sec-h"><span class="n">05</span><h2>Defense in depth</h2>
+      <span class="sub">five layers, the agent passes none on trust</span></div>
+    <div class="layers">
+      <div class="layer"><span class="ic">🧰</span><span class="nm">Curated tool surface</span><span class="ds">No raw SQL; only 8 named, typed tools exist.</span></div>
+      <div class="layer"><span class="ic">🪪</span><span class="nm">Authenticated parameters</span><span class="ds">Identity bound from the token — unforgeable, server-side.</span></div>
+      <div class="layer"><span class="ic">🚦</span><span class="nm">Authorized invocations</span><span class="ds">Admin tools gated by a role-driven audience.</span></div>
+      <div class="layer"><span class="ic">🔒</span><span class="nm">Parameterized queries</span><span class="ds">Arguments are values, never executable SQL.</span></div>
+      <div class="layer"><span class="ic">🛡️</span><span class="nm">Least-privilege DB role</span><span class="ds">Even a subverted tool can't DROP / mutate the catalog / delete orders.</span></div>
+    </div>
+  </section>
+
+  <!-- ===== LOCAL VS PROD ===== -->
+  <section>
+    <div class="sec-h"><span class="n">06</span><h2>Local demo vs. production</h2>
+      <span class="sub">same tools, stronger primitives</span></div>
+    <div class="card" style="overflow:hidden">
+      <table>
+        <thead><tr><th>Concern</th><th>Local (Docker Compose)</th><th>Production (GKE)</th></tr></thead>
+        <tbody>
+          <tr><td>Postgres auth</td><td><span class="k">kind: postgres</span> + password</td><td><span class="k">cloud-sql-postgres</span> · IAM, no password</td></tr>
+          <tr><td>Identity to DB</td><td>role password in <code>.env</code></td><td>Workload Identity KSA → GSA</td></tr>
+          <tr><td>tools.yaml</td><td>bind-mounted file</td><td>mounted from a Secret</td></tr>
+          <tr><td>Secrets</td><td><code>.env</code></td><td>Secret Manager (CSI / ESO)</td></tr>
+          <tr><td>Network</td><td>compose bridge</td><td>NetworkPolicy: agent → Toolbox → DB</td></tr>
+          <tr><td>Telemetry</td><td><code>--telemetry-otlp</code> → collector</td><td><code>--telemetry-gcp</code> → Cloud Trace</td></tr>
+          <tr><td>Identity provider</td><td>local Keycloak</td><td>Google Sign-In</td></tr>
+          <tr><td>Scaling</td><td>single container</td><td>HPA 2–10, pooled connections</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ===== STACK ===== -->
+  <section>
+    <div class="sec-h"><span class="n">07</span><h2>Stack</h2></div>
+    <div class="stack">
+      <div class="chip"><span class="ic">⚙️</span><div><b>MCP Toolbox 1.4.0</b><br><span>security control plane</span></div></div>
+      <div class="chip"><span class="ic">🧠</span><div><b>Kimi-K2.6 · Nebius</b><br><span>agent LLM (pluggable → Gemini)</span></div></div>
+      <div class="chip"><span class="ic">🔗</span><div><b>Google ADK + LiteLLM</b><br><span>agent + tool-calling</span></div></div>
+      <div class="chip"><span class="ic">🔢</span><div><b>Gemini embeddings</b><br><span>3072-d vector search</span></div></div>
+      <div class="chip"><span class="ic">🐘</span><div><b>PostgreSQL 16</b><br><span>transactional system of record</span></div></div>
+      <div class="chip"><span class="ic">🍃</span><div><b>MongoDB Atlas Local</b><br><span>$vectorSearch</span></div></div>
+      <div class="chip"><span class="ic">🔑</span><div><b>Keycloak 26</b><br><span>OIDC identity</span></div></div>
+      <div class="chip"><span class="ic">📊</span><div><b>OTel + Jaeger</b><br><span>traces &amp; metrics</span></div></div>
+      <div class="chip"><span class="ic">☸️</span><div><b>Docker Compose · GKE</b><br><span>local + production</span></div></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>MCP Toolbox security reference architecture</span>
+    <span>·</span>
+    <span>docs/SECURITY.md · docs/ARCHITECTURE.md · docs/RUNBOOK.md</span>
+    <span>·</span>
+    <span>11/11 controls verified</span>
+  </footer>
+
+</div>
+</body>
+</html>

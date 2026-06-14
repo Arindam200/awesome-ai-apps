@@ -1,0 +1,59 @@
+# MCP Toolbox — the security control plane, as a hardened Deployment.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toolbox
+  namespace: groceries
+  labels: { app: toolbox }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: toolbox }
+  template:
+    metadata:
+      labels: { app: toolbox }
+    spec:
+      serviceAccountName: toolbox-sa        # Workload Identity -> IAM DB auth (mechanism #7)
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: toolbox
+          image: us-central1-docker.pkg.dev/database-toolbox/toolbox/toolbox:1.4.0
+          args:
+            - "--config"
+            - "/config/tools.yaml"          # GKE variant: cloud-sql-postgres sources (no password)
+            - "--address"
+            - "0.0.0.0"
+            - "--enable-api"
+            - "--telemetry-gcp"             # native Cloud Trace / Monitoring (mechanism #9)
+            - "--allowed-origins"
+            - "https://groceries.example.com"
+            - "--allowed-hosts"
+            - "toolbox.groceries.svc.cluster.local:5000,toolbox:5000"
+          ports:
+            - { name: http, containerPort: 5000 }
+          envFrom:
+            - secretRef: { name: toolbox-env }   # Mongo URI, OIDC issuer, CloudSQL target (no PW)
+          # Distroless image, but kubelet performs HTTP probes itself (no shell needed).
+          readinessProbe:
+            httpGet: { path: /, port: 5000 }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /, port: 5000 }
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests: { cpu: "100m", memory: "128Mi" }
+            limits:   { cpu: "500m", memory: "512Mi" }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
+          volumeMounts:
+            - { name: tools, mountPath: /config, readOnly: true }
+      volumes:
+        - name: tools
+          secret:
+            secretName: toolbox-tools        # created from deploy/k8s/tools.yaml (see README)

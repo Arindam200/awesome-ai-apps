@@ -1,0 +1,41 @@
+# OpenTelemetry Collector — receives traces + metrics from MCP Toolbox
+# (Toolbox is started with --telemetry-otlp http://otel-collector:4318).
+#
+# In production on GKE you can skip this and use Toolbox's --telemetry-gcp flag
+# to export straight to Google Cloud Trace / Monitoring.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+    timeout: 2s
+
+exporters:
+  # Traces -> Jaeger (Jaeger all-in-one ingests OTLP natively on 4317).
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+  # Metrics -> Prometheus scrape endpoint on :8889.
+  prometheus:
+    endpoint: 0.0.0.0:8889
+  # Always-on console view of spans (handy on stage / in `docker compose logs`).
+  debug:
+    verbosity: normal
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/jaeger, debug]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]

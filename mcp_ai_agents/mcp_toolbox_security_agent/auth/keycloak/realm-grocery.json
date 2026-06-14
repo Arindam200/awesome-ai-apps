@@ -1,0 +1,83 @@
+{
+  "realm": "grocery",
+  "enabled": true,
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "accessTokenLifespan": 1800,
+  "roles": {
+    "realm": [
+      { "name": "admin", "description": "Grocery platform administrator" }
+    ],
+    "client": {
+      "grocery-admin": [
+        { "name": "admin-access", "description": "Holder may invoke admin Toolbox tools" }
+      ]
+    }
+  },
+  "users": [
+    {
+      "username": "alice",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "alice@example.com",
+      "firstName": "Alice",
+      "lastName": "Customer",
+      "credentials": [{ "type": "password", "value": "alice123", "temporary": false }]
+    },
+    {
+      "username": "bob",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "bob@example.com",
+      "firstName": "Bob",
+      "lastName": "Customer",
+      "credentials": [{ "type": "password", "value": "bob123", "temporary": false }]
+    },
+    {
+      "username": "carol",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "carol@example.com",
+      "firstName": "Carol",
+      "lastName": "Admin",
+      "credentials": [{ "type": "password", "value": "carol123", "temporary": false }],
+      "realmRoles": ["admin"],
+      "clientRoles": { "grocery-admin": ["admin-access"] }
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "grocery-agent",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"],
+      "fullScopeAllowed": true,
+      "protocolMappers": [
+        {
+          "name": "aud-grocery-agent",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "grocery-agent",
+            "access.token.claim": "true",
+            "id.token.claim": "false"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "grocery-admin",
+      "description": "Audience target for admin tools. Carol holds the admin-access client role; the built-in audience-resolve mapper therefore adds 'grocery-admin' to her token aud. Customers cannot self-grant it.",
+      "enabled": true,
+      "bearerOnly": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    }
+  ]
+}

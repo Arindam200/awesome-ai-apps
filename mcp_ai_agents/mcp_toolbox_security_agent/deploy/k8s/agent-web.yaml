@@ -1,0 +1,48 @@
+# The agent + web UI. Labeled app=agent-web — the ONLY workload the NetworkPolicy
+# permits to reach Toolbox. It has no database access of its own.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: agent-web
+  namespace: groceries
+  labels: { app: agent-web }
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: agent-web }
+  template:
+    metadata:
+      labels: { app: agent-web }
+    spec:
+      serviceAccountName: agent-web-sa     # Workload Identity for Vertex AI (Gemini), if used
+      containers:
+        - name: agent-web
+          image: REGISTRY/groceries-agent-web:latest   # build from deploy/compose/Dockerfile.agent
+          ports:
+            - { containerPort: 8080 }
+          env:
+            - { name: TOOLBOX_URL,        value: "http://toolbox:5000" }
+            - { name: KEYCLOAK_URL,       value: "https://accounts.google.com" }  # prod: Google
+            - { name: STORE_REGION,       value: "us-west" }
+            # For Vertex AI via Workload Identity instead of an API key:
+            - { name: GOOGLE_GENAI_USE_VERTEXAI, value: "true" }
+            - { name: GOOGLE_CLOUD_PROJECT, value: "PROJECT_ID" }
+            - { name: GOOGLE_CLOUD_LOCATION, value: "us-central1" }
+          readinessProbe:
+            httpGet: { path: /, port: 8080 }
+            initialDelaySeconds: 5
+          resources:
+            requests: { cpu: "100m", memory: "256Mi" }
+            limits:   { cpu: "1",    memory: "1Gi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agent-web
+  namespace: groceries
+  labels: { app: agent-web }
+spec:
+  type: ClusterIP            # front with an Ingress / Gateway + TLS in production
+  selector: { app: agent-web }
+  ports:
+    - { name: http, port: 80, targetPort: 8080 }

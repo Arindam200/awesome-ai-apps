@@ -271,6 +271,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Docker E2B MCP Agent](mcp_ai_agents/e2b_docker_mcp_agent) - Secure AI agent for running agents in sandboxed Docker environments via MCP Gateway
 - [Taskade MCP Agent](mcp_ai_agents/taskade_mcp_agent) - AI-powered workspace agent for managing projects, tasks, and workflows via Taskade MCP
 - [Telemetry MCP Okahu](mcp_ai_agents/telemetry-mcp-okahu) - Self-healing Text-to-SQL demo using Okahu Cloud traces via hosted MCP
+- [MCP Toolbox Security Agent](mcp_ai_agents/mcp_toolbox_security_agent) - Secure ecommerce agent over PostgreSQL + MongoDB; MCP Toolbox enforces per-user data access, least-privilege roles, and authorized tools
 
 ### 🧠 Memory Agents
 
