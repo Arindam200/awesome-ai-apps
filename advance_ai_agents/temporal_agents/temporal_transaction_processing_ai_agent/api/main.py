@@ -1,7 +1,10 @@
 """FastAPI server for transaction processing API."""
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+import os
+import secrets
+from fastapi import FastAPI, HTTPException, BackgroundTasks, Depends, Security, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import APIKeyHeader
 import uuid
 from datetime import datetime, timedelta, timezone
 import logging
@@ -26,6 +29,25 @@ from ai.embedding_client import embedding_client
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# API key authentication
+_API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
+_EXPECTED_API_KEY = os.environ.get("API_KEY", "")
+
+
+def require_api_key(key: str = Security(_API_KEY_HEADER)) -> str:
+    """Validate X-API-Key header for protected endpoints."""
+    if not _EXPECTED_API_KEY:
+        import warnings
+        warnings.warn("API_KEY not set — transaction endpoints are unprotected.", stacklevel=2)
+        return ""
+    if not key or not secrets.compare_digest(key, _EXPECTED_API_KEY):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or missing API key.",
+        )
+    return key
+
+
 app = FastAPI(
     title="Transaction AI Processing API",
     description="AI-powered financial transaction processing system",
@@ -35,9 +57,14 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:8501",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8501",
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -58,7 +85,7 @@ async def shutdown_event():
     await close_couchbase_connection()
     logger.info("API server stopped")
 
-@app.post("/api/transaction", response_model=TransactionResponse)
+@app.post("/api/transaction", response_model=TransactionResponse, dependencies=[Depends(require_api_key)])
 async def process_transaction(transaction_req: TransactionRequest):
     """Submit a new transaction for processing."""
     try:
@@ -114,7 +141,7 @@ async def process_transaction(transaction_req: TransactionRequest):
         logger.error(f"Error processing transaction: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/transaction/{transaction_id}", response_model=DecisionResponse)
+@app.get("/api/transaction/{transaction_id}", response_model=DecisionResponse, dependencies=[Depends(require_api_key)])
 async def get_transaction_decision(transaction_id: str):
     """Get the AI decision for a transaction."""
     try:
@@ -170,7 +197,7 @@ async def get_transaction_decision(transaction_id: str):
         logger.error(f"Error getting decision: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/metrics", response_model=MetricsResponse)
+@app.get("/api/metrics", response_model=MetricsResponse, dependencies=[Depends(require_api_key)])
 async def get_metrics():
     """Get system metrics and statistics."""
     try:

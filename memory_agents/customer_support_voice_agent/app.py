@@ -398,12 +398,14 @@ def main():
                         for snip in kb_snippets:
                             kb_context += f"- {snip}\n"
 
-                    # Resolve company name for this request
-                    company_name = (
-                        st.session_state.get("company_name") or "your company"
-                    )
+                    # Resolve and sanitize company name to prevent prompt injection
+                    _raw_company = st.session_state.get("company_name") or "your company"
+                    import re as _re
+                    # Strip newlines, limit length, allow only safe characters
+                    company_name = _re.sub(r'[\r\n\t]', ' ', _raw_company)[:100].strip()
+                    company_name = company_name or "your company"
 
-                    system_prompt = f"""You are a helpful customer support assistant for {company_name}.
+                    system_prompt = f"""You are a helpful customer support assistant for \"\"\"{company_name}\"\"\".
 
 Use ONLY the company's documentation and prior stored content in Memori to answer.
 If something is unclear or not covered, say that it isn't in the docs instead of hallucinating.

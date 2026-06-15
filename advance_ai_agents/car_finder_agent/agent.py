@@ -321,12 +321,22 @@ def handle_chat(user_id: str, user_query: str, max_price=None, city=None, search
 
     cars_str = format_cars_for_prompt(cars)
 
+    # Sanitize user input before embedding in LLM task
+    _sanitized_query = user_query.strip()[:2000]  # enforce max length
+    # Strip common prompt injection markers
+    import re as _re
+    _sanitized_query = _re.sub(
+        r'(?i)(ignore\s+(above|previous|all)|system\s*:|<\||\[INST\]|###\s*system)',
+        '[removed]',
+        _sanitized_query,
+    )
+
     task_description = f"""
 SYSTEM:
 {SYSTEM_PROMPT}
 
 USER QUERY:
-{user_query}
+{_sanitized_query}
 
 MATCHING CARS:
 {cars_str}

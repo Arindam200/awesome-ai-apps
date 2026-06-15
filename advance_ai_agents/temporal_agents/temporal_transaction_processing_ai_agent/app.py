@@ -104,7 +104,7 @@ async def submit_transaction(transaction_data: Dict):
 
 async def get_decision(transaction_id: str):
     """Get decision for a transaction."""
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0)) as client:
         try:
             response = await client.get(
                 f"{API_BASE_URL}/transaction/{transaction_id}"
@@ -119,13 +119,13 @@ async def get_decision(transaction_id: str):
 
 async def get_metrics():
     """Get system metrics."""
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0)) as client:
         try:
             response = await client.get(f"{API_BASE_URL}/metrics")
             if response.status_code == 200:
                 return response.json()
-        except:
-            pass
+        except Exception as e:
+            print(f"Metrics request failed: {e}")
     return None
 
 def run_async_safe(coro):
@@ -149,7 +149,7 @@ def run_async_safe(coro):
 
 async def get_workflow_status(workflow_id: str):
     """Get Temporal workflow status."""
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0)) as client:
         try:
             response = await client.get(
                 f"{API_BASE_URL}/workflow/{workflow_id}/status"

@@ -2,7 +2,7 @@ import os
 import datetime
 import json
 import requests
-from fastapi import FastAPI, APIRouter, Request, Query
+from fastapi import FastAPI, APIRouter, Request, Query, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from agno.agent import RunResponse, Agent
@@ -10,6 +10,7 @@ from agno.models.nebius import Nebius
 from controllers.agents import multi_ai
 import dotenv
 from controllers.ask import chat_agent
+from auth import require_api_key
 
 router = APIRouter()
 
@@ -28,7 +29,6 @@ async def health_check(request: Request):
             "api": {
                 "nebius_api": "connected" if NEBIUS_API_KEY else "not configured",
             },
-            "ip": requests.get('https://api.ipify.org').text,
             "services": {
                 "chat": router.url_path_for("chat"),
                 "agent": router.url_path_for("ask"),
@@ -59,12 +59,14 @@ async def health_check(request: Request):
         return JSONResponse(content=response_data)
 
     except Exception as e:
+        import logging as _logging
+        _logging.getLogger(__name__).error("Health check failed: %s", e, exc_info=True)
         error_response = {
             "status": "unhealthy",
             "timestamp": datetime.datetime.now().isoformat(),
-            "error": str(e)
+            "error": "Internal server error. Check server logs for details."
         }
-        
+
         # Check if request is from a browser or format is explicitly set to html
         accept_header = request.headers.get("accept", "")
         if "text/html" in accept_header:
@@ -88,7 +90,7 @@ async def health_check(request: Request):
             
         return JSONResponse(content=error_response)
 
-@router.get("/chat", response_class=HTMLResponse)
+@router.get("/chat", response_class=HTMLResponse, dependencies=[Depends(require_api_key)])
 def chat(request: Request, query: str = None):
     """
     API endpoint to handle user investment-related questions and return AI-generated insights.
@@ -132,7 +134,7 @@ def chat(request: Request, query: str = None):
     except Exception as e:
         return JSONResponse(content={"error": str(e)})
 
-@router.get("/agent", response_class=HTMLResponse)
+@router.get("/agent", response_class=HTMLResponse, dependencies=[Depends(require_api_key)])
 def ask(request: Request, query: str = None):
     """
     API endpoint to handle user investment-related questions and return AI-generated insights.

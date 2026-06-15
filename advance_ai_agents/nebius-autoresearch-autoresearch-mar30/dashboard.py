@@ -15,9 +15,29 @@ import subprocess
 import threading
 import signal
 import json
+import secrets
 from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
+
+# Load dashboard secret from environment. Generate a random one if not set (local-only).
+_DASHBOARD_SECRET = os.environ.get("DASHBOARD_SECRET") or secrets.token_hex(16)
+if not os.environ.get("DASHBOARD_SECRET"):
+    import warnings
+    warnings.warn(
+        "DASHBOARD_SECRET not set. Generated a random token for this session. "
+        "Set DASHBOARD_SECRET env var for a stable secret.",
+        stacklevel=1,
+    )
+
+
+def _require_auth():
+    """Return a 401 JSONResponse if the request lacks the correct X-Dashboard-Token header."""
+    token = request.headers.get("X-Dashboard-Token", "")
+    if not secrets.compare_digest(token, _DASHBOARD_SECRET):
+        from flask import abort
+        abort(401, description="Unauthorized: missing or invalid X-Dashboard-Token header.")
+
 
 BASE_DIR        = os.path.dirname(os.path.abspath(__file__))
 RESULTS_TSV     = os.path.join(BASE_DIR, "results.tsv")
@@ -117,11 +137,11 @@ def api_status():
 
 @app.route("/api/start", methods=["POST"])
 def api_start():
+    _require_auth()
     global _agent_proc
     data = request.get_json(silent=True) or {}
     n_experiments = data.get("n_experiments", 10)
     use_batch     = data.get("batch", False)
-    api_key       = data.get("api_key", os.environ.get("NEBIUS_API_KEY", ""))
 
     with _agent_lock:
         if _agent_proc is not None and _agent_proc.poll() is None:
@@ -131,7 +151,7 @@ def api_start():
         if use_batch:
             cmd.append("--batch")
 
-        env = {**os.environ, "NEBIUS_API_KEY": api_key, "PYTHONIOENCODING": "utf-8"}
+        env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
         try:
             _agent_proc = subprocess.Popen(
                 cmd,
@@ -147,6 +167,7 @@ def api_start():
 
 @app.route("/api/stop", methods=["POST"])
 def api_stop():
+    _require_auth()
     global _agent_proc
     with _agent_lock:
         if _agent_proc is None or _agent_proc.poll() is not None:
@@ -174,4 +195,4 @@ if __name__ == "__main__":
     print("  Nebius AutoResearch Dashboard")
     print("  Open http://localhost:5000")
     print("=" * 50)
-    app.run(debug=False, port=5000, threaded=True)
+    app.run(debug=False, host="127.0.0.1", port=5000, threaded=True)

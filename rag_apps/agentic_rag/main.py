@@ -20,7 +20,9 @@ import base64
 from phoenix.otel import register
 
 # Set environment variables for Arize Phoenix
-os.environ["PHOENIX_CLIENT_HEADERS"] = f"api_key={os.getenv('ARIZE_PHOENIX_API_KEY')}"
+_arize_key = os.getenv("ARIZE_PHOENIX_API_KEY")
+if _arize_key:
+    os.environ["PHOENIX_CLIENT_HEADERS"] = f"api_key={_arize_key}"
 os.environ["PHOENIX_COLLECTOR_ENDPOINT"] = "https://app.phoenix.arize.com"
 
 # Configure the Phoenix tracer

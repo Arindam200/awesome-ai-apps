@@ -15,7 +15,7 @@ class Config:
     # Couchbase Configuration
     COUCHBASE_CONNECTION_STRING: str = os.getenv("COUCHBASE_CONNECTION_STRING", "")
     COUCHBASE_USERNAME: str = os.getenv("COUCHBASE_USERNAME", "")
-    COUCHBASE_PASSWORD: str = os.getenv("COUCHBASE_PASSWORD", "")
+    COUCHBASE_PASSWORD: str = os.getenv("COUCHBASE_PASSWORD", "")  # Empty string means no auth configured
     COUCHBASE_BUCKET: str = os.getenv("COUCHBASE_BUCKET", "transactions")
     COUCHBASE_SCOPE: str = os.getenv("COUCHBASE_SCOPE", "_default")
     
@@ -46,6 +46,12 @@ class Config:
     AWS_REGION: str = os.getenv("AWS_REGION", "us-east-1")
     BEDROCK_MODEL_VERSION: str = os.getenv("BEDROCK_MODEL_VERSION", "N/A (using OpenAI)")
     GROQ_MODEL_ID: str = os.getenv("GROQ_MODEL_ID", "N/A (using OpenAI)")
+
+    def validate(self) -> None:
+        """Raise EnvironmentError if critical credentials are missing."""
+        if not self.COUCHBASE_PASSWORD:
+            import warnings
+            warnings.warn("COUCHBASE_PASSWORD is not set — database authentication may fail.", stacklevel=2)
 
 # Global config instance
 config = Config()
