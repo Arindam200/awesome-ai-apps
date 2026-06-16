@@ -309,7 +309,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _23 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _24 projects_
 
 - [Deep Research + Writing Agents Workshop](advance_ai_agents/deep_research_writing_agents_nebius_okahu) - Nebius-powered LangChain MCP workshop with Exa research, Gemini image generation, and Okahu/Monocle eval observability
 - [Nebius AutoResearch](advance_ai_agents/nebius-autoresearch-autoresearch-mar30) - NYC taxi analytics pipeline optimizer; iterative code search with Nebius Token Factory (real-time or batch inference)
@@ -324,6 +324,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Finance Service Agent](advance_ai_agents/finance_service_agent) - FastAPI server for stock data and predictions with Agno
 - [FlowSentinel Audit Trail](advance_ai_agents/flowsentinal_audittrail) - Next.js workflow command center: Nebius Nemotron reasoning, n8n orchestration, Velt immutable activity logs, optional Tailscale Funnel exposure
 - [Price Monitoring Agent](advance_ai_agents/price_monitoring_agent) - Price monitoring and alerting agent powered by CrewAI, Twilio & Nebius
+- [Pydantic Game Agent](advance_ai_agents/pydantic_game_agent) - FastAPI multi-agent studio that generates sandboxed browser games from one prompt using Pydantic AI and GLM-5.2 on Nebius
 - [Startup Idea Validator Agent](advance_ai_agents/startup_idea_validator_agent) - Agentic workflow to validate and analyze startup ideas
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent) - Automated meeting notes and task creation from conversations
 - [AI Hedgefund](advance_ai_agents/ai-hedgefund) - Agentic workflow for comprehensive financial analysis

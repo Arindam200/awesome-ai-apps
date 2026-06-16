@@ -1,0 +1,25 @@
+[project]
+name = "pydantic_game_agent"
+version = "0.1.0"
+description = "One-prompt browser game generator using Pydantic AI and GLM-5.2 via Nebius Token Factory."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "jinja2>=3.1.4",
+    "openai>=1.58.0",
+    "pydantic>=2.10.0",
+    "pydantic-ai-slim[openai]>=0.1.0",
+    "python-multipart>=0.0.12",
+    "uvicorn[standard]>=0.32.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "httpx>=0.27.0",
+    "pytest>=8.3.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

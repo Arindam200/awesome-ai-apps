@@ -1,0 +1,12 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+generated-games/
+*.egg-info/
+dist/
+build/
+.DS_Store
+.idea/
+.vscode/

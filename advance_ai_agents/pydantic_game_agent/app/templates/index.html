@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pydantic Game Agent</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}">
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar" aria-label="Game maker controls">
+        <div class="brand">
+          <div class="logo-cluster" aria-label="Nebius, Pydantic AI, and GLM">
+            <img src="{{ url_for('static', path='logos/nebius.png') }}" alt="Nebius">
+            <img src="{{ url_for('static', path='logos/pydantic.png') }}" alt="Pydantic">
+            <img src="{{ url_for('static', path='logos/glm.png') }}" alt="GLM">
+          </div>
+          <div>
+            <p>Nebius -> Pydantic AI -> GLM</p>
+            <strong>Pydantic Game Agent</strong>
+          </div>
+        </div>
+
+        <form id="game-form" class="composer" method="post" action="/generate">
+          <label for="prompt">Prompt</label>
+          <textarea id="prompt" name="prompt" rows="7" required placeholder="Make a one-button game where I jump over blocks.">{{ prompt }}</textarea>
+          <button id="generate-button" type="submit">Generate game</button>
+        </form>
+
+        <section class="examples" aria-label="Prompt examples">
+          <p class="section-label">Examples</p>
+          {% for example in examples %}
+            <button type="button" data-example="{{ example }}">{{ example }}</button>
+          {% endfor %}
+        </section>
+
+        <section class="meta-card" aria-label="Runtime settings">
+          <p class="section-label">Runtime</p>
+          <dl>
+            <div>
+              <dt>Model</dt>
+              <dd>{{ model }}</dd>
+            </div>
+            <div>
+              <dt>Provider</dt>
+              <dd>Nebius Token Factory</dd>
+            </div>
+          </dl>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="section-label">Nebius Token Factory / Pydantic AI / GLM-5.2</p>
+            <h1>GLM-5.2 game studio</h1>
+          </div>
+          <div class="run-state" aria-live="polite">
+            <span id="status-dot" class="status-dot"></span>
+            <span id="status-text">Ready</span>
+            <span id="elapsed-time">0s</span>
+          </div>
+        </header>
+
+        <section class="agent-track" aria-label="Agent progress">
+          <div class="agent-step" data-step="designer">
+            <span>1</span>
+            <div>
+              <small>Agent 01</small>
+              <strong>Game Designer Agent</strong>
+              <p>Typed game spec</p>
+            </div>
+          </div>
+          <div class="agent-step" data-step="builder">
+            <span>2</span>
+            <div>
+              <small>Agent 02</small>
+              <strong>Game Builder Agent</strong>
+              <p>Standalone HTML game</p>
+            </div>
+          </div>
+          <div class="agent-step" data-step="reviewer">
+            <span>3</span>
+            <div>
+              <small>Agent 03</small>
+              <strong>Game Reviewer Agent</strong>
+              <p>Safety and playability</p>
+            </div>
+          </div>
+          <div class="agent-step" data-step="repair">
+            <span>4</span>
+            <div>
+              <small>Agent 04</small>
+              <strong>Repair Agent</strong>
+              <p>One fix pass if needed</p>
+            </div>
+          </div>
+        </section>
+
+        <div id="error-box" class="alert {% if not error %}is-hidden{% endif %}" role="alert">
+          <span id="error-message">{{ error or "" }}</span>
+          <button id="repair-button" class="repair-button is-hidden" type="button" data-repair-button>Run repair agent</button>
+        </div>
+
+        <section class="content-grid">
+          <article class="panel preview-panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-label">Preview</p>
+                <h2 id="game-title">{% if game %}{{ game.spec.title }}{% else %}Waiting for a game{% endif %}</h2>
+              </div>
+              <div class="result-actions">
+                <a id="open-game" class="open-link {% if not game %}is-disabled{% endif %}" href="/play/latest" target="_blank" rel="noopener">Open game</a>
+                <span id="review-badge" class="badge {% if game and (game.review.issues or game.safety_issues or not game.review.approved) %}is-warning{% endif %}">{% if game %}{{ "Approved" if game.review.approved and not game.review.issues and not game.safety_issues else "Needs care" }}{% else %}Idle{% endif %}</span>
+              </div>
+            </div>
+            <div id="empty-preview" class="empty-preview {% if game %}is-hidden{% endif %}">
+              <div class="preview-run" id="preview-run">
+                <p class="section-label" id="preview-run-label">Ready for agent run</p>
+                <h2 id="preview-run-title">Generate a game to watch the agents work.</h2>
+                <p id="preview-run-detail">The preview will become a live run console first, then switch to the playable game after review finishes.</p>
+                <div class="preview-log" id="preview-log" aria-live="polite">
+                  <div class="preview-log-row">
+                    <span></span>
+                    <p>Game Designer Agent, Game Builder Agent, and Game Reviewer Agent are standing by.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <iframe id="game-frame" class="{% if not game %}is-hidden{% endif %}" title="Generated game preview" sandbox="allow-scripts" {% if game %}srcdoc="{{ game.html | e }}"{% endif %}></iframe>
+          </article>
+
+          <aside class="panel games-panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-label">Generated Games</p>
+                <h2>Playable library</h2>
+              </div>
+            </div>
+
+            <div class="games-note">
+              <p>Every successful agent run is saved as a standalone HTML game. Open any saved game in a new tab.</p>
+            </div>
+
+            <div class="games-list" id="games-list" aria-live="polite">
+              {% for saved_game in saved_games %}
+                <article class="game-card" data-game-id="{{ saved_game.id }}">
+                  <div>
+                    <strong>{{ saved_game.title }}</strong>
+                    <p>{{ saved_game.prompt }}</p>
+                    <small>{{ saved_game.genre }} / {{ "Approved" if saved_game.approved else "Needs care" }}</small>
+                  </div>
+                  <a class="open-link" href="/games/{{ saved_game.id }}" target="_blank" rel="noopener">Open</a>
+                </article>
+              {% endfor %}
+              <div id="games-empty" class="games-empty {% if saved_games %}is-hidden{% endif %}">
+                <p>No generated games yet.</p>
+              </div>
+            </div>
+
+            <div id="issues-card" class="issues {% if not game or not game.review.issues %}is-hidden{% endif %}">
+              <div class="issues-header">
+                <h3>Issues</h3>
+                <button class="repair-button" type="button" data-repair-button>Run repair agent</button>
+              </div>
+              <ul id="issues-list">
+                {% if game %}
+                  {% for issue in game.review.issues %}
+                    <li>{{ issue }}</li>
+                  {% endfor %}
+                {% endif %}
+              </ul>
+            </div>
+          </aside>
+
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const form = document.querySelector("#game-form");
+      const textarea = document.querySelector("#prompt");
+      const generateButton = document.querySelector("#generate-button");
+      const statusDot = document.querySelector("#status-dot");
+      const statusText = document.querySelector("#status-text");
+      const elapsedTime = document.querySelector("#elapsed-time");
+      const errorBox = document.querySelector("#error-box");
+      const errorMessage = document.querySelector("#error-message");
+      const repairButton = document.querySelector("#repair-button");
+      const repairButtons = Array.from(document.querySelectorAll("[data-repair-button]"));
+      const gameFrame = document.querySelector("#game-frame");
+      const emptyPreview = document.querySelector("#empty-preview");
+      const previewRun = document.querySelector("#preview-run");
+      const previewRunLabel = document.querySelector("#preview-run-label");
+      const previewRunTitle = document.querySelector("#preview-run-title");
+      const previewRunDetail = document.querySelector("#preview-run-detail");
+      const previewLog = document.querySelector("#preview-log");
+      const gameTitle = document.querySelector("#game-title");
+      const reviewBadge = document.querySelector("#review-badge");
+      const gamesList = document.querySelector("#games-list");
+      const gamesEmpty = document.querySelector("#games-empty");
+      const issuesCard = document.querySelector("#issues-card");
+      const issuesList = document.querySelector("#issues-list");
+      const openGame = document.querySelector("#open-game");
+      const steps = Array.from(document.querySelectorAll(".agent-step"));
+
+      let timer = null;
+
+      const stagePlan = [
+        ["designer", "Game Designer Agent is shaping the typed spec"],
+        ["builder", "Game Builder Agent is writing the playable HTML"],
+        ["reviewer", "Game Reviewer Agent is checking safety and playability"],
+        ["repair", "Repair Agent is applying one fix pass"],
+      ];
+
+      document.querySelectorAll("[data-example]").forEach((button) => {
+        button.addEventListener("click", () => {
+          textarea.value = button.dataset.example;
+          textarea.focus();
+        });
+      });
+
+      function setStep(name) {
+        const activeIndex = stagePlan.findIndex(([stage]) => stage === name);
+        steps.forEach((step) => {
+          const active = step.dataset.step === name;
+          const stepIndex = stagePlan.findIndex(([stage]) => stage === step.dataset.step);
+          step.classList.toggle("is-active", active);
+          step.classList.toggle("is-complete", activeIndex >= 0 && stepIndex < activeIndex);
+        });
+      }
+
+      function startProgress(mode = "generate") {
+        let seconds = 0;
+
+        clearInterval(timer);
+        statusDot.classList.add("is-running");
+        generateButton.disabled = true;
+        repairButtons.forEach((button) => { button.disabled = true; });
+        generateButton.textContent = mode === "repair" ? "Repairing..." : "Generating...";
+        errorBox.classList.add("is-hidden");
+        if (repairButton) repairButton.classList.add("is-hidden");
+        elapsedTime.textContent = "0s";
+        gameTitle.textContent = "Agent run in progress";
+        reviewBadge.textContent = "Running";
+        reviewBadge.classList.remove("is-warning");
+        openGame.classList.add("is-disabled");
+        if (issuesCard) issuesCard.classList.add("is-hidden");
+        if (issuesList) issuesList.innerHTML = "";
+        steps.forEach((step) => {
+          step.classList.remove("is-active");
+          step.classList.remove("is-complete");
+        });
+        statusText.textContent = "Connecting to the agent workflow";
+        if (previewRun) {
+          previewRunLabel.textContent = mode === "repair" ? "Repair agent run started" : "Agent run started";
+          previewRunTitle.textContent = mode === "repair" ? "Repair Agent is reopening the failed draft..." : "Connecting to GLM-5.2 agents...";
+          previewRunDetail.textContent = mode === "repair" ? "The repair uses the previous HTML plus reviewer issues as context." : "The game preview will appear here as soon as review finishes.";
+          previewLog.innerHTML = "";
+        }
+        if (emptyPreview) emptyPreview.classList.remove("is-hidden");
+        gameFrame.classList.add("is-hidden");
+        gameFrame.removeAttribute("srcdoc");
+
+        timer = setInterval(() => {
+          seconds += 1;
+          elapsedTime.textContent = `${seconds}s`;
+        }, 1000);
+      }
+
+      function stopProgress(label) {
+        clearInterval(timer);
+        statusDot.classList.remove("is-running");
+        generateButton.disabled = false;
+        repairButtons.forEach((button) => { button.disabled = false; });
+        generateButton.textContent = "Generate game";
+        statusText.textContent = label;
+        steps.forEach((step) => {
+          step.classList.remove("is-active");
+          step.classList.add("is-complete");
+        });
+      }
+
+      function showError(message, repairable = false) {
+        errorMessage.textContent = message;
+        errorBox.classList.remove("is-hidden");
+        if (repairButton) repairButton.classList.toggle("is-hidden", !repairable);
+        addRunLog("Generation failed", message);
+        stopProgress("Generation failed");
+      }
+
+      function addRunLog(agentName, message) {
+        if (previewLog) {
+          const previewRow = document.createElement("div");
+          previewRow.className = "preview-log-row";
+          const previewDot = document.createElement("span");
+          const previewText = document.createElement("p");
+          const previewAgent = document.createElement("strong");
+          previewAgent.textContent = agentName;
+          previewText.append(previewAgent, ` ${message}`);
+          previewRow.append(previewDot, previewText);
+          previewLog.appendChild(previewRow);
+          previewLog.scrollTop = previewLog.scrollHeight;
+        }
+      }
+
+      function addSavedGame(savedGame) {
+        if (!savedGame || !gamesList) return;
+        if (gamesEmpty) gamesEmpty.classList.add("is-hidden");
+
+        const existing = gamesList.querySelector(`[data-game-id="${savedGame.id}"]`);
+        if (existing) existing.remove();
+
+        const card = document.createElement("article");
+        card.className = "game-card";
+        card.dataset.gameId = savedGame.id;
+
+        const content = document.createElement("div");
+        const title = document.createElement("strong");
+        const prompt = document.createElement("p");
+        const meta = document.createElement("small");
+        title.textContent = savedGame.title;
+        prompt.textContent = savedGame.prompt;
+        meta.textContent = `${savedGame.genre} / ${savedGame.approved ? "Approved" : "Needs care"}`;
+        content.append(title, prompt, meta);
+
+        const link = document.createElement("a");
+        link.className = "open-link";
+        link.href = `/games/${savedGame.id}`;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.textContent = "Open";
+
+        card.append(content, link);
+        gamesList.prepend(card);
+      }
+
+      function renderGame(game, savedGame) {
+        if (emptyPreview) emptyPreview.classList.add("is-hidden");
+        gameFrame.classList.remove("is-hidden");
+        gameFrame.srcdoc = game.html;
+
+        gameTitle.textContent = game.spec.title;
+        const hasIssues = game.review.issues.length > 0 || game.safety_issues.length > 0 || !game.review.approved;
+        reviewBadge.textContent = hasIssues ? "Needs care" : "Approved";
+        reviewBadge.classList.toggle("is-warning", hasIssues);
+        openGame.classList.remove("is-disabled");
+        openGame.href = savedGame ? `/games/${savedGame.id}` : `/play/latest?ts=${Date.now()}`;
+        addSavedGame(savedGame);
+
+        issuesList.innerHTML = "";
+        if (game.review.issues.length > 0) {
+          game.review.issues.forEach((issue) => {
+            const li = document.createElement("li");
+            li.textContent = issue;
+            issuesList.appendChild(li);
+          });
+          issuesCard.classList.remove("is-hidden");
+        } else {
+          issuesCard.classList.add("is-hidden");
+        }
+
+        stopProgress(game.repaired ? "Complete after one repair pass" : "Complete");
+      }
+
+      function streamRun(url, mode = "generate") {
+        startProgress(mode);
+        if (!window.EventSource) {
+          showError("This browser does not support live generation events.");
+          return;
+        }
+
+        const stream = new EventSource(url);
+
+        stream.onmessage = (event) => {
+          const payload = JSON.parse(event.data);
+          if (payload.type === "stage") {
+            setStep(payload.stage);
+            statusText.textContent = payload.message;
+            if (previewRun) {
+              previewRunLabel.textContent = payload.agent_name || "Agent running";
+              previewRunTitle.textContent = payload.message;
+              previewRunDetail.textContent = payload.detail || "";
+            }
+            addRunLog(payload.agent_name || payload.stage, payload.message);
+          }
+          if (payload.type === "complete") {
+            stream.close();
+            renderGame(payload.game, payload.saved_game);
+          }
+          if (payload.type === "error") {
+            stream.close();
+            showError(payload.error || "The game could not be generated.", Boolean(payload.repairable));
+          }
+        };
+
+        stream.onerror = () => {
+          stream.close();
+          showError("The live generation stream disconnected.");
+        };
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const prompt = encodeURIComponent(textarea.value);
+        streamRun(`/api/generate-stream?prompt=${prompt}`, "generate");
+      });
+
+      repairButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          streamRun("/api/repair-stream", "repair");
+        });
+      });
+
+    </script>
+  </body>
+</html>
