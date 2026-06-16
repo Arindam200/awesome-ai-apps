@@ -1,0 +1,49 @@
+# Network hardening (security mechanism #10).
+# 1) default-deny all ingress in the namespace
+# 2) only agent-web pods may reach Toolbox on :5000
+# 3) only Toolbox may egress to the databases (agent-web cannot reach them directly)
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: groceries
+spec:
+  podSelector: {}
+  policyTypes: ["Ingress"]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: toolbox-ingress-from-agent-only
+  namespace: groceries
+spec:
+  podSelector:
+    matchLabels: { app: toolbox }
+  policyTypes: ["Ingress"]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: { app: agent-web }
+      ports:
+        - { protocol: TCP, port: 5000 }
+---
+# Only Toolbox may egress to the database ports. The agent-web pods are NOT
+# allowed to open 5432/27017 — they must go through Toolbox.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: agent-web-egress-no-direct-db
+  namespace: groceries
+spec:
+  podSelector:
+    matchLabels: { app: agent-web }
+  policyTypes: ["Egress"]
+  egress:
+    - to: []                      # allow DNS + Toolbox + Keycloak/Google + Gemini
+      ports:
+        - { protocol: TCP, port: 5000 }   # Toolbox
+        - { protocol: TCP, port: 443 }    # Keycloak/Google OIDC + Vertex/Gemini
+        - { protocol: UDP, port: 53 }     # DNS
+        - { protocol: TCP, port: 53 }
+    # NB: 5432 / 27017 are deliberately absent -> no direct DB access from the agent.

@@ -1,0 +1,11 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+grocery_store.inventory.json
+mongodb-groceries-agent
+toolbox
+*.md
+deploy/k8s
+docs

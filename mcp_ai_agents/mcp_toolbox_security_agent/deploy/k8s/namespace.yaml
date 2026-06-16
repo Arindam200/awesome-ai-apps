@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: groceries
+  labels:
+    app.kubernetes.io/part-of: groceries-toolbox

@@ -1,7 +1,5 @@
 # Web Intelligence Agent
 
-> Web Intelligence Agent — local research-to-case-study pipeline in `advance_ai_agents/web_intelligence_agent`.
-
 Web Intelligence Agent turns live web evidence into source-aware intelligence documents.
 
 Ask a plain-English research question, optionally add a URL, and the app collects evidence, reasons over it with Nemotron Ultra on Nebius, verifies gaps and contradictions, saves the run, and creates an editable case-study document for review.
@@ -23,7 +21,7 @@ Web Intelligence Agent is useful for competitor research, product-page analysis,
 | Tool | Use in Web Intelligence Agent |
 | --- | --- |
 | [Olostep](https://www.olostep.com/) | Live web search, scrape, answers, map, and crawl operations. |
-| [Nebius](https://nebius.com/) | OpenAI-compatible endpoint for Nemotron Ultra reasoning and case-study generation. |
+| [Nebius](https://tokenfactory.nebius.com/) | OpenAI-compatible endpoint for Nemotron Ultra reasoning and case-study generation. |
 | [Mastra](https://mastra.ai/) | Agent and workflow framework for the controlled multi-agent pipeline. |
 | [Velt](https://velt.dev/) | Comments, presence, notifications, and immutable audit trail. |
 | [Next.js](https://nextjs.org/) | App UI and API routes. |

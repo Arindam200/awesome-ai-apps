@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Online Groceries — MCP Toolbox security demo</title>
+<style>
+  :root{
+    --bg:#0a0e13; --bg2:#0e141b; --surface:#121922; --surface2:#18222e; --surface3:#1f2c3a;
+    --line:#22303f; --line2:#2c3d4f;
+    --text:#eaf1f8; --muted:#8a9bac; --faint:#5f7185;
+    --brand:#34d399; --brand-d:#0f9d6b;
+    --blue:#5b9dff; --violet:#a78bfa; --amber:#fbbf24;
+    --ok:#34d399; --bad:#f87171; --warn:#fbbf24;
+    --r:14px; --r-sm:10px;
+    --shadow:0 8px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(52,211,153,.06), transparent 60%),
+      radial-gradient(900px 500px at 0% 0%, rgba(91,157,255,.05), transparent 55%),
+      var(--bg);
+    color:var(--text);font:15px/1.55 ui-sans-serif,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  button{font:inherit;cursor:pointer;border:1px solid var(--line2);background:var(--surface2);color:var(--text);
+    padding:9px 14px;border-radius:var(--r-sm);transition:.15s;display:inline-flex;align-items:center;gap:7px}
+  button:hover{border-color:var(--faint);background:var(--surface3)}
+  button.primary{background:linear-gradient(180deg,var(--brand),var(--brand-d));border-color:transparent;color:#04241a;font-weight:650}
+  button.primary:hover{filter:brightness(1.07)}
+  button.ghost{background:transparent;border-color:var(--line)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  input{font:inherit;background:var(--bg2);border:1px solid var(--line2);color:var(--text);padding:10px 12px;border-radius:var(--r-sm);outline:none}
+  input:focus{border-color:var(--brand)}
+  a{color:var(--blue)}
+  code{background:#0a1219;border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:.86em;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .muted{color:var(--muted)} .faint{color:var(--faint)}
+
+  /* ---------- top bar ---------- */
+  header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;
+    padding:12px 22px;background:rgba(10,14,19,.82);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;white-space:nowrap}
+  .brand .logo{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;
+    background:linear-gradient(180deg,var(--brand),var(--brand-d));color:#04241a}
+  .brand .sub{font-weight:500;font-size:12.5px;color:var(--muted);border-left:1px solid var(--line2);padding-left:12px;margin-left:2px}
+  .brand .sub b{color:var(--brand)}
+  nav.tabs{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
+  nav.tabs button{border:none;background:transparent;border-radius:999px;padding:7px 16px;color:var(--muted);font-weight:600}
+  nav.tabs button.active{background:var(--surface3);color:var(--text);box-shadow:inset 0 0 0 1px var(--line2)}
+  .spacer{flex:1}
+  #identity{display:flex;align-items:center;gap:10px}
+  .userbadge{display:flex;align-items:center;gap:9px;padding:5px 12px 5px 6px;border:1px solid var(--line2);border-radius:999px;background:var(--surface)}
+  .avatar{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;color:#06121c}
+  .userbadge .role{font-size:11px;color:var(--amber);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+
+  /* ---------- layout ---------- */
+  main{max-width:1180px;margin:0 auto;padding:26px 22px 60px}
+  .card{background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+  .card .hd{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--line)}
+  .card .hd h2{margin:0;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .card .hd .ic{font-size:15px}
+  .card .bd{padding:18px}
+  .hide{display:none!important}
+
+  /* ---------- signed-out hero ---------- */
+  .hero{max-width:680px;margin:8vh auto;text-align:center}
+  .hero h1{font-size:30px;margin:0 0 10px;letter-spacing:-.01em}
+  .hero p{color:var(--muted);font-size:16px;margin:0 auto 26px;max-width:560px}
+  .hero .chips{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .signin-chip{display:flex;align-items:center;gap:12px;padding:14px 18px;border:1px solid var(--line2);border-radius:var(--r);background:var(--surface);min-width:170px;text-align:left}
+  .signin-chip:hover{border-color:var(--brand);transform:translateY(-2px)}
+  .signin-chip .meta{display:flex;flex-direction:column;line-height:1.25}
+  .signin-chip .meta b{font-size:15px}
+  .signin-chip .meta span{font-size:12px;color:var(--faint)}
+
+  /* ---------- shop ---------- */
+  .shop{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;align-items:start}
+  .chat .bd{display:flex;flex-direction:column;height:560px;padding:0}
+  #chatlog{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+  .chat-empty{margin:auto;text-align:center;color:var(--faint);max-width:300px}
+  .chat-empty .big{font-size:34px;margin-bottom:8px}
+  .sugg{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+  .sugg button{font-size:12.5px;padding:6px 11px;border-radius:999px}
+  .msg{display:flex;gap:10px;max-width:88%}
+  .msg .av{width:28px;height:28px;border-radius:8px;flex:none;display:grid;place-items:center;font-size:14px}
+  .msg .bub{padding:10px 13px;border-radius:12px;font-size:14.5px}
+  .msg.a .av{background:linear-gradient(180deg,var(--brand),var(--brand-d));color:#04241a}
+  .msg.a .bub{background:var(--surface2);border:1px solid var(--line)}
+  .msg.u{align-self:flex-end;flex-direction:row-reverse}
+  .msg.u .av{background:var(--surface3);color:var(--text)}
+  .msg.u .bub{background:#1b3a55;border:1px solid #245174;color:#eaf6ff}
+  .bub table{border-collapse:collapse;margin:6px 0;font-size:13px;width:100%}
+  .bub th,.bub td{border:1px solid var(--line2);padding:5px 9px;text-align:left}
+  .bub th{background:rgba(255,255,255,.03);color:var(--muted)}
+  .bub p{margin:6px 0}.bub p:first-child{margin-top:0}.bub p:last-child{margin-bottom:0}
+  .bub ul,.bub ol{margin:6px 0;padding-left:20px}
+  .typing{display:inline-flex;gap:4px}.typing i{width:6px;height:6px;border-radius:50%;background:var(--faint);animation:bl 1s infinite}
+  .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+  @keyframes bl{0%,60%,100%{opacity:.25}30%{opacity:1}}
+  .composer{display:flex;gap:10px;padding:14px;border-top:1px solid var(--line)}
+  .composer input{flex:1}
+
+  .side{display:flex;flex-direction:column;gap:20px}
+  .total-pill{margin-left:auto;font-weight:700;color:var(--brand);background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.3);padding:3px 12px;border-radius:999px;font-size:14px}
+  .lineitem{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .lineitem:last-child{border-bottom:none}
+  .lineitem .nm{flex:1;font-size:14px}
+  .lineitem .qty{font-size:12px;color:var(--faint)}
+  .lineitem .pr{font-variant-numeric:tabular-nums;color:var(--muted)}
+  .empty{color:var(--faint);text-align:center;padding:22px 0;font-size:14px}
+  .cartfoot{display:flex;gap:10px;margin-top:14px}
+  .ordrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+  .ordrow:last-child{border-bottom:none}
+  .pill{font-size:11px;padding:2px 9px;border-radius:999px;border:1px solid var(--line2);color:var(--muted);text-transform:capitalize}
+
+  /* ---------- security lab ---------- */
+  .lab-intro{display:flex;gap:12px;align-items:flex-start;background:linear-gradient(180deg,var(--surface),var(--bg2));
+    border:1px solid var(--line);border-left:3px solid var(--brand);border-radius:var(--r);padding:14px 18px;margin-bottom:20px}
+  .lab-intro .big{font-size:20px}
+  .lab-intro p{margin:0;color:var(--muted);font-size:14px}
+  .lab-intro b{color:var(--text)}
+  .lab{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .lab .full{grid-column:1/3}
+  .exp .desc{color:var(--muted);font-size:13.5px;margin:0 0 14px}
+  .exp .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+  .verdict{display:flex;align-items:center;gap:12px;margin-top:16px;padding:13px 15px;border-radius:var(--r-sm);font-weight:600;font-size:14.5px}
+  .verdict .b{font-size:11px;font-weight:800;letter-spacing:.08em;padding:4px 11px;border-radius:6px;text-transform:uppercase}
+  .verdict.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.35)}
+  .verdict.ok .b{background:var(--ok);color:#04241a}
+  .verdict.bad{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.35)}
+  .verdict.bad .b{background:var(--bad);color:#2a0808}
+  .ctxnote{font-size:12.5px;color:var(--faint);margin-top:10px}
+  details{margin-top:12px}details>summary{cursor:pointer;color:var(--muted);font-size:12.5px;user-select:none}
+  pre{background:#070c11;border:1px solid var(--line);border-radius:var(--r-sm);padding:12px;overflow:auto;font-size:12px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;margin:8px 0 0;max-height:240px}
+  table.data{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  table.data th,table.data td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+  table.data th{color:var(--muted);font-weight:600}
+
+  /* schema two-column */
+  .schema-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  .schema-col h3{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 10px}
+  .toolrow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line);font-family:ui-monospace,monospace;font-size:12.5px}
+  .toolrow:last-child{border:none}
+  .chip-lock{font-size:10px;background:rgba(251,191,36,.14);color:var(--amber);border:1px solid rgba(251,191,36,.4);padding:1px 7px;border-radius:999px;font-family:ui-sans-serif;font-weight:700;letter-spacing:.03em}
+  .sig{color:var(--brand)}
+
+  /* toast */
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;
+    background:var(--surface3);border:1px solid var(--line2);padding:11px 18px;border-radius:999px;box-shadow:var(--shadow);
+    transition:.25s;pointer-events:none;z-index:50;font-size:14px}
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media(max-width:920px){.shop,.lab{grid-template-columns:1fr}.lab .full{grid-column:auto}.schema-grid{grid-template-columns:1fr}
+    nav.tabs{order:3} header{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="logo">🛒</span> Online Groceries
+    <span class="sub">AI agent · <b>MCP Toolbox</b> control plane</span></div>
+  <nav class="tabs" id="tabs">
+    <button data-view="shop" class="active">Shop</button>
+    <button data-view="lab">🛡️ Security Lab</button>
+  </nav>
+  <div class="spacer"></div>
+  <div id="identity"></div>
+</header>
+
+<main id="app"></main>
+<div id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const el = (t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const USERS = {
+  alice:{pw:'alice123', color:'#5b9dff', label:'Customer'},
+  bob:  {pw:'bob123',   color:'#a78bfa', label:'Customer'},
+  carol:{pw:'carol123', color:'#fbbf24', label:'Administrator'},
+};
+let me = null, view = 'shop';
+
+async function jget(u){const r=await fetch(u);return {status:r.status, body:await r.json()};}
+async function jpost(u,b){const r=await fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b||{})});return {status:r.status, body:await r.json()};}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200);}
+const initial = u => u? u[0].toUpperCase():'?';
+const color = u => (USERS[u]||{}).color || '#5b9dff';
+
+/* ---------- minimal markdown (bold, lists, tables, headings) ---------- */
+function md(src){
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const inl=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/`(.+?)`/g,'<code>$1</code>');
+  const L=(src||'').replace(/\r/g,'').split('\n');let H='',i=0;
+  const isLi=s=>/^\s*([-*]|\d+\.)\s+/.test(s);
+  while(i<L.length){let ln=L[i];
+    if(ln.includes('|') && L[i+1] && /-/.test(L[i+1]) && /^\s*\|?[\s:|-]+\|?\s*$/.test(L[i+1])){
+      const cut=r=>{const c=r.split('|').map(x=>x.trim());if(c[0]==='')c.shift();if(c[c.length-1]==='')c.pop();return c;};
+      const hd=cut(ln);i+=2;const rs=[];while(i<L.length&&L[i].includes('|')){rs.push(cut(L[i]));i++;}
+      H+='<table><thead><tr>'+hd.map(h=>`<th>${inl(h)}</th>`).join('')+'</tr></thead><tbody>'+
+        rs.map(r=>'<tr>'+r.map(c=>`<td>${inl(c)}</td>`).join('')+'</tr>').join('')+'</tbody></table>';continue;}
+    let hm=ln.match(/^#{1,6}\s+(.*)/);if(hm){H+=`<p><strong>${inl(hm[1])}</strong></p>`;i++;continue;}
+    if(isLi(ln)){const ord=/^\s*\d+\./.test(ln);const it=[];while(i<L.length&&isLi(L[i])){it.push(L[i].replace(/^\s*([-*]|\d+\.)\s+/,''));i++;}
+      H+=`<${ord?'ol':'ul'}>`+it.map(x=>`<li>${inl(x)}</li>`).join('')+`</${ord?'ol':'ul'}>`;continue;}
+    if(ln.trim()===''){i++;continue;}
+    const p=[ln];i++;while(i<L.length&&L[i].trim()!==''&&!L[i].includes('|')&&!isLi(L[i])&&!/^#{1,6}\s/.test(L[i])){p.push(L[i]);i++;}
+    H+=`<p>${p.map(inl).join('<br>')}</p>`;}
+  return H;
+}
+
+/* ---------- auth ---------- */
+async function login(u){
+  const {status,body}=await jpost('/api/login',{username:u,password:USERS[u].pw});
+  if(status!==200){toast(body.error||'login failed');return;}
+  me=body;render();toast('Signed in as '+u);
+}
+async function logout(){await jpost('/api/logout');me=null;render();}
+
+function renderIdentity(){
+  const box=$('#identity');box.innerHTML='';
+  if(!me){box.appendChild(el('span','faint','Not signed in'));return;}
+  const b=el('div','userbadge');
+  const av=el('div','avatar');av.style.background=color(me.username);av.textContent=initial(me.username);
+  b.appendChild(av);b.appendChild(el('span',null,me.username));
+  if(me.is_admin)b.appendChild(el('span','role','admin'));
+  box.appendChild(b);
+  const out=el('button','ghost','Sign out');out.onclick=logout;box.appendChild(out);
+}
+
+/* ---------- views ---------- */
+function render(){
+  renderIdentity();
+  $('#tabs').classList.toggle('hide', !me);
+  const app=$('#app');app.innerHTML='';
+  if(!me){app.appendChild(heroView());return;}
+  app.appendChild(view==='lab'?labView():shopView());
+}
+
+function heroView(){
+  const h=el('div','hero');
+  h.appendChild(el('h1',null,'An AI agent that can shop your database —<br>without ever overreaching'));
+  h.appendChild(el('p',null,'Sign in as a customer or admin. The agent talks only to <b>MCP Toolbox</b>, which binds your identity from your login token — so it can never read another user\'s data. Switch to the Security Lab to prove it.'));
+  const chips=el('div','chips');
+  for(const u of ['alice','bob','carol']){
+    const c=el('button','signin-chip');
+    const av=el('div','avatar');av.style.background=color(u);av.textContent=initial(u);av.style.width=av.style.height='38px';av.style.fontSize='16px';
+    const meta=el('div','meta',`<b>${u}</b><span>${USERS[u].label}</span>`);
+    c.appendChild(av);c.appendChild(meta);c.onclick=()=>login(u);chips.appendChild(c);
+  }
+  h.appendChild(chips);return h;
+}
+
+/* ---- shop ---- */
+function shopView(){
+  const wrap=el('div','shop');
+
+  // chat
+  const chat=el('section','card chat');
+  chat.appendChild(el('div','hd','<span class="ic">💬</span><h2>Shopping agent</h2>'));
+  const bd=el('div','bd');
+  const log=el('div',null);log.id='chatlog';
+  log.appendChild(chatEmpty());
+  const comp=el('div','composer');
+  const inp=el('input');inp.id='chatbox';inp.placeholder='Ask the agent… e.g. "find me some dark chocolate"';
+  inp.onkeydown=e=>{if(e.key==='Enter')sendChat();};
+  const snd=el('button','primary','Send');snd.onclick=sendChat;
+  comp.appendChild(inp);comp.appendChild(snd);
+  bd.appendChild(log);bd.appendChild(comp);chat.appendChild(bd);
+
+  // side: cart + orders
+  const side=el('div','side');
+  const cart=el('section','card');
+  cart.appendChild(el('div','hd','<span class="ic">🧺</span><h2>Cart</h2><span class="total-pill" id="cartTotal">—</span>'));
+  const cbd=el('div','bd');cbd.id='cartBody';cbd.appendChild(el('div','empty','Loading…'));
+  const foot=el('div','cartfoot');
+  const co=el('button','primary','Checkout');co.onclick=doCheckout;
+  const rf=el('button','ghost','↻ Refresh');rf.onclick=loadCart;
+  foot.appendChild(co);foot.appendChild(rf);cbd.appendChild(foot);
+  cart.appendChild(cbd);
+
+  const orders=el('section','card');
+  orders.appendChild(el('div','hd','<span class="ic">📦</span><h2>Orders</h2>'));
+  const obd=el('div','bd');obd.id='ordersBody';obd.appendChild(el('div','empty','Loading…'));
+  orders.appendChild(obd);
+
+  side.appendChild(cart);side.appendChild(orders);
+  wrap.appendChild(chat);wrap.appendChild(side);
+  setTimeout(()=>{loadCart();loadOrders();},0);
+  return wrap;
+}
+function chatEmpty(){
+  const e=el('div','chat-empty','<div class="big">🥑</div><div>Hi! I can help you find products and manage your cart.</div>');
+  const s=el('div','sugg');
+  ['find me some dark chocolate','what fruit do you have?','add 2 of SKU-000040 to my cart'].forEach(t=>{
+    const b=el('button','ghost',t);b.onclick=()=>{$('#chatbox').value=t;sendChat();};s.appendChild(b);});
+  e.appendChild(s);return e;
+}
+function addMsg(cls,html){
+  const log=$('#chatlog');const empty=log.querySelector('.chat-empty');if(empty)empty.remove();
+  const m=el('div','msg '+cls);
+  const av=el('div','av',cls==='a'?'🤖':initial(me.username));if(cls==='u')av.style.background=color(me.username);
+  const bub=el('div','bub');bub.innerHTML=html;
+  m.appendChild(av);m.appendChild(bub);log.appendChild(m);log.scrollTop=log.scrollHeight;return bub;
+}
+async function sendChat(){
+  const t=$('#chatbox').value.trim();if(!t)return;$('#chatbox').value='';
+  addMsg('u',md(t));
+  const bub=addMsg('a','<span class="typing"><i></i><i></i><i></i></span>');
+  const {status,body}=await jpost('/api/chat',{message:t});
+  bub.innerHTML = status===200 ? md(body.reply||'_(no reply)_') : `⚠️ ${body.error||'error'}`;
+  $('#chatlog').scrollTop=$('#chatlog').scrollHeight;
+  loadCart();loadOrders();
+}
+async function loadCart(){
+  const {body}=await jget('/api/cart');const items=Array.isArray(body.items)?body.items:[];
+  const b=$('#cartBody');if(!b)return;b.innerHTML='';
+  if(!items.length){b.appendChild(el('div','empty','Your cart is empty.'));$('#cartTotal').textContent='—';}
+  else{let total=0;items.forEach(it=>{total+=Number(it.line_total)||0;
+    const r=el('div','lineitem');
+    r.appendChild(el('div','nm',`${it.name} <span class="qty">×${it.quantity}</span>`));
+    r.appendChild(el('div','pr','₹'+Number(it.unit_price).toFixed(2)));b.appendChild(r);});
+    $('#cartTotal').textContent='₹'+total.toFixed(2);}
+  const foot=el('div','cartfoot');
+  const co=el('button','primary','Checkout');co.onclick=doCheckout;co.disabled=!items.length;
+  const rf=el('button','ghost','↻ Refresh');rf.onclick=loadCart;
+  foot.appendChild(co);foot.appendChild(rf);b.appendChild(foot);
+}
+async function loadOrders(){
+  const {body}=await jget('/api/orders');const o=Array.isArray(body.orders)?body.orders:[];
+  const b=$('#ordersBody');if(!b)return;b.innerHTML='';
+  if(!o.length){b.appendChild(el('div','empty','No orders yet.'));return;}
+  o.forEach(x=>{const r=el('div','ordrow');
+    r.appendChild(el('div',null,`#${x.id}`));
+    r.appendChild(el('div',null,`<b>₹${Number(x.total).toFixed(2)}</b>`));
+    const p=el('span','pill',x.status);r.appendChild(p);
+    const sp=el('div','faint');sp.style.marginLeft='auto';sp.style.fontSize='12px';
+    sp.textContent=(x.placed_at||'').slice(0,10);r.appendChild(sp);b.appendChild(r);});
+}
+async function doCheckout(){
+  const {body}=await jpost('/api/checkout');
+  const r=body.result;
+  if(Array.isArray(r)&&r[0]&&r[0].order_id){toast('Order #'+r[0].order_id+' placed · ₹'+Number(r[0].total).toFixed(2));}
+  else if(r&&r.error){toast('Checkout: '+r.error);}
+  else{toast('Cart is empty');}
+  loadCart();loadOrders();
+}
+
+/* ---- security lab ---- */
+function labView(){
+  const wrap=el('div',null);
+  const intro=el('div','lab-intro',
+    '<div class="big">🛡️</div><p>Every experiment below hits <b>MCP Toolbox</b> as <b>'+me.username+'</b>. '+
+    'The agent and this app are <b>outside the trust boundary</b> — Toolbox decides what you can touch, from your token alone.</p>');
+  wrap.appendChild(intro);
+  const grid=el('div','lab');
+  grid.appendChild(crossUserCard());
+  grid.appendChild(adminCard());
+  grid.appendChild(schemaCard());
+  wrap.appendChild(grid);
+  return wrap;
+}
+function expCard(icon,title,desc,full){
+  const c=el('section','card exp'+(full?' full':''));
+  c.appendChild(el('div','hd',`<span class="ic">${icon}</span><h2>${title}</h2>`));
+  const bd=el('div','bd');bd.appendChild(el('p','desc',desc));c.appendChild(bd);
+  return {card:c,bd};
+}
+function verdict(bd,ok,label,text){
+  let v=bd.querySelector('.verdict');if(v)v.remove();
+  v=el('div','verdict '+(ok?'ok':'bad'));
+  v.appendChild(el('span','b',label));v.appendChild(el('span',null,text));
+  bd.appendChild(v);return v;
+}
+
+function crossUserCard(){
+  const {card,bd}=expCard('🔒','Cross-user access',
+    'Try to read another user\'s order by id. Toolbox scopes the query to <b>your</b> token — so another user\'s order comes back empty. Bob\'s seeded order is <code>#1</code>.');
+  const ctrls=el('div','controls');
+  const inp=el('input');inp.type='number';inp.value='1';inp.style.width='110px';
+  const go=el('button','primary','Read order #');
+  ctrls.appendChild(el('span','faint','order id'));ctrls.appendChild(inp);ctrls.appendChild(go);
+  bd.appendChild(ctrls);
+  go.onclick=async()=>{
+    const {body}=await jpost('/api/order',{order_id:Number(inp.value)});
+    const items=Array.isArray(body.items)?body.items:[];
+    if(body.blocked) verdict(bd,false,'Blocked','Zero rows — '+(body.explanation||'').replace(/`/g,''));
+    else verdict(bd,true,'Allowed','This order is yours — '+items.length+' line(s) returned.');
+    let pre=bd.querySelector('details');if(pre)pre.remove();
+    const d=el('details','');d.innerHTML='<summary>raw Toolbox response</summary>';
+    d.appendChild(el('pre',null,JSON.stringify(body,null,2)));bd.appendChild(d);
+  };
+  bd.appendChild(el('div','ctxnote','Tip: as alice, #1 is blocked; sign in as bob and #1 is allowed.'));
+  return card;
+}
+
+function adminCard(){
+  const {card,bd}=expCard('👑','Admin authorization',
+    'The admin tool <code>view_all_orders</code> requires a token carrying the <code>grocery-admin</code> audience. Only <b>carol</b> has it (role-driven in Keycloak) — customers can\'t self-grant it.');
+  const go=el('button','primary','Call view_all_orders');bd.appendChild(go);
+  go.onclick=async()=>{
+    const {status,body}=await jpost('/api/admin/all-orders');
+    if(status===200){
+      verdict(bd,true,'Authorized','Admin audience present — returning every order.');
+      let t=bd.querySelector('table');if(t)t.remove();
+      const rows=body.orders||[];const tbl=el('table','data','<thead><tr><th>#</th><th>user</th><th>total</th><th>status</th></tr></thead>');
+      const tb=el('tbody');rows.forEach(o=>tb.appendChild(el('tr',null,`<td>${o.id}</td><td>${o.username}</td><td>₹${Number(o.total).toFixed(2)}</td><td>${o.status}</td>`)));
+      tbl.appendChild(tb);bd.appendChild(tbl);
+    } else {
+      verdict(bd,false,'Denied',(body.error||'not authorized')+'. '+(body.note||''));
+      let t=bd.querySelector('table');if(t)t.remove();
+    }
+  };
+  bd.appendChild(el('div','ctxnote', me.is_admin?'You are admin — this will be authorized.':'You are a customer — this will be denied.'));
+  return card;
+}
+
+function schemaCard(){
+  const {card,bd}=expCard('🧩','What the model can &amp; can\'t set',
+    'Toolbox knows <code>username</code> (bound from your OIDC token) — but it is stripped from the function signature the LLM sees. The agent literally cannot pass it.', true);
+  const go=el('button','primary','Inspect tool schemas');bd.appendChild(go);
+  go.onclick=async()=>{
+    const {body}=await jget('/api/demo/schema');
+    let g=bd.querySelector('.schema-grid');if(g)g.remove();
+    g=el('div','schema-grid');
+    // left: toolbox enforces
+    const left=el('div','schema-col','<h3>🔐 What Toolbox enforces</h3>');
+    const man=body.toolbox_manifest_parameters||{};
+    Object.keys(man).forEach(name=>{
+      const params=man[name]||[];
+      const row=el('div','toolrow');
+      const ps=params.map(p=>p.authServices&&p.authServices.length
+        ? `<span class="chip-lock">${p.name} 🔒</span>` : p.name).join(', ');
+      row.innerHTML=`<span class="muted">${name}</span>(${ps})`;left.appendChild(row);
+    });
+    // right: model sees
+    const right=el('div','schema-col','<h3>🤖 What the model sees</h3>');
+    const sig=body.model_facing_signatures||{};
+    Object.keys(sig).forEach(name=>{
+      const row=el('div','toolrow');
+      row.innerHTML=`<span class="sig">${name}</span><span class="muted">${(sig[name]||'').replace('-> str','').trim()}</span>`;
+      right.appendChild(row);
+    });
+    g.appendChild(left);g.appendChild(right);bd.appendChild(g);
+    bd.appendChild(el('div','ctxnote','🔒 = bound by Toolbox from the token. Notice the right column has no <code>username</code> or <code>store_region</code>.'));
+  };
+  return card;
+}
+
+/* ---------- tabs ---------- */
+$('#tabs').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  view=b.dataset.view;
+  $('#tabs').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));
+  render();
+});
+
+/* restore session */
+jget('/api/me').then(({body})=>{if(body.signed_in){me=body;}render();});
+</script>
+</body>
+</html>

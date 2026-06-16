@@ -1,0 +1,13 @@
+# ClusterIP only — Toolbox is never exposed outside the cluster. Only the
+# agent-web pods may reach it (enforced by networkpolicy.yaml).
+apiVersion: v1
+kind: Service
+metadata:
+  name: toolbox
+  namespace: groceries
+  labels: { app: toolbox }
+spec:
+  type: ClusterIP
+  selector: { app: toolbox }
+  ports:
+    - { name: http, port: 5000, targetPort: 5000 }
