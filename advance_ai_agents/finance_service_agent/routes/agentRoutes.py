@@ -132,7 +132,9 @@ def chat(request: Request, query: str = None):
         return JSONResponse(content={"question": query, "answer": answer})
     
     except Exception as e:
-        return JSONResponse(content={"error": str(e)})
+        import logging as _logging
+        _logging.getLogger(__name__).error("Request failed: %s", e, exc_info=True)
+        return JSONResponse(status_code=500, content={"error": "Internal server error. Check server logs for details."})
 
 @router.get("/agent", response_class=HTMLResponse, dependencies=[Depends(require_api_key)])
 def ask(request: Request, query: str = None):
@@ -177,4 +179,6 @@ def ask(request: Request, query: str = None):
         return JSONResponse(content={"question": query, "answer": answer})
     
     except Exception as e:
-        return JSONResponse(content={"error": str(e)})
+        import logging as _logging
+        _logging.getLogger(__name__).error("Request failed: %s", e, exc_info=True)
+        return JSONResponse(status_code=500, content={"error": "Internal server error. Check server logs for details."})

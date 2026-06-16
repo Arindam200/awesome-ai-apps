@@ -48,7 +48,9 @@ class Config:
     GROQ_MODEL_ID: str = os.getenv("GROQ_MODEL_ID", "N/A (using OpenAI)")
 
     def validate(self) -> None:
-        """Raise EnvironmentError if critical credentials are missing."""
+        """Warn (non-fatal) if critical credentials are missing, so demos surface the
+        misconfiguration without hard-crashing. Enforce a hard failure at production
+        startup if you need it (e.g. raise EnvironmentError on a missing value there)."""
         if not self.COUCHBASE_PASSWORD:
             import warnings
             warnings.warn("COUCHBASE_PASSWORD is not set — database authentication may fail.", stacklevel=2)
