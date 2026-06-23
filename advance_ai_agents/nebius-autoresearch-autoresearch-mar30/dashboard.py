@@ -20,19 +20,27 @@ from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
 
-# Load dashboard secret from environment. Generate a random one if not set (local-only).
-_DASHBOARD_SECRET = os.environ.get("DASHBOARD_SECRET") or secrets.token_hex(16)
-if not os.environ.get("DASHBOARD_SECRET"):
+# Load dashboard secret from environment. When unset, run in dev mode (auth skipped).
+_DASHBOARD_SECRET = os.environ.get("DASHBOARD_SECRET")
+if not _DASHBOARD_SECRET:
     import warnings
     warnings.warn(
-        "DASHBOARD_SECRET not set. Generated a random token for this session. "
-        "Set DASHBOARD_SECRET env var for a stable secret.",
+        "DASHBOARD_SECRET not set. Running in dev mode with authentication DISABLED. "
+        "Set DASHBOARD_SECRET env var to require an X-Dashboard-Token header on "
+        "/api/start and /api/stop.",
         stacklevel=1,
     )
 
 
 def _require_auth():
-    """Return a 401 JSONResponse if the request lacks the correct X-Dashboard-Token header."""
+    """Abort with 401 if a secret is configured and the request lacks the correct header.
+
+    In dev mode (DASHBOARD_SECRET unset) the check is skipped so the example runs
+    out-of-the-box. When DASHBOARD_SECRET is set, the request must send a matching
+    X-Dashboard-Token header.
+    """
+    if not _DASHBOARD_SECRET:
+        return  # dev mode: auth disabled (warning already emitted at startup)
     token = request.headers.get("X-Dashboard-Token", "")
     if not secrets.compare_digest(token, _DASHBOARD_SECRET):
         from flask import abort
@@ -187,7 +195,8 @@ def api_stop():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    # In dev mode the token is "" so the same-origin UI still works without a secret.
+    return render_template("index.html", dashboard_token=_DASHBOARD_SECRET or "")
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 """Advanced test scenarios showcasing Couchbase Capella and Temporal features."""
 
+import os
 import asyncio
 import httpx
 from typing import Dict, List
@@ -13,7 +14,13 @@ class AdvancedScenarios:
 
     def __init__(self, api_url: str = None):
         self.api_url = api_url or config.API_BASE_URL
-        
+        # When API_KEY is set, the API server requires the X-API-Key header on
+        # the transaction/metrics endpoints; send it so this client can
+        # authenticate. In dev mode (no API_KEY) no header is sent.
+        self.auth_headers = (
+            {"X-API-Key": os.environ["API_KEY"]} if os.getenv("API_KEY") else {}
+        )
+
     def generate_scenarios(self) -> List[Dict]:
         """Generate advanced test scenarios."""
         return [
@@ -288,7 +295,8 @@ class AdvancedScenarios:
                     # Submit transaction
                     response = await client.post(
                         f"{self.api_url}/transaction",
-                        json=transaction
+                        json=transaction,
+                        headers=self.auth_headers
                     )
                     
                     if response.status_code in [200, 201, 202]:
@@ -493,7 +501,8 @@ class AdvancedScenarios:
                     
                     try:
                         response = await client.get(
-                            f"{self.api_url}/transaction/{transaction_id}"
+                            f"{self.api_url}/transaction/{transaction_id}",
+                            headers=self.auth_headers
                         )
                         if response.status_code == 200:
                             results.append(response.json())

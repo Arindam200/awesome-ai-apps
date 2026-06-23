@@ -1,7 +1,6 @@
 import os
 import datetime
 import json
-import requests
 from fastapi import FastAPI, APIRouter, Request, Query, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
