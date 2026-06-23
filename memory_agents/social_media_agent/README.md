@@ -175,19 +175,6 @@ The AI analyzes your tweeting patterns across multiple dimensions:
 - ✅ Text content and metadata
 - ✅ Timestamp and engagement data
 
-### Optional OpenClaw Source Layer
-
-OpenClaw users can add [TweetClaw](https://github.com/Xquik-dev/tweetclaw) when the agent needs account-scoped X/Twitter data before it stores style memory or drafts content.
-
-Useful handoffs:
-
-- Scrape recent tweets for style examples.
-- Search tweets and replies for campaign context.
-- Export followers or profile data before audience analysis.
-- Keep posting, replies, DMs, media uploads, monitors, webhooks, and giveaway workflows behind TweetClaw's approval flow.
-
-Install the published package with `openclaw plugins install npm:@xquik/tweetclaw@1.6.31` and inspect it with `openclaw plugins inspect tweetclaw --runtime --json`.
-
 ### Content Generation
 
 - ✅ Style-matched tweet creation
