@@ -1,0 +1,685 @@
+[{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "8414ad7a7d52d141",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "e0724e343b8c9dd5",
+    "start_time": "2026-06-23T06:03:52.628074Z",
+    "end_time": "2026-06-23T06:04:04.847553Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "531f7222f1d82143895403da3cdc8e11",
+        "entity.count": 2,
+        "span.subtype": "turn_end"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:03:52.628203Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are a destination researcher. Given a trip request, list the best season to visit, 3 must-see neighborhoods/areas, and any travel tips. Be brief and factual. Do not plan flights or hotels.\"}",
+                    "{\"user\": \"Plan a 4-day trip from New York to San Francisco, departing 2026-07-10 and returning 2026-07-14, for two people.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:04:04.847424Z",
+            "attributes": {
+                "response": "{\"assistant\": \"\\n\\n**Best Season to Visit**\\n*   **September\\u2013October:** Known as \\\"Indian Summer,\\\" this period offers the warmest temperatures and least fog.\\n*   **Note for July Travel:** Your dates (July 10\\u201314) fall during San Francisco's \\\"fog season.\\\" Expect cool mornings and evenings (avg. 60\\u201370\\u00b0F) with potential afternoon sun.\\n\\n**3 Must-See Neighborhoods/Areas**\\n1.  **Mission District:** Famous for Latin American culture, street murals, and dining.\\n2.  **North Beach:** The historic Italian Quarter, known for cafes, City Lights Bookstore, and Coit Tower.\\n3.  **Golden Gate Park:** Larger than Central Park, featuring museums, gardens, and bison paddocks.\\n\\n**Travel Tips**\\n*   **Dress in Layers:** Fog and wind can drop temperatures quickly, even in summer.\\n*   **Transportation:** Use BART and Muni; parking is expensive and difficult. Consider a Clipper Card for transit.\\n*   **Safety:** Do not leave valuables in rental cars; break-ins are common in tourist areas.\\n*   **Booking:** Reserve Alcatraz tickets and popular restaurant reservations several weeks in advance.\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T06:04:04.847479Z",
+            "attributes": {
+                "completion_tokens": 1544,
+                "prompt_tokens": 102,
+                "total_tokens": 1646,
+                "finish_reason": "stop",
+                "finish_type": "success"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "e0724e343b8c9dd5",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "392adf59b260b495",
+    "start_time": "2026-06-23T06:03:52.621701Z",
+    "end_time": "2026-06-23T06:04:04.848531Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "DestinationResearcher",
+        "entity.1.description": "unknown_model",
+        "last.inference": "8414ad7a7d52d141:*",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "531f7222f1d82143895403da3cdc8e11",
+        "entity.count": 1,
+        "span.subtype": "content_processing"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:03:52.621793Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=[<agent_framework._types.Message object at 0x10a3302f0>], source_id='input-conversation', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-90875ab0ce6e09e393efe370ce18dfc7-55159764d13ec9a1-03', 'baggage': 'monocle.scope.agentic.turn=0xd454af52590f7e3113c871c79390df'}], source_span_ids=['55159764d13ec9a1'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:04:04.848491Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "66af9e253f6c3142",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "41cce4b6a5b0ef4c",
+    "start_time": "2026-06-23T06:04:04.910056Z",
+    "end_time": "2026-06-23T06:04:07.649559Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "entity.3.name": "search_flights",
+        "entity.3.type": "tool.function",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "efd0126e133e2318f643dee9095ae8f",
+        "entity.count": 3,
+        "span.subtype": "tool_call"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:04:04.910213Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are a flight planner. Use the search_flights tool to find options, then recommend ONE outbound and ONE return flight with a one-line reason. Build on the researcher's notes but only handle flights.\"}",
+                    "{\"user\": \"Plan a 4-day trip from New York to San Francisco, departing 2026-07-10 and returning 2026-07-14, for two people.\"}",
+                    "{\"assistant\": \"\\n\\n**Best Season to Visit**\\n*   **September\\u2013October:** Known as \\\"Indian Summer,\\\" this period offers the warmest temperatures and least fog.\\n*   **Note for July Travel:** Your dates (July 10\\u201314) fall during San Francisco's \\\"fog season.\\\" Expect cool mornings and evenings (avg. 60\\u201370\\u00b0F) with potential afternoon sun.\\n\\n**3 Must-See Neighborhoods/Areas**\\n1.  **Mission District:** Famous for Latin American culture, street murals, and dining.\\n2.  **North Beach:** The historic Italian Quarter, known for cafes, City Lights Bookstore, and Coit Tower.\\n3.  **Golden Gate Park:** Larger than Central Park, featuring museums, gardens, and bison paddocks.\\n\\n**Travel Tips**\\n*   **Dress in Layers:** Fog and wind can drop temperatures quickly, even in summer.\\n*   **Transportation:** Use BART and Muni; parking is expensive and difficult. Consider a Clipper Card for transit.\\n*   **Safety:** Do not leave valuables in rental cars; break-ins are common in tourist areas.\\n*   **Booking:** Reserve Alcatraz tickets and popular restaurant reservations several weeks in advance.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:04:07.649514Z",
+            "attributes": {
+                "response": "{\"assistant\": [{\"tool_id\": \"chatcmpl-tool-8791340c540de5a3\", \"tool_name\": \"search_flights\", \"tool_arguments\": \"{\\\"origin\\\": \\\"New York\\\", \\\"destination\\\": \\\"San Francisco\\\", \\\"date\\\": \\\"2026-07-10\\\"}\"}, {\"tool_id\": \"chatcmpl-tool-920fba449f101b5b\", \"tool_name\": \"search_flights\", \"tool_arguments\": \"{\\\"origin\\\": \\\"San Francisco\\\", \\\"destination\\\": \\\"New York\\\", \\\"date\\\": \\\"2026-07-14\\\"}\"}]}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T06:04:07.649537Z",
+            "attributes": {
+                "completion_tokens": 253,
+                "prompt_tokens": 680,
+                "total_tokens": 933,
+                "finish_reason": "tool_calls",
+                "finish_type": "tool_call"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._tools.FunctionTool.invoke",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "55b68097d80ba243",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "41cce4b6a5b0ef4c",
+    "start_time": "2026-06-23T06:04:07.650064Z",
+    "end_time": "2026-06-23T06:04:07.650753Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework/_tools.py:1541",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "tool.microsoft",
+        "entity.1.name": "search_flights",
+        "entity.1.description": "Search for flights between two cities on a given date.",
+        "entity.2.name": "FlightPlanner",
+        "entity.2.type": "agent.microsoft",
+        "span.type": "agentic.tool.invocation",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "efd0126e133e2318f643dee9095ae8f",
+        "entity.count": 2,
+        "span.subtype": "content_generation",
+        "inference.decision.span.id": "66af9e253f6c3142"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:04:07.650123Z",
+            "attributes": {
+                "input": "{'origin': 'New York', 'destination': 'San Francisco', 'date': '2026-07-10'}"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:04:07.650735Z",
+            "attributes": {
+                "response": "Flights New York->San Francisco on 2026-07-10: Delta $320 (08:00), United $290 (11:30), JetBlue $275 (17:45)."
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._tools.FunctionTool.invoke",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "f0c2c4d5bc7cc85a",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "41cce4b6a5b0ef4c",
+    "start_time": "2026-06-23T06:04:07.650389Z",
+    "end_time": "2026-06-23T06:04:07.650824Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework/_tools.py:1541",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "tool.microsoft",
+        "entity.1.name": "search_flights",
+        "entity.1.description": "Search for flights between two cities on a given date.",
+        "entity.2.name": "FlightPlanner",
+        "entity.2.type": "agent.microsoft",
+        "span.type": "agentic.tool.invocation",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "efd0126e133e2318f643dee9095ae8f",
+        "entity.count": 2,
+        "span.subtype": "content_generation"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:04:07.650426Z",
+            "attributes": {
+                "input": "{'origin': 'San Francisco', 'destination': 'New York', 'date': '2026-07-14'}"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:04:07.650809Z",
+            "attributes": {
+                "response": "Flights San Francisco->New York on 2026-07-14: Delta $320 (08:00), United $290 (11:30), JetBlue $275 (17:45)."
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "13cad789f103b13b",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "41cce4b6a5b0ef4c",
+    "start_time": "2026-06-23T06:04:07.651209Z",
+    "end_time": "2026-06-23T06:04:11.271432Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "efd0126e133e2318f643dee9095ae8f",
+        "entity.count": 2,
+        "span.subtype": "turn_end"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:04:07.651297Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are a flight planner. Use the search_flights tool to find options, then recommend ONE outbound and ONE return flight with a one-line reason. Build on the researcher's notes but only handle flights.\"}",
+                    "{\"user\": \"Plan a 4-day trip from New York to San Francisco, departing 2026-07-10 and returning 2026-07-14, for two people.\"}",
+                    "{\"assistant\": \"\\n\\n**Best Season to Visit**\\n*   **September\\u2013October:** Known as \\\"Indian Summer,\\\" this period offers the warmest temperatures and least fog.\\n*   **Note for July Travel:** Your dates (July 10\\u201314) fall during San Francisco's \\\"fog season.\\\" Expect cool mornings and evenings (avg. 60\\u201370\\u00b0F) with potential afternoon sun.\\n\\n**3 Must-See Neighborhoods/Areas**\\n1.  **Mission District:** Famous for Latin American culture, street murals, and dining.\\n2.  **North Beach:** The historic Italian Quarter, known for cafes, City Lights Bookstore, and Coit Tower.\\n3.  **Golden Gate Park:** Larger than Central Park, featuring museums, gardens, and bison paddocks.\\n\\n**Travel Tips**\\n*   **Dress in Layers:** Fog and wind can drop temperatures quickly, even in summer.\\n*   **Transportation:** Use BART and Muni; parking is expensive and difficult. Consider a Clipper Card for transit.\\n*   **Safety:** Do not leave valuables in rental cars; break-ins are common in tourist areas.\\n*   **Booking:** Reserve Alcatraz tickets and popular restaurant reservations several weeks in advance.\"}",
+                    "{\"assistant\": [\"{\\\"tool_function\\\": \\\"search_flights\\\", \\\"tool_arguments\\\": \\\"{\\\\\\\"origin\\\\\\\": \\\\\\\"New York\\\\\\\", \\\\\\\"destination\\\\\\\": \\\\\\\"San Francisco\\\\\\\", \\\\\\\"date\\\\\\\": \\\\\\\"2026-07-10\\\\\\\"}\\\"}\", \"{\\\"tool_function\\\": \\\"search_flights\\\", \\\"tool_arguments\\\": \\\"{\\\\\\\"origin\\\\\\\": \\\\\\\"San Francisco\\\\\\\", \\\\\\\"destination\\\\\\\": \\\\\\\"New York\\\\\\\", \\\\\\\"date\\\\\\\": \\\\\\\"2026-07-14\\\\\\\"}\\\"}\"]}",
+                    "{\"tool\": \"Flights New York->San Francisco on 2026-07-10: Delta $320 (08:00), United $290 (11:30), JetBlue $275 (17:45).\"}",
+                    "{\"tool\": \"Flights San Francisco->New York on 2026-07-14: Delta $320 (08:00), United $290 (11:30), JetBlue $275 (17:45).\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:04:11.271382Z",
+            "attributes": {
+                "response": "{\"assistant\": \"\\n\\n**Outbound Flight (July 10, 2026):** JetBlue $275 departing 17:45 - Best value option with an evening departure that allows time to prepare for travel.\\n\\n**Return Flight (July 14, 2026):** United $290 departing 11:30 - Midday departure maximizes your final morning in San Francisco while offering a reasonable price.\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T06:04:11.271405Z",
+            "attributes": {
+                "completion_tokens": 413,
+                "prompt_tokens": 938,
+                "total_tokens": 1351,
+                "finish_reason": "stop",
+                "finish_type": "success"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "41cce4b6a5b0ef4c",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "392adf59b260b495",
+    "start_time": "2026-06-23T06:04:04.900810Z",
+    "end_time": "2026-06-23T06:04:11.271986Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "FlightPlanner",
+        "entity.1.description": "unknown_model",
+        "entity.1.from_agent": "DestinationResearcher",
+        "entity.1.from_agent_span_id": "e0724e343b8c9dd5",
+        "last.inference": "13cad789f103b13b:*",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "efd0126e133e2318f643dee9095ae8f",
+        "entity.count": 1,
+        "span.subtype": "content_processing",
+        "inference.decision.span.id": "8414ad7a7d52d141"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:04:04.901016Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=AgentExecutorResponse(executor_id='DestinationResearcher', agent_response=<agent_framework._types.AgentResponse object at 0x10a317ed0>, full_conversation=[<agent_framework._types.Message object at 0x10a3302f0>, <agent_framework._types.Message object at 0x10a322ea0>]), source_id='DestinationResearcher', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-90875ab0ce6e09e393efe370ce18dfc7-8ffdf3685f1b2663-03', 'baggage': 'monocle.scope.agentic.turn=0xd454af52590f7e3113c871c79390df,monocle.scope.agentic.invocation=0x531f7222f1d82143895403da3cdc8e11'}], source_span_ids=['8ffdf3685f1b2663'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:04:11.271961Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "d6bdc8e2d55251c9",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "599a60a2cfd72efe",
+    "start_time": "2026-06-23T06:04:11.324846Z",
+    "end_time": "2026-06-23T06:04:13.911718Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "entity.3.name": "search_hotels",
+        "entity.3.type": "tool.function",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "27c33ec88a676e1b7b24b0ec6f53f78b",
+        "entity.count": 3,
+        "span.subtype": "tool_call"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:04:11.324956Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are a hotel planner. Use the search_hotels tool, then recommend ONE hotel with a one-line reason. Consider the neighborhoods the researcher highlighted. Only handle lodging.\"}",
+                    "{\"user\": \"Plan a 4-day trip from New York to San Francisco, departing 2026-07-10 and returning 2026-07-14, for two people.\"}",
+                    "{\"assistant\": \"\\n\\n**Best Season to Visit**\\n*   **September\\u2013October:** Known as \\\"Indian Summer,\\\" this period offers the warmest temperatures and least fog.\\n*   **Note for July Travel:** Your dates (July 10\\u201314) fall during San Francisco's \\\"fog season.\\\" Expect cool mornings and evenings (avg. 60\\u201370\\u00b0F) with potential afternoon sun.\\n\\n**3 Must-See Neighborhoods/Areas**\\n1.  **Mission District:** Famous for Latin American culture, street murals, and dining.\\n2.  **North Beach:** The historic Italian Quarter, known for cafes, City Lights Bookstore, and Coit Tower.\\n3.  **Golden Gate Park:** Larger than Central Park, featuring museums, gardens, and bison paddocks.\\n\\n**Travel Tips**\\n*   **Dress in Layers:** Fog and wind can drop temperatures quickly, even in summer.\\n*   **Transportation:** Use BART and Muni; parking is expensive and difficult. Consider a Clipper Card for transit.\\n*   **Safety:** Do not leave valuables in rental cars; break-ins are common in tourist areas.\\n*   **Booking:** Reserve Alcatraz tickets and popular restaurant reservations several weeks in advance.\"}",
+                    "{\"assistant\": [\"{\\\"tool_function\\\": \\\"search_flights\\\", \\\"tool_arguments\\\": \\\"{\\\\\\\"origin\\\\\\\": \\\\\\\"New York\\\\\\\", \\\\\\\"destination\\\\\\\": \\\\\\\"San Francisco\\\\\\\", \\\\\\\"date\\\\\\\": \\\\\\\"2026-07-10\\\\\\\"}\\\"}\", \"{\\\"tool_function\\\": \\\"search_flights\\\", \\\"tool_arguments\\\": \\\"{\\\\\\\"origin\\\\\\\": \\\\\\\"San Francisco\\\\\\\", \\\\\\\"destination\\\\\\\": \\\\\\\"New York\\\\\\\", \\\\\\\"date\\\\\\\": \\\\\\\"2026-07-14\\\\\\\"}\\\"}\"]}",
+                    "{\"tool\": \"Flights New York->San Francisco on 2026-07-10: Delta $320 (08:00), United $290 (11:30), JetBlue $275 (17:45).\"}",
+                    "{\"tool\": \"Flights San Francisco->New York on 2026-07-14: Delta $320 (08:00), United $290 (11:30), JetBlue $275 (17:45).\"}",
+                    "{\"assistant\": \"\\n\\n**Outbound Flight (July 10, 2026):** JetBlue $275 departing 17:45 - Best value option with an evening departure that allows time to prepare for travel.\\n\\n**Return Flight (July 14, 2026):** United $290 departing 11:30 - Midday departure maximizes your final morning in San Francisco while offering a reasonable price.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:04:13.911676Z",
+            "attributes": {
+                "response": "{\"assistant\": [{\"tool_id\": \"chatcmpl-tool-86fc6bf83c206e3b\", \"tool_name\": \"search_hotels\", \"tool_arguments\": \"{\\\"city\\\": \\\"San Francisco\\\", \\\"checkin\\\": \\\"2026-07-10\\\", \\\"checkout\\\": \\\"2026-07-14\\\"}\"}]}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T06:04:13.911696Z",
+            "attributes": {
+                "completion_tokens": 233,
+                "prompt_tokens": 1035,
+                "total_tokens": 1268,
+                "finish_reason": "tool_calls",
+                "finish_type": "tool_call"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._tools.FunctionTool.invoke",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "1c712bdd52727888",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "599a60a2cfd72efe",
+    "start_time": "2026-06-23T06:04:13.912235Z",
+    "end_time": "2026-06-23T06:04:13.912606Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework/_tools.py:1541",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "tool.microsoft",
+        "entity.1.name": "search_hotels",
+        "entity.1.description": "Search for hotels in a city for the given date range.",
+        "entity.2.name": "HotelPlanner",
+        "entity.2.type": "agent.microsoft",
+        "span.type": "agentic.tool.invocation",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "27c33ec88a676e1b7b24b0ec6f53f78b",
+        "entity.count": 2,
+        "span.subtype": "content_generation",
+        "inference.decision.span.id": "d6bdc8e2d55251c9"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:04:13.912297Z",
+            "attributes": {
+                "input": "{'city': 'San Francisco', 'checkin': '2026-07-10', 'checkout': '2026-07-14'}"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:04:13.912587Z",
+            "attributes": {
+                "response": "Hotels in San Francisco (2026-07-10->2026-07-14): Marriott $180/night, Hilton $165/night, Airbnb loft $120/night."
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "8709006adaef5093",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "599a60a2cfd72efe",
+    "start_time": "2026-06-23T06:04:13.913089Z",
+    "end_time": "2026-06-23T06:04:41.351847Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "27c33ec88a676e1b7b24b0ec6f53f78b",
+        "entity.count": 2,
+        "span.subtype": "turn_end"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:04:13.913197Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are a hotel planner. Use the search_hotels tool, then recommend ONE hotel with a one-line reason. Consider the neighborhoods the researcher highlighted. Only handle lodging.\"}",
+                    "{\"user\": \"Plan a 4-day trip from New York to San Francisco, departing 2026-07-10 and returning 2026-07-14, for two people.\"}",
+                    "{\"assistant\": \"\\n\\n**Best Season to Visit**\\n*   **September\\u2013October:** Known as \\\"Indian Summer,\\\" this period offers the warmest temperatures and least fog.\\n*   **Note for July Travel:** Your dates (July 10\\u201314) fall during San Francisco's \\\"fog season.\\\" Expect cool mornings and evenings (avg. 60\\u201370\\u00b0F) with potential afternoon sun.\\n\\n**3 Must-See Neighborhoods/Areas**\\n1.  **Mission District:** Famous for Latin American culture, street murals, and dining.\\n2.  **North Beach:** The historic Italian Quarter, known for cafes, City Lights Bookstore, and Coit Tower.\\n3.  **Golden Gate Park:** Larger than Central Park, featuring museums, gardens, and bison paddocks.\\n\\n**Travel Tips**\\n*   **Dress in Layers:** Fog and wind can drop temperatures quickly, even in summer.\\n*   **Transportation:** Use BART and Muni; parking is expensive and difficult. Consider a Clipper Card for transit.\\n*   **Safety:** Do not leave valuables in rental cars; break-ins are common in tourist areas.\\n*   **Booking:** Reserve Alcatraz tickets and popular restaurant reservations several weeks in advance.\"}",
+                    "{\"assistant\": [\"{\\\"tool_function\\\": \\\"search_flights\\\", \\\"tool_arguments\\\": \\\"{\\\\\\\"origin\\\\\\\": \\\\\\\"New York\\\\\\\", \\\\\\\"destination\\\\\\\": \\\\\\\"San Francisco\\\\\\\", \\\\\\\"date\\\\\\\": \\\\\\\"2026-07-10\\\\\\\"}\\\"}\", \"{\\\"tool_function\\\": \\\"search_flights\\\", \\\"tool_arguments\\\": \\\"{\\\\\\\"origin\\\\\\\": \\\\\\\"San Francisco\\\\\\\", \\\\\\\"destination\\\\\\\": \\\\\\\"New York\\\\\\\", \\\\\\\"date\\\\\\\": \\\\\\\"2026-07-14\\\\\\\"}\\\"}\"]}",
+                    "{\"tool\": \"Flights New York->San Francisco on 2026-07-10: Delta $320 (08:00), United $290 (11:30), JetBlue $275 (17:45).\"}",
+                    "{\"tool\": \"Flights San Francisco->New York on 2026-07-14: Delta $320 (08:00), United $290 (11:30), JetBlue $275 (17:45).\"}",
+                    "{\"assistant\": \"\\n\\n**Outbound Flight (July 10, 2026):** JetBlue $275 departing 17:45 - Best value option with an evening departure that allows time to prepare for travel.\\n\\n**Return Flight (July 14, 2026):** United $290 departing 11:30 - Midday departure maximizes your final morning in San Francisco while offering a reasonable price.\"}",
+                    "{\"assistant\": [\"{\\\"tool_function\\\": \\\"search_hotels\\\", \\\"tool_arguments\\\": \\\"{\\\\\\\"city\\\\\\\": \\\\\\\"San Francisco\\\\\\\", \\\\\\\"checkin\\\\\\\": \\\\\\\"2026-07-10\\\\\\\", \\\\\\\"checkout\\\\\\\": \\\\\\\"2026-07-14\\\\\\\"}\\\"}\"]}",
+                    "{\"tool\": \"Hotels in San Francisco (2026-07-10->2026-07-14): Marriott $180/night, Hilton $165/night, Airbnb loft $120/night.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:04:41.351662Z",
+            "attributes": {
+                "response": "{\"assistant\": \"\\n\\nI recommend the Hilton for its balance of comfort and value at $165/night, leaving more budget to explore the highlighted Mission District and North Beach neighborhoods.\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T06:04:41.351741Z",
+            "attributes": {
+                "completion_tokens": 3757,
+                "prompt_tokens": 1176,
+                "total_tokens": 4933,
+                "finish_reason": "stop",
+                "finish_type": "success"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "599a60a2cfd72efe",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "392adf59b260b495",
+    "start_time": "2026-06-23T06:04:11.322850Z",
+    "end_time": "2026-06-23T06:04:41.353355Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "HotelPlanner",
+        "entity.1.description": "unknown_model",
+        "entity.1.from_agent": "FlightPlanner",
+        "entity.1.from_agent_span_id": "41cce4b6a5b0ef4c",
+        "last.inference": "8709006adaef5093:*",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "27c33ec88a676e1b7b24b0ec6f53f78b",
+        "entity.count": 1,
+        "span.subtype": "content_processing",
+        "inference.decision.span.id": "13cad789f103b13b"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:04:11.322936Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=AgentExecutorResponse(executor_id='FlightPlanner', agent_response=<agent_framework._types.AgentResponse object at 0x10a309490>, full_conversation=[<agent_framework._types.Message object at 0x10a3302f0>, <agent_framework._types.Message object at 0x10a322ea0>, <agent_framework._types.Message object at 0x10a336350>, <agent_framework._types.Message object at 0x10a337d50>, <agent_framework._types.Message object at 0x10a4be120>]), source_id='FlightPlanner', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-90875ab0ce6e09e393efe370ce18dfc7-dde06b93ccf7c415-03', 'baggage': 'monocle.scope.agentic.turn=0xd454af52590f7e3113c871c79390df,monocle.scope.agentic.invocation=0xefd0126e133e2318f643dee9095ae8f'}], source_span_ids=['dde06b93ccf7c415'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:04:41.353293Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+]

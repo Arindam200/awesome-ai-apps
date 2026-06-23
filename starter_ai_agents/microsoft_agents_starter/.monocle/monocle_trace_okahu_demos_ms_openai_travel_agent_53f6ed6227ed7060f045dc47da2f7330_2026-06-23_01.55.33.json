@@ -1,0 +1,200 @@
+[{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "53f6ed6227ed7060f045dc47da2f7330",
+        "span_id": "91149e0243b563d3",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "5f380fc88f70cb5c",
+    "start_time": "2026-06-23T05:55:33.142036Z",
+    "end_time": "2026-06-23T05:55:33.685112Z",
+    "status": {
+        "status_code": "ERROR",
+        "message": "Error code: 401 - {'detail': \"Couldn't authenticate. Reason: Unable authenticate\"}"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "da87b58e729b8201d62c1612a27545b3",
+        "scope.agentic.invocation": "be4b2a34697575aefdde2797029126a5",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T05:55:33.142150Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are an itinerary planner. Given flight and hotel search results and user constraints, produce a concise 3-5 bullet itinerary with recommended flights and hotel, plus costs.\"}",
+                    "{\"user\": \"User request: roundtrip from New York to San Francisco departing 2026-07-10 returning 2026-07-14.\\nFlights:\\nFound 3 flights from New York to San Francisco on 2026-07-10: Delta $320, United $290, JetBlue $275\\nHotels:\\nFound hotels in San Francisco (2026-07-10 to 2026-07-14): Marriott $180/night, Hilton $165/night, Airbnb $120/night\\n\\nCreate a succinct itinerary with chosen flight, hotel, total estimated cost.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T05:55:33.684996Z",
+            "attributes": {
+                "error_code": "error",
+                "response": "Error code: 401 - {'detail': \"Couldn't authenticate. Reason: Unable authenticate\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T05:55:33.685030Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._agents.Agent.run",
+    "context": {
+        "trace_id": "53f6ed6227ed7060f045dc47da2f7330",
+        "span_id": "5f380fc88f70cb5c",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "91c786ee9010632e",
+    "start_time": "2026-06-23T05:55:33.140233Z",
+    "end_time": "2026-06-23T05:55:33.689937Z",
+    "status": {
+        "status_code": "ERROR",
+        "message": "('<class \\'agent_framework_openai._chat_completion_client.OpenAIChatCompletionClient\\'> service failed to complete the prompt: Error code: 401 - {\\'detail\\': \"Couldn\\'t authenticate. Reason: Unable authenticate\"}', AuthenticationError('Error code: 401 - {\\'detail\\': \"Couldn\\'t authenticate. Reason: Unable authenticate\"}'))"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/multi_travel_agents.py:70",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "PlannerAgent",
+        "entity.1.description": "Qwen/Qwen3.5-397B-A17B",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "da87b58e729b8201d62c1612a27545b3",
+        "scope.agentic.invocation": "be4b2a34697575aefdde2797029126a5",
+        "entity.count": 1,
+        "span.subtype": "content_processing"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T05:55:33.140293Z",
+            "attributes": {
+                "input": "User request: roundtrip from New York to San Francisco departing 2026-07-10 returning 2026-07-14.\nFlights:\nFound 3 flights from New York to San Francisco on 2026-07-10: Delta $320, United $290, JetBlue $275\nHotels:\nFound hotels in San Francisco (2026-07-10 to 2026-07-14): Marriott $180/night, Hilton $165/night, Airbnb $120/night\n\nCreate a succinct itinerary with chosen flight, hotel, total estimated cost."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T05:55:33.689918Z",
+            "attributes": {
+                "error_code": "error"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._agents.Agent.run",
+    "context": {
+        "trace_id": "53f6ed6227ed7060f045dc47da2f7330",
+        "span_id": "91c786ee9010632e",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "65f16b1a4911545d",
+    "start_time": "2026-06-23T05:55:33.140151Z",
+    "end_time": "2026-06-23T05:55:33.689980Z",
+    "status": {
+        "status_code": "ERROR",
+        "message": "('<class \\'agent_framework_openai._chat_completion_client.OpenAIChatCompletionClient\\'> service failed to complete the prompt: Error code: 401 - {\\'detail\\': \"Couldn\\'t authenticate. Reason: Unable authenticate\"}', AuthenticationError('Error code: 401 - {\\'detail\\': \"Couldn\\'t authenticate. Reason: Unable authenticate\"}'))"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/multi_travel_agents.py:70",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "agent.microsoft",
+        "span.type": "agentic.turn",
+        "scope.agentic.turn": "da87b58e729b8201d62c1612a27545b3",
+        "entity.count": 1,
+        "span.subtype": "turn"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T05:55:33.140204Z",
+            "attributes": {
+                "input": "User request: roundtrip from New York to San Francisco departing 2026-07-10 returning 2026-07-14.\nFlights:\nFound 3 flights from New York to San Francisco on 2026-07-10: Delta $320, United $290, JetBlue $275\nHotels:\nFound hotels in San Francisco (2026-07-10 to 2026-07-14): Marriott $180/night, Hilton $165/night, Airbnb $120/night\n\nCreate a succinct itinerary with chosen flight, hotel, total estimated cost."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T05:55:33.689968Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "workflow",
+    "context": {
+        "trace_id": "53f6ed6227ed7060f045dc47da2f7330",
+        "span_id": "65f16b1a4911545d",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": null,
+    "start_time": "2026-06-23T05:55:33.140065Z",
+    "end_time": "2026-06-23T05:55:33.689986Z",
+    "status": {
+        "status_code": "UNSET"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/multi_travel_agents.py:70",
+        "scope.agentic.turn": "da87b58e729b8201d62c1612a27545b3",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "span.type": "workflow",
+        "entity.1.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "workflow.generic",
+        "entity.2.type": "app_hosting.generic",
+        "entity.2.name": "generic"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+]

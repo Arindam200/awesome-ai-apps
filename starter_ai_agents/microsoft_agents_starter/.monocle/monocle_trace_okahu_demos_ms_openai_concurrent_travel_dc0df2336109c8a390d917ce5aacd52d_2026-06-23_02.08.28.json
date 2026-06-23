@@ -1,0 +1,632 @@
+[{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "dc0df2336109c8a390d917ce5aacd52d",
+        "span_id": "5efc8665f45d6214",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "bede7395ec5a2ea0",
+    "start_time": "2026-06-23T06:08:08.613331Z",
+    "end_time": "2026-06-23T06:08:24.944654Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "6057ec1b76b24c44b8c67b8f2db0c7f2",
+        "scope.agentic.invocation": "eba2fd3a2c493d9b9d37c802ef79e45d",
+        "entity.count": 2,
+        "span.subtype": "turn_end"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:08:08.613429Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are a flight expert. For the given trip, recommend the smartest routing, ideal booking window, and cabin/airline tips. Be concise.\"}",
+                    "{\"user\": \"We are planning a 5-day trip from Chicago to Tokyo in October 2026 for two people with a mid-range budget.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:08:24.943990Z",
+            "attributes": {
+                "response": "{\"assistant\": \"\\n\\n**Reality Check:** A 5-day total trip from Chicago to Tokyo is extremely aggressive. Between flight time (13+ hours each way) and jet lag, you will realistically have only **two full days** on the ground. If possible, extend to 7\\u20138 days.\\n\\n**Smartest Routing**\\n*   **Route:** Non-stop only. Layovers waste precious time.\\n*   **Airports:** Fly **ORD (O'Hare) to HND (Haneda)**. Haneda is 30 minutes from central Tokyo; Narita (NRT) is 60\\u201390 minutes away.\\n*   **Carriers:** ANA, JAL, United, or American.\\n\\n**Ideal Booking Window**\\n*   **When:** Book **6\\u20139 months in advance** (January \\u2013 April 2026).\\n*   **Why:** October is peak foliage season in Tokyo. Prices surge within 3 months of departure. Set fare alerts starting December 2025.\\n\\n**Cabin & Airline Tips**\\n*   **Cabin:** **Premium Economy** is the smart mid-range choice. The extra legroom and recline are critical for arriving functional after a 13-hour flight. Economy is too taxing for a trip this short.\\n*   **Airline Preference:** **ANA or JAL**. Both fly new aircraft on this route with superior service and food compared to US carriers.\\n*   **Seat:** Choose bulkhead or exit row for maximum stretch. Avoid the last 3 rows (limited recline).\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T06:08:24.944200Z",
+            "attributes": {
+                "completion_tokens": 1723,
+                "prompt_tokens": 74,
+                "total_tokens": 1797,
+                "finish_reason": "stop",
+                "finish_type": "success"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "dc0df2336109c8a390d917ce5aacd52d",
+        "span_id": "bede7395ec5a2ea0",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "1a4dcc8cf4e51b42",
+    "start_time": "2026-06-23T06:08:08.608970Z",
+    "end_time": "2026-06-23T06:08:24.950351Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "FlightExpert",
+        "entity.1.description": "unknown_model",
+        "last.inference": "5efc8665f45d6214:*",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "6057ec1b76b24c44b8c67b8f2db0c7f2",
+        "scope.agentic.invocation": "eba2fd3a2c493d9b9d37c802ef79e45d",
+        "entity.count": 1,
+        "span.subtype": "content_processing"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:08:08.609041Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=AgentExecutorRequest(messages=[<agent_framework._types.Message object at 0x109bd4440>], should_respond=True), source_id='dispatcher', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-d8702777e1b88b3a7cd4e9aca5996c51-2881a76708755bf2-03', 'baggage': 'monocle.scope.agentic.turn=0x6057ec1b76b24c44b8c67b8f2db0c7f2'}], source_span_ids=['2881a76708755bf2'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:08:24.950304Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "dc0df2336109c8a390d917ce5aacd52d",
+        "span_id": "a4e28efb3be7725e",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "85aacf952e3d207c",
+    "start_time": "2026-06-23T06:08:08.620850Z",
+    "end_time": "2026-06-23T06:08:24.996958Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "6057ec1b76b24c44b8c67b8f2db0c7f2",
+        "scope.agentic.invocation": "4d4d582cd324cdb70bfdee68d64c8279",
+        "entity.count": 2,
+        "span.subtype": "turn_end"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:08:08.620965Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are a hotel expert. For the given trip, recommend the best neighborhoods to stay in and the type of lodging that fits. Be concise.\"}",
+                    "{\"user\": \"We are planning a 5-day trip from Chicago to Tokyo in October 2026 for two people with a mid-range budget.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:08:24.996913Z",
+            "attributes": {
+                "response": "{\"assistant\": \"\\n\\n**Best Neighborhoods**\\n*   **Shinjuku:** Top choice for a 5-day trip. It is a major transport hub (direct Narita Express access), making day trips and airport transfers effortless. Vibrant nightlife and dining.\\n*   **Shibuya:** Ideal if you prefer a trendier atmosphere with excellent shopping and restaurant options. Also well-connected by rail.\\n\\n**Recommended Lodging**\\n*   **Premium Business Hotels** (e.g., Dormy Inn, Mitsui Garden, Sotetsu Fresa).\\n*   **Why:** They fit the mid-range budget perfectly while offering high cleanliness standards, efficient design, and amenities like public onsens (hot springs) and complimentary breakfasts.\\n\\n**Expert Tips for October 2026**\\n*   **Book Early:** October is peak foliage season; secure lodging 6+ months in advance.\\n*   **Room Size:** Explicitly book a \\\"Double\\\" or \\\"Twin\\\" room. Standard single rooms are too small for two adults with luggage.\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T06:08:24.996938Z",
+            "attributes": {
+                "completion_tokens": 1750,
+                "prompt_tokens": 72,
+                "total_tokens": 1822,
+                "finish_reason": "stop",
+                "finish_type": "success"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "dc0df2336109c8a390d917ce5aacd52d",
+        "span_id": "85aacf952e3d207c",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "1a4dcc8cf4e51b42",
+    "start_time": "2026-06-23T06:08:08.618441Z",
+    "end_time": "2026-06-23T06:08:24.997321Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "HotelExpert",
+        "entity.1.description": "unknown_model",
+        "last.inference": "a4e28efb3be7725e:*",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "6057ec1b76b24c44b8c67b8f2db0c7f2",
+        "scope.agentic.invocation": "4d4d582cd324cdb70bfdee68d64c8279",
+        "entity.count": 1,
+        "span.subtype": "content_processing",
+        "inference.decision.span.id": "5efc8665f45d6214"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:08:08.618966Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=AgentExecutorRequest(messages=[<agent_framework._types.Message object at 0x109bd4440>], should_respond=True), source_id='dispatcher', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-d8702777e1b88b3a7cd4e9aca5996c51-2881a76708755bf2-03', 'baggage': 'monocle.scope.agentic.turn=0x6057ec1b76b24c44b8c67b8f2db0c7f2'}], source_span_ids=['2881a76708755bf2'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:08:24.997291Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "dc0df2336109c8a390d917ce5aacd52d",
+        "span_id": "15b3485d976eb564",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "8b210806f9dc0ff2",
+    "start_time": "2026-06-23T06:08:08.633914Z",
+    "end_time": "2026-06-23T06:08:28.614578Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "6057ec1b76b24c44b8c67b8f2db0c7f2",
+        "scope.agentic.invocation": "4336a0f08f2e285c77f6aa3127c750f5",
+        "entity.count": 2,
+        "span.subtype": "turn_end"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:08:08.634072Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are a budget expert. For the given trip, list realistic cost ranges and 3 concrete money-saving tactics. Be concise.\"}",
+                    "{\"user\": \"We are planning a 5-day trip from Chicago to Tokyo in October 2026 for two people with a mid-range budget.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:08:28.614479Z",
+            "attributes": {
+                "response": "{\"assistant\": \"\\n\\n**Estimated Total Cost (2 People): $4,800 \\u2013 $6,500**\\n*   **Flights:** $2,800 \\u2013 $3,600 (Roundtrip from ORD; October is peak foliage season)\\n*   **Accommodation:** $1,000 \\u2013 $1,600 (4 nights, central 3-4 star)\\n*   **Daily Spend:** $1,000 \\u2013 $1,300 (Food, transit, activities)\\n\\n**3 Money-Saving Tactics**\\n1.  **Book Flights by February 2026:** October is high season. Secure tickets 6\\u20138 months in advance to lock in lower fares before demand spikes.\\n2.  **Choose Japanese \\\"Business Hotels\\\":** Stay at chains like *Dormy Inn* or *Mitsui Garden* rather than international brands. They offer clean, mid-range comfort with included amenities (like onsen/spa) for ~30% less.\\n3.  **Leverage Convenience Stores (*Konbini*):** Eat breakfast and lunch at 7-Eleven or Lawson. The food quality is high and cost is low (~$10/person), saving your budget for one nice dinner daily.\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T06:08:28.614549Z",
+            "attributes": {
+                "completion_tokens": 2206,
+                "prompt_tokens": 69,
+                "total_tokens": 2275,
+                "finish_reason": "stop",
+                "finish_type": "success"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "dc0df2336109c8a390d917ce5aacd52d",
+        "span_id": "8b210806f9dc0ff2",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "1a4dcc8cf4e51b42",
+    "start_time": "2026-06-23T06:08:08.626828Z",
+    "end_time": "2026-06-23T06:08:28.614969Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "BudgetExpert",
+        "entity.1.description": "unknown_model",
+        "last.inference": "15b3485d976eb564:*",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "6057ec1b76b24c44b8c67b8f2db0c7f2",
+        "scope.agentic.invocation": "4336a0f08f2e285c77f6aa3127c750f5",
+        "entity.count": 1,
+        "span.subtype": "content_processing",
+        "inference.decision.span.id": "a4e28efb3be7725e"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:08:08.627316Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=AgentExecutorRequest(messages=[<agent_framework._types.Message object at 0x109bd4440>], should_respond=True), source_id='dispatcher', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-d8702777e1b88b3a7cd4e9aca5996c51-2881a76708755bf2-03', 'baggage': 'monocle.scope.agentic.turn=0x6057ec1b76b24c44b8c67b8f2db0c7f2'}], source_span_ids=['2881a76708755bf2'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:08:28.614929Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "dc0df2336109c8a390d917ce5aacd52d",
+        "span_id": "d402f4e5872b05b9",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "efbd1ee4fe31e1e0",
+    "start_time": "2026-06-23T06:08:08.623044Z",
+    "end_time": "2026-06-23T06:08:29.432018Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "6057ec1b76b24c44b8c67b8f2db0c7f2",
+        "scope.agentic.invocation": "bfefe805692d3a07b85c75fed7107af2",
+        "entity.count": 2,
+        "span.subtype": "turn_end"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:08:08.623117Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are an activities expert. For the given trip, suggest the top 5 experiences and any seasonal events worth catching. Be concise.\"}",
+                    "{\"user\": \"We are planning a 5-day trip from Chicago to Tokyo in October 2026 for two people with a mid-range budget.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:08:29.431975Z",
+            "attributes": {
+                "response": "{\"assistant\": \"\\n\\n**Trip Profile:** 5 Days | Tokyo | October 2026 | 2 Pax | Mid-Range\\n\\n**Top 5 Experiences**\\n1.  **Shinjuku Gyoen National Garden:** Perfect for October weather. Walk the landscaped gardens where autumn foliage begins late in the month.\\n2.  **Senso-ji Temple & Asakusa:** Tokyo's oldest temple. Browse Nakamise shopping street for traditional snacks and souvenirs.\\n3.  **Shibuya Sky:** Open-air observation deck offering the best 360\\u00b0 view of the city and Mount Fuji (weather permitting).\\n4.  **teamLab Planets (Toyosu):** Immersive digital art museum. Walk barefoot through water and light installations (book tickets in advance).\\n5.  **Tsukiji Outer Market:** Ideal for a mid-range food tour. Enjoy fresh sushi breakfasts and street food like wagyu beef skewers.\\n\\n**October Seasonal Events**\\n*   **Autumn Foliage (Koyo):** Late October marks the start of leaf viewing. Expect illuminated gardens at night (Rikugien or Shinjuku Gyoen).\\n*   **Tokyo International Film Festival:** Typically runs late October. Great for catching premieres or industry events.\\n*   **Tokyo Ramen Show:** Usually starts the last week of October at Komazawa Olympic Park. Taste regional ramen from across Japan.\\n*   **Sports Day (Oct 12, 2026):** National holiday. Expect crowded trains and attractions; plan accordingly.\\n\\n**Pro Tip:** October is mild (15\\u00b0C\\u201322\\u00b0C). Pack layers. Purchase a **Suica/Pasmo** card upon arrival for seamless subway travel.\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T06:08:29.431999Z",
+            "attributes": {
+                "completion_tokens": 2312,
+                "prompt_tokens": 70,
+                "total_tokens": 2382,
+                "finish_reason": "stop",
+                "finish_type": "success"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "dc0df2336109c8a390d917ce5aacd52d",
+        "span_id": "efbd1ee4fe31e1e0",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "1a4dcc8cf4e51b42",
+    "start_time": "2026-06-23T06:08:08.622211Z",
+    "end_time": "2026-06-23T06:08:29.432367Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "ActivitiesExpert",
+        "entity.1.description": "unknown_model",
+        "last.inference": "d402f4e5872b05b9:*",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "6057ec1b76b24c44b8c67b8f2db0c7f2",
+        "scope.agentic.invocation": "bfefe805692d3a07b85c75fed7107af2",
+        "entity.count": 1,
+        "span.subtype": "content_processing",
+        "inference.decision.span.id": "15b3485d976eb564"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:08:08.622269Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=AgentExecutorRequest(messages=[<agent_framework._types.Message object at 0x109bd4440>], should_respond=True), source_id='dispatcher', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-d8702777e1b88b3a7cd4e9aca5996c51-2881a76708755bf2-03', 'baggage': 'monocle.scope.agentic.turn=0x6057ec1b76b24c44b8c67b8f2db0c7f2'}], source_span_ids=['2881a76708755bf2'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:08:29.432340Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "dc0df2336109c8a390d917ce5aacd52d",
+        "span_id": "bcf7fdb10b9a8389",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "1a4dcc8cf4e51b42",
+    "start_time": "2026-06-23T06:08:29.487391Z",
+    "end_time": "2026-06-23T06:08:49.979033Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "6057ec1b76b24c44b8c67b8f2db0c7f2",
+        "entity.count": 2,
+        "span.subtype": "turn_end"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:08:29.487532Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You consolidate multiple travel experts' notes into one cohesive, well-structured travel brief with clear sections. Keep it under 250 words.\"}",
+                    "{\"user\": \"## FlightExpert\\n\\n\\n**Reality Check:** A 5-day total trip from Chicago to Tokyo is extremely aggressive. Between flight time (13+ hours each way) and jet lag, you will realistically have only **two full days** on the ground. If possible, extend to 7\\u20138 days.\\n\\n**Smartest Routing**\\n*   **Route:** Non-stop only. Layovers waste precious time.\\n*   **Airports:** Fly **ORD (O'Hare) to HND (Haneda)**. Haneda is 30 minutes from central Tokyo; Narita (NRT) is 60\\u201390 minutes away.\\n*   **Carriers:** ANA, JAL, United, or American.\\n\\n**Ideal Booking Window**\\n*   **When:** Book **6\\u20139 months in advance** (January \\u2013 April 2026).\\n*   **Why:** October is peak foliage season in Tokyo. Prices surge within 3 months of departure. Set fare alerts starting December 2025.\\n\\n**Cabin & Airline Tips**\\n*   **Cabin:** **Premium Economy** is the smart mid-range choice. The extra legroom and recline are critical for arriving functional after a 13-hour flight. Economy is too taxing for a trip this short.\\n*   **Airline Preference:** **ANA or JAL**. Both fly new aircraft on this route with superior service and food compared to US carriers.\\n*   **Seat:** Choose bulkhead or exit row for maximum stretch. Avoid the last 3 rows (limited recline).\\n\\n## HotelExpert\\n\\n\\n**Best Neighborhoods**\\n*   **Shinjuku:** Top choice for a 5-day trip. It is a major transport hub (direct Narita Express access), making day trips and airport transfers effortless. Vibrant nightlife and dining.\\n*   **Shibuya:** Ideal if you prefer a trendier atmosphere with excellent shopping and restaurant options. Also well-connected by rail.\\n\\n**Recommended Lodging**\\n*   **Premium Business Hotels** (e.g., Dormy Inn, Mitsui Garden, Sotetsu Fresa).\\n*   **Why:** They fit the mid-range budget perfectly while offering high cleanliness standards, efficient design, and amenities like public onsens (hot springs) and complimentary breakfasts.\\n\\n**Expert Tips for October 2026**\\n*   **Book Early:** October is peak foliage season; secure lodging 6+ months in advance.\\n*   **Room Size:** Explicitly book a \\\"Double\\\" or \\\"Twin\\\" room. Standard single rooms are too small for two adults with luggage.\\n\\n## ActivitiesExpert\\n\\n\\n**Trip Profile:** 5 Days | Tokyo | October 2026 | 2 Pax | Mid-Range\\n\\n**Top 5 Experiences**\\n1.  **Shinjuku Gyoen National Garden:** Perfect for October weather. Walk the landscaped gardens where autumn foliage begins late in the month.\\n2.  **Senso-ji Temple & Asakusa:** Tokyo's oldest temple. Browse Nakamise shopping street for traditional snacks and souvenirs.\\n3.  **Shibuya Sky:** Open-air observation deck offering the best 360\\u00b0 view of the city and Mount Fuji (weather permitting).\\n4.  **teamLab Planets (Toyosu):** Immersive digital art museum. Walk barefoot through water and light installations (book tickets in advance).\\n5.  **Tsukiji Outer Market:** Ideal for a mid-range food tour. Enjoy fresh sushi breakfasts and street food like wagyu beef skewers.\\n\\n**October Seasonal Events**\\n*   **Autumn Foliage (Koyo):** Late October marks the start of leaf viewing. Expect illuminated gardens at night (Rikugien or Shinjuku Gyoen).\\n*   **Tokyo International Film Festival:** Typically runs late October. Great for catching premieres or industry events.\\n*   **Tokyo Ramen Show:** Usually starts the last week of October at Komazawa Olympic Park. Taste regional ramen from across Japan.\\n*   **Sports Day (Oct 12, 2026):** National holiday. Expect crowded trains and attractions; plan accordingly.\\n\\n**Pro Tip:** October is mild (15\\u00b0C\\u201322\\u00b0C). Pack layers. Purchase a **Suica/Pasmo** card upon arrival for seamless subway travel.\\n\\n## BudgetExpert\\n\\n\\n**Estimated Total Cost (2 People): $4,800 \\u2013 $6,500**\\n*   **Flights:** $2,800 \\u2013 $3,600 (Roundtrip from ORD; October is peak foliage season)\\n*   **Accommodation:** $1,000 \\u2013 $1,600 (4 nights, central 3-4 star)\\n*   **Daily Spend:** $1,000 \\u2013 $1,300 (Food, transit, activities)\\n\\n**3 Money-Saving Tactics**\\n1.  **Book Flights by February 2026:** October is high season. Secure tickets 6\\u20138 months in advance to lock in lower fares before demand spikes.\\n2.  **Choose Japanese \\\"Business Hotels\\\":** Stay at chains like *Dormy Inn* or *Mitsui Garden* rather than international brands. They offer clean, mid-range comfort with included amenities (like onsen/spa) for ~30% less.\\n3.  **Leverage Convenience Stores (*Konbini*):** Eat breakfast and lunch at 7-Eleven or Lawson. The food quality is high and cost is low (~$10/person), saving your budget for one nice dinner daily.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:08:49.978915Z",
+            "attributes": {
+                "response": "{\"assistant\": \"\\n\\n**Tokyo Travel Brief: October 2026 (5 Days | 2 Pax)**\\n\\n**Critical Overview**\\nThis aggressive itinerary yields only **two full days** on ground; extending to 7\\u20138 days is recommended. As October is peak foliage season, secure all bookings 6\\u20139 months in advance.\\n\\n**Logistics & Stay**\\n*   **Flights:** Non-stop ORD to HND (ANA/JAL). Premium Economy is essential for arrival functionality.\\n*   **Lodging:** Shinjuku or Shibuya business hotels (e.g., Dormy Inn). These offer efficiency, onsens, and central access. Explicitly book \\\"Double\\\" rooms.\\n\\n**Top Experiences**\\n*   **Sights:** Shinjuku Gyoen (autumn foliage), Senso-ji Temple, and Shibuya Sky.\\n*   **Culture:** teamLab Planets and Tsukiji Outer Market food tour.\\n*   **Events:** Tokyo International Film Festival and Ramen Show (late October).\\n\\n**Budget & Savings**\\n*   **Estimated Total:** $4,800 \\u2013 $6,500.\\n*   **Strategy:** Book flights by Feb 2026, choose Japanese business chains over international brands, and utilize convenience stores (konbini) for casual meals.\\n\\n**Essentials**\\n*   **Transport:** Purchase a Suica/Pasmo card upon arrival for seamless subway travel.\\n*   **Weather:** Mild (15\\u00b0C\\u201322\\u00b0C); pack layers.\\n*   **Warning:** Oct 12 is Sports Day (national holiday); expect significant crowds on trains and attractions.\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T06:08:49.978984Z",
+            "attributes": {
+                "completion_tokens": 2582,
+                "prompt_tokens": 1238,
+                "total_tokens": 3820,
+                "finish_reason": "stop",
+                "finish_type": "success"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._workflow.Workflow.run",
+    "context": {
+        "trace_id": "dc0df2336109c8a390d917ce5aacd52d",
+        "span_id": "1a4dcc8cf4e51b42",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "ba3b5962dc151e3c",
+    "start_time": "2026-06-23T06:08:08.607955Z",
+    "end_time": "2026-06-23T06:08:50.031489Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/orchestrations/concurrent_travel.py:131",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "agent.microsoft",
+        "monocle.last.agent.invocation.id": "efbd1ee4fe31e1e0",
+        "monocle.last.agent.name": "ActivitiesExpert",
+        "last.inference": "bcf7fdb10b9a8389:*",
+        "span.type": "agentic.turn",
+        "scope.agentic.turn": "6057ec1b76b24c44b8c67b8f2db0c7f2",
+        "entity.count": 1,
+        "span.subtype": "turn"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:08:08.607996Z",
+            "attributes": {
+                "input": "We are planning a 5-day trip from Chicago to Tokyo in October 2026 for two people with a mid-range budget."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:08:50.031447Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "workflow",
+    "context": {
+        "trace_id": "dc0df2336109c8a390d917ce5aacd52d",
+        "span_id": "ba3b5962dc151e3c",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": null,
+    "start_time": "2026-06-23T06:08:08.607889Z",
+    "end_time": "2026-06-23T06:08:50.031502Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/orchestrations/concurrent_travel.py:131",
+        "scope.agentic.turn": "6057ec1b76b24c44b8c67b8f2db0c7f2",
+        "workflow.name": "okahu_demos_ms_openai_concurrent_travel",
+        "span.type": "workflow",
+        "entity.1.name": "okahu_demos_ms_openai_concurrent_travel",
+        "entity.1.type": "workflow.generic",
+        "entity.2.type": "app_hosting.generic",
+        "entity.2.name": "generic"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_concurrent_travel"
+        },
+        "schema_url": ""
+    }
+}
+]
