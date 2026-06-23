@@ -1,0 +1,206 @@
+[{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "36e95f4717aea8ce27d699550e17fb7c",
+        "span_id": "cdb2d329f71b59bf",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "474bbe563e2601bf",
+    "start_time": "2026-06-23T05:56:25.395428Z",
+    "end_time": "2026-06-23T05:56:58.222728Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "c627f03676a282f36a37eafb329ad0f3",
+        "scope.agentic.invocation": "3506fb14bd8875873c1651968ec27eb6",
+        "entity.count": 2,
+        "span.subtype": "turn_end"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T05:56:25.395543Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are an itinerary planner. Given flight and hotel search results and user constraints, produce a concise 3-5 bullet itinerary with recommended flights and hotel, plus costs.\"}",
+                    "{\"user\": \"User request: roundtrip from New York to San Francisco departing 2026-07-10 returning 2026-07-14.\\nFlights:\\nFound 3 flights from New York to San Francisco on 2026-07-10: Delta $320, United $290, JetBlue $275\\nHotels:\\nFound hotels in San Francisco (2026-07-10 to 2026-07-14): Marriott $180/night, Hilton $165/night, Airbnb $120/night\\n\\nCreate a succinct itinerary with chosen flight, hotel, total estimated cost.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T05:56:58.222551Z",
+            "attributes": {
+                "response": "{\"assistant\": \"\\n\\n*   **Flights**: JetBlue departing July 10, returning July 14, 2026 (Estimated $550 roundtrip based on $275 outbound fare).\\n*   **Accommodation**: Airbnb for 4 nights at $120/night, totaling $480 for the stay.\\n*   **Total Estimated Cost**: Approximately $1,030 per person (includes flight and hotel).\\n*   **Itinerary Summary**: Roundtrip from New York to San Francisco, July 10\\u201314, 2026.\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T05:56:58.222617Z",
+            "attributes": {
+                "completion_tokens": 4445,
+                "prompt_tokens": 203,
+                "total_tokens": 4648,
+                "finish_reason": "stop",
+                "finish_type": "success"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._agents.Agent.run",
+    "context": {
+        "trace_id": "36e95f4717aea8ce27d699550e17fb7c",
+        "span_id": "474bbe563e2601bf",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "70e2f719edcfa13e",
+    "start_time": "2026-06-23T05:56:25.391773Z",
+    "end_time": "2026-06-23T05:56:58.223451Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/multi_travel_agents.py:70",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "PlannerAgent",
+        "entity.1.description": "Qwen/Qwen3.5-397B-A17B",
+        "last.inference": "cdb2d329f71b59bf:*",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "c627f03676a282f36a37eafb329ad0f3",
+        "scope.agentic.invocation": "3506fb14bd8875873c1651968ec27eb6",
+        "entity.count": 1,
+        "span.subtype": "content_processing"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T05:56:25.391826Z",
+            "attributes": {
+                "input": "User request: roundtrip from New York to San Francisco departing 2026-07-10 returning 2026-07-14.\nFlights:\nFound 3 flights from New York to San Francisco on 2026-07-10: Delta $320, United $290, JetBlue $275\nHotels:\nFound hotels in San Francisco (2026-07-10 to 2026-07-14): Marriott $180/night, Hilton $165/night, Airbnb $120/night\n\nCreate a succinct itinerary with chosen flight, hotel, total estimated cost."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T05:56:58.223420Z",
+            "attributes": {
+                "response": "\n\n*   **Flights**: JetBlue departing July 10, returning July 14, 2026 (Estimated $550 roundtrip based on $275 outbound fare).\n*   **Accommodation**: Airbnb for 4 nights at $120/night, totaling $480 for the stay.\n*   **Total Estimated Cost**: Approximately $1,030 per person (includes flight and hotel).\n*   **Itinerary Summary**: Roundtrip from New York to San Francisco, July 10\u201314, 2026."
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._agents.Agent.run",
+    "context": {
+        "trace_id": "36e95f4717aea8ce27d699550e17fb7c",
+        "span_id": "70e2f719edcfa13e",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "3f776463d3c0dd8f",
+    "start_time": "2026-06-23T05:56:25.391693Z",
+    "end_time": "2026-06-23T05:56:58.223513Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/multi_travel_agents.py:70",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "agent.microsoft",
+        "span.type": "agentic.turn",
+        "scope.agentic.turn": "c627f03676a282f36a37eafb329ad0f3",
+        "entity.count": 1,
+        "span.subtype": "turn"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T05:56:25.391743Z",
+            "attributes": {
+                "input": "User request: roundtrip from New York to San Francisco departing 2026-07-10 returning 2026-07-14.\nFlights:\nFound 3 flights from New York to San Francisco on 2026-07-10: Delta $320, United $290, JetBlue $275\nHotels:\nFound hotels in San Francisco (2026-07-10 to 2026-07-14): Marriott $180/night, Hilton $165/night, Airbnb $120/night\n\nCreate a succinct itinerary with chosen flight, hotel, total estimated cost."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T05:56:58.223500Z",
+            "attributes": {
+                "response": "\n\n*   **Flights**: JetBlue departing July 10, returning July 14, 2026 (Estimated $550 roundtrip based on $275 outbound fare).\n*   **Accommodation**: Airbnb for 4 nights at $120/night, totaling $480 for the stay.\n*   **Total Estimated Cost**: Approximately $1,030 per person (includes flight and hotel).\n*   **Itinerary Summary**: Roundtrip from New York to San Francisco, July 10\u201314, 2026."
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "workflow",
+    "context": {
+        "trace_id": "36e95f4717aea8ce27d699550e17fb7c",
+        "span_id": "3f776463d3c0dd8f",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": null,
+    "start_time": "2026-06-23T05:56:25.391614Z",
+    "end_time": "2026-06-23T05:56:58.223522Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/multi_travel_agents.py:70",
+        "scope.agentic.turn": "c627f03676a282f36a37eafb329ad0f3",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "span.type": "workflow",
+        "entity.1.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "workflow.generic",
+        "entity.2.type": "app_hosting.generic",
+        "entity.2.name": "generic"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+]

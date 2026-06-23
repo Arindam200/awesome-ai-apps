@@ -13,6 +13,7 @@ and Magentic — each with *multiple* specialized travel agents and full
 ## Table of contents
 
 - [Setup](#setup)
+- [Powered by Nebius AI](#powered-by-nebius-ai)
 - [Project layout](#project-layout)
 - [The five orchestration patterns](#the-five-orchestration-patterns)
   - [1. Sequential](#1-sequential--a-pipeline)
@@ -29,6 +30,7 @@ and Magentic — each with *multiple* specialized travel agents and full
 ## Setup
 
 This project uses [`uv`](https://docs.astral.sh/uv/) and requires **Python 3.13+**.
+The examples are powered by the **Nebius AI** model via Nebius Token Factory.
 
 ```bash
 # 1. Install dependencies.
@@ -37,11 +39,13 @@ uv sync --prerelease=allow
 
 # 2. Activate the virtual environment
 source .venv/bin/activate
+```
 
-# 3. Provide an OpenAI key (the examples use OpenAIChatClient)
-export OPENAI_API_KEY="sk-..."
-# Optional: override the model (defaults to gpt-4o-mini)
-export OPENAI_CHAT_MODEL_ID="gpt-4o-mini"
+Create a `.env` file in the project root and add your Nebius API key
+(get it from [Nebius Token Factory](https://studio.nebius.ai/)):
+
+```
+NEBIUS_API_KEY=your_api_key_here
 ```
 
 > **Tip:** Run every example through `uv run` so it always uses the project's
@@ -54,6 +58,31 @@ export OPENAI_CHAT_MODEL_ID="gpt-4o-mini"
 > prerelease `azure-ai-agents>=1.2.0b5,<1.2.0b6`. Without the flag, `uv`'s resolver
 > refuses to pick prerelease versions and `uv sync` fails. As an alternative you can
 > pin `azure-ai-agents==1.2.0b5` in `pyproject.toml`.
+
+---
+
+## Powered by Nebius AI
+
+Every agent in these demos is backed by the **Nebius AI** model, served through
+[Nebius Token Factory](https://studio.nebius.ai/). The framework talks to Nebius
+via its OpenAI-compatible endpoint, so the standard `OpenAIChatCompletionClient`
+is pointed at the Nebius `base_url`:
+
+```python
+import os
+from agent_framework.openai import OpenAIChatCompletionClient
+
+client = OpenAIChatCompletionClient(
+    model="Qwen/Qwen3.5-397B-A17B",
+    api_key=os.getenv("NEBIUS_API_KEY"),
+    base_url="https://api.tokenfactory.nebius.com/v1/",
+)
+```
+
+- 🔑 **Auth:** set `NEBIUS_API_KEY` in your `.env` (get a key from
+  [Nebius Token Factory](https://studio.nebius.ai/)).
+- 🌐 **Endpoint:** `https://api.tokenfactory.nebius.com/v1/` (OpenAI-compatible).
+- 🤖 **Model:** `Qwen/Qwen3.5-397B-A17B` — swap in any model your Nebius account supports.
 
 ---
 
@@ -78,14 +107,20 @@ export OPENAI_CHAT_MODEL_ID="gpt-4o-mini"
 Common building blocks used in every example:
 
 ```python
+import os
+
 from agent_framework import Agent, tool
-from agent_framework.openai import OpenAIChatClient
+from agent_framework.openai import OpenAIChatCompletionClient
 from agent_framework.orchestrations import (
     SequentialBuilder, ConcurrentBuilder, HandoffBuilder,
     GroupChatBuilder, MagenticBuilder,
 )
 
-client = OpenAIChatClient(model="gpt-4o-mini")
+client = OpenAIChatCompletionClient(
+    model="Qwen/Qwen3.5-397B-A17B",
+    api_key=os.getenv("NEBIUS_API_KEY"),
+    base_url="https://api.tokenfactory.nebius.com/v1/",
+)
 agent = Agent(client=client, name="FlightAgent", instructions="...", tools=[search_flights])
 ```
 
@@ -105,6 +140,8 @@ flowchart LR
         t --> b4[Budget]
         b1 & b2 & b3 & b4 --> agg[Aggregator]
     end
+    SEQ -.powered by.-> NEB[(Nebius AI<br/>Token Factory)]
+    CON -.powered by.-> NEB
 ```
 
 ```mermaid
@@ -127,6 +164,9 @@ flowchart LR
         m --> m4[Budget]
         m -.plans/replans.-> m
     end
+    HAND -.powered by.-> NEB[(Nebius AI<br/>Token Factory)]
+    GC -.powered by.-> NEB
+    MAG -.powered by.-> NEB
 ```
 
 ---
@@ -323,7 +363,8 @@ Switch `monocle_exporters_list` to another exporter to ship traces elsewhere.
 
 1. https://github.com/microsoft/agent-framework/tree/main
 2. https://commandline.microsoft.com/assert-written-intent-executable-evals/
-3. Orchestration docs:
+3. [Nebius Token Factory](https://studio.nebius.ai/)
+4. Orchestration docs:
    [Sequential](https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/sequential) ·
    [Concurrent](https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/concurrent) ·
    [Handoff](https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/handoff) ·

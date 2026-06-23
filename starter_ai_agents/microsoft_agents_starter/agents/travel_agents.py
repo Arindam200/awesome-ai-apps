@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 from agent_framework import Agent, tool
-from agent_framework.openai import OpenAIChatClient
+from agent_framework.openai import OpenAIChatCompletionClient
 from monocle_apptrace import setup_monocle_telemetry
 
 # Enable Monocle Tracing
@@ -37,7 +37,11 @@ def search_hotels(city: str, checkin: str, checkout: str) -> str:
 
 # Agent instantiation
 agent = Agent(
-    client=OpenAIChatClient(model=os.getenv("OPENAI_CHAT_MODEL_ID", "gpt-4o-mini")),
+    client=OpenAIChatCompletionClient(
+        model="Qwen/Qwen3.5-397B-A17B",
+        api_key=os.getenv("NEBIUS_API_KEY"),
+        base_url="https://api.tokenfactory.nebius.com/v1/",
+    ),
     name="TravelAgent",
     instructions=(
         "You are a helpful travel planning assistant. "

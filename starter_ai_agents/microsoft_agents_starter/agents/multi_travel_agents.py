@@ -13,7 +13,13 @@ setup_monocle_telemetry(
 )
 
 from agent_framework import Agent, tool
-from agent_framework.openai import OpenAIChatClient
+from agent_framework.openai import OpenAIChatCompletionClient
+
+client = OpenAIChatCompletionClient(
+    model="Qwen/Qwen3.5-397B-A17B",
+    api_key=os.getenv("NEBIUS_API_KEY"),
+    base_url="https://api.tokenfactory.nebius.com/v1/",
+)
 
 
 # Tools (stubs) — in production replace with real API integrations
@@ -29,7 +35,7 @@ def search_hotels(city: str, checkin: str, checkout: str) -> str:
 
 # Planner agent: takes raw search results and crafts an itinerary
 planner_agent = Agent(
-    client=OpenAIChatClient(model=os.getenv("OPENAI_CHAT_MODEL_ID", "gpt-4o-mini")),
+    client=client,
     name="PlannerAgent",
     instructions=(
         "You are an itinerary planner. Given flight and hotel search results and user constraints,"
@@ -40,7 +46,7 @@ planner_agent = Agent(
 
 # Critic agent: reviews the itinerary and scores it
 critic_agent = Agent(
-    client=OpenAIChatClient(model=os.getenv("OPENAI_CHAT_MODEL_ID", "gpt-4o-mini")),
+    client=client,
     name="CriticAgent",
     instructions=(
         "You are a critic. Evaluate the provided itinerary for completeness, accuracy, and user-fit. "

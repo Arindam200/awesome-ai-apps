@@ -30,7 +30,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from agent_framework import Agent, AgentExecutorResponse
-from agent_framework.openai import OpenAIChatClient
+from agent_framework.openai import OpenAIChatCompletionClient
 from agent_framework.orchestrations import ConcurrentBuilder
 from monocle_apptrace import setup_monocle_telemetry
 
@@ -40,8 +40,12 @@ setup_monocle_telemetry(
 )
 
 
-def _client() -> OpenAIChatClient:
-    return OpenAIChatClient(model=os.getenv("OPENAI_CHAT_MODEL_ID", "gpt-4o-mini"))
+def _client() -> OpenAIChatCompletionClient:
+    return OpenAIChatCompletionClient(
+        model="Qwen/Qwen3.5-397B-A17B",
+        api_key=os.getenv("NEBIUS_API_KEY"),
+        base_url="https://api.tokenfactory.nebius.com/v1/",
+    )
 
 
 # --------------------------------------------------------------------------- #

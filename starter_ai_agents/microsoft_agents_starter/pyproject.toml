@@ -11,6 +11,7 @@ dependencies = [
 	"opentelemetry-semantic-conventions",
 	"opentelemetry-semantic-conventions-ai",
 	"openai",
+	"agent-framework-openai",
 	"python-dotenv",
 	"monocle-apptrace==0.8.4",
 ]
