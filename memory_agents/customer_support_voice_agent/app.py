@@ -13,6 +13,7 @@ Prereqs:
 
 import base64
 import os
+import re
 from io import BytesIO
 from typing import Optional
 
@@ -400,9 +401,9 @@ def main():
 
                     # Resolve and sanitize company name to prevent prompt injection
                     _raw_company = st.session_state.get("company_name") or "your company"
-                    import re as _re
-                    # Strip newlines, limit length, allow only safe characters
-                    company_name = _re.sub(r'[\r\n\t]', ' ', _raw_company)[:100].strip()
+                    # Allow only a safe character set, collapse whitespace, cap length
+                    company_name = re.sub(r'[^A-Za-z0-9 .,&()\-]', '', _raw_company)
+                    company_name = re.sub(r'\s+', ' ', company_name)[:100].strip()
                     company_name = company_name or "your company"
 
                     system_prompt = f"""You are a helpful customer support assistant for \"\"\"{company_name}\"\"\".

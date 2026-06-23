@@ -737,7 +737,7 @@
 
 <script>
 // Dashboard auth token, injected by the server. Empty string in dev mode.
-const DASHBOARD_TOKEN = "{{ dashboard_token }}";
+const DASHBOARD_TOKEN = {{ dashboard_token | tojson }};
 
 if (typeof hljs !== 'undefined') {
   hljs.configure({ ignoreUnescapedHTML: true });

@@ -84,10 +84,11 @@ async def health_check(request: Request):
                     "example_query": "",
                     "example_response": json.dumps(error_response, indent=2),
                     "current_year": current_year
-                }
+                },
+                status_code=500,
             )
             
-        return JSONResponse(content=error_response)
+        return JSONResponse(status_code=500, content=error_response)
 
 @router.get("/chat", response_class=HTMLResponse, dependencies=[Depends(require_api_key)])
 def chat(request: Request, query: str = None):

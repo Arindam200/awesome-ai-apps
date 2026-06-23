@@ -28,14 +28,15 @@ model = OpenAIChatCompletionsModel(
 async def main():
     # Validate required environment variables at startup
     _required = ["OPENAI_API_KEY", "NOTION_TOKEN", "GITHUB_TOKEN"]
-    _missing = [k for k in _required if not os.environ.get(k)]
+    _values = {k: os.environ.get(k, "").strip() for k in _required}
+    _missing = [k for k, v in _values.items() if not v]
     if _missing:
         raise EnvironmentError(f"Missing required environment variables: {', '.join(_missing)}")
 
     # Get required environment variables
-    openai_api_key = os.environ["OPENAI_API_KEY"].strip()
-    notion_api_key = os.environ["NOTION_TOKEN"].strip()
-    github_token = os.environ["GITHUB_TOKEN"].strip()
+    openai_api_key = _values["OPENAI_API_KEY"]
+    notion_api_key = _values["NOTION_TOKEN"]
+    github_token = _values["GITHUB_TOKEN"]
 
     print("Environment variables loaded successfully.")
 
