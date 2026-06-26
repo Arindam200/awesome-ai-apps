@@ -1,30 +1,114 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper: #f5f4f0;
-  --color-card: #ffffff;
-  --color-ink: #1a1a1a;
-  --color-muted: #777370;
-  --color-line: #e3e0d8;
-  --color-accent: #b3502d;
-  --color-accent-soft: #f4e3da;
-  --font-serif: Georgia, "Times New Roman", serif;
-  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+  /* surfaces */
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-surface-2: #f0f2f5;
+  --color-line: #e5e7eb;
+  --color-line-strong: #d4d7dd;
+
+  /* text */
+  --color-ink: #2b2926;
+  --color-muted: #6b6f76;
+  --color-faint: #9aa0a6;
+
+  /* brand blue */
+  --color-primary: #3553ff;
+  --color-primary-hover: #2840d6;
+  --color-primary-soft: #eef1ff;
+
+  /* gold accent (secondary) */
+  --color-gold: #b8870f;
+  --color-gold-soft: #fbf3e0;
+
+  /* status */
+  --color-danger: #b42318;
+  --color-danger-soft: #fcebea;
+  --color-success: #1e7a4c;
+  --color-success-soft: #e6f4ec;
+
+  /* type — wired to next/font CSS vars in layout.tsx */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), sans-serif;
+  --font-mono: var(--font-geist-mono), "SF Mono", ui-monospace, Menlo, monospace;
+
+  --radius: 6px;
 }
 
 body {
-  background-color: var(--color-paper);
+  background-color: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
+/* ── Signature motifs ───────────────────────────────────────────── */
+
+/* (a) top accent strip */
+.top-strip {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  height: 3px;
+  background: var(--color-primary);
+  z-index: 60;
+}
+
+/* (c) corner-bracket frame — add a <span class="br" /> inside for bottom ticks */
+.frame {
+  position: relative;
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  background: var(--color-surface);
+}
+.frame::before,
+.frame::after,
+.frame > .br::before,
+.frame > .br::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: var(--color-primary);
+}
+.frame::before {
+  top: -1px;
+  left: -1px;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+.frame::after {
+  top: -1px;
+  right: -1px;
+  border-top: 2px solid;
+  border-right: 2px solid;
+}
+.frame > .br::before {
+  bottom: -1px;
+  left: -1px;
+  border-bottom: 2px solid;
+  border-left: 2px solid;
+}
+.frame > .br::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+}
+
+/* ── Citation highlight (now blue) ──────────────────────────────── */
 @keyframes citation-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(179, 80, 45, 0.55); }
-  70% { box-shadow: 0 0 0 12px rgba(179, 80, 45, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(179, 80, 45, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(53, 83, 255, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(53, 83, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(53, 83, 255, 0);
+  }
 }
-
 .citation-rect {
   animation: citation-pulse 1.6s ease-out 2;
 }

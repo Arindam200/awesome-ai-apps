@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Mail, FlaskConical, CheckCircle2 } from "lucide-react";
 import {
   Brief,
   SECTION_KEYS,
@@ -12,6 +12,10 @@ import {
 } from "@/lib/api";
 import { useProject } from "@/components/ProjectProvider";
 import ChipsInput from "@/components/ChipsInput";
+import { Button, ButtonLink } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Field";
+import { Toggle } from "@/components/ui/Toggle";
+import { Frame } from "@/components/ui/Frame";
 
 export default function ComposePage() {
   const { selected, refresh } = useProject();
@@ -27,11 +31,13 @@ export default function ComposePage() {
   const [sending, setSending] = useState<"test" | "all" | null>(null);
   const [result, setResult] = useState<SendResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [previewVersion, setPreviewVersion] = useState(0);
   const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const loadPreview = useCallback(async (briefId: number) => {
     const data = await api.briefHtml(briefId);
     setHtml(data.html);
+    setPreviewVersion((v) => v + 1); // force the iframe to remount on new HTML
     setSubject((s) => s || data.subject);
     setSections(data.sections);
     setRecipients((r) => (r.length ? r : data.default_recipients));
@@ -49,7 +55,6 @@ export default function ComposePage() {
       .catch(() => setNoBrief(true));
   }, [selected, loadPreview]);
 
-  // toggle a section → persist on the project, then re-render preview
   const toggleSection = async (key: SectionKey) => {
     if (!selected || !brief) return;
     const next = { ...sections, [key]: !sections[key] };
@@ -65,12 +70,7 @@ export default function ComposePage() {
     setError(null);
     setResult(null);
     try {
-      const res = await api.sendBrief(brief.id, {
-        recipients,
-        subject,
-        from_name: fromName,
-        test,
-      });
+      const res = await api.sendBrief(brief.id, { recipients, subject, from_name: fromName, test });
       setResult(res);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -79,35 +79,43 @@ export default function ComposePage() {
     }
   };
 
-  if (!selected) return <p className="text-muted">Select or create a project first.</p>;
+  if (!selected)
+    return (
+      <p className="font-mono text-xs uppercase tracking-[0.16em] text-faint">
+        Select or create a project first.
+      </p>
+    );
 
   if (noBrief) {
     return (
       <div className="mx-auto mt-16 max-w-md text-center">
-        <h1 className="font-serif text-3xl">Nothing to send yet</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
+          Nothing to send yet
+        </h1>
         <p className="mt-3 text-sm text-muted">
-          Generate a brief for <b>{selected.name}</b> first, then come back to
-          customize and send it.
+          Generate a brief for <b className="text-ink">{selected.name}</b> first, then come
+          back to customize and send it.
         </p>
-        <Link
-          href="/"
-          className="mt-6 inline-block rounded-sm bg-accent px-4 py-2 text-sm font-bold text-white"
-        >
-          Go run the brief →
-        </Link>
+        <div className="mt-6">
+          <ButtonLink href="/" arrow>
+            Go run the brief
+          </ButtonLink>
+        </div>
       </div>
     );
   }
 
   return (
     <div>
-      <h1 className="font-serif text-3xl">Compose &amp; Send</h1>
-      <p className="mt-1 text-sm text-muted">
-        Customize the newsletter for <b>{selected.name}</b>, preview the exact
-        email, then send.
+      <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
+        Compose &amp; Send
+      </h1>
+      <p className="mt-2 text-sm text-muted">
+        Customize the newsletter for <b className="text-ink">{selected.name}</b>, preview the
+        exact email, then send.
       </p>
 
-      <div className="mt-6 grid gap-8 lg:grid-cols-[360px_1fr]">
+      <div className="mt-7 grid gap-8 lg:grid-cols-[360px_1fr]">
         {/* controls */}
         <div className="space-y-6">
           <Field label="Recipients">
@@ -115,88 +123,77 @@ export default function ComposePage() {
           </Field>
 
           <Field label="Subject">
-            <input
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              className="w-full rounded-sm border border-line bg-card px-3 py-2 text-sm outline-none focus:border-accent"
-            />
+            <Input value={subject} onChange={(e) => setSubject(e.target.value)} />
           </Field>
 
           <Field label="From name">
-            <input
-              value={fromName}
-              onChange={(e) => setFromName(e.target.value)}
-              className="w-full rounded-sm border border-line bg-card px-3 py-2 text-sm outline-none focus:border-accent"
-            />
+            <Input value={fromName} onChange={(e) => setFromName(e.target.value)} />
           </Field>
 
           <div>
-            <span className="text-sm font-medium">Sections</span>
-            <div className="mt-2 space-y-1.5">
+            <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-faint">
+              Sections
+            </span>
+            <div className="mt-3 space-y-2.5">
               {SECTION_KEYS.map((k) => (
-                <label key={k} className="flex cursor-pointer items-center justify-between gap-2 text-sm">
-                  <span className={sections[k] === false ? "text-muted line-through" : ""}>
+                <div key={k} className="flex items-center justify-between gap-2">
+                  <span className={`text-sm ${sections[k] === false ? "text-faint line-through" : "text-ink"}`}>
                     {SECTION_LABELS[k]}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => toggleSection(k)}
-                    className={`relative h-5 w-9 rounded-full transition-colors ${
-                      sections[k] === false ? "bg-line" : "bg-accent"
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-all ${
-                        sections[k] === false ? "left-0.5" : "left-4"
-                      }`}
-                    />
-                  </button>
-                </label>
+                  <Toggle checked={sections[k] !== false} onChange={() => toggleSection(k)} />
+                </div>
               ))}
             </div>
           </div>
 
-          <div className="space-y-2 border-t border-line pt-4">
-            <button
+          <div className="space-y-2 border-t border-line pt-5">
+            <Button
+              variant="secondary"
+              className="w-full"
               onClick={() => doSend(true)}
               disabled={sending !== null || recipients.length === 0}
-              className="w-full rounded-sm border border-line px-4 py-2 text-sm font-bold hover:bg-paper disabled:opacity-50"
             >
+              <FlaskConical size={14} className="text-primary" />
               {sending === "test" ? "Sending test…" : "Send test to first recipient"}
-            </button>
-            <button
+            </Button>
+            <Button
+              className="w-full"
               onClick={() => doSend(false)}
               disabled={sending !== null || recipients.length === 0}
-              className="w-full rounded-sm bg-accent px-4 py-2 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50"
             >
+              <Mail size={14} />
               {sending === "all"
                 ? "Sending…"
                 : `Send to ${recipients.length} recipient${recipients.length === 1 ? "" : "s"}`}
-            </button>
+            </Button>
             {result && (
-              <p className="text-xs text-accent">
+              <p className="flex items-center gap-1.5 text-xs text-success">
+                <CheckCircle2 size={13} />
                 {result.test ? "Test sent" : "Sent"} to {result.sent_to.join(", ")}
                 {result.resend_id ? ` · id ${result.resend_id.slice(0, 8)}…` : ""}
               </p>
             )}
-            {error && <p className="text-xs text-accent">{error}</p>}
+            {error && <p className="text-xs text-danger">{error}</p>}
           </div>
         </div>
 
         {/* live preview */}
         <div>
-          <div className="mb-2 flex items-center justify-between text-xs text-muted">
-            <span>Live preview</span>
-            <span className="truncate">{subject}</span>
-          </div>
-          <div className="overflow-hidden rounded-sm border border-line bg-white shadow-sm">
-            <iframe
-              srcDoc={html}
-              title="email preview"
-              className="h-[70vh] w-full"
-              sandbox=""
-            />
-          </div>
+          <Frame label="Live preview" dots>
+            {html ? (
+              <iframe
+                key={previewVersion}
+                srcDoc={html}
+                title="email preview"
+                className="h-[70vh] w-full bg-white"
+                sandbox=""
+              />
+            ) : (
+              <div className="flex h-[70vh] items-center justify-center bg-white font-mono text-xs uppercase tracking-[0.16em] text-faint">
+                Loading preview…
+              </div>
+            )}
+          </Frame>
         </div>
       </div>
     </div>
@@ -205,9 +202,9 @@ export default function ComposePage() {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="text-sm font-medium">{label}</span>
-      <div className="mt-1.5">{children}</div>
-    </label>
+    <div>
+      <div className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">{label}</div>
+      {children}
+    </div>
   );
 }

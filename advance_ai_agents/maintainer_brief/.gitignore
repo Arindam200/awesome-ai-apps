@@ -16,3 +16,7 @@ frontend/.pnpm-store/
 
 # misc
 .DS_Store
+
+# build/tool caches
+frontend/.gstack/
+*.tsbuildinfo

@@ -2,9 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Trash2 } from "lucide-react";
 import { api } from "@/lib/api";
 import { useProject } from "@/components/ProjectProvider";
 import ChipsInput from "@/components/ChipsInput";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Field";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 interface NewsletterCfg {
   recipients?: string[];
@@ -44,7 +49,12 @@ export default function SettingsPage() {
     setSubjectPrefix(newsletter.subject_prefix ?? `${selected.name} Brief`);
   }, [selected]);
 
-  if (!selected) return <p className="text-muted">Select or create a project first.</p>;
+  if (!selected)
+    return (
+      <p className="font-mono text-xs uppercase tracking-[0.16em] text-faint">
+        Select or create a project first.
+      </p>
+    );
 
   const save = async () => {
     setSaving(true);
@@ -77,45 +87,59 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="font-serif text-3xl">Settings</h1>
-      <p className="mt-1 text-sm text-muted">Configure how <b>{selected.name}</b>&apos;s brief is built and delivered.</p>
+      <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">Settings</h1>
+      <p className="mt-2 text-sm text-muted">
+        Configure how <b className="text-ink">{selected.name}</b>&apos;s brief is built and delivered.
+      </p>
 
-      <div className="mt-6 space-y-6">
+      <SectionLabel label="Sources" className="mt-8" />
+      <div className="mt-5 space-y-6">
         <Field label="Project name">
-          <input value={name} onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-sm border border-line bg-card px-3 py-2 text-sm outline-none focus:border-accent" />
+          <Input value={name} onChange={(e) => setName(e.target.value)} />
         </Field>
         <Field label="GitHub repos"><ChipsInput values={repos} onChange={setRepos} placeholder="org/name" /></Field>
         <Field label="Keywords"><ChipsInput values={keywords} onChange={setKeywords} placeholder="add a keyword" /></Field>
         <Field label="Competitors"><ChipsInput values={competitors} onChange={setCompetitors} placeholder="competitor name" /></Field>
         <Field label="Subreddits"><ChipsInput values={subreddits} onChange={setSubreddits} placeholder="subreddit" /></Field>
         <Field label="Hacker News queries"><ChipsInput values={hn} onChange={setHn} placeholder="query" /></Field>
+      </div>
+
+      <SectionLabel label="Delivery" className="mt-10" />
+      <div className="mt-5 space-y-6">
         <Field label="Recipients"><ChipsInput values={recipients} onChange={setRecipients} placeholder="email" type="email" /></Field>
         <Field label="Subject prefix">
-          <input value={subjectPrefix} onChange={(e) => setSubjectPrefix(e.target.value)}
-            className="w-full rounded-sm border border-line bg-card px-3 py-2 text-sm outline-none focus:border-accent" />
+          <Input value={subjectPrefix} onChange={(e) => setSubjectPrefix(e.target.value)} />
         </Field>
         <Field label="Cadence">
-          <div className="flex gap-2">
-            {(["weekly", "daily"] as const).map((c) => (
-              <button key={c} onClick={() => setCadence(c)}
-                className={`rounded-sm border px-4 py-1.5 text-sm capitalize ${
-                  cadence === c ? "border-accent bg-accent text-white" : "border-line hover:bg-paper"
-                }`}>{c}</button>
-            ))}
-          </div>
+          <SegmentedControl
+            value={cadence}
+            onChange={setCadence}
+            options={[
+              { value: "weekly", label: "Weekly" },
+              { value: "daily", label: "Daily" },
+            ]}
+          />
         </Field>
+      </div>
 
-        <div className="flex items-center gap-3 border-t border-line pt-5">
-          <button onClick={save} disabled={saving}
-            className="rounded-sm bg-accent px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50">
-            {saving ? "Saving…" : "Save changes"}
-          </button>
-          {saved && <span className="text-sm text-accent">Saved ✓</span>}
-          <button onClick={remove}
-            className="ml-auto rounded-sm border border-line px-4 py-2 text-sm text-muted hover:border-accent hover:text-accent">
-            Delete project
-          </button>
+      <div className="mt-8 flex items-center gap-3 border-t border-line pt-5">
+        <Button onClick={save} disabled={saving}>
+          {saving ? "Saving…" : "Save changes"}
+        </Button>
+        {saved && <span className="text-sm text-success">Saved ✓</span>}
+      </div>
+
+      {/* danger zone */}
+      <div className="mt-10 rounded-[6px] border border-danger/25 bg-danger-soft/50 p-4">
+        <SectionLabel label="Danger zone" />
+        <div className="mt-3 flex items-center justify-between gap-4">
+          <p className="text-sm text-muted">
+            Delete this project and all of its signals, briefs, and documents.
+          </p>
+          <Button variant="danger" onClick={remove}>
+            <Trash2 size={14} />
+            Delete
+          </Button>
         </div>
       </div>
     </div>
@@ -124,9 +148,9 @@ export default function SettingsPage() {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="text-sm font-medium">{label}</span>
-      <div className="mt-1.5">{children}</div>
-    </label>
+    <div>
+      <div className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">{label}</div>
+      {children}
+    </div>
   );
 }

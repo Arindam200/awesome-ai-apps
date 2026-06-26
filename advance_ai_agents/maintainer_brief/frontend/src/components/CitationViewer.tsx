@@ -72,7 +72,7 @@ export default function CitationViewer({
   return (
     <div>
       <div
-        className={`relative overflow-hidden rounded-sm border border-line bg-white shadow-sm transition-all ${zoomed ? "cursor-zoom-out" : "cursor-zoom-in"}`}
+        className={`relative overflow-hidden rounded-[6px] border border-line bg-white shadow-sm transition-all ${zoomed ? "cursor-zoom-out" : "cursor-zoom-in"}`}
         style={zoomed ? { transform: "scale(1.4)", transformOrigin: "top center" } : undefined}
         onClick={() => setZoomed(!zoomed)}
       >
@@ -85,7 +85,7 @@ export default function CitationViewer({
         {rects.map(({ citation, rect }) => (
           <div
             key={citation.id}
-            className={`citation-rect absolute border-2 border-accent bg-accent/20 ${
+            className={`citation-rect absolute border-2 border-primary bg-primary/20 ${
               activeCitationId === citation.id ? "z-10" : ""
             }`}
             style={{
@@ -97,14 +97,14 @@ export default function CitationViewer({
             title={citation.snippet ?? citation.field_name ?? ""}
           >
             {citation.field_name && (
-              <span className="absolute -top-5 left-0 whitespace-nowrap rounded-sm bg-accent px-1.5 py-0.5 text-[10px] font-bold text-white">
+              <span className="absolute -top-5 left-0 whitespace-nowrap rounded-sm bg-primary px-1.5 py-0.5 text-[10px] font-bold text-white">
                 {citation.field_name}
               </span>
             )}
           </div>
         ))}
       </div>
-      <div className="mt-2 text-xs text-muted">
+      <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
         Page {page.page_no} · {rects.length} citation{rects.length === 1 ? "" : "s"} · click to{" "}
         {zoomed ? "reset" : "zoom"} · extracted by Unsiloed
       </div>

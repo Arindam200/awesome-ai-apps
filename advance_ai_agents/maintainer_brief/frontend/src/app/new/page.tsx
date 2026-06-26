@@ -2,9 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Search, Star, CheckCircle2, ChevronRight, ChevronDown } from "lucide-react";
 import { GALLERY, GalleryPreset, GithubRepoMeta, api } from "@/lib/api";
 import { useProject } from "@/components/ProjectProvider";
 import ChipsInput from "@/components/ChipsInput";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Field";
+import { SectionLabel } from "@/components/ui/SectionLabel";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
 
 interface Draft {
   name: string;
@@ -26,7 +32,7 @@ export default function NewProjectPage() {
   const router = useRouter();
   const { refresh, setSelectedId } = useProject();
   const [draft, setDraft] = useState<Draft>(EMPTY);
-  const [started, setStarted] = useState(false); // hide gallery once a preset/repo chosen
+  const [started, setStarted] = useState(false);
   const [repoInput, setRepoInput] = useState("");
   const [repo, setRepo] = useState<GithubRepoMeta | null>(null);
   const [validating, setValidating] = useState(false);
@@ -96,80 +102,74 @@ export default function NewProjectPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="font-serif text-4xl">New brief</h1>
-      <p className="mt-1 text-sm text-muted">
+      <h1 className="font-display text-4xl font-semibold tracking-tight text-ink">New brief</h1>
+      <p className="mt-2 text-sm text-muted">
         Pick a project to monitor. We&apos;ll watch its GitHub activity, community
         chatter, and any documents you upload.
       </p>
 
       {!started && (
         <>
-          <h2 className="mt-8 text-xs font-bold uppercase tracking-[1.5px] text-accent">
-            Popular projects
-          </h2>
-          <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <SectionLabel label="Popular projects" index={1} total={2} className="mt-9" />
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {GALLERY.map((p) => (
-              <button
-                key={p.name}
-                onClick={() => usePreset(p)}
-                className="group flex items-start gap-3 rounded-sm border border-line bg-card p-4 text-left transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-sm"
-              >
-                <span className="text-2xl">{p.emoji}</span>
-                <span>
-                  <span className="block font-serif text-lg">{p.name}</span>
-                  <span className="mt-0.5 block text-xs text-muted">{p.blurb}</span>
-                </span>
+              <button key={p.name} onClick={() => usePreset(p)} className="text-left">
+                <Card hover className="flex h-full items-start gap-3 p-4">
+                  <span className="text-2xl leading-none">{p.emoji}</span>
+                  <span>
+                    <span className="block font-display text-base font-semibold text-ink">{p.name}</span>
+                    <span className="mt-0.5 block text-xs leading-relaxed text-muted">{p.blurb}</span>
+                  </span>
+                  <ChevronRight size={16} className="ml-auto mt-1 shrink-0 text-faint" />
+                </Card>
               </button>
             ))}
           </div>
 
-          <h2 className="mt-10 text-xs font-bold uppercase tracking-[1.5px] text-accent">
-            Or add your own repo
-          </h2>
-          <div className="mt-3 flex gap-2">
-            <input
-              value={repoInput}
-              onChange={(e) => setRepoInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && validateRepo()}
-              placeholder="org/name  (e.g. langchain-ai/langchain)"
-              className="flex-1 rounded-sm border border-line bg-card px-3 py-2 text-sm outline-none focus:border-accent"
-            />
-            <button
-              onClick={validateRepo}
-              disabled={validating}
-              className="rounded-sm border border-line px-4 py-2 text-sm font-bold hover:bg-paper disabled:opacity-50"
-            >
+          <SectionLabel label="Or add your own repo" index={2} total={2} className="mt-10" />
+          <div className="mt-4 flex gap-2">
+            <div className="relative flex-1">
+              <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-faint" />
+              <Input
+                value={repoInput}
+                onChange={(e) => setRepoInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && validateRepo()}
+                placeholder="org/name  (e.g. langchain-ai/langchain)"
+                className="pl-9"
+              />
+            </div>
+            <Button variant="secondary" onClick={validateRepo} disabled={validating}>
               {validating ? "Checking…" : "Find repo"}
-            </button>
+            </Button>
           </div>
-          {repoError && <p className="mt-2 text-sm text-accent">{repoError}</p>}
+          {repoError && <p className="mt-2 text-sm text-danger">{repoError}</p>}
         </>
       )}
 
       {started && (
         <div className="mt-8 space-y-6">
           {repo && (
-            <div className="flex items-center gap-3 rounded-sm border border-line bg-card p-4">
+            <Card className="flex items-center gap-3 p-4">
               {repo.owner_avatar && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={repo.owner_avatar} alt="" className="h-10 w-10 rounded-sm" />
+                <img src={repo.owner_avatar} alt="" className="h-10 w-10 rounded-[6px]" />
               )}
-              <div>
-                <div className="font-medium">{repo.full_name}</div>
-                <div className="text-xs text-muted">
-                  ★ {repo.stargazers_count.toLocaleString()} · {repo.language ?? "—"} ·{" "}
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 font-medium text-ink">
+                  {repo.full_name}
+                  <CheckCircle2 size={14} className="text-success" />
+                </div>
+                <div className="flex items-center gap-1.5 truncate text-xs text-muted">
+                  <Star size={11} className="text-gold" fill="currentColor" />
+                  {repo.stargazers_count.toLocaleString()} · {repo.language ?? "—"} ·{" "}
                   {repo.description}
                 </div>
               </div>
-            </div>
+            </Card>
           )}
 
           <Field label="Brief name">
-            <input
-              value={draft.name}
-              onChange={(e) => setDraft({ ...draft, name: e.target.value })}
-              className="w-full rounded-sm border border-line bg-card px-3 py-2 text-sm outline-none focus:border-accent"
-            />
+            <Input value={draft.name} onChange={(e) => setDraft({ ...draft, name: e.target.value })} />
           </Field>
 
           <Field label="GitHub repos" hint="org/name — add more for multi-repo projects">
@@ -181,39 +181,34 @@ export default function NewProjectPage() {
           </Field>
 
           <Field label="Your email" hint="where the brief is delivered">
-            <input
+            <Input
               type="email"
               value={draft.recipient}
               onChange={(e) => setDraft({ ...draft, recipient: e.target.value })}
               placeholder="you@example.com"
-              className="w-full rounded-sm border border-line bg-card px-3 py-2 text-sm outline-none focus:border-accent"
             />
           </Field>
 
           <Field label="Cadence">
-            <div className="flex gap-2">
-              {(["weekly", "daily"] as const).map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setDraft({ ...draft, cadence: c })}
-                  className={`rounded-sm border px-4 py-1.5 text-sm capitalize ${
-                    draft.cadence === c ? "border-accent bg-accent text-white" : "border-line hover:bg-paper"
-                  }`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
+            <SegmentedControl
+              value={draft.cadence}
+              onChange={(c) => setDraft({ ...draft, cadence: c })}
+              options={[
+                { value: "weekly", label: "Weekly" },
+                { value: "daily", label: "Daily" },
+              ]}
+            />
           </Field>
 
           <button
             onClick={() => setAdvanced((a) => !a)}
-            className="text-xs font-bold text-muted hover:text-accent"
+            className="flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.14em] text-muted transition-colors hover:text-primary"
           >
-            {advanced ? "▾" : "▸"} Advanced (competitors, communities)
+            {advanced ? <ChevronDown size={13} /> : <ChevronRight size={13} />}
+            Advanced (competitors, communities)
           </button>
           {advanced && (
-            <div className="space-y-6 rounded-sm border border-line bg-paper/40 p-4">
+            <div className="space-y-6 rounded-[6px] border border-line bg-surface-2/50 p-4">
               <Field label="Competitor names" hint="tracked in Competitor Watch">
                 <ChipsInput
                   values={draft.competitors.map((c) => c.name)}
@@ -237,26 +232,22 @@ export default function NewProjectPage() {
             </div>
           )}
 
-          {error && <p className="text-sm text-accent">{error}</p>}
+          {error && <p className="text-sm text-danger">{error}</p>}
 
           <div className="flex gap-3">
-            <button
-              onClick={create}
-              disabled={saving}
-              className="rounded-sm bg-accent px-5 py-2.5 text-sm font-bold text-white hover:opacity-90 disabled:opacity-50"
-            >
+            <Button onClick={create} disabled={saving} arrow={!saving}>
               {saving ? "Creating…" : "Create brief"}
-            </button>
-            <button
+            </Button>
+            <Button
+              variant="secondary"
               onClick={() => {
                 setStarted(false);
                 setDraft(EMPTY);
                 setRepo(null);
               }}
-              className="rounded-sm border border-line px-5 py-2.5 text-sm hover:bg-paper"
             >
               Back
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -266,10 +257,12 @@ export default function NewProjectPage() {
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="text-sm font-medium">{label}</span>
-      {hint && <span className="ml-2 text-xs text-muted">{hint}</span>}
-      <div className="mt-1.5">{children}</div>
-    </label>
+    <div>
+      <div className="mb-1.5 flex items-baseline gap-2">
+        <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-faint">{label}</span>
+        {hint && <span className="text-xs text-muted">{hint}</span>}
+      </div>
+      {children}
+    </div>
   );
 }

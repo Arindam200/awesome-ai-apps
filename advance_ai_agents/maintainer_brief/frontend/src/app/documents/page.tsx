@@ -1,9 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { UploadCloud, FileText } from "lucide-react";
 import { API_URL, DocumentRow, api } from "@/lib/api";
 import { useProject } from "@/components/ProjectProvider";
 import RunNowButton from "@/components/RunNowButton";
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { IconChip } from "@/components/ui/IconChip";
 
 export default function DocumentsPage() {
   const { selected } = useProject();
@@ -37,22 +41,25 @@ export default function DocumentsPage() {
       if (body.status === "created") created++;
       else if (body.status === "duplicate") dupes++;
     }
-    setMessage(
-      `${created} uploaded${dupes ? `, ${dupes} already ingested` : ""}. Run the brief to extract.`,
-    );
+    setMessage(`${created} uploaded${dupes ? `, ${dupes} already ingested` : ""}. Run the brief to extract.`);
     setUploading(false);
     refresh();
   };
 
-  if (!selected) return <p className="text-muted">Select or create a project first.</p>;
+  if (!selected)
+    return (
+      <p className="font-mono text-xs uppercase tracking-[0.16em] text-faint">
+        Select or create a project first.
+      </p>
+    );
 
   return (
     <div>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl">Documents</h1>
-          <p className="mt-1 text-sm text-muted">
-            Conference decks, reports, RFCs, advisories for <b>{selected.name}</b> —
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">Documents</h1>
+          <p className="mt-2 text-sm text-muted">
+            Conference decks, reports, RFCs, advisories for <b className="text-ink">{selected.name}</b> —
             extracted into cited signals by Unsiloed.
           </p>
         </div>
@@ -71,15 +78,17 @@ export default function DocumentsPage() {
           setDragOver(false);
           if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files);
         }}
-        className={`mt-6 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed px-6 py-10 text-center transition-colors ${
-          dragOver ? "border-accent bg-accent-soft" : "border-line bg-card hover:border-accent/60"
+        className={`mt-6 flex cursor-pointer flex-col items-center justify-center rounded-[8px] border-2 border-dashed px-6 py-12 text-center transition-colors ${
+          dragOver ? "border-primary bg-primary-soft" : "border-line bg-surface hover:border-primary/50"
         }`}
       >
-        <div className="text-3xl">📄</div>
-        <p className="mt-2 text-sm font-medium">
+        <UploadCloud size={32} strokeWidth={1.75} className={dragOver ? "text-primary" : "text-faint"} />
+        <p className="mt-3 text-sm font-medium text-ink">
           {uploading ? "Uploading…" : "Drop PDFs here, or click to choose"}
         </p>
-        <p className="mt-1 text-xs text-muted">PDF, PPTX, DOCX, PNG, JPG, XLSX · up to 100 MB each</p>
+        <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-faint">
+          PDF · PPTX · DOCX · PNG · JPG · XLSX — up to 100 MB each
+        </p>
         <input
           type="file"
           multiple
@@ -93,32 +102,32 @@ export default function DocumentsPage() {
         />
       </label>
 
-      {message && <p className="mt-4 text-sm text-accent">{message}</p>}
+      {message && <p className="mt-4 text-sm text-primary">{message}</p>}
 
       {docs.length === 0 ? (
-        <p className="mt-10 text-center text-muted">No documents yet.</p>
+        <p className="mt-10 text-center font-mono text-xs uppercase tracking-[0.16em] text-faint">
+          No documents yet.
+        </p>
       ) : (
         <div className="mt-6 space-y-2">
           {docs.map((d) => (
-            <div
-              key={d.id}
-              className="flex items-center justify-between rounded-sm border border-line bg-card p-4"
-            >
-              <div>
-                <h2 className="font-serif text-lg">{d.title ?? `Document ${d.id}`}</h2>
-                <p className="mt-0.5 text-xs text-muted">
-                  {d.doc_category ?? "unclassified"}
-                  {d.page_count ? ` · ${d.page_count} pages` : ""} · {d.status}
-                </p>
+            <Card key={d.id} className="flex items-center justify-between gap-4 p-4">
+              <div className="flex items-center gap-3">
+                <IconChip icon={FileText} tone="soft" size="sm" />
+                <div>
+                  <h2 className="font-display text-base font-semibold text-ink">
+                    {d.title ?? `Document ${d.id}`}
+                  </h2>
+                  <p className="mt-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-faint">
+                    {d.doc_category ?? "unclassified"}
+                    {d.page_count ? ` · ${d.page_count} pages` : ""} · {d.status}
+                  </p>
+                </div>
               </div>
-              <span
-                className={`rounded-sm px-3 py-1 text-xs font-bold ${
-                  d.signal_count > 0 ? "bg-accent-soft text-accent" : "bg-line text-muted"
-                }`}
-              >
+              <Badge tone={d.signal_count > 0 ? "blue" : "neutral"}>
                 {d.signal_count} signal{d.signal_count === 1 ? "" : "s"}
-              </span>
-            </div>
+              </Badge>
+            </Card>
           ))}
         </div>
       )}

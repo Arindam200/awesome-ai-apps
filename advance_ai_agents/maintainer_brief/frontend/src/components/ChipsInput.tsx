@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { X } from "lucide-react";
 
 export default function ChipsInput({
   values,
@@ -22,19 +23,19 @@ export default function ChipsInput({
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 rounded-sm border border-line bg-card px-2 py-1.5">
+    <div className="flex flex-wrap items-center gap-1.5 rounded-[6px] border border-line bg-surface px-2 py-1.5 transition-colors focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15">
       {values.map((v) => (
         <span
           key={v}
-          className="inline-flex items-center gap-1 rounded-sm bg-accent-soft px-2 py-0.5 text-xs text-accent"
+          className="inline-flex items-center gap-1 rounded-[4px] bg-primary-soft px-2 py-0.5 text-xs font-medium text-primary"
         >
           {v}
           <button
             type="button"
             onClick={() => onChange(values.filter((x) => x !== v))}
-            className="text-accent/60 hover:text-accent"
+            className="text-primary/50 transition-colors hover:text-primary"
           >
-            ✕
+            <X size={12} strokeWidth={2.5} />
           </button>
         </span>
       ))}
@@ -52,7 +53,7 @@ export default function ChipsInput({
         }}
         onBlur={add}
         placeholder={values.length ? "" : placeholder}
-        className="min-w-[120px] flex-1 bg-transparent px-1 py-0.5 text-sm outline-none"
+        className="min-w-[120px] flex-1 bg-transparent px-1 py-0.5 text-sm text-ink placeholder:text-faint outline-none"
       />
     </div>
   );

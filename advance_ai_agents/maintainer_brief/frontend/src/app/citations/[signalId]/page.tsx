@@ -2,8 +2,12 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { api, Signal } from "@/lib/api";
 import CitationViewer from "@/components/CitationViewer";
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+import { SectionLabel } from "@/components/ui/SectionLabel";
 
 function ConfidenceDots({ score }: { score: number | null }) {
   if (score == null) return null;
@@ -11,46 +15,35 @@ function ConfidenceDots({ score }: { score: number | null }) {
   return (
     <span className="inline-flex items-center gap-1" title={`confidence ${(score * 100).toFixed(0)}%`}>
       {[...Array(5)].map((_, i) => (
-        <span
-          key={i}
-          className={`h-1.5 w-1.5 rounded-full ${i < filled ? "bg-accent" : "bg-line"}`}
-        />
+        <span key={i} className={`h-1.5 w-1.5 rounded-full ${i < filled ? "bg-primary" : "bg-line"}`} />
       ))}
-      <span className="ml-1 text-xs text-muted">{(score * 100).toFixed(0)}%</span>
+      <span className="ml-1 font-mono text-[10px] text-muted">{(score * 100).toFixed(0)}%</span>
     </span>
   );
 }
 
-export default function CitationPage({
-  params,
-}: {
-  params: Promise<{ signalId: string }>;
-}) {
+export default function CitationPage({ params }: { params: Promise<{ signalId: string }> }) {
   const { signalId } = use(params);
   const [signal, setSignal] = useState<Signal | null>(null);
   const [error, setError] = useState(false);
   const [activePage, setActivePage] = useState<number | null>(null);
 
   useEffect(() => {
-    api
-      .signal(Number(signalId))
-      .then(setSignal)
-      .catch(() => setError(true));
+    api.signal(Number(signalId)).then(setSignal).catch(() => setError(true));
   }, [signalId]);
 
-  if (error) return <p className="text-muted">Signal not found.</p>;
-  if (!signal) return <p className="text-muted">Loading…</p>;
+  if (error)
+    return <p className="font-mono text-xs uppercase tracking-[0.16em] text-faint">Signal not found.</p>;
+  if (!signal)
+    return <p className="font-mono text-xs uppercase tracking-[0.16em] text-faint">Loading…</p>;
 
   const citations = signal.citations ?? [];
   const pages = signal.document?.pages ?? [];
-  const citedPageNos = [...new Set(citations.map((c) => c.page_no))].sort(
-    (a, b) => a - b,
-  );
+  const citedPageNos = [...new Set(citations.map((c) => c.page_no))].sort((a, b) => a - b);
   const currentPageNo = activePage ?? citedPageNos[0] ?? pages[0]?.page_no;
   const currentPage = pages.find((p) => p.page_no === currentPageNo);
   const pageCitations = citations.filter((c) => c.page_no === currentPageNo);
 
-  // Signal from an API source (GitHub/HN/...) — no document to show
   if (!signal.document) {
     return (
       <div className="mx-auto max-w-2xl">
@@ -60,9 +53,10 @@ export default function CitationPage({
             href={signal.source_url}
             target="_blank"
             rel="noreferrer"
-            className="mt-6 inline-block rounded-sm bg-accent px-4 py-2 text-sm font-bold text-white"
+            className="mt-6 inline-flex items-center justify-center gap-2 rounded-[6px] bg-primary px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            Open original source ↗
+            Open original source
+            <ArrowUpRight size={15} />
           </a>
         )}
       </div>
@@ -74,14 +68,11 @@ export default function CitationPage({
       <div>
         <SignalPanel signal={signal} />
 
-        <div className="mt-6 rounded-sm border border-line bg-card p-5">
-          <h3 className="text-xs font-bold uppercase tracking-[1.5px] text-accent">
-            Source document
-          </h3>
-          <p className="mt-2 font-serif text-base">{signal.document.title}</p>
-          <p className="mt-1 text-xs text-muted">
-            {signal.document.doc_category ?? "document"} ·{" "}
-            {signal.document.page_count ?? "?"} pages · parsed by Unsiloed
+        <Card className="mt-6 p-5">
+          <SectionLabel label="Source document" />
+          <p className="mt-3 font-display text-base font-semibold text-ink">{signal.document.title}</p>
+          <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.1em] text-faint">
+            {signal.document.doc_category ?? "document"} · {signal.document.page_count ?? "?"} pages · parsed by Unsiloed
           </p>
           {citedPageNos.length > 1 && (
             <div className="mt-3 flex flex-wrap gap-2">
@@ -89,10 +80,10 @@ export default function CitationPage({
                 <button
                   key={p}
                   onClick={() => setActivePage(p)}
-                  className={`rounded-sm border px-2 py-1 text-xs ${
+                  className={`rounded-[5px] border px-2 py-1 font-mono text-[11px] transition-colors ${
                     p === currentPageNo
-                      ? "border-accent bg-accent text-white"
-                      : "border-line hover:bg-accent-soft"
+                      ? "border-primary bg-primary text-white"
+                      : "border-line text-muted hover:border-primary hover:text-primary"
                   }`}
                 >
                   p.{p}
@@ -100,40 +91,34 @@ export default function CitationPage({
               ))}
             </div>
           )}
-        </div>
+        </Card>
 
         {pageCitations.length > 0 && (
-          <div className="mt-6 rounded-sm border border-line bg-card p-5">
-            <h3 className="text-xs font-bold uppercase tracking-[1.5px] text-accent">
-              Citations on this page
-            </h3>
-            <ul className="mt-3 space-y-3">
+          <Card className="mt-6 p-5">
+            <SectionLabel label="Citations on this page" />
+            <ul className="mt-4 space-y-3">
               {pageCitations.map((c) => (
                 <li key={c.id} className="text-sm">
-                  <span className="font-mono text-xs text-accent">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-primary">
                     {c.field_name}
                   </span>
                   <p className="mt-0.5 text-ink/80">{c.snippet}</p>
                 </li>
               ))}
             </ul>
-          </div>
+          </Card>
         )}
       </div>
 
       <div>
         {currentPage ? (
-          <CitationViewer
-            documentId={signal.document.id}
-            page={currentPage}
-            citations={pageCitations}
-          />
+          <CitationViewer documentId={signal.document.id} page={currentPage} citations={pageCitations} />
         ) : (
-          <div className="rounded-sm border border-line bg-card p-10 text-center text-muted">
+          <Card className="p-10 text-center text-sm text-muted">
             {citations.length > 0
               ? "Page images not rendered yet — re-run the pipeline."
               : "This extraction returned no bounding-box citations."}
-          </div>
+          </Card>
         )}
       </div>
     </div>
@@ -142,36 +127,27 @@ export default function CitationPage({
 
 function SignalPanel({ signal }: { signal: Signal }) {
   return (
-    <div className="rounded-sm border border-line bg-card p-5">
+    <Card className="p-5">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-[1.5px] text-muted">
+        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
           {signal.signal_type.replace("_", " ")} · {signal.source_kind}
         </span>
         <ConfidenceDots score={signal.confidence} />
       </div>
-      <h1 className="mt-2 font-serif text-2xl leading-snug">{signal.title}</h1>
+      <h1 className="mt-2 font-display text-2xl font-semibold leading-snug text-ink">{signal.title}</h1>
       {signal.summary && (
-        <p className="mt-3 text-sm leading-relaxed text-ink/80">
-          {signal.summary}
-        </p>
+        <p className="mt-3 text-sm leading-relaxed text-ink/80">{signal.summary}</p>
       )}
-      <dl className="mt-4 grid grid-cols-2 gap-2 text-xs text-muted">
-        {signal.urgency && (
-          <div>
-            <dt className="font-bold uppercase tracking-wider">Urgency</dt>
-            <dd>{signal.urgency}</dd>
-          </div>
-        )}
-        {signal.category && (
-          <div>
-            <dt className="font-bold uppercase tracking-wider">Category</dt>
-            <dd>{signal.category}</dd>
-          </div>
-        )}
-      </dl>
-      <Link href="/signals" className="mt-4 inline-block text-xs text-accent">
-        ← All signals
+      <div className="mt-4 flex flex-wrap gap-2">
+        {signal.urgency && <Badge tone="neutral">urgency · {signal.urgency}</Badge>}
+        {signal.category && <Badge tone="neutral">{signal.category}</Badge>}
+      </div>
+      <Link
+        href="/signals"
+        className="mt-4 inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.12em] text-primary"
+      >
+        <ArrowLeft size={12} /> All signals
       </Link>
-    </div>
+    </Card>
   );
 }

@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Play } from "lucide-react";
 import { API_URL, Run } from "@/lib/api";
+import { Button } from "@/components/ui/Button";
 
 const STAGE_LABELS: Record<string, string> = {
   ingest: "Ingesting signals",
@@ -64,16 +66,13 @@ export default function RunNowButton({
 
   return (
     <div className="flex items-center gap-4">
-      <button
-        onClick={start}
-        disabled={running}
-        className="rounded-sm bg-accent px-4 py-2 text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-      >
+      <Button variant="secondary" onClick={start} disabled={running}>
+        <Play size={14} strokeWidth={2.25} className="text-primary" />
         {running ? "Running…" : "Run brief now"}
-      </button>
+      </Button>
       {running && run?.stage && (
         <span className="flex items-center gap-2 text-sm text-muted">
-          <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-accent" />
+          <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-primary" />
           {STAGE_LABELS[run.stage] ?? run.stage}
           {run.stage === "extract" &&
             typeof run.stats?.new_documents === "number" &&
@@ -81,9 +80,9 @@ export default function RunNowButton({
         </span>
       )}
       {run?.status === "failed" && (
-        <span className="text-sm text-accent">Run failed: {run.error}</span>
+        <span className="text-sm text-danger">Run failed: {run.error}</span>
       )}
-      {error && <span className="text-sm text-accent">{error}</span>}
+      {error && <span className="text-sm text-danger">{error}</span>}
     </div>
   );
 }
