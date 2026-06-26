@@ -1,0 +1,11 @@
+.env
+.env.local
+__pycache__/
+*.pyc
+backend/.venv/
+backend/data/
+frontend/node_modules/
+frontend/.next/
+frontend/.pnpm-store/
+.pnpm-store/
+.DS_Store

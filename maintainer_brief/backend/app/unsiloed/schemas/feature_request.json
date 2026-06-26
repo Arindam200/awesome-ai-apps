@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["feature_requests"],
+  "properties": {
+    "feature_requests": {
+      "type": "array",
+      "description": "Every distinct feature request, capability ask, or improvement proposal found in this document",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["feature_name", "category", "urgency", "summary"],
+        "properties": {
+          "feature_name": {
+            "type": "string",
+            "description": "Short name of the requested capability, e.g. 'MCP server support'"
+          },
+          "category": {
+            "type": "string",
+            "description": "One of: ui, performance, integration, security, docs, ops, other"
+          },
+          "urgency": {
+            "type": "string",
+            "description": "low, medium, high, or critical — based on language intensity and stated blockers"
+          },
+          "summary": {
+            "type": "string",
+            "description": "1-2 sentence summary of the request and its motivation"
+          },
+          "sentiment": {
+            "type": "string",
+            "description": "positive, neutral, or negative tone of the requester"
+          },
+          "source_context": {
+            "type": "string",
+            "description": "Where in the document this appears: session title, section heading, slide title"
+          }
+        }
+      }
+    }
+  }
+}

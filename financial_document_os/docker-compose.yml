@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: findoc-db
+    environment:
+      POSTGRES_USER: findoc
+      POSTGRES_PASSWORD: findoc
+      POSTGRES_DB: financial_document_os
+    ports:
+      - "5434:5432"
+    volumes:
+      - findocdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U findoc -d financial_document_os"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  findocdata:

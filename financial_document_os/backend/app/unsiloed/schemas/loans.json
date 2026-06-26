@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["loans"],
+  "properties": {
+    "loans": {
+      "type": "array",
+      "description": "Every loan or credit agreement in this document.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["principal_amount"],
+        "properties": {
+          "counterparty": {"type": "string", "description": "Lender name"},
+          "principal_amount": {"type": "string", "description": "Loan principal amount as a number"},
+          "interest_rate": {"type": "string", "description": "Annual interest rate as a percentage number, e.g. 7.5"},
+          "maturity_date": {"type": "string", "description": "Loan maturity date, ISO YYYY-MM-DD"},
+          "currency": {"type": "string", "description": "ISO currency code"},
+          "payment_terms": {"type": "string", "description": "Repayment schedule / terms"},
+          "company_address": {"type": "string", "description": "The address of the borrowing company, as printed"}
+        }
+      }
+    }
+  }
+}

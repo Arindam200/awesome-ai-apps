@@ -1,0 +1,46 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ecosystem_mentions"],
+  "properties": {
+    "ecosystem_mentions": {
+      "type": "array",
+      "description": "Every mention of an open source project, tool, or technology in this document",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["project_name", "mention_type", "summary"],
+        "properties": {
+          "project_name": {
+            "type": "string",
+            "description": "Name of the mentioned project or tool"
+          },
+          "mention_type": {
+            "type": "string",
+            "description": "One of: talk_topic, case_study, comparison, adoption_stat, tutorial, criticism, recommendation"
+          },
+          "sentiment": {
+            "type": "string",
+            "description": "positive, neutral, or negative framing of the mention"
+          },
+          "prominence": {
+            "type": "string",
+            "description": "How prominent the mention is: keynote, dedicated_session, section, passing_mention"
+          },
+          "author": {
+            "type": "string",
+            "description": "Speaker, author, or organization behind the mention if stated"
+          },
+          "summary": {
+            "type": "string",
+            "description": "1-2 sentence summary of the context of the mention"
+          },
+          "source_context": {
+            "type": "string",
+            "description": "Where in the document this appears: session title, section heading, slide title"
+          }
+        }
+      }
+    }
+  }
+}

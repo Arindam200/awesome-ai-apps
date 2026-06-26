@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["competitor_launches"],
+  "properties": {
+    "competitor_launches": {
+      "type": "array",
+      "description": "Every product launch, feature announcement, or major release by a company or project mentioned in this document",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["project_name", "feature_launched", "summary"],
+        "properties": {
+          "project_name": {
+            "type": "string",
+            "description": "Name of the project or company making the launch"
+          },
+          "feature_launched": {
+            "type": "string",
+            "description": "What was launched or announced"
+          },
+          "launch_date": {
+            "type": "string",
+            "description": "Date or timeframe of the launch if stated, else empty"
+          },
+          "summary": {
+            "type": "string",
+            "description": "1-2 sentence summary of the launch and its significance"
+          },
+          "relevance": {
+            "type": "string",
+            "description": "high, medium, or low relevance to the cloud-native / service mesh / platform engineering space"
+          },
+          "source_context": {
+            "type": "string",
+            "description": "Where in the document this appears: session title, section heading, slide title"
+          }
+        }
+      }
+    }
+  }
+}
