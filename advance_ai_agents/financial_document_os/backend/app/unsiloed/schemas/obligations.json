@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["obligations"],
+  "properties": {
+    "obligations": {
+      "type": "array",
+      "description": "Every financial obligation, liability, commitment, or payable in this document.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["description", "amount"],
+        "properties": {
+          "obligation_type": {"type": "string", "description": "Type, e.g. accounts payable, lease, debt, commitment"},
+          "description": {"type": "string", "description": "Description of the obligation"},
+          "counterparty": {"type": "string", "description": "Who it is owed to, if stated"},
+          "amount": {"type": "string", "description": "Amount owed as a number"},
+          "due_date": {"type": "string", "description": "Due date, ISO YYYY-MM-DD, if stated"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["security_signals"],
+  "properties": {
+    "security_signals": {
+      "type": "array",
+      "description": "Every vulnerability, advisory, or security-relevant finding in this document",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "affected_component", "summary"],
+        "properties": {
+          "vulnerability_id": {
+            "type": "string",
+            "description": "CVE or advisory identifier if stated, e.g. CVE-2026-12345"
+          },
+          "severity": {
+            "type": "string",
+            "description": "critical, high, medium, or low"
+          },
+          "affected_component": {
+            "type": "string",
+            "description": "The component, package, or dependency affected"
+          },
+          "summary": {
+            "type": "string",
+            "description": "1-2 sentence summary of the vulnerability and its impact"
+          },
+          "remediation": {
+            "type": "string",
+            "description": "Recommended fix or mitigation if stated"
+          },
+          "source_context": {
+            "type": "string",
+            "description": "Where in the document this appears: section heading or page area"
+          }
+        }
+      }
+    }
+  }
+}

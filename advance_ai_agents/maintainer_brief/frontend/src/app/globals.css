@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #f5f4f0;
+  --color-card: #ffffff;
+  --color-ink: #1a1a1a;
+  --color-muted: #777370;
+  --color-line: #e3e0d8;
+  --color-accent: #b3502d;
+  --color-accent-soft: #f4e3da;
+  --font-serif: Georgia, "Times New Roman", serif;
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, Menlo, monospace;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+@keyframes citation-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(179, 80, 45, 0.55); }
+  70% { box-shadow: 0 0 0 12px rgba(179, 80, 45, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(179, 80, 45, 0); }
+}
+
+.citation-rect {
+  animation: citation-pulse 1.6s ease-out 2;
+}

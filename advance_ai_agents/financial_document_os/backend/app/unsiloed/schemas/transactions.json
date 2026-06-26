@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["transactions"],
+  "properties": {
+    "transactions": {
+      "type": "array",
+      "description": "Extract EVERY row in every transaction table in this document — one object per line item. Do not summarize or skip rows.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["txn_date", "description", "amount"],
+        "properties": {
+          "txn_date": {"type": "string", "description": "Transaction date, ISO YYYY-MM-DD"},
+          "description": {"type": "string", "description": "Transaction description as printed"},
+          "counterparty": {"type": "string", "description": "The vendor/payee/payer name if identifiable"},
+          "amount": {"type": "string", "description": "Transaction amount as a positive number"},
+          "direction": {"type": "string", "description": "debit (money out) or credit (money in)"},
+          "balance_after": {"type": "string", "description": "Running balance after this transaction, if shown"},
+          "category": {"type": "string", "description": "Expense/income category if inferable"}
+        }
+      }
+    }
+  }
+}

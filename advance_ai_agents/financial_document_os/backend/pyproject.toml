@@ -1,0 +1,30 @@
+[project]
+name = "financial-document-os"
+version = "0.1.0"
+description = "Financial Document OS — turn financial PDFs into a queryable database, powered by Unsiloed"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.2",
+    "httpx>=0.27",
+    "anthropic>=0.40",
+    "openai>=1.60",
+    "pymupdf>=1.24",
+    "jinja2>=3.1",
+    "pyyaml>=6.0",
+    "tenacity>=9.0",
+    "pydantic-settings>=2.5",
+    "python-multipart>=0.0.9",
+    "reportlab>=4.2",
+    "sqlglot>=25.0",
+    "rapidfuzz>=3.9",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
