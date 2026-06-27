@@ -10,6 +10,9 @@
 
 This repository is a comprehensive collection of **80+ practical examples, tutorials, and recipes** for building powerful LLM-powered applications — including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
 
+
+- [OpenClaw Monitor](https://github.com/flik2002/openclaw-monitor): Real-time monitoring dashboard for OpenClaw AI agents — token usage, session tracking, 7-day trends, multi-model support.
+
 ## 📋 Table of Contents
 
 - [🎓 Courses](#-courses)
