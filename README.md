@@ -337,6 +337,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Customer Support Resolution Agent](advance_ai_agents/customer_support_resolution_agent) - LangChain and Nebius support agent with knowledge-base retrieval, order lookup, and human ticket escalation
 - [Web Intelligence Agent](advance_ai_agents/web_intelligence_agent) - Mastra multi-agent pipeline that turns Olostep web evidence into Nemotron-verified case studies with SQLite persistence and Velt audit trail
 - [Temporal Agents](advance_ai_agents/temporal_agents/) - Examples of Temporal based AI Agents
+- [OpenAcme — AI Workforce Platform](https://github.com/sandydasari/openacme) - Named role-specialized agents with their own tools, memory, and MCP servers that delegate tasks to each other; local-first, BYO model, no telemetry <sub>↗ external</sub>
 
 ## 📺 Tutorials & Videos
 
