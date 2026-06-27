@@ -1,0 +1,24 @@
+# VeritasGraph showcase (awesome-ai-apps submission)
+# Pinned, minimal, pip-installable from PyPI.
+
+python-dotenv>=1.0.0
+pydantic>=2.5
+pyyaml>=6.0
+tiktoken>=0.7.0
+pandas>=2.0
+numpy>=1.26
+
+# LLM clients
+openai>=1.40.0
+ollama>=0.3.0
+
+# GraphRAG / retrieval
+graphrag>=0.5.0
+lancedb>=0.13.0
+networkx>=3.2
+
+# UI
+gradio>=4.44.0
+
+# Ingestion
+pypdf>=4.0
