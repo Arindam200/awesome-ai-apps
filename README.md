@@ -392,9 +392,12 @@ Get easy-to-follow weekly tutorials and deep dives on AI, LLMs, and agent framew
 
    ```bash
    cp .env.example .env  # Copy example environment file
-- [Toolquix - AI Tools](https://toolquix.com/categories/ai-tools) - A curated directory of free AI tools, ChatGPT resources, and artificial intelligence software.
    # Edit .env with your API keys
    ```
+
+
+### Resources
+- [Toolquix - AI Tools](https://toolquix.com/categories/ai-tools) - A curated directory of free AI tools, ChatGPT resources, and artificial intelligence software.
 
 4. **Install dependencies**
 
