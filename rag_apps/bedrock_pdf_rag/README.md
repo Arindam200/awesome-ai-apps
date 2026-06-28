@@ -69,3 +69,14 @@ AWS_REGION=us-east-1
 ## Related Project
 
 [Constitutional AI Multi-Agent](../advance_ai_agents/constitutional_ai_multi_agent/) — a 6-agent system also using Amazon Bedrock for safe AI deployment.
+
+
+## Environment Configuration
+
+Copy `.env.example` to `.env` before running:
+
+```bash
+cp .env.example .env
+```
+
+See `.env.example` for all required environment variables including AWS credentials and Bedrock model IDs.
