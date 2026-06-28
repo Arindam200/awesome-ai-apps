@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tax_items"],
+  "properties": {
+    "tax_items": {
+      "type": "array",
+      "description": "Every tax line item, deduction, or filing entry in this document.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["line_item", "amount"],
+        "properties": {
+          "tax_year": {"type": "string", "description": "Tax year as a four-digit number"},
+          "jurisdiction": {"type": "string", "description": "Federal, state name, or country"},
+          "filing_type": {"type": "string", "description": "Form / filing type, e.g. 1120, Schedule C"},
+          "line_item": {"type": "string", "description": "Description of the line item or deduction"},
+          "counterparty": {"type": "string", "description": "Associated vendor/payee if this line references one"},
+          "amount": {"type": "string", "description": "Amount as a number"}
+        }
+      }
+    }
+  }
+}

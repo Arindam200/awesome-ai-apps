@@ -1,0 +1,14 @@
+.env
+.env.local
+__pycache__/
+*.pyc
+backend/.venv/
+# Ignore generated data (page images, edited outputs, hash-named ingest copies)
+# but keep the bundled demo corpus PDFs.
+backend/data/*
+!backend/data/corpus/
+frontend/node_modules/
+frontend/.next/
+frontend/.pnpm-store/
+.pnpm-store/
+.DS_Store

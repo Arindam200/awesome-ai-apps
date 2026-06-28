@@ -1,0 +1,48 @@
+slug: meshery
+name: Meshery
+
+# Keywords that tag signals and drive trend metrics
+keywords:
+  - meshery
+  - service mesh
+  - cloud native management
+  - kanvas
+
+github:
+  repos:
+    - meshery/meshery
+    - meshery/meshery.io
+    - layer5io/kanvas
+  org: meshery
+
+competitors:
+  - name: Backstage
+    keywords: [backstage, backstage.io]
+  - name: Istio
+    keywords: [istio]
+  - name: Linkerd
+    keywords: [linkerd]
+
+community:
+  subreddits: [kubernetes, devops, cloudnative]
+  hn_queries: [meshery, "service mesh", cncf]
+
+security:
+  osv_ecosystems: [Go]
+  package_names:
+    - github.com/meshery/meshery
+
+# The "document drop": PDFs / decks / reports that go through Unsiloed.
+# Add public URLs here, or upload via the dashboard.
+documents:
+  urls: []
+  #  - title: "KubeCon NA 2025 Schedule"
+  #    url: https://example.com/kubecon-na-2025-schedule.pdf
+  #  - title: "CNCF Annual Survey 2025"
+  #    url: https://example.com/cncf-annual-survey-2025.pdf
+
+newsletter:
+  recipients:
+    - shivaylamba@gmail.com
+  cadence: weekly        # weekly = Mon 08:00 UTC, daily = every day 08:00 UTC
+  subject_prefix: "Maintainer Brief"

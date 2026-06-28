@@ -1,0 +1,216 @@
+[{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "157de3d5d67e1070",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "ae6bb6869f27d499",
+    "start_time": "2026-06-23T06:04:41.411675Z",
+    "end_time": "2026-06-23T06:05:07.218615Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "38b3d4e704802cd7abca314c07ac51e2",
+        "entity.count": 2,
+        "span.subtype": "turn_end"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:04:41.411993Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are an itinerary writer. Using everything discussed so far, produce a clean day-by-day itinerary that includes the chosen flights, hotel, and activities. End with an estimated total budget.\"}",
+                    "{\"user\": \"Plan a 4-day trip from New York to San Francisco, departing 2026-07-10 and returning 2026-07-14, for two people.\"}",
+                    "{\"assistant\": \"\\n\\n**Best Season to Visit**\\n*   **September\\u2013October:** Known as \\\"Indian Summer,\\\" this period offers the warmest temperatures and least fog.\\n*   **Note for July Travel:** Your dates (July 10\\u201314) fall during San Francisco's \\\"fog season.\\\" Expect cool mornings and evenings (avg. 60\\u201370\\u00b0F) with potential afternoon sun.\\n\\n**3 Must-See Neighborhoods/Areas**\\n1.  **Mission District:** Famous for Latin American culture, street murals, and dining.\\n2.  **North Beach:** The historic Italian Quarter, known for cafes, City Lights Bookstore, and Coit Tower.\\n3.  **Golden Gate Park:** Larger than Central Park, featuring museums, gardens, and bison paddocks.\\n\\n**Travel Tips**\\n*   **Dress in Layers:** Fog and wind can drop temperatures quickly, even in summer.\\n*   **Transportation:** Use BART and Muni; parking is expensive and difficult. Consider a Clipper Card for transit.\\n*   **Safety:** Do not leave valuables in rental cars; break-ins are common in tourist areas.\\n*   **Booking:** Reserve Alcatraz tickets and popular restaurant reservations several weeks in advance.\"}",
+                    "{\"assistant\": [\"{\\\"tool_function\\\": \\\"search_flights\\\", \\\"tool_arguments\\\": \\\"{\\\\\\\"origin\\\\\\\": \\\\\\\"New York\\\\\\\", \\\\\\\"destination\\\\\\\": \\\\\\\"San Francisco\\\\\\\", \\\\\\\"date\\\\\\\": \\\\\\\"2026-07-10\\\\\\\"}\\\"}\", \"{\\\"tool_function\\\": \\\"search_flights\\\", \\\"tool_arguments\\\": \\\"{\\\\\\\"origin\\\\\\\": \\\\\\\"San Francisco\\\\\\\", \\\\\\\"destination\\\\\\\": \\\\\\\"New York\\\\\\\", \\\\\\\"date\\\\\\\": \\\\\\\"2026-07-14\\\\\\\"}\\\"}\"]}",
+                    "{\"tool\": \"Flights New York->San Francisco on 2026-07-10: Delta $320 (08:00), United $290 (11:30), JetBlue $275 (17:45).\"}",
+                    "{\"tool\": \"Flights San Francisco->New York on 2026-07-14: Delta $320 (08:00), United $290 (11:30), JetBlue $275 (17:45).\"}",
+                    "{\"assistant\": \"\\n\\n**Outbound Flight (July 10, 2026):** JetBlue $275 departing 17:45 - Best value option with an evening departure that allows time to prepare for travel.\\n\\n**Return Flight (July 14, 2026):** United $290 departing 11:30 - Midday departure maximizes your final morning in San Francisco while offering a reasonable price.\"}",
+                    "{\"assistant\": [\"{\\\"tool_function\\\": \\\"search_hotels\\\", \\\"tool_arguments\\\": \\\"{\\\\\\\"city\\\\\\\": \\\\\\\"San Francisco\\\\\\\", \\\\\\\"checkin\\\\\\\": \\\\\\\"2026-07-10\\\\\\\", \\\\\\\"checkout\\\\\\\": \\\\\\\"2026-07-14\\\\\\\"}\\\"}\"]}",
+                    "{\"tool\": \"Hotels in San Francisco (2026-07-10->2026-07-14): Marriott $180/night, Hilton $165/night, Airbnb loft $120/night.\"}",
+                    "{\"assistant\": \"\\n\\nI recommend the Hilton for its balance of comfort and value at $165/night, leaving more budget to explore the highlighted Mission District and North Beach neighborhoods.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:05:07.218558Z",
+            "attributes": {
+                "response": "{\"assistant\": \"\\n\\n# San Francisco City Break Itinerary\\n**Dates:** July 10, 2026 \\u2013 July 14, 2026  \\n**Travelers:** 2 Adults  \\n**Theme:** Culture, Nature, and Iconic Sights\\n\\n## \\ud83d\\udccb Trip Logistics\\n*   **Outbound Flight:** JetBlue | July 10 | Dep. New York 17:45 \\u2192 Arr. San Francisco ~20:45 PT | **$275/person**\\n*   **Return Flight:** United | July 14 | Dep. San Francisco 11:30 \\u2192 Arr. New York ~20:00 ET | **$290/person**\\n*   **Accommodation:** Hilton San Francisco | 4 Nights (July 10\\u201314) | **$165/night**\\n*   **Transport:** Public Transit (Muni/BART) with Clipper Card; Rideshare as needed.\\n\\n---\\n\\n## \\ud83d\\uddd3\\ufe0f Day-by-Day Schedule\\n\\n### **Day 1: Friday, July 10 \\u2013 Arrival & Check-In**\\n*   **Evening:** Depart New York (17:45). Arrive in San Francisco (~20:45 PT).\\n*   **Transfer:** Take BART or rideshare from SFO to the Hilton.\\n*   **Check-in:** Settle into the hotel.\\n*   **Dinner:** Late-night bite near the hotel or room service to rest after travel.\\n*   **Tip:** Set clocks to Pacific Time; prepare layers for the cool evening fog.\\n\\n### **Day 2: Saturday, July 11 \\u2013 Golden Gate Park & Ocean Views**\\n*   **Morning:** Head to **Golden Gate Park**. Visit the California Academy of Sciences or the De Young Museum.\\n*   **Lunch:** Picnic in the park or eat at the Dutch Windmill area.\\n*   **Afternoon:** Walk through the Japanese Tea Garden or rent bikes to explore the park edges.\\n*   **Late Afternoon:** Head to the Ocean Beach side of the park to see the bison paddock and watch the sunset (fog permitting).\\n*   **Evening:** Dinner in the Inner Sunset district near the park.\\n\\n### **Day 3: Sunday, July 12 \\u2013 Missions, Murals & North Beach**\\n*   **Morning:** Explore the **Mission District**. Walk Balmy Alley to see famous street murals.\\n*   **Lunch:** Authentic Mission-style burrito (e.g., La Taqueria or El Farolito).\\n*   **Afternoon:** Take BART/Muni to **North Beach**. Visit City Lights Bookstore and climb Coit Tower for panoramic views.\\n*   **Evening:** Enjoy Italian dinner in North Beach. Experience the lively cafe culture.\\n*   **Tip:** Wear warm layers; the gap between the Mission (sunny/warm) and North Beach (cool/breezy) can be significant.\\n\\n### **Day 4: Monday, July 13 \\u2013 Alcatraz & The waterfront**\\n*   **Morning:** **Alcatraz Island Tour** (Booked weeks in advance). Ferry from Pier 33.\\n*   **Lunch:** Fisherman\\u2019s Wharf area (avoid tourist traps; seek out local seafood spots).\\n*   **Afternoon:** Walk the waterfront to Ghirardelli Square. Optional ride on the historic cable cars (expect lines).\\n*   **Evening:** Final farewell dinner. Perhaps revisit a favorite neighborhood or try Chinatown (adjacent to North Beach).\\n*   **Prep:** Confirm flight times and pack for an early departure tomorrow.\\n\\n### **Day 5: Tuesday, July 14 \\u2013 Departure**\\n*   **Morning:** Early breakfast. Check out of Hilton.\\n*   **Transfer:** Head to SFO via BART or rideshare (aim to arrive by 09:30 for 11:30 flight).\\n*   **Flight:** Depart San Francisco (11:30) aboard United.\\n*   **Evening:** Arrive in New York (~20:00 ET).\\n\\n---\\n\\n## \\ud83d\\udcb0 Estimated Total Budget (2 People)\\n\\n| Category | Details | Cost (USD) |\\n| :--- | :--- | :--- |\\n| **Flights** | JetBlue ($275) + United ($290) \\u00d7 2 | $1,130 |\\n| **Accommodation** | Hilton ($165 \\u00d7 4 nights) | $660 |\\n| **Activities** | Alcatraz, Museums, Transit (Clipper), Misc. | $270 |\\n| **Food & Drink** | Avg. $150/day \\u00d7 4 days + travel snacks | $650 |\\n| **Contingency** | Souvenirs, extra rideshare, tips | $150 |\\n| **TOTAL** | | **~$2,860** |\\n\\n*Note: Budget assumes moderate dining and advance booking for flights/Alcatraz. Prices are estimates based on current trends and may vary by 2026.*\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T06:05:07.218586Z",
+            "attributes": {
+                "completion_tokens": 3281,
+                "prompt_tokens": 907,
+                "total_tokens": 4188,
+                "finish_reason": "stop",
+                "finish_type": "success"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._agent_executor.AgentExecutor.execute",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "ae6bb6869f27d499",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "392adf59b260b495",
+    "start_time": "2026-06-23T06:04:41.407485Z",
+    "end_time": "2026-06-23T06:05:07.218978Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework/_workflows/_edge_runner.py:81",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "ItineraryWriter",
+        "entity.1.description": "unknown_model",
+        "entity.1.from_agent": "HotelPlanner",
+        "entity.1.from_agent_span_id": "599a60a2cfd72efe",
+        "last.inference": "157de3d5d67e1070:*",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "scope.agentic.invocation": "38b3d4e704802cd7abca314c07ac51e2",
+        "entity.count": 1,
+        "span.subtype": "content_processing",
+        "inference.decision.span.id": "8709006adaef5093"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:04:41.407820Z",
+            "attributes": {
+                "input": "WorkflowMessage(data=AgentExecutorResponse(executor_id='HotelPlanner', agent_response=<agent_framework._types.AgentResponse object at 0x10a337e50>, full_conversation=[<agent_framework._types.Message object at 0x10a3302f0>, <agent_framework._types.Message object at 0x10a322ea0>, <agent_framework._types.Message object at 0x10a336350>, <agent_framework._types.Message object at 0x10a337d50>, <agent_framework._types.Message object at 0x10a4be120>, <agent_framework._types.Message object at 0x10a47b650>, <agent_framework._types.Message object at 0x10a501f50>, <agent_framework._types.Message object at 0x10a528350>]), source_id='HotelPlanner', target_id=None, type=<MessageType.STANDARD: 'standard'>, trace_contexts=[{'traceparent': '00-90875ab0ce6e09e393efe370ce18dfc7-bdad3bc1cd5542be-03', 'baggage': 'monocle.scope.agentic.turn=0xd454af52590f7e3113c871c79390df,monocle.scope.agentic.invocation=0x27c33ec88a676e1b7b24b0ec6f53f78b'}], source_span_ids=['bdad3bc1cd5542be'], original_request_info_event=None)"
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:05:07.218959Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._workflows._workflow.Workflow.run",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "392adf59b260b495",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "7172b38a4bf94159",
+    "start_time": "2026-06-23T06:03:52.619613Z",
+    "end_time": "2026-06-23T06:05:07.321544Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/orchestrations/sequential_travel.py:129",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "agent.microsoft",
+        "monocle.last.agent.invocation.id": "ae6bb6869f27d499",
+        "monocle.last.agent.name": "ItineraryWriter",
+        "last.inference": "157de3d5d67e1070:*",
+        "span.type": "agentic.turn",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "entity.count": 1,
+        "span.subtype": "turn"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T06:03:52.619656Z",
+            "attributes": {
+                "input": "Plan a 4-day trip from New York to San Francisco, departing 2026-07-10 and returning 2026-07-14, for two people."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T06:05:07.321492Z",
+            "attributes": {}
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "workflow",
+    "context": {
+        "trace_id": "b1bde859279004d933dc0d1eba2e68da",
+        "span_id": "7172b38a4bf94159",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": null,
+    "start_time": "2026-06-23T06:03:52.619542Z",
+    "end_time": "2026-06-23T06:05:07.321568Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/orchestrations/sequential_travel.py:129",
+        "scope.agentic.turn": "d454af52590f7e3113c871c79390df",
+        "workflow.name": "okahu_demos_ms_openai_sequential_travel",
+        "span.type": "workflow",
+        "entity.1.name": "okahu_demos_ms_openai_sequential_travel",
+        "entity.1.type": "workflow.generic",
+        "entity.2.type": "app_hosting.generic",
+        "entity.2.name": "generic"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_sequential_travel"
+        },
+        "schema_url": ""
+    }
+}
+]

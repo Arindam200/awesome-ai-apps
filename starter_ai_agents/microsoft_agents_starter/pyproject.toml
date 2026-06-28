@@ -1,0 +1,17 @@
+[project]
+name = "microsoft-agent-framework-starter"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+	"agent-framework-azure-ai==1.0.0rc6",
+	"agent-framework-core",
+	"agent-framework-orchestrations",
+	"opentelemetry-semantic-conventions",
+	"opentelemetry-semantic-conventions-ai",
+	"openai",
+	"agent-framework-openai",
+	"python-dotenv",
+	"monocle-apptrace==0.8.4",
+]

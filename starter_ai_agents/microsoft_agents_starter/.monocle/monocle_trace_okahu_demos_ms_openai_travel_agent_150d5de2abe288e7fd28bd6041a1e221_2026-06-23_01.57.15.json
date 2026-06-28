@@ -1,0 +1,206 @@
+[{
+    "name": "openai.resources.chat.completions.AsyncCompletions.create",
+    "context": {
+        "trace_id": "150d5de2abe288e7fd28bd6041a1e221",
+        "span_id": "874f35f3ddb320ea",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "9e221cd45e2bab43",
+    "start_time": "2026-06-23T05:56:58.226467Z",
+    "end_time": "2026-06-23T05:57:15.680119Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/.venv/lib/python3.13/site-packages/agent_framework_openai/_chat_completion_client.py:555",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.tokenfactory.nebius.com",
+        "entity.1.inference_endpoint": "https://api.tokenfactory.nebius.com/v1/",
+        "entity.2.name": "Qwen/Qwen3.5-397B-A17B",
+        "entity.2.type": "model.llm.Qwen/Qwen3.5-397B-A17B",
+        "span.type": "inference",
+        "scope.agentic.turn": "8c1d07f8002dc273efaa37fab8005eb1",
+        "scope.agentic.invocation": "2315325772a3af3c9f970180248c670e",
+        "entity.count": 2,
+        "span.subtype": "turn_end"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T05:56:58.226610Z",
+            "attributes": {
+                "input": [
+                    "{\"system\": \"You are a critic. Evaluate the provided itinerary for completeness, accuracy, and user-fit. Return a short critique and a score from 1 to 10.\"}",
+                    "{\"user\": \"Itinerary:\\n\\n\\n*   **Flights**: JetBlue departing July 10, returning July 14, 2026 (Estimated $550 roundtrip based on $275 outbound fare).\\n*   **Accommodation**: Airbnb for 4 nights at $120/night, totaling $480 for the stay.\\n*   **Total Estimated Cost**: Approximately $1,030 per person (includes flight and hotel).\\n*   **Itinerary Summary**: Roundtrip from New York to San Francisco, July 10\\u201314, 2026.\\n\\nEvaluate the itinerary, list any issues or missing details, and give a score 1-10 with a one-line rationale.\"}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T05:57:15.679464Z",
+            "attributes": {
+                "response": "{\"assistant\": \"\\n\\n**Critique**\\n*   **Accuracy Issue:** The accommodation budget of $120/night for San Francisco in July is highly unrealistic; peak summer rates typically start at $250+ before fees and taxes.\\n*   **Missing Details:** Lacks specific flight times, airport codes, Airbnb location, and ground transportation plans (airport transfer/local transit).\\n*   **Budget incomplentess:** Excludes food, activities, and travel insurance, which are significant expenses in San Francisco.\\n*   **Ambiguity:** The total cost calculation implies solo travel (paying full Airbnb rate) but labels it \\\"per person\\\" without specifying party size.\\n\\n**Score:** 3/10\\n**Rationale:** Severely underestimates accommodation costs for the destination and omits essential logistical and daily expense details.\"}"
+            }
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-23T05:57:15.679649Z",
+            "attributes": {
+                "completion_tokens": 2379,
+                "prompt_tokens": 205,
+                "total_tokens": 2584,
+                "finish_reason": "stop",
+                "finish_type": "success"
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._agents.Agent.run",
+    "context": {
+        "trace_id": "150d5de2abe288e7fd28bd6041a1e221",
+        "span_id": "9e221cd45e2bab43",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "67bf8d2c2a785456",
+    "start_time": "2026-06-23T05:56:58.224727Z",
+    "end_time": "2026-06-23T05:57:15.681473Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/multi_travel_agents.py:74",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "agent.microsoft",
+        "entity.1.name": "CriticAgent",
+        "entity.1.description": "Qwen/Qwen3.5-397B-A17B",
+        "last.inference": "874f35f3ddb320ea:*",
+        "span.type": "agentic.invocation",
+        "scope.agentic.turn": "8c1d07f8002dc273efaa37fab8005eb1",
+        "scope.agentic.invocation": "2315325772a3af3c9f970180248c670e",
+        "entity.count": 1,
+        "span.subtype": "content_processing"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T05:56:58.224785Z",
+            "attributes": {
+                "input": "Itinerary:\n\n\n*   **Flights**: JetBlue departing July 10, returning July 14, 2026 (Estimated $550 roundtrip based on $275 outbound fare).\n*   **Accommodation**: Airbnb for 4 nights at $120/night, totaling $480 for the stay.\n*   **Total Estimated Cost**: Approximately $1,030 per person (includes flight and hotel).\n*   **Itinerary Summary**: Roundtrip from New York to San Francisco, July 10\u201314, 2026.\n\nEvaluate the itinerary, list any issues or missing details, and give a score 1-10 with a one-line rationale."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T05:57:15.681442Z",
+            "attributes": {
+                "response": "\n\n**Critique**\n*   **Accuracy Issue:** The accommodation budget of $120/night for San Francisco in July is highly unrealistic; peak summer rates typically start at $250+ before fees and taxes.\n*   **Missing Details:** Lacks specific flight times, airport codes, Airbnb location, and ground transportation plans (airport transfer/local transit).\n*   **Budget incomplentess:** Excludes food, activities, and travel insurance, which are significant expenses in San Francisco.\n*   **Ambiguity:** The total cost calculation implies solo travel (paying full Airbnb rate) but labels it \"per person\" without specifying party size.\n\n**Score:** 3/10\n**Rationale:** Severely underestimates accommodation costs for the destination and omits essential logistical and daily expense details."
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "agent_framework._agents.Agent.run",
+    "context": {
+        "trace_id": "150d5de2abe288e7fd28bd6041a1e221",
+        "span_id": "67bf8d2c2a785456",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "0c7e390fc4cc71f6",
+    "start_time": "2026-06-23T05:56:58.224651Z",
+    "end_time": "2026-06-23T05:57:15.681547Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/multi_travel_agents.py:74",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "agent.microsoft",
+        "span.type": "agentic.turn",
+        "scope.agentic.turn": "8c1d07f8002dc273efaa37fab8005eb1",
+        "entity.count": 1,
+        "span.subtype": "turn"
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-23T05:56:58.224702Z",
+            "attributes": {
+                "input": "Itinerary:\n\n\n*   **Flights**: JetBlue departing July 10, returning July 14, 2026 (Estimated $550 roundtrip based on $275 outbound fare).\n*   **Accommodation**: Airbnb for 4 nights at $120/night, totaling $480 for the stay.\n*   **Total Estimated Cost**: Approximately $1,030 per person (includes flight and hotel).\n*   **Itinerary Summary**: Roundtrip from New York to San Francisco, July 10\u201314, 2026.\n\nEvaluate the itinerary, list any issues or missing details, and give a score 1-10 with a one-line rationale."
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-23T05:57:15.681531Z",
+            "attributes": {
+                "response": "\n\n**Critique**\n*   **Accuracy Issue:** The accommodation budget of $120/night for San Francisco in July is highly unrealistic; peak summer rates typically start at $250+ before fees and taxes.\n*   **Missing Details:** Lacks specific flight times, airport codes, Airbnb location, and ground transportation plans (airport transfer/local transit).\n*   **Budget incomplentess:** Excludes food, activities, and travel insurance, which are significant expenses in San Francisco.\n*   **Ambiguity:** The total cost calculation implies solo travel (paying full Airbnb rate) but labels it \"per person\" without specifying party size.\n\n**Score:** 3/10\n**Rationale:** Severely underestimates accommodation costs for the destination and omits essential logistical and daily expense details."
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "workflow",
+    "context": {
+        "trace_id": "150d5de2abe288e7fd28bd6041a1e221",
+        "span_id": "0c7e390fc4cc71f6",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": null,
+    "start_time": "2026-06-23T05:56:58.224501Z",
+    "end_time": "2026-06-23T05:57:15.681560Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/awesome-ai-apps/starter_ai_agents/microsoft_agents_starter/agents/multi_travel_agents.py:74",
+        "scope.agentic.turn": "8c1d07f8002dc273efaa37fab8005eb1",
+        "workflow.name": "okahu_demos_ms_openai_travel_agent",
+        "span.type": "workflow",
+        "entity.1.name": "okahu_demos_ms_openai_travel_agent",
+        "entity.1.type": "workflow.generic",
+        "entity.2.type": "app_hosting.generic",
+        "entity.2.name": "generic"
+    },
+    "events": [],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_travel_agent"
+        },
+        "schema_url": ""
+    }
+}
+]

@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["vendors"],
+  "properties": {
+    "vendors": {
+      "type": "array",
+      "description": "Every distinct vendor, supplier, counterparty, or organization named in this document.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "name": {"type": "string", "description": "Vendor / organization legal name as written"},
+          "address": {"type": "string", "description": "Vendor mailing address if present"},
+          "tax_id": {"type": "string", "description": "EIN / tax identification number if present"},
+          "contact": {"type": "string", "description": "Contact person or email if present"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,559 @@
+[{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "a262a1005533d3dc6fd375c37d31ee95",
+        "span_id": "adf24f1b0df0c612",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c4dea8f0a11e2a99",
+    "start_time": "2026-06-11T18:59:57.267261Z",
+    "end_time": "2026-06-11T19:00:02.311800Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_handoff_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "b8b9ec166c2c1f266bd1788582f40539",
+        "scope.agentic.invocation": "f2f3537ecc8f63af18cfc6c0146582c7",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T18:59:57.267529Z",
+            "attributes": {
+                "input": [
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"User did not respond. Continue assisting autonomously.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:00:02.311648Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:00:02.311750Z",
+            "attributes": {
+                "completion_tokens": 420,
+                "prompt_tokens": 4653,
+                "total_tokens": 5073
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_handoff_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "a262a1005533d3dc6fd375c37d31ee95",
+        "span_id": "95ac5befda70a26a",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c4dea8f0a11e2a99",
+    "start_time": "2026-06-11T19:00:02.319186Z",
+    "end_time": "2026-06-11T19:00:09.202120Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_handoff_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "b8b9ec166c2c1f266bd1788582f40539",
+        "scope.agentic.invocation": "f2f3537ecc8f63af18cfc6c0146582c7",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:00:02.319426Z",
+            "attributes": {
+                "input": [
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"User did not respond. Continue assisting autonomously.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:00:09.201941Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:00:09.202070Z",
+            "attributes": {
+                "completion_tokens": 553,
+                "prompt_tokens": 5089,
+                "total_tokens": 5642
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_handoff_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "a262a1005533d3dc6fd375c37d31ee95",
+        "span_id": "124316e391737d2a",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c4dea8f0a11e2a99",
+    "start_time": "2026-06-11T19:00:09.210191Z",
+    "end_time": "2026-06-11T19:00:16.251199Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_handoff_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "b8b9ec166c2c1f266bd1788582f40539",
+        "scope.agentic.invocation": "f2f3537ecc8f63af18cfc6c0146582c7",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:00:09.210456Z",
+            "attributes": {
+                "input": [
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"User did not respond. Continue assisting autonomously.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:00:16.251074Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:00:16.251163Z",
+            "attributes": {
+                "completion_tokens": 507,
+                "prompt_tokens": 5658,
+                "total_tokens": 6165
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_handoff_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "a262a1005533d3dc6fd375c37d31ee95",
+        "span_id": "d922a258788e9708",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c4dea8f0a11e2a99",
+    "start_time": "2026-06-11T19:00:16.258204Z",
+    "end_time": "2026-06-11T19:00:22.479093Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_handoff_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "b8b9ec166c2c1f266bd1788582f40539",
+        "scope.agentic.invocation": "f2f3537ecc8f63af18cfc6c0146582c7",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:00:16.258413Z",
+            "attributes": {
+                "input": [
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"User did not respond. Continue assisting autonomously.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:00:22.478969Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:00:22.479050Z",
+            "attributes": {
+                "completion_tokens": 518,
+                "prompt_tokens": 6181,
+                "total_tokens": 6699
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_handoff_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "a262a1005533d3dc6fd375c37d31ee95",
+        "span_id": "41d97538677a9d48",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c4dea8f0a11e2a99",
+    "start_time": "2026-06-11T19:00:22.488196Z",
+    "end_time": "2026-06-11T19:00:28.023313Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_handoff_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "b8b9ec166c2c1f266bd1788582f40539",
+        "scope.agentic.invocation": "f2f3537ecc8f63af18cfc6c0146582c7",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:00:22.488413Z",
+            "attributes": {
+                "input": [
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"User did not respond. Continue assisting autonomously.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:00:28.023169Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:00:28.023253Z",
+            "attributes": {
+                "completion_tokens": 434,
+                "prompt_tokens": 6715,
+                "total_tokens": 7149
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_handoff_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "a262a1005533d3dc6fd375c37d31ee95",
+        "span_id": "aa3a04b477799878",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c4dea8f0a11e2a99",
+    "start_time": "2026-06-11T19:00:28.030561Z",
+    "end_time": "2026-06-11T19:00:34.301346Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_handoff_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "b8b9ec166c2c1f266bd1788582f40539",
+        "scope.agentic.invocation": "f2f3537ecc8f63af18cfc6c0146582c7",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:00:28.030862Z",
+            "attributes": {
+                "input": [
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"User did not respond. Continue assisting autonomously.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:00:34.301197Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:00:34.301296Z",
+            "attributes": {
+                "completion_tokens": 534,
+                "prompt_tokens": 7165,
+                "total_tokens": 7699
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_handoff_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "a262a1005533d3dc6fd375c37d31ee95",
+        "span_id": "ba6b82a85c776ab9",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c4dea8f0a11e2a99",
+    "start_time": "2026-06-11T19:00:34.308663Z",
+    "end_time": "2026-06-11T19:00:39.859694Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_handoff_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "b8b9ec166c2c1f266bd1788582f40539",
+        "scope.agentic.invocation": "f2f3537ecc8f63af18cfc6c0146582c7",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:00:34.308886Z",
+            "attributes": {
+                "input": [
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"User did not respond. Continue assisting autonomously.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:00:39.859566Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:00:39.859655Z",
+            "attributes": {
+                "completion_tokens": 491,
+                "prompt_tokens": 7715,
+                "total_tokens": 8206
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_handoff_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "a262a1005533d3dc6fd375c37d31ee95",
+        "span_id": "c5029ffb09ea3e92",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c4dea8f0a11e2a99",
+    "start_time": "2026-06-11T19:00:39.865932Z",
+    "end_time": "2026-06-11T19:00:50.802613Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_handoff_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "b8b9ec166c2c1f266bd1788582f40539",
+        "scope.agentic.invocation": "f2f3537ecc8f63af18cfc6c0146582c7",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:00:39.866159Z",
+            "attributes": {
+                "input": [
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"User did not respond. Continue assisting autonomously.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:00:50.802427Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:00:50.802561Z",
+            "attributes": {
+                "completion_tokens": 500,
+                "prompt_tokens": 8222,
+                "total_tokens": 8722
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_handoff_travel"
+        },
+        "schema_url": ""
+    }
+}
+,{
+    "name": "openai.resources.responses.AsyncResponses.create",
+    "context": {
+        "trace_id": "a262a1005533d3dc6fd375c37d31ee95",
+        "span_id": "e5ae978b47772500",
+        "trace_state": "[]"
+    },
+    "kind": "SpanKind.INTERNAL",
+    "parent_id": "c4dea8f0a11e2a99",
+    "start_time": "2026-06-11T19:00:50.811712Z",
+    "end_time": "2026-06-11T19:00:56.671725Z",
+    "status": {
+        "status_code": "OK"
+    },
+    "attributes": {
+        "monocle_apptrace.version": "0.8.4",
+        "monocle_apptrace.language": "python",
+        "span_source": "/Users/welcome/Desktop/sai_welcome_hanuman/microsfot_agent_framework/.venv/lib/python3.13/site-packages/openai/_legacy_response.py:384",
+        "workflow.name": "okahu_demos_ms_openai_handoff_travel",
+        "entity.1.type": "inference.openai",
+        "entity.1.provider_name": "api.openai.com",
+        "entity.1.inference_endpoint": "https://api.openai.com/v1/",
+        "entity.2.name": "gpt-4o-mini",
+        "entity.2.type": "model.llm.gpt-4o-mini",
+        "span.type": "inference",
+        "scope.agentic.turn": "b8b9ec166c2c1f266bd1788582f40539",
+        "scope.agentic.invocation": "f2f3537ecc8f63af18cfc6c0146582c7",
+        "entity.count": 2
+    },
+    "events": [
+        {
+            "name": "data.input",
+            "timestamp": "2026-06-11T19:00:50.811982Z",
+            "attributes": {
+                "input": [
+                    "{\"user\": [{\"type\": \"input_text\", \"text\": \"User did not respond. Continue assisting autonomously.\"}]}"
+                ]
+            }
+        },
+        {
+            "name": "data.output",
+            "timestamp": "2026-06-11T19:00:56.671578Z",
+            "attributes": {}
+        },
+        {
+            "name": "metadata",
+            "timestamp": "2026-06-11T19:00:56.671682Z",
+            "attributes": {
+                "completion_tokens": 446,
+                "prompt_tokens": 8738,
+                "total_tokens": 9184
+            }
+        }
+    ],
+    "links": [],
+    "resource": {
+        "attributes": {
+            "service.name": "okahu_demos_ms_openai_handoff_travel"
+        },
+        "schema_url": ""
+    }
+}
+]

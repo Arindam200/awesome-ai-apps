@@ -197,13 +197,14 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🧩 Starter Agents
 
-**Quick-start agents for learning and extending different AI frameworks.** _19 projects_
+**Quick-start agents for learning and extending different AI frameworks.** _20 projects_
 
 - [Agno HackerNews Analysis](starter_ai_agents/agno_starter) - Agno-based agent for trend analysis on HackerNews
 - [OpenAI SDK Starter](starter_ai_agents/openai_agents_sdk) - OpenAI Agents SDK with email helper & haiku writer examples
 - [LlamaIndex Task Manager](starter_ai_agents/llamaindex_starter) - LlamaIndex-powered task assistant
 - [CrewAI Research Crew](starter_ai_agents/crewai_starter) - Multi-agent research team example
 - [Letta Starter](starter_ai_agents/letta_starter) - Stateful agent with persistent long-term memory across sessions
+- [Microsoft Agent Framework Starter](starter_ai_agents/microsoft_agents_starter) - Multi-agent travel planning demos built on Microsoft Agent Framework
 - [PydanticAI Weather Bot](starter_ai_agents/pydantic_starter) - Real-time weather information agent
 - [LangChain Starter](starter_ai_agents/langchain_starter) - LangChain tool-calling agent with `create_tool_calling_agent` + `AgentExecutor`, powered by Nebius
 - [LangGraph Starter](starter_ai_agents/langgraph_starter) - LangGraph prebuilt ReAct agent (`create_react_agent`) with custom tools, powered by Nebius

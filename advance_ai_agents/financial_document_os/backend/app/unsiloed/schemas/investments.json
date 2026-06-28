@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["investments"],
+  "properties": {
+    "investments": {
+      "type": "array",
+      "description": "Every investment holding or position in this document — one object per holding.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["holding_name", "current_value"],
+        "properties": {
+          "holding_name": {"type": "string", "description": "Name of the holding / company / fund"},
+          "ticker": {"type": "string", "description": "Ticker symbol if present"},
+          "quantity": {"type": "string", "description": "Units / shares held as a number"},
+          "cost_basis": {"type": "string", "description": "Total cost basis as a number"},
+          "current_value": {"type": "string", "description": "Current market value as a number"},
+          "ownership_percentage": {"type": "string", "description": "Ownership percentage as a number if shown"},
+          "valuation_date": {"type": "string", "description": "Date of this valuation, ISO YYYY-MM-DD"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contracts"],
+  "properties": {
+    "contracts": {
+      "type": "array",
+      "description": "Every contract or agreement in this document.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["counterparty", "contract_value"],
+        "properties": {
+          "counterparty": {"type": "string", "description": "The other party / vendor to the contract"},
+          "contract_value": {"type": "string", "description": "Total contract value as a number"},
+          "currency": {"type": "string", "description": "ISO currency code"},
+          "start_date": {"type": "string", "description": "Contract effective/start date, ISO YYYY-MM-DD"},
+          "end_date": {"type": "string", "description": "Contract end/expiry date, ISO YYYY-MM-DD"},
+          "renewal_terms": {"type": "string", "description": "Renewal or termination terms"},
+          "payment_terms": {"type": "string", "description": "Payment terms, e.g. Net 30"},
+          "company_address": {"type": "string", "description": "The address of the contracting company (our company), as printed"}
+        }
+      }
+    }
+  }
+}

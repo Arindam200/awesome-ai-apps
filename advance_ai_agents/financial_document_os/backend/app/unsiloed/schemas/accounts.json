@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["accounts"],
+  "properties": {
+    "accounts": {
+      "type": "array",
+      "description": "Every financial account header in this document (bank or investment account summaries).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["institution_name", "account_number_masked"],
+        "properties": {
+          "institution_name": {"type": "string", "description": "Bank or institution name"},
+          "account_holder": {"type": "string", "description": "Name of the account holder / company"},
+          "account_number_masked": {"type": "string", "description": "Account number as printed (often masked)"},
+          "account_type": {"type": "string", "description": "checking, savings, brokerage, etc."},
+          "currency": {"type": "string", "description": "ISO currency code, e.g. USD"},
+          "opening_balance": {"type": "string", "description": "Opening/beginning balance as a number"},
+          "closing_balance": {"type": "string", "description": "Closing/ending balance as a number"},
+          "statement_period_start": {"type": "string", "description": "Statement period start date, ISO YYYY-MM-DD"},
+          "statement_period_end": {"type": "string", "description": "Statement period end date, ISO YYYY-MM-DD"}
+        }
+      }
+    }
+  }
+}
