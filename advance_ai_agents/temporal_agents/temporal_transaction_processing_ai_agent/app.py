@@ -1,5 +1,6 @@
 """Enhanced Streamlit dashboard for Transaction AI Processing with Couchbase & Temporal."""
 
+import os
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -93,21 +94,32 @@ if 'cost_per_manual_review' not in st.session_state:
 # API configuration
 API_BASE_URL = config.API_BASE_URL
 
+# Validate configuration once at startup (warns on missing critical credentials).
+config.validate()
+
+# When API_KEY is set, the API server requires the X-API-Key header on the
+# transaction/metrics endpoints. The bundled client reads the same variable so
+# it can authenticate itself. In dev mode (no API_KEY) no header is sent and the
+# server allows the request.
+_AUTH_HEADERS = {"X-API-Key": os.environ["API_KEY"]} if os.getenv("API_KEY") else {}
+
 async def submit_transaction(transaction_data: Dict):
     """Submit transaction to API."""
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(
             f"{API_BASE_URL}/transaction",
-            json=transaction_data
+            json=transaction_data,
+            headers=_AUTH_HEADERS
         )
         return response.json()
 
 async def get_decision(transaction_id: str):
     """Get decision for a transaction."""
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0)) as client:
         try:
             response = await client.get(
-                f"{API_BASE_URL}/transaction/{transaction_id}"
+                f"{API_BASE_URL}/transaction/{transaction_id}",
+                headers=_AUTH_HEADERS
             )
             if response.status_code == 200:
                 return response.json()
@@ -119,13 +131,13 @@ async def get_decision(transaction_id: str):
 
 async def get_metrics():
     """Get system metrics."""
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0)) as client:
         try:
-            response = await client.get(f"{API_BASE_URL}/metrics")
+            response = await client.get(f"{API_BASE_URL}/metrics", headers=_AUTH_HEADERS)
             if response.status_code == 200:
                 return response.json()
-        except:
-            pass
+        except Exception as e:
+            print(f"Metrics request failed: {e}")
     return None
 
 def run_async_safe(coro):
@@ -149,10 +161,11 @@ def run_async_safe(coro):
 
 async def get_workflow_status(workflow_id: str):
     """Get Temporal workflow status."""
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0)) as client:
         try:
             response = await client.get(
-                f"{API_BASE_URL}/workflow/{workflow_id}/status"
+                f"{API_BASE_URL}/workflow/{workflow_id}/status",
+                headers=_AUTH_HEADERS
             )
             if response.status_code == 200:
                 return response.json()

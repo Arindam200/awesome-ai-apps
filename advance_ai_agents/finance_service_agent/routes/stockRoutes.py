@@ -12,6 +12,7 @@ import re
 import json
 from fastapi.templating import Jinja2Templates
 import datetime
+from auth import require_api_key
 
 templates = Jinja2Templates(directory="templates")
 router = APIRouter()
@@ -23,7 +24,7 @@ async def read_root(request: Request):
     return templates.TemplateResponse("base.html",{"request":request, "text": text})
 
 
-@router.get("/top-stocks")
+@router.get("/top-stocks", dependencies=[Depends(require_api_key)])
 async def read_top_stocks(request: Request, cache: RedisBackend = Depends(get_cache)):
     cache_key = "top_stocks"
     cached_result = await cache.get(cache_key)
@@ -50,7 +51,7 @@ async def read_top_stocks(request: Request, cache: RedisBackend = Depends(get_ca
     
     return result
 
-@router.get("/stock-news")
+@router.get("/stock-news", dependencies=[Depends(require_api_key)])
 async def stock_news(request: Request, cache: RedisBackend = Depends(get_cache)):
     cache_key = "stock_news"
     cached_result = await cache.get(cache_key)
@@ -77,7 +78,7 @@ async def stock_news(request: Request, cache: RedisBackend = Depends(get_cache))
     
     return result
 
-@router.get("/stock/{symbol}")
+@router.get("/stock/{symbol}", dependencies=[Depends(require_api_key)])
 async def read_stock(request: Request, symbol: str, cache: RedisBackend = Depends(get_cache)):
     # Use f-string to properly interpolate the symbol variable
     cache_key = f"stock_{symbol}"
@@ -107,7 +108,7 @@ async def read_stock(request: Request, symbol: str, cache: RedisBackend = Depend
     
     return result
 
-@router.get("/stock-analysis/{symbol}")
+@router.get("/stock-analysis/{symbol}", dependencies=[Depends(require_api_key)])
 async def get_stock_analysis(request: Request, symbol: str, cache: RedisBackend = Depends(get_cache)):
     cache_key = f"stock_analysis_{symbol}"
     """

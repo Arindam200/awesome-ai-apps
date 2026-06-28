@@ -736,6 +736,9 @@
 </div><!-- /main -->
 
 <script>
+// Dashboard auth token, injected by the server. Empty string in dev mode.
+const DASHBOARD_TOKEN = {{ dashboard_token | tojson }};
+
 if (typeof hljs !== 'undefined') {
   hljs.configure({ ignoreUnescapedHTML: true });
 }
@@ -997,7 +1000,7 @@ async function startAgent() {
   try {
     const data = await (await fetch('/api/start', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-Dashboard-Token': DASHBOARD_TOKEN },
       body: JSON.stringify({ api_key: apiKey, n_experiments: n, batch }),
     })).json();
     if (data.ok) {
@@ -1013,7 +1016,10 @@ async function startAgent() {
 
 async function stopAgent() {
   try {
-    const data = await (await fetch('/api/stop', { method: 'POST' })).json();
+    const data = await (await fetch('/api/stop', {
+      method: 'POST',
+      headers: { 'X-Dashboard-Token': DASHBOARD_TOKEN },
+    })).json();
     showToast(data.message, data.ok ? 'ok' : 'err');
     fetchStatus();
   } catch (e) {

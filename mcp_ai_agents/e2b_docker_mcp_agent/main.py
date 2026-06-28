@@ -26,15 +26,19 @@ model = OpenAIChatCompletionsModel(
 )
 
 async def main():
+    # Validate required environment variables at startup
+    _required = ["OPENAI_API_KEY", "NOTION_TOKEN", "GITHUB_TOKEN"]
+    _values = {k: os.environ.get(k, "").strip() for k in _required}
+    _missing = [k for k, v in _values.items() if not v]
+    if _missing:
+        raise EnvironmentError(f"Missing required environment variables: {', '.join(_missing)}")
+
     # Get required environment variables
-    openai_api_key = os.environ["OPENAI_API_KEY"].strip()
-    notion_api_key = os.environ["NOTION_TOKEN"].strip()
-    github_token = os.environ["GITHUB_TOKEN"].strip()
-    
-    # Ensure the OpenAI API key is set in the environment for the agents SDK
-    os.environ["OPENAI_API_KEY"] = openai_api_key
-    
-    print(f"OpenAI API Key loaded: {openai_api_key[:20]}... (length: {len(openai_api_key)})")
+    openai_api_key = _values["OPENAI_API_KEY"]
+    notion_api_key = _values["NOTION_TOKEN"]
+    github_token = _values["GITHUB_TOKEN"]
+
+    print("Environment variables loaded successfully.")
 
     # Create sandbox with MCP servers configured
     notion = Notion(internalIntegrationToken=notion_api_key)
@@ -50,7 +54,7 @@ async def main():
     mcp_token = sandbox.beta_get_mcp_token()
 
     print(f"MCP Gateway URL: {mcp_url}")
-    print(f"MCP Token: {mcp_token[:20]}...")
+    print("MCP Gateway Token acquired.")
 
     # Connect to the E2B MCP Gateway using OpenAI Agents SDK
     try:

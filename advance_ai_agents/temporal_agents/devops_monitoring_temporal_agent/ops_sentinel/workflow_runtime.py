@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 async def inspect_services_activity(filter_token: str = None) -> str:
     from ops_sentinel.runtime_gateway import OpsRuntimeGateway, RuntimeUnavailableError
 
-    activity.logger.info("Inspecting services with filter token: %s", filter_token)
+    activity.logger.info("Inspecting services with filter.")
     try:
         gateway = OpsRuntimeGateway()
         filters = None

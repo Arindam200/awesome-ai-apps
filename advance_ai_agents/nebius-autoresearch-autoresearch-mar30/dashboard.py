@@ -15,9 +15,37 @@ import subprocess
 import threading
 import signal
 import json
+import secrets
 from flask import Flask, jsonify, render_template, request
 
 app = Flask(__name__)
+
+# Load dashboard secret from environment. When unset, run in dev mode (auth skipped).
+_DASHBOARD_SECRET = os.environ.get("DASHBOARD_SECRET")
+if not _DASHBOARD_SECRET:
+    import warnings
+    warnings.warn(
+        "DASHBOARD_SECRET not set. Running in dev mode with authentication DISABLED. "
+        "Set DASHBOARD_SECRET env var to require an X-Dashboard-Token header on "
+        "/api/start and /api/stop.",
+        stacklevel=1,
+    )
+
+
+def _require_auth():
+    """Abort with 401 if a secret is configured and the request lacks the correct header.
+
+    In dev mode (DASHBOARD_SECRET unset) the check is skipped so the example runs
+    out-of-the-box. When DASHBOARD_SECRET is set, the request must send a matching
+    X-Dashboard-Token header.
+    """
+    if not _DASHBOARD_SECRET:
+        return  # dev mode: auth disabled (warning already emitted at startup)
+    token = request.headers.get("X-Dashboard-Token", "")
+    if not secrets.compare_digest(token, _DASHBOARD_SECRET):
+        from flask import abort
+        abort(401, description="Unauthorized: missing or invalid X-Dashboard-Token header.")
+
 
 BASE_DIR        = os.path.dirname(os.path.abspath(__file__))
 RESULTS_TSV     = os.path.join(BASE_DIR, "results.tsv")
@@ -117,11 +145,11 @@ def api_status():
 
 @app.route("/api/start", methods=["POST"])
 def api_start():
+    _require_auth()
     global _agent_proc
     data = request.get_json(silent=True) or {}
     n_experiments = data.get("n_experiments", 10)
     use_batch     = data.get("batch", False)
-    api_key       = data.get("api_key", os.environ.get("NEBIUS_API_KEY", ""))
 
     with _agent_lock:
         if _agent_proc is not None and _agent_proc.poll() is None:
@@ -131,7 +159,7 @@ def api_start():
         if use_batch:
             cmd.append("--batch")
 
-        env = {**os.environ, "NEBIUS_API_KEY": api_key, "PYTHONIOENCODING": "utf-8"}
+        env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
         try:
             _agent_proc = subprocess.Popen(
                 cmd,
@@ -147,6 +175,7 @@ def api_start():
 
 @app.route("/api/stop", methods=["POST"])
 def api_stop():
+    _require_auth()
     global _agent_proc
     with _agent_lock:
         if _agent_proc is None or _agent_proc.poll() is not None:
@@ -166,7 +195,8 @@ def api_stop():
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    # In dev mode the token is "" so the same-origin UI still works without a secret.
+    return render_template("index.html", dashboard_token=_DASHBOARD_SECRET or "")
 
 
 if __name__ == "__main__":
@@ -174,4 +204,4 @@ if __name__ == "__main__":
     print("  Nebius AutoResearch Dashboard")
     print("  Open http://localhost:5000")
     print("=" * 50)
-    app.run(debug=False, port=5000, threaded=True)
+    app.run(debug=False, host="127.0.0.1", port=5000, threaded=True)
