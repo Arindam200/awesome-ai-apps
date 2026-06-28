@@ -1,0 +1,6 @@
+streamlit>=1.48.1
+agno>=2.2.3
+openai>=1.0.0
+httpx>=0.27.0
+python-dotenv>=1.0.0
+weaviate-engram>=0.1.0

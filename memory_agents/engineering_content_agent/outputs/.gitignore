@@ -1,0 +1,4 @@
+# Ignore generated reports, sqlite sessions, and other runtime files.
+# Keep this .gitignore tracked so outputs/ stays in the repo.
+*
+!.gitignore
