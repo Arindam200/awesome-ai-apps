@@ -222,7 +222,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🪶 Simple Agents
 
-**Straightforward, practical use-cases for everyday AI applications.** _19 projects_
+**Straightforward, practical use-cases for everyday AI applications.** _20 projects_
 
 - [Agno AI Examples](simple_ai_agents/agno_ai_examples) - Simple to multi-agent examples with web search & knowledge base
 - [Finance Agent](simple_ai_agents/finance_agent) - Real-time stock & market data tracking agent
@@ -235,6 +235,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Smart Scheduler Assistant](simple_ai_agents/email_to_calendar_scheduler) - AI-powered Gmail reader and Google Calendar manager
 - [Web Automation Agent](simple_ai_agents/browser_agent) - Browser automation agent using Nebius & browser-use
 - [Nebius Chat](simple_ai_agents/nebius_chat) - Chat interface for Nebius Token Factory
+- [Nebius Social Campaign Planner](simple_ai_agents/nebius_social_campaign_planner) - Streamlit app that turns a launch brief into social posts, content pillars, and a 7-day calendar with Nebius
 - [RouteLLM Chat](simple_ai_agents/llm_router) - Intelligent model routing with RouteLLM (GPT-4o-mini vs Nebius Llama) for cost optimization
 - [Talk to Your DB](simple_ai_agents/talk_to_db) - Natural language database queries with GibsonAI & LangChain
 - [LangChain Simple Agents](simple_ai_agents/langchain_simple_agents) - Nebius-powered incident response, support, vendor risk, and data quality agents with typed outputs and guarded tools
