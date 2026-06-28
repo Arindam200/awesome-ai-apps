@@ -339,6 +339,12 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Web Intelligence Agent](advance_ai_agents/web_intelligence_agent) - Mastra multi-agent pipeline that turns Olostep web evidence into Nemotron-verified case studies with SQLite persistence and Velt audit trail
 - [Temporal Agents](advance_ai_agents/temporal_agents/) - Examples of Temporal based AI Agents
 
+### 💰 Agent Infrastructure
+
+**Payment and economic infrastructure for AI agents to transact autonomously.** _1 project_
+
+- [MoltsPay - Universal Payment Protocol](https://github.com/Yaqing2023/moltspay) - Multi-chain payment infrastructure for AI agents with support for 8 blockchains (Base, Polygon, BNB, Tempo, Solana, Ethereum, Arbitrum, Optimism). Enables agent-to-agent value exchange with protocol-specific optimizations (x402, MPP, PFS, Pre-Approval). Available in Node.js and Python SDKs.
+
 ## 📺 Tutorials & Videos
 
 ### 🎓 Course Playlists
