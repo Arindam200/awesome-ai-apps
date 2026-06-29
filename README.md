@@ -344,6 +344,7 @@ Interested in sponsoring this project? Feel free to reach out!
 ### 🎓 Course Playlists
 
 - [**AWS Strands Course**](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lrc43ZtUXAwYu9DhnqxzRKZ) - Complete 8-lesson course on building AI agents with AWS Strands SDK
+- [Auferet](https://auferet.com) - AI game master with persistent memory for your characters and uploaded lore; solo or multiplayer, with 5e and Pathfinder 2e modes.
 
 ### 🔧 Framework Tutorials
 
