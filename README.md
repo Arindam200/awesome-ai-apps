@@ -197,6 +197,8 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🧩 Starter Agents
 
+- [Loopy](https://github.com/arjunkshah/loopy) - Kanban-based agent operating system orchestrating dozens of coding-agent CLIs with complexity-aware routing, named subagents, and verifiable execution receipts. Local-first, open-source.
+
 **Quick-start agents for learning and extending different AI frameworks.** _20 projects_
 
 - [Agno HackerNews Analysis](starter_ai_agents/agno_starter) - Agno-based agent for trend analysis on HackerNews
