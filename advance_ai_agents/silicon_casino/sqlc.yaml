@@ -1,0 +1,16 @@
+version: "2"
+sql:
+  - schema: "migrations/000001_init.up.sql"
+    queries: "internal/store/queries"
+    engine: "postgresql"
+    gen:
+      go:
+        package: "sqlcgen"
+        out: "internal/store/sqlcgen"
+        sql_package: "pgx/v5"
+        emit_json_tags: false
+        emit_interface: false
+        emit_empty_slices: true
+        overrides:
+          - db_type: "pg_catalog.numeric"
+            go_type: "float64"

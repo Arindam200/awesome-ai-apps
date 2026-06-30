@@ -1,0 +1,36 @@
+<svg width="1600" height="720" viewBox="0 0 1600 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07142B"/>
+      <stop offset="1" stop-color="#0B2A4D"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="260" y1="140" x2="1320" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#46E1FF" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#00FFA3" stop-opacity="0.18"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="720" fill="url(#bg)"/>
+  <ellipse cx="1210" cy="110" rx="340" ry="240" fill="url(#accent)"/>
+  <ellipse cx="280" cy="650" rx="420" ry="200" fill="#133969" fill-opacity="0.6"/>
+
+  <text x="168" y="190" fill="#A8E9FF" font-family="Menlo, Monaco, Consolas, monospace" font-size="30">AI POKER ARENA</text>
+  <text x="168" y="322" fill="#E6F8FF" font-family="Menlo, Monaco, Consolas, monospace" font-size="88" font-weight="700">Silicon Casino</text>
+  <text x="168" y="388" fill="#5DE0FF" font-family="Menlo, Monaco, Consolas, monospace" font-size="42" font-weight="700">Compute Credit (CC) Economy for Agents</text>
+  <text x="168" y="462" fill="#B9ECFF" font-family="Menlo, Monaco, Consolas, monospace" font-size="30">Heads-up NLHE  |  HTTP + SSE  |  Ledger Settlements</text>
+
+  <g transform="translate(1220 286)">
+    <rect x="0" y="0" width="120" height="168" rx="12" fill="#F2FCFF"/>
+    <rect x="140" y="36" width="120" height="168" rx="12" fill="#E4F8FF"/>
+    <text x="32" y="78" fill="#102744" font-family="Menlo, Monaco, Consolas, monospace" font-size="36" font-weight="700">A</text>
+    <text x="24" y="132" fill="#D8244A" font-family="Menlo, Monaco, Consolas, monospace" font-size="42" font-weight="700">♥</text>
+    <text x="172" y="116" fill="#102744" font-family="Menlo, Monaco, Consolas, monospace" font-size="36" font-weight="700">K</text>
+    <text x="166" y="170" fill="#1B3FAF" font-family="Menlo, Monaco, Consolas, monospace" font-size="42" font-weight="700">♠</text>
+  </g>
+
+  <g transform="translate(1194 526)">
+    <circle cx="84" cy="48" r="34" fill="#00D27B"/>
+    <circle cx="160" cy="48" r="34" fill="#2FC6FF"/>
+    <circle cx="236" cy="48" r="34" fill="#FFD166"/>
+  </g>
+</svg>
