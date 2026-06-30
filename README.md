@@ -2,6 +2,33 @@
 
 <div align="center">
 
+**Retrieve-augmented generation examples:**
+
+- [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/bibinprathap/VeritasGraph) Graph RAG pipeline that runs locally with ollama and has full source attribution
+- [Agentic RAG](rag_apps/agentic_rag) - Agentic RAG with Agno & GPT 5.
+- [Agentic RAG with Web Search](rag_apps/agentic_rag_with_web_search) - Advanced RAG with CrewAI, Qdrant, and Exa for hybrid search.
+- [Resume Optimizer](rag_apps/resume_optimizer) - Boost resumes with AI.
+- [LlamaIndex RAG Starter](rag_apps/llamaIndex_starter) - LlamaIndex + Nebius RAG starter.
+- [PDF RAG Analyzer](rag_apps/pdf_rag_analyser) - Chat with multiple PDFs.
+- [Qwen3 RAG Chat](rag_apps/qwen3_rag) - PDF chatbot with Streamlit.
+- [Chat with Code](rag_apps/chat_with_code) - Conversational code explorer.
+- [Gemma3 OCR](rag_apps/gemma_ocr/) - OCR-based document and image processor using Gemma3
+
+## 🔬 Advanced Agents
+
+**Complex pipelines for end-to-end workflows:**
+
+- [Deep Researcher](advance_ai_agents/deep_researcher_agent) - Multi-stage research with Agno & Scrapegraph AI.
+- [Candilyzer](advance_ai_agents/candidate_analyser) - Analyze GitHub/LinkedIn profiles.
+- [Job Finder](advance_ai_agents/job_finder_agent) - LinkedIn job search with Bright Data.
+- [AI Trend Analyzer](advance_ai_agents/trend_analyzer_agent) - AI trend mining with Google ADK.
+- [Conference Talk Generator](advance_ai_agents/conference_talk_abstract_generator) - Draft talk abstracts with Google ADK & Couchbase.
+- [Finance Service Agent](advance_ai_agents/finance_service_agent) - FastAPI server for stock data and predictions with Agno.
+- [Price Monitoring Agent](advance_ai_agents/price_monitoring_agent) - Price monitoring and alerting Agent powered by CrewAi, Twilio & Nebius.
+- [Startup Idea Validator Agent](advance_ai_agents/startup_idea_validator_agent) - Agentic Workflow to validate and analyze startup ideas.
+- [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent) - Agentic Workflow that send meeting notes and creates task based on conversation.
+
+## 📺 Playlist of Demo Videos & Tutorials
 # Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
 <a href="https://trendshift.io/repositories/14662" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14662" alt="Arindam200%2Fawesome-ai-apps | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
