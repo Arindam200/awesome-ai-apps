@@ -1,0 +1,38 @@
+groups:
+  - name: ai_apps_alerts
+    rules:
+    - alert: ApplicationDown
+      expr: up == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: "AI Application {{ $labels.instance }} is down"
+        description: "{{ $labels.instance }} has been down for more than 1 minute."
+
+    - alert: HighResponseTime
+      expr: ai_app_response_time_seconds > 2
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High response time for {{ $labels.app_name }}"
+        description: "{{ $labels.app_name }} response time is {{ $value }}s"
+
+    - alert: TaskChainBroken
+      expr: increase(ai_app_chain_breaks_total[5m]) > 0
+      for: 0m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Task chain broken for {{ $labels.app_name }}"
+        description: "Mandatory follow-up task creation failed"
+
+    - alert: HighErrorRate
+      expr: rate(ai_app_errors_total[5m]) > 0.05
+      for: 2m
+      labels:
+        severity: warning
+      annotations:
+        summary: "High error rate for {{ $labels.app_name }}"
+        description: "Error rate is {{ $value }} errors/sec"

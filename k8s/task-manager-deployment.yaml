@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-manager
+  namespace: ai-apps
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: task-manager
+  template:
+    metadata:
+      labels:
+        app: task-manager
+    spec:
+      containers:
+      - name: task-manager
+        image: ghcr.io/techfluent-au/ai-apps-task-manager:latest
+        ports:
+        - containerPort: 8001
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://ai_apps:ai_apps_password@postgres:5432/ai_apps_tasks"
+        - name: REDIS_URL
+          value: "redis://redis:6379/0"
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: ai-apps-secrets
+              key: github-token
+        - name: SLACK_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: ai-apps-secrets
+              key: slack-token
+        volumeMounts:
+        - name: task-data
+          mountPath: /app/task_data
+        - name: logs
+          mountPath: /app/logs
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8001
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: task-data
+        persistentVolumeClaim:
+          claimName: task-data-pvc
+      - name: logs
+        persistentVolumeClaim:
+          claimName: logs-pvc

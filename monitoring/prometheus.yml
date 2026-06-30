@@ -1,0 +1,33 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "alert_rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  - job_name: 'ai-apps-task-manager'
+    static_configs:
+      - targets: ['task-manager:8001']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  - job_name: 'ai-apps-health-monitor'
+    static_configs:
+      - targets: ['health-monitor:8002']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  - job_name: 'ai-apps-applications'
+    static_configs:
+      - targets:
+        - 'finance-agent:8000'
+        - 'newsletter-agent:8000'
+    metrics_path: /metrics
+    scrape_interval: 30s

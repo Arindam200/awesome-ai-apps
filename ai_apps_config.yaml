@@ -1,0 +1,37 @@
+environments:
+  development:
+    port_start: 8000
+  production:
+    port_start: 10000
+  staging:
+    port_start: 9000
+frameworks:
+  agno:
+    required_env:
+    - AGNO_API_KEY
+  crewai:
+    required_env:
+    - CREWAI_API_KEY
+  langchain:
+    required_env:
+    - LANGCHAIN_API_KEY
+  nebius:
+    required_env:
+    - NEBIUS_API_KEY
+    - NEBIUS_PROJECT_ID
+  openai:
+    required_env:
+    - OPENAI_API_KEY
+monitoring:
+  alert_thresholds:
+    cpu_usage: 0.8
+    error_rate: 0.05
+    memory_usage: 0.7
+    response_time_ms: 5000
+  health_check_interval: 30
+quality_gates:
+  max_error_rate: 0.01
+  max_response_time_ms: 2000
+  min_test_coverage: 85
+  security_scan_required: true
+version: 1.0.0
