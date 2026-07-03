@@ -197,6 +197,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🧩 Starter Agents
 
+- **[llm-box](https://github.com/alib8b8/llm-box)** - Terminal-first AI workflow engine. Orchestrate multi-model LLM pipelines with YAML, Bubble Tea TUI, and 15+ model providers.
 **Quick-start agents for learning and extending different AI frameworks.** _20 projects_
 
 - [Agno HackerNews Analysis](starter_ai_agents/agno_starter) - Agno-based agent for trend analysis on HackerNews
