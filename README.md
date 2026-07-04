@@ -25,6 +25,8 @@ This repository is a comprehensive collection of **80+ practical examples, tutor
 - [🚀 Getting Started](#getting-started)
 - [🤝 Contributing](#-contributing)
 
+- **[Context Kit](https://github.com/JDDavenport/context-kit)** — Personal Context Artifacts (PCAs): 4 Markdown templates + 5 Claude Code skills. Gives AI agents deep personal context without vendor lock-in. Built from real 28-agent system. MIT.
+
 ---
 
 <div align="center">
