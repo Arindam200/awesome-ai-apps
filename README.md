@@ -10,6 +10,8 @@
 
 This repository is a comprehensive collection of **80+ practical examples, tutorials, and recipes** for building powerful LLM-powered applications — including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
 
+- [ContinueWith](https://continuewith.ai) - Let visitors continue any website page inside ChatGPT, Claude, Gemini, Grok, Perplexity, Mistral, and other AI assistants in one click.
+
 ## 📋 Table of Contents
 
 - [🎓 Courses](#-courses)
