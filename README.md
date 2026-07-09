@@ -195,6 +195,9 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ## 🚀 Featured AI Apps
 
+- [Violin](https://github.com/Strategic-Automation/violin) - AI-native pentest framework and Hermes agent profile/plugin for autonomous, human-in-the-loop offensive security (IDOR/SSRF/XSS triage, multi-stage agentic testing).
+
+
 ### 🧩 Starter Agents
 
 **Quick-start agents for learning and extending different AI frameworks.** _20 projects_
