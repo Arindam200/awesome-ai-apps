@@ -20,3 +20,7 @@ frontend/.pnpm-store/
 # build/tool caches
 frontend/.gstack/
 *.tsbuildinfo
+
+# repo-root .gitignore ignores lib/ (Python) — keep our Next.js API client
+!frontend/src/lib/
+!frontend/src/lib/**
