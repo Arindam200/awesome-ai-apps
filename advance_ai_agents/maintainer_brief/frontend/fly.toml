@@ -1,0 +1,18 @@
+# Fly.io config for the Maintainer Brief frontend (Next.js).
+# Deploy from frontend/:
+#   fly deploy --build-arg NEXT_PUBLIC_API_URL=https://maintainer-brief-api.fly.dev
+app = "maintainer-brief-web"
+primary_region = "iad"
+
+[build]
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
