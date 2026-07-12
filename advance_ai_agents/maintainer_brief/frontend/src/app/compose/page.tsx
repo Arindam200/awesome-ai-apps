@@ -16,6 +16,7 @@ import { Button, ButtonLink } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Field";
 import { Toggle } from "@/components/ui/Toggle";
 import { Frame } from "@/components/ui/Frame";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function ComposePage() {
   const { selected, refresh } = useProject();
@@ -50,7 +51,13 @@ export default function ComposePage() {
       .latestBrief(selected.id)
       .then((b) => {
         setBrief(b);
-        return loadPreview(b.id);
+        // Paint instantly with the pipeline-rendered HTML, then refresh with the
+        // toggle-accurate live render in the background.
+        if (b.html) {
+          setHtml(b.html);
+          setPreviewVersion((v) => v + 1);
+        }
+        void loadPreview(b.id);
       })
       .catch(() => setNoBrief(true));
   }, [selected, loadPreview]);
@@ -189,8 +196,14 @@ export default function ComposePage() {
                 sandbox=""
               />
             ) : (
-              <div className="flex h-[70vh] items-center justify-center bg-white font-mono text-xs uppercase tracking-[0.16em] text-faint">
-                Loading preview…
+              <div className="h-[70vh] space-y-4 bg-white p-8">
+                <Skeleton className="h-5 w-32" />
+                <Skeleton className="h-8 w-2/3" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="mt-8 h-3 w-40" />
+                <Skeleton className="h-4 w-2/3" />
+                <Skeleton className="h-4 w-1/2" />
               </div>
             )}
           </Frame>

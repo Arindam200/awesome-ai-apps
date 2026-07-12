@@ -21,12 +21,16 @@ export function loginUrl(): string {
   return `${API_URL}/auth/login`;
 }
 
-/** On 401, drop the token and bounce to the sign-in gate. */
+/** On 401, drop the token and bounce to the sign-in gate — except on public
+ * routes (preview / oauth callback), which render fine without a session. */
 function onUnauthorized() {
   clearToken();
-  if (typeof window !== "undefined" && window.location.pathname !== "/") {
+  if (typeof window === "undefined") return;
+  const path = window.location.pathname;
+  if (path.startsWith("/preview") || path.startsWith("/auth/")) return;
+  if (path !== "/") {
     window.location.href = "/";
-  } else if (typeof window !== "undefined") {
+  } else {
     window.location.reload();
   }
 }
@@ -159,6 +163,15 @@ export interface BriefJson {
     why: string;
     age_days: number | null;
   }[];
+  /** Exa web mentions — optional: briefs generated before this section lack it. */
+  mentions?: {
+    source: string;
+    domain: string;
+    title: string;
+    url: string;
+    why: string;
+    age_days: number | null;
+  }[];
 }
 
 export interface Brief {
@@ -167,6 +180,7 @@ export interface Brief {
   period_start: string;
   period_end: string;
   brief_json: BriefJson;
+  html: string | null; // pipeline-rendered email HTML (may lag section toggles)
   sent_at: string | null;
   created_at: string;
 }
@@ -184,6 +198,7 @@ export const SECTION_KEYS = [
   "ship_it",
   "people",
   "worth_replying_to",
+  "mentions",
 ] as const;
 export type SectionKey = (typeof SECTION_KEYS)[number];
 
@@ -192,6 +207,7 @@ export const SECTION_LABELS: Record<SectionKey, string> = {
   ship_it: "Ship It",
   people: "People",
   worth_replying_to: "Worth Replying To",
+  mentions: "Mentions Around the Web",
 };
 
 export interface GithubRepoMeta {
@@ -294,9 +310,19 @@ export interface MeUser {
   avatar_url: string | null;
 }
 
+export interface PreviewBrief {
+  preview_id: number;
+  repo: string;
+  status: "phase1" | "ready" | "failed";
+  generated_at: string | null;
+  brief_json: BriefJson | null;
+}
+
 export const api = {
   me: () => get<MeUser>("/auth/me"),
   logout: () => send<{ ok: boolean }>("POST", "/auth/logout"),
+  createPreview: (repo: string) => send<PreviewBrief>("POST", "/preview", { repo }),
+  preview: (id: number) => get<PreviewBrief>(`/preview/${id}`),
   projects: () => get<Project[]>("/projects"),
   project: (id: number) => get<Project>(`/projects/${id}`),
   createProject: (name: string, config: Record<string, unknown>) =>

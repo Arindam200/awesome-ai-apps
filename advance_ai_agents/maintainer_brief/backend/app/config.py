@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     nebius_api_key: str = ""
     github_token: str = ""
     resend_api_key: str = ""
+    # Exa web search — powers "Mentions Around the Web". Optional; connector
+    # silently no-ops without it.
+    exa_api_key: str = ""
     database_url: str = "postgresql+psycopg://brief:brief@localhost:5433/maintainer_brief"
     app_url: str = "http://localhost:3005"
     # Public URL of THIS backend — used for one-click 👍/👎 links in the email.

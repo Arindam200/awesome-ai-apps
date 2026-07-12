@@ -16,7 +16,6 @@ import logging
 from pydantic import BaseModel, Field
 
 from app.intelligence.llm import parse_structured
-from app.models import Project
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +48,7 @@ class BriefWriteup(BaseModel):
     needs_review_notes: list[NumberNote] = []
     people_notes: list[NumberNote] = []
     worth_replying_to: list[ThreadWhy] = []
+    mentions: list[ThreadWhy] = []
 
 
 SYSTEM_PROMPT = """You are the chief of staff for the maintainers of {project_name}. \
@@ -68,6 +68,8 @@ Only recommend "close as duplicate" when you are confident they're the same thin
 grouping the unreleased merges by theme (features / fixes / docs). If there are no \
 unreleased merges, return "".
 - Notes are optional and terse. Skip a note rather than pad it.
+- For web_mentions: one line on why the mention matters (reach, sentiment, what \
+it gets right/wrong). Use ONLY the provided URLs. Skip low-value SEO spam.
 - Prefer fewer, higher-signal items. A short brief a maintainer trusts beats a \
 long one they skim."""
 
@@ -98,6 +100,10 @@ def _candidate_digest(candidates: dict) -> str:
         {"url": t["url"], "source": t["source"], "title": t["title"], "engagement": t["engagement"]}
         for t in candidates["worth_replying_to"]
     ]
+    mentions = [
+        {"url": m["url"], "domain": m["domain"], "title": m["title"], "age_days": m["age_days"]}
+        for m in candidates.get("mentions", [])
+    ]
     return json.dumps(
         {
             "triage_issues": triage,
@@ -106,6 +112,7 @@ def _candidate_digest(candidates: dict) -> str:
             "aging_prs_needing_review": review,
             "newcomer_stale_prs": people,
             "threads": threads,
+            "web_mentions": mentions,
         },
         indent=1,
     )
@@ -115,15 +122,20 @@ def _index_notes(notes: list[NumberNote]) -> dict[int, str]:
     return {n.number: n.note for n in notes}
 
 
-def synthesize_brief_v2(project: Project, candidates: dict) -> dict:
-    """Return the render-ready brief_json. Rebuilds all refs from candidates."""
-    system = SYSTEM_PROMPT.format(project_name=project.name)
+def synthesize_brief_v2(project_name: str, candidates: dict) -> dict:
+    """Return the render-ready brief_json. Rebuilds all refs from candidates.
+
+    Takes a plain name (not a Project) so the no-signin preview can synthesize
+    for repos that have no Project row.
+    """
+    system = SYSTEM_PROMPT.format(project_name=project_name)
     user_content = (
         "Here is the repo's live state. Write the weekly brief.\n\n" + _candidate_digest(candidates)
     )
 
     writeup: BriefWriteup | None = parse_structured(
-        tier="synthesis", system=system, user_content=user_content, output_model=BriefWriteup
+        tier="synthesis", system=system, user_content=user_content, output_model=BriefWriteup,
+        max_tokens=4000,  # output is ~1-2k tokens; capping cuts LLM latency substantially
     )
     if writeup is None:
         raise RuntimeError("v2 brief synthesis returned no parseable output")
@@ -180,6 +192,14 @@ def synthesize_brief_v2(project: Project, candidates: dict) -> dict:
         for t in candidates["worth_replying_to"]
     ]
 
+    # Mentions rebuilt from candidates too — a hallucinated URL simply never matches.
+    mention_why = {m.url: m.why for m in writeup.mentions}
+    mentions_out = [
+        {"source": "web", "domain": m["domain"], "title": m["title"], "url": m["url"],
+         "why": mention_why.get(m["url"], ""), "age_days": m["age_days"]}
+        for m in candidates.get("mentions", [])
+    ]
+
     return {
         "headline": writeup.headline,
         "stats": candidates["stats"],
@@ -187,6 +207,7 @@ def synthesize_brief_v2(project: Project, candidates: dict) -> dict:
         "ship_it": ship_out,
         "people": people_out,
         "worth_replying_to": threads_out,
+        "mentions": mentions_out,
     }
 
 

@@ -155,6 +155,23 @@ class TrendMetric(Base):
     prior_value: Mapped[float | None] = mapped_column(Float)
 
 
+class PreviewBrief(Base):
+    """No-signin repo preview. Two-phase: row is inserted with a deterministic
+    placeholder brief (phase1), then a background thread fills in the LLM copy
+    (ready). Rows younger than 24h serve as a cache."""
+
+    __tablename__ = "preview_briefs"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    repo: Mapped[str] = mapped_column(Text, index=True)  # normalized lowercase org/name
+    status: Mapped[str] = mapped_column(Text, default="phase1")  # phase1|ready|failed
+    candidates_json: Mapped[dict | None] = mapped_column(JSONB)
+    brief_json: Mapped[dict | None] = mapped_column(JSONB)
+    error: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
 class Feedback(Base):
     """Per-item 👍/👎 from the email. Measures whether the brief was useful —
     the metric the dogfood launch gate reads (design doc §1)."""

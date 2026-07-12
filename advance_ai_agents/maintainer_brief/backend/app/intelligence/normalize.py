@@ -73,6 +73,10 @@ def normalize_raw_items(db: Session, project: Project, items: list[RawItem]) -> 
             signal_type, category = "ecosystem_mention", item.extra.get("kind", "post")
         elif item.source_kind == "osv":
             signal_type, category = "security", str(item.extra.get("severity", "unknown"))
+        elif item.source_kind == "web":
+            # Exa results are already query-scoped + semantic — no keyword-hit
+            # requirement (semantic matches may lack the literal keyword).
+            signal_type, category = "ecosystem_mention", "web"
         else:
             signal_type, category = "community", item.source_kind
 

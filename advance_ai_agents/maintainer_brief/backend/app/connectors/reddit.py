@@ -56,7 +56,7 @@ def fetch(project_config: dict, since: datetime) -> list[RawItem]:
                         extra={"subreddit": sub, "score": d.get("score"), "num_comments": d.get("num_comments")},
                     )
                 )
-            time.sleep(2)  # stay polite, unauthenticated
+            time.sleep(0.5)  # stay polite, unauthenticated (fail-soft on 429)
 
     logger.info("reddit: %d raw items", len(items))
     return items

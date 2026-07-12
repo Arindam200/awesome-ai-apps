@@ -40,6 +40,25 @@ export default function Header() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
+  // Logged-out (public preview): minimal bar — logo + sign-in, no nav/switcher.
+  if (!user) {
+    return (
+      <header className="sticky top-0 z-50 bg-surface/90 backdrop-blur">
+        <div className="h-[3px] bg-primary" />
+        <div className="border-b border-line">
+          <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-6">
+            <Link href="/" className="flex items-center gap-2">
+              <LogoMark />
+              <span className="font-display text-[15px] font-semibold tracking-tight text-ink">
+                Maintainer Brief
+              </span>
+            </Link>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   return (
     <header className="sticky top-0 z-50 bg-surface/90 backdrop-blur">
       <div className="h-[3px] bg-primary" />

@@ -6,13 +6,14 @@ idempotent (content-hash + dedup keys), so re-running is always safe.
 """
 
 import logging
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timedelta, timezone
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.connectors import documents as doc_conn
-from app.connectors import github_conn, hackernews, reddit, security
+from app.connectors import exa, github_conn, hackernews, reddit, security
 from app.intelligence.brief_v2 import brief_signal_count, synthesize_brief_v2
 from app.intelligence.insights import build_candidates
 from app.intelligence.normalize import normalize_extractions, normalize_raw_items
@@ -30,8 +31,9 @@ MAX_NEW_DOCS_PER_RUN = 10
 MIN_SIGNALS_TO_SEND = 3  # quiet-week skip rule (design doc §1)
 
 # GitHub is handled by the v2 repo-state engine, not the RawItem stream.
-# These connectors feed the "Worth Replying To" (HN/Reddit) and "Security" (OSV) sections.
-CONNECTORS = [hackernews, reddit, security]
+# These connectors feed "Worth Replying To" (HN/Reddit), "Security" (OSV), and
+# "Mentions Around the Web" (Exa — optional, no-ops without EXA_API_KEY).
+CONNECTORS = [hackernews, reddit, security, exa]
 
 
 def _period(project: Project) -> tuple[date, date]:
@@ -54,21 +56,31 @@ def run_pipeline(db: Session, run: PipelineRun) -> None:
     since = datetime.combine(period_start, datetime.min.time(), tzinfo=timezone.utc)
     errors: list[str] = []
 
+    # All network fetches (connectors + the GraphQL repo-state snapshot) run
+    # concurrently — they're pure httpx calls with no DB access. DB writes stay
+    # on this thread. The repo-state future is resolved at ANALYZE.
+    executor = ThreadPoolExecutor(max_workers=4)
     try:
         # 1. INGEST
         _set_stage(db, run, "ingest")
-        raw_items = []
-        for connector in CONNECTORS:
-            try:
-                raw_items.extend(connector.fetch(project.config, since))
-            except Exception as e:
-                errors.append(f"{connector.__name__}: {e}")
-                logger.exception("connector failed (continuing)")
+        repos = (project.config.get("github") or {}).get("repos") or []
+        repo_state_future = executor.submit(github_conn.fetch_repo_state, repos)
+        connector_futures = {
+            connector.__name__: executor.submit(connector.fetch, project.config, since)
+            for connector in CONNECTORS
+        }
         try:
             new_docs = doc_conn.ingest_config_documents(db, project)
         except Exception as e:
             errors.append(f"documents: {e}")
             new_docs = []
+        raw_items = []
+        for name, future in connector_futures.items():
+            try:
+                raw_items.extend(future.result())
+            except Exception as e:
+                errors.append(f"{name}: {e}")
+                logger.exception("connector failed (continuing)")
         _set_stage(db, run, "ingest", raw_items=len(raw_items), new_documents=len(new_docs))
 
         # 2. ROUTE: classify pending docs, then queue extract jobs per category
@@ -145,10 +157,13 @@ def run_pipeline(db: Session, run: PipelineRun) -> None:
         n_sent = score_sentiment(db, project)
         _set_stage(db, run, "normalize", api_signals=n_api, doc_signals=n_doc, sentiment_scored=n_sent)
 
-        # 5. ANALYZE — live repo-state snapshot + deterministic insight candidates
+        # 5. ANALYZE — resolve the repo-state snapshot (fetched concurrently since INGEST)
         _set_stage(db, run, "analyze")
-        repos = (project.config.get("github") or {}).get("repos") or []
-        repo_states = github_conn.fetch_repo_state(repos)
+        try:
+            repo_states = repo_state_future.result()
+        except Exception as e:
+            errors.append(f"repo_state: {e}")
+            repo_states = []
         for st in repo_states:
             if st.error:
                 errors.append(f"repo_state {st.repo}: {st.error}")
@@ -156,7 +171,7 @@ def run_pipeline(db: Session, run: PipelineRun) -> None:
             db.scalars(
                 select(Signal).where(
                     Signal.project_id == project.id,
-                    Signal.source_kind.in_(["hackernews", "reddit", "osv"]),
+                    Signal.source_kind.in_(["hackernews", "reddit", "osv", "web"]),
                     Signal.observed_at >= since,
                 )
             )
@@ -171,7 +186,7 @@ def run_pipeline(db: Session, run: PipelineRun) -> None:
 
         # 6. SYNTHESIZE
         _set_stage(db, run, "synthesize")
-        brief_json = synthesize_brief_v2(project, candidates)
+        brief_json = synthesize_brief_v2(project.name, candidates)
         brief = Brief(
             project_id=project.id,
             run_id=run.id,
@@ -205,5 +220,6 @@ def run_pipeline(db: Session, run: PipelineRun) -> None:
         run.error = str(e)
         run.stats = {**(run.stats or {}), "errors": errors}
     finally:
+        executor.shutdown(wait=False)
         run.finished_at = datetime.now(timezone.utc)
         db.commit()

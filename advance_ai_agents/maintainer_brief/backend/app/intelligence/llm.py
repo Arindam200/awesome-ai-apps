@@ -59,6 +59,7 @@ def _openai_compatible_parse(
                 {"role": "user", "content": user_content},
             ],
             response_format=output_model,
+            max_tokens=max_tokens,  # cap latency — without this the primary path ignores the budget
         )
         return completion.choices[0].message.parsed
     except Exception as e:

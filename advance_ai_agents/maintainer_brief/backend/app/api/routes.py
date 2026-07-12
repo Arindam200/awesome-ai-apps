@@ -10,7 +10,7 @@ import re
 import threading
 
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from pydantic import BaseModel
 from sqlalchemy import func, select
@@ -35,11 +35,13 @@ from app.models import (
     DocumentPage,
     Feedback,
     PipelineRun,
+    PreviewBrief,
     Project,
     Signal,
     SignalCitation,
     User,
 )
+from app.preview import get_or_create_preview, preview_dict
 from app.newsletter.render import render_brief_html, section_flags
 from app.newsletter.send import build_subject, send_brief
 from app.pipeline.orchestrator import run_pipeline
@@ -547,6 +549,29 @@ def record_feedback(t: str, db: Session = Depends(get_db)):
             msg="Glad it was useful." if up else "We'll tune this kind of item down.",
         )
     )
+
+
+# ---------- no-signin repo preview (public by design; rate-limited) ----------
+
+class PreviewRequest(BaseModel):
+    repo: str
+
+
+@router.post("/preview")
+def create_preview(req: PreviewRequest, request: Request, db: Session = Depends(get_db)):
+    ip = request.headers.get("Fly-Client-IP") or (request.client.host if request.client else "unknown")
+    status, payload = get_or_create_preview(db, req.repo, ip)
+    if status != 200:
+        raise HTTPException(status, payload["detail"])
+    return payload
+
+
+@router.get("/preview/{preview_id}")
+def get_preview(preview_id: int, db: Session = Depends(get_db)):
+    row = db.get(PreviewBrief, preview_id)
+    if not row:
+        raise HTTPException(404, "preview not found")
+    return preview_dict(row)
 
 
 @router.get("/feedback/summary")

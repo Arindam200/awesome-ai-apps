@@ -14,7 +14,7 @@ _env = Environment(
 )
 
 
-ALL_SECTIONS = ["triage", "ship_it", "people", "worth_replying_to"]
+ALL_SECTIONS = ["triage", "ship_it", "people", "worth_replying_to", "mentions"]
 
 
 def section_flags(project: Project) -> dict:

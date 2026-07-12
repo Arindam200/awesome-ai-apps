@@ -161,6 +161,41 @@ def _worth_replying_to(signals: list) -> list[dict]:
     return out[:8]
 
 
+def _normalize_url(url: str) -> str:
+    """Strip tracking params + trailing slash so near-identical links dedupe."""
+    base = url.split("?")[0].split("#")[0].rstrip("/")
+    return base.lower()
+
+
+def _mentions(signals: list) -> list[dict]:
+    """Exa web mentions — blogs/newsletters/recaps. Commentary, not action."""
+    out: list[dict] = []
+    seen: set[tuple[str, str]] = set()
+    for sig in signals:
+        if sig.source_kind != "web":
+            continue
+        payload = sig.payload or {}
+        url = sig.source_url or ""
+        domain = payload.get("domain") or ""
+        key = (domain, _normalize_url(url))
+        if not url or key in seen:
+            continue
+        seen.add(key)
+        age_days = (_now() - sig.observed_at).days if sig.observed_at else None
+        out.append(
+            {
+                "source": "web",
+                "domain": domain,
+                "title": sig.title,
+                "url": url,
+                "summary": (sig.summary or "")[:240],
+                "age_days": age_days,
+            }
+        )
+    out.sort(key=lambda r: r["age_days"] if r["age_days"] is not None else 999)
+    return out[:8]
+
+
 def _security(signals: list) -> list[dict]:
     out: list[dict] = []
     for sig in signals:
@@ -201,5 +236,8 @@ def build_candidates(repo_states: list[RepoState], external_signals: list) -> di
         "ship_it": ship,
         "people": _people(ok_states),
         "worth_replying_to": _worth_replying_to(external_signals),
+        # NOTE: mentions deliberately do NOT count toward brief_signal_count —
+        # they're commentary; a mentions-only week stays a quiet week.
+        "mentions": _mentions(external_signals),
         "errors": [{"repo": s.repo, "error": s.error} for s in repo_states if s.error],
     }

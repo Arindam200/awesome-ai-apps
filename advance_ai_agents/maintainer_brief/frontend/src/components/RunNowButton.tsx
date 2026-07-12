@@ -19,9 +19,12 @@ const STAGE_LABELS: Record<string, string> = {
 export default function RunNowButton({
   projectId,
   dryRun = true,
+  onDone,
 }: {
   projectId: number;
   dryRun?: boolean;
+  /** Called when a run finishes successfully — refetch in place instead of a full reload. */
+  onDone?: (run: Run) => void;
 }) {
   const [run, setRun] = useState<Run | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +57,7 @@ export default function RunNowButton({
         setRun(r);
         if (r.status !== "running") {
           stopPolling();
-          if (r.status === "succeeded") window.location.reload();
+          if (r.status === "succeeded") onDone?.(r);
         }
       }, 1500);
     } catch (e) {

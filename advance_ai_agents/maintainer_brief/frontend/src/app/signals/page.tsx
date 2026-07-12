@@ -6,6 +6,7 @@ import { api, Signal } from "@/lib/api";
 import { useProject } from "@/components/ProjectProvider";
 import { Card } from "@/components/ui/Card";
 import { Badge, levelTone } from "@/components/ui/Badge";
+import { ListSkeleton } from "@/components/ui/Skeleton";
 
 const TYPES = ["", "feature_request", "competitor_launch", "ecosystem_mention", "security", "community"];
 const SOURCES = ["", "document", "github", "hackernews", "reddit", "osv"];
@@ -48,6 +49,8 @@ export default function SignalsPage() {
           </select>
         </div>
       </div>
+
+      {!loaded && <ListSkeleton />}
 
       {loaded && signals.length === 0 && (
         <p className="mt-12 text-center font-mono text-xs uppercase tracking-[0.16em] text-faint">

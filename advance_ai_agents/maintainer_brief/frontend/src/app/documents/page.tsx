@@ -30,7 +30,7 @@ export default function DocumentsPage() {
     setMessage(null);
     let created = 0;
     let dupes = 0;
-    for (const file of Array.from(files)) {
+    const uploadOne = async (file: File) => {
       const form = new FormData();
       form.append("file", file);
       const res = await fetch(`${API_URL}/documents/upload?project_id=${selected.id}`, {
@@ -41,6 +41,11 @@ export default function DocumentsPage() {
       const body = await res.json().catch(() => ({}));
       if (body.status === "created") created++;
       else if (body.status === "duplicate") dupes++;
+    };
+    // 3-wide bounded parallelism — serial uploads made big batches painfully slow
+    const queue = Array.from(files);
+    for (let i = 0; i < queue.length; i += 3) {
+      await Promise.allSettled(queue.slice(i, i + 3).map(uploadOne));
     }
     setMessage(`${created} uploaded${dupes ? `, ${dupes} already ingested` : ""}. Run the brief to extract.`);
     setUploading(false);
@@ -64,7 +69,7 @@ export default function DocumentsPage() {
             extracted into cited signals by Unsiloed.
           </p>
         </div>
-        <RunNowButton projectId={selected.id} />
+        <RunNowButton projectId={selected.id} onDone={refresh} />
       </div>
 
       {/* drag-drop zone */}

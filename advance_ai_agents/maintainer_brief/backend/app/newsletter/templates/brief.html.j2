@@ -146,6 +146,20 @@
   {% endfor %}
   {% endif %}
 
+  {# ── MENTIONS AROUND THE WEB ───────────────────────────────── #}
+  {% if sections.mentions and brief.mentions %}
+  {{ section_header("Mentions Around the Web") }}
+  {% for m in brief.mentions %}
+  <tr><td style="padding:14px 40px 2px 40px;">
+    <div style="font-size:14px; color:#2b2926; line-height:1.5;">
+      <span style="display:inline-block; font-family:'SF Mono',Consolas,Menlo,monospace; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; background-color:#f0f2f5; color:#6b6f76; padding:2px 6px; border-radius:4px;">{{ m.domain }}</span>&nbsp;
+      <a href="{{ m.url }}" style="color:#2b2926; text-decoration:none; font-weight:500;">{{ m.title }}</a>
+    </div>
+    {% if m.why %}<div style="font-size:13px; color:#3553ff; margin-top:3px;">{{ m.why }}</div>{% endif %}
+  </td></tr>
+  {% endfor %}
+  {% endif %}
+
   <!-- Footer -->
   <tr><td style="padding:32px 40px 36px 40px; border-top:1px solid #e5e7eb;">
     <div style="font-family:Helvetica, Arial, sans-serif; font-size:12px; color:#9aa0a6; line-height:1.65;">
