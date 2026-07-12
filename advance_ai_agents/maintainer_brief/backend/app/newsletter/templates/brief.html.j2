@@ -10,25 +10,7 @@
 <tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px; max-width:600px; background-color:#ffffff; border:1px solid #e5e7eb; border-top:3px solid #3553ff; border-radius:2px;">
 
-  {% macro badge(level) -%}
-  {%- set l = (level or '')|lower -%}
-  {%- if l in ['high','critical'] -%}{%- set bg = '#fcebea' -%}{%- set fg = '#b42318' -%}
-  {%- elif l in ['medium','moderate'] -%}{%- set bg = '#fbf3e0' -%}{%- set fg = '#b8870f' -%}
-  {%- else -%}{%- set bg = '#f0f2f5' -%}{%- set fg = '#6b6f76' -%}{%- endif -%}
-  <span style="display:inline-block; font-family:'SF Mono',Consolas,Menlo,monospace; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; background-color:{{ bg }}; color:{{ fg }}; padding:2px 6px; border-radius:4px;">{{ level }}</span>
-  {%- endmacro %}
-
-  <!-- Header -->
-  <tr><td style="padding:34px 40px 22px 40px; border-bottom:1px solid #e5e7eb;">
-    <div style="font-family:'SF Mono',Consolas,Menlo,monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#9aa0a6;">Maintainer Intelligence Brief</div>
-    <div style="font-size:30px; font-weight:bold; color:#2b2926; margin-top:10px; line-height:1.15; letter-spacing:-0.5px;">{{ project_name }}</div>
-    <div style="font-family:'SF Mono',Consolas,Menlo,monospace; font-size:11px; letter-spacing:0.5px; text-transform:uppercase; color:#9aa0a6; margin-top:10px;">{{ period_start }} &ndash; {{ period_end }} &middot; {{ signal_count }} signals analyzed</div>
-  </td></tr>
-
-  <!-- Headline -->
-  <tr><td style="padding:26px 40px 8px 40px;">
-    <div style="font-size:18px; color:#2b2926; line-height:1.5; font-weight:500;">{{ brief.headline }}</div>
-  </td></tr>
+  {% set stats = brief.stats or {} %}
 
   {% macro section_header(title) -%}
   <tr><td style="padding:30px 40px 4px 40px;">
@@ -36,76 +18,122 @@
   </td></tr>
   {%- endmacro %}
 
-  {% macro source_links(ids) -%}
-    {% for sid in ids[:3] %}<a href="{{ app_url }}/citations/{{ sid }}" style="display:inline-block; font-family:'SF Mono',Consolas,Menlo,monospace; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; color:#6b6f76; text-decoration:none; border:1px solid #e5e7eb; border-radius:4px; padding:2px 7px; margin-right:5px;">Source&nbsp;&#8599;</a>{% endfor %}
+  {% macro kind_badge(kind) -%}
+  {%- if kind == 'duplicates' -%}{%- set bg='#eef1ff' -%}{%- set fg='#3553ff' -%}
+  {%- elif kind == 'hot' -%}{%- set bg='#fcebea' -%}{%- set fg='#b42318' -%}
+  {%- elif kind == 'unanswered' -%}{%- set bg='#fbf3e0' -%}{%- set fg='#b8870f' -%}
+  {%- else -%}{%- set bg='#f0f2f5' -%}{%- set fg='#6b6f76' -%}{%- endif -%}
+  <span style="display:inline-block; font-family:'SF Mono',Consolas,Menlo,monospace; font-size:10px; letter-spacing:0.5px; text-transform:uppercase; background-color:{{ bg }}; color:{{ fg }}; padding:2px 6px; border-radius:4px;">{{ kind }}</span>
   {%- endmacro %}
 
-  {% if sections.top_requested_features and brief.top_requested_features %}
-  {{ section_header("Top Requested Features") }}
-  {% for f in brief.top_requested_features %}
-  <tr><td style="padding:14px 40px 4px 40px;">
-    <div style="font-size:16px; color:#2b2926; font-weight:bold;">{{ f.cluster_name }}&nbsp;&nbsp;{{ badge(f.urgency) }}</div>
-    <div style="font-size:14px; color:#444; line-height:1.55; margin-top:5px;">{{ f.summary }}</div>
-    <div style="margin-top:8px;">{{ source_links(f.signal_ids) }}</div>
+  {% macro issue_chip(i) -%}
+  <a href="{{ i.url }}" style="display:inline-block; font-family:'SF Mono',Consolas,Menlo,monospace; font-size:10px; color:#6b6f76; text-decoration:none; border:1px solid #e5e7eb; border-radius:4px; padding:2px 6px; margin:2px 4px 0 0;">#{{ i.number }}{% if i.reactions %} &#9829;{{ i.reactions }}{% endif %}{% if i.comments %} &#128172;{{ i.comments }}{% endif %}</a>
+  {%- endmacro %}
+
+  <!-- Header -->
+  <tr><td style="padding:34px 40px 22px 40px; border-bottom:1px solid #e5e7eb;">
+    <div style="font-family:'SF Mono',Consolas,Menlo,monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#9aa0a6;">Maintainer Brief</div>
+    <div style="font-size:30px; font-weight:bold; color:#2b2926; margin-top:10px; line-height:1.15; letter-spacing:-0.5px;">{{ project_name }}</div>
+    <div style="font-family:'SF Mono',Consolas,Menlo,monospace; font-size:11px; letter-spacing:0.5px; text-transform:uppercase; color:#9aa0a6; margin-top:10px;">
+      {{ period_start }} &ndash; {{ period_end }}
+      {% if stats.open_issues is not none %}&middot; {{ stats.open_issues }} open issues &middot; {{ stats.open_prs }} open PRs{% endif %}
+    </div>
+  </td></tr>
+
+  <!-- Headline -->
+  <tr><td style="padding:26px 40px 8px 40px;">
+    <div style="font-size:18px; color:#2b2926; line-height:1.5; font-weight:500;">{{ brief.headline }}</div>
+  </td></tr>
+
+  {# ── TRIAGE ────────────────────────────────────────────────── #}
+  {% if sections.triage and brief.triage %}
+  {{ section_header("Triage This Week") }}
+  {% for t in brief.triage %}
+  <tr><td style="padding:16px 40px 4px 40px;">
+    <div style="font-size:15px; color:#2b2926; font-weight:bold;">{{ t.title }}&nbsp;&nbsp;{{ kind_badge(t.kind) }}</div>
+    <div style="font-size:14px; color:#3553ff; line-height:1.5; margin-top:5px;"><strong>&rarr; {{ t.action }}</strong></div>
+    <div style="margin-top:6px;">{% for i in t.issues %}{{ issue_chip(i) }}{% endfor %}</div>
   </td></tr>
   {% endfor %}
   {% endif %}
 
-  {% if sections.community_health and brief.community_health %}
-  {{ section_header("Community Health") }}
-  <tr><td style="padding:14px 40px 4px 40px;">
-    <div style="font-size:14px; color:#444; line-height:1.55;">{{ brief.community_health.summary }}</div>
-    {% for callout in brief.community_health.metrics_callouts %}
-    <div style="font-size:13px; color:#2b2926; margin-top:7px;"><span style="color:#3553ff;">&#9656;</span>&nbsp;{{ callout }}</div>
+  {# ── SHIP IT ───────────────────────────────────────────────── #}
+  {% if sections.ship_it and brief.ship_it %}
+  {% set ship = brief.ship_it %}
+  {{ section_header("Ship It") }}
+
+  {% if ship.ready_to_merge %}
+  <tr><td style="padding:14px 40px 2px 40px;">
+    <div style="font-size:13px; color:#1e7a4c; font-weight:bold;">&#10003; Ready to merge ({{ ship.ready_to_merge|length }})</div>
+    {% for p in ship.ready_to_merge %}
+    <div style="font-size:14px; color:#2b2926; line-height:1.5; margin-top:6px;">
+      <a href="{{ p.url }}" style="color:#2b2926; text-decoration:none;">#{{ p.number }} {{ p.title }}</a>
+      {% if p.author %}<span style="color:#9aa0a6; font-size:12px;"> &middot; @{{ p.author }}</span>{% endif %}
+      {% if p.note %}<div style="font-size:12px; color:#6b6f76; margin-top:1px;">{{ p.note }}</div>{% endif %}
+    </div>
     {% endfor %}
   </td></tr>
   {% endif %}
 
-  {% if sections.ecosystem_mentions and brief.ecosystem_mentions %}
-  {{ section_header("Ecosystem Mentions") }}
-  {% for m in brief.ecosystem_mentions %}
-  <tr><td style="padding:14px 40px 4px 40px;">
-    <div style="font-size:14px; color:#444; line-height:1.55;">{{ m.context }}{% if m.prominence %} <span style="font-family:'SF Mono',Consolas,Menlo,monospace; font-size:11px; color:#9aa0a6;">({{ m.prominence }})</span>{% endif %}</div>
-    <div style="margin-top:8px;">{{ source_links(m.signal_ids) }}</div>
+  {% if ship.release_summary %}
+  <tr><td style="padding:16px 40px 2px 40px;">
+    <div style="font-size:13px; color:#2b2926; font-weight:bold;">&#128230; Unreleased ({{ ship.unreleased_count }} merged since {{ ship.latest_release or 'last release' }})</div>
+    <div style="font-size:14px; color:#444; line-height:1.55; margin-top:6px;">{{ ship.release_summary }}</div>
   </td></tr>
-  {% endfor %}
   {% endif %}
 
-  {% if sections.competitor_watch and brief.competitor_watch %}
-  {{ section_header("Competitor Watch") }}
-  {% for c in brief.competitor_watch %}
-  <tr><td style="padding:14px 40px 4px 40px;">
-    <div style="font-size:16px; color:#2b2926; font-weight:bold;">{{ c.competitor }}</div>
-    <div style="font-size:14px; color:#444; line-height:1.55; margin-top:5px;">{{ c.development }}</div>
-    <div style="font-size:13px; color:#6b6f76; line-height:1.55; margin-top:5px;"><strong style="color:#2b2926;">Why it matters:</strong> {{ c.why_it_matters }}</div>
-    <div style="margin-top:8px;">{{ source_links(c.signal_ids) }}</div>
+  {% if ship.needs_review %}
+  <tr><td style="padding:16px 40px 2px 40px;">
+    <div style="font-size:13px; color:#2b2926; font-weight:bold;">&#9203; Aging &mdash; needs review</div>
+    {% for p in ship.needs_review %}
+    <div style="font-size:14px; color:#2b2926; line-height:1.5; margin-top:6px;">
+      <a href="{{ p.url }}" style="color:#2b2926; text-decoration:none;">#{{ p.number }} {{ p.title }}</a>
+      <span style="color:#b8870f; font-size:12px;"> &middot; {{ p.age_days }}d old</span>
+      {% if p.note %}<div style="font-size:12px; color:#6b6f76; margin-top:1px;">{{ p.note }}</div>{% endif %}
+    </div>
+    {% endfor %}
   </td></tr>
-  {% endfor %}
   {% endif %}
 
-  {% if sections.security_alerts and brief.security_alerts %}
-  {{ section_header("Security Alerts") }}
-  {% for s in brief.security_alerts %}
-  <tr><td style="padding:14px 40px 4px 40px;">
-    <div style="font-size:15px; color:#2b2926; font-weight:bold;">{{ s.identifier }}&nbsp;&nbsp;{{ badge(s.severity) }}</div>
-    <div style="font-size:14px; color:#444; line-height:1.55; margin-top:5px;">{{ s.action }}</div>
-    <div style="margin-top:8px;">{{ source_links(s.signal_ids) }}</div>
+  {% if ship.security %}
+  <tr><td style="padding:16px 40px 2px 40px;">
+    <div style="font-size:13px; color:#b42318; font-weight:bold;">&#9888; Security</div>
+    {% for s in ship.security %}
+    <div style="font-size:14px; color:#2b2926; line-height:1.5; margin-top:6px;">
+      <a href="{{ s.url }}" style="color:#b42318; text-decoration:none;">{{ s.id }}</a>
+      <span style="color:#9aa0a6; font-size:12px;"> &middot; {{ s.severity }}{% if s.package %} &middot; {{ s.package }}{% endif %}</span>
+    </div>
+    {% endfor %}
   </td></tr>
-  {% endfor %}
+  {% endif %}
   {% endif %}
 
-  {% if sections.maintainer_recommendations and brief.maintainer_recommendations %}
-  {{ section_header("Recommended Actions") }}
-  {% for r in brief.maintainer_recommendations %}
-  <tr><td style="padding:14px 40px 4px 40px;">
-    <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-      <td valign="top" style="padding-right:10px;"><span style="display:inline-block; font-family:'SF Mono',Consolas,Menlo,monospace; font-size:11px; font-weight:bold; color:#3553ff; background-color:#eef1ff; border-radius:5px; padding:3px 8px;">{{ loop.index }}</span></td>
-      <td valign="top">
-        <div style="font-size:15px; color:#2b2926;"><strong>{{ r.recommendation }}</strong>&nbsp;&nbsp;{{ badge(r.effort) }}</div>
-        <div style="font-size:13px; color:#6b6f76; line-height:1.55; margin-top:5px;">{{ r.rationale }}</div>
-        <div style="margin-top:8px;">{{ source_links(r.supporting_signal_ids) }}</div>
-      </td>
-    </tr></table>
+  {# ── PEOPLE ────────────────────────────────────────────────── #}
+  {% if sections.people and brief.people %}
+  {{ section_header("People") }}
+  <tr><td style="padding:12px 40px 2px 40px;">
+    <div style="font-size:13px; color:#6b6f76; margin-bottom:4px;">First-time contributors whose PRs are going stale &mdash; a reply keeps them around.</div>
+    {% for p in brief.people %}
+    <div style="font-size:14px; color:#2b2926; line-height:1.5; margin-top:8px;">
+      <strong>@{{ p.author }}</strong> &middot;
+      <a href="{{ p.url }}" style="color:#2b2926; text-decoration:none;">#{{ p.number }} {{ p.title }}</a>
+      <span style="color:#b8870f; font-size:12px;"> &middot; {{ p.age_days }}d waiting</span>
+      {% if p.note %}<div style="font-size:12px; color:#6b6f76; margin-top:1px;">{{ p.note }}</div>{% endif %}
+    </div>
+    {% endfor %}
+  </td></tr>
+  {% endif %}
+
+  {# ── WORTH REPLYING TO ─────────────────────────────────────── #}
+  {% if sections.worth_replying_to and brief.worth_replying_to %}
+  {{ section_header("Worth Replying To") }}
+  {% for t in brief.worth_replying_to %}
+  <tr><td style="padding:14px 40px 2px 40px;">
+    <div style="font-size:14px; color:#2b2926; line-height:1.5;">
+      <span style="font-family:'SF Mono',Consolas,Menlo,monospace; font-size:10px; text-transform:uppercase; color:#9aa0a6;">{{ t.source }}</span>&nbsp;
+      <a href="{{ t.url }}" style="color:#2b2926; text-decoration:none; font-weight:500;">{{ t.title }}</a>
+    </div>
+    {% if t.why %}<div style="font-size:13px; color:#3553ff; margin-top:3px;">{{ t.why }}</div>{% endif %}
   </td></tr>
   {% endfor %}
   {% endif %}
@@ -113,11 +141,8 @@
   <!-- Footer -->
   <tr><td style="padding:32px 40px 36px 40px; border-top:1px solid #e5e7eb;">
     <div style="font-family:Helvetica, Arial, sans-serif; font-size:12px; color:#9aa0a6; line-height:1.65;">
-      Signals extracted from GitHub, Hacker News, Reddit, security advisories, and document sources
-      (conference decks, reports, RFCs) &mdash; documents parsed into structured JSON with
-      <a href="https://unsiloed.ai" style="color:#3553ff; text-decoration:none; font-weight:500;">Unsiloed</a>,
-      with word-level citations. Click any &ldquo;Source&rdquo; chip to see the exact highlighted
-      region in the original document.<br><br>
+      Your weekly maintainer brief &mdash; built from {{ project_name }}'s live GitHub state
+      (issues, PRs, releases) plus community threads. Every item links to the source.<br><br>
       <a href="{{ app_url }}" style="font-family:'SF Mono',Consolas,Menlo,monospace; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:#3553ff; text-decoration:none;">Open dashboard&nbsp;&#8599;</a>
     </div>
   </td></tr>

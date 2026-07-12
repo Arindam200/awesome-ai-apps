@@ -13,11 +13,11 @@ from sqlalchemy.orm import Session
 
 from app.connectors import documents as doc_conn
 from app.connectors import github_conn, hackernews, reddit, security
+from app.intelligence.brief_v2 import brief_signal_count, synthesize_brief_v2
+from app.intelligence.insights import build_candidates
 from app.intelligence.normalize import normalize_extractions, normalize_raw_items
 from app.intelligence.sentiment import score_sentiment
-from app.intelligence.synthesize import synthesize_brief
-from app.intelligence.trends import compute_trends
-from app.models import Brief, Document, ExtractionJob, PipelineRun, Project
+from app.models import Brief, Document, ExtractionJob, PipelineRun, Project, Signal
 from app.newsletter.render import render_brief_html
 from app.newsletter.send import send_brief
 from app.pipeline.pages import render_pages
@@ -27,8 +27,11 @@ from app.unsiloed.worker import drain
 logger = logging.getLogger(__name__)
 
 MAX_NEW_DOCS_PER_RUN = 10
+MIN_SIGNALS_TO_SEND = 3  # quiet-week skip rule (design doc §1)
 
-CONNECTORS = [github_conn, hackernews, reddit, security]
+# GitHub is handled by the v2 repo-state engine, not the RawItem stream.
+# These connectors feed the "Worth Replying To" (HN/Reddit) and "Security" (OSV) sections.
+CONNECTORS = [hackernews, reddit, security]
 
 
 def _period(project: Project) -> tuple[date, date]:
@@ -142,14 +145,33 @@ def run_pipeline(db: Session, run: PipelineRun) -> None:
         n_sent = score_sentiment(db, project)
         _set_stage(db, run, "normalize", api_signals=n_api, doc_signals=n_doc, sentiment_scored=n_sent)
 
-        # 5. ANALYZE
+        # 5. ANALYZE — live repo-state snapshot + deterministic insight candidates
         _set_stage(db, run, "analyze")
-        trend_rows = compute_trends(db, project, period_start, period_end)
-        _set_stage(db, run, "analyze", trend_metrics=len(trend_rows))
+        repos = (project.config.get("github") or {}).get("repos") or []
+        repo_states = github_conn.fetch_repo_state(repos)
+        for st in repo_states:
+            if st.error:
+                errors.append(f"repo_state {st.repo}: {st.error}")
+        external_signals = list(
+            db.scalars(
+                select(Signal).where(
+                    Signal.project_id == project.id,
+                    Signal.source_kind.in_(["hackernews", "reddit", "osv"]),
+                    Signal.observed_at >= since,
+                )
+            )
+        )
+        candidates = build_candidates(repo_states, external_signals)
+        n_signals = brief_signal_count(candidates)
+        _set_stage(
+            db, run, "analyze",
+            repos_ok=sum(1 for s in repo_states if not s.error),
+            candidate_signals=n_signals,
+        )
 
         # 6. SYNTHESIZE
         _set_stage(db, run, "synthesize")
-        brief_json = synthesize_brief(db, project, period_start, period_end)
+        brief_json = synthesize_brief_v2(project, candidates)
         brief = Brief(
             project_id=project.id,
             run_id=run.id,
@@ -165,9 +187,12 @@ def run_pipeline(db: Session, run: PipelineRun) -> None:
         brief.html = render_brief_html(db, project, brief)
         db.commit()
 
-        # 8. SEND
+        # 8. SEND (skip quiet weeks — see design doc §1)
         if run.dry_run:
             _set_stage(db, run, "send", skipped="dry_run")
+        elif n_signals < MIN_SIGNALS_TO_SEND:
+            _set_stage(db, run, "send", skipped="quiet_week", candidate_signals=n_signals)
+            logger.info("run %s: quiet week (%d signals) — not sending", run.id, n_signals)
         else:
             _set_stage(db, run, "send")
             send_brief(db, project, brief)

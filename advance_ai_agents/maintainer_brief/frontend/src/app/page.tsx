@@ -3,26 +3,71 @@
 import { useEffect, useState } from "react";
 import {
   Sparkles,
-  TrendingUp,
-  HeartPulse,
-  Megaphone,
-  Crosshair,
-  ShieldAlert,
   ListChecks,
+  Rocket,
+  Users,
+  MessagesSquare,
+  ArrowRight,
+  Heart,
+  MessageCircle,
+  Clock,
+  ShieldAlert,
+  Check,
+  Package,
+  ExternalLink,
 } from "lucide-react";
-import { Brief, SectionKey, api } from "@/lib/api";
+import { Brief, BriefJson, IssueRef, PrRef, SectionKey, api } from "@/lib/api";
 import { useProject } from "@/components/ProjectProvider";
 import RunNowButton from "@/components/RunNowButton";
-import SourceLinks from "@/components/SourceLinks";
 import { SectionLabel } from "@/components/ui/SectionLabel";
 import { Card } from "@/components/ui/Card";
-import { Badge, levelTone } from "@/components/ui/Badge";
+import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Frame } from "@/components/ui/Frame";
 
-function UrgencyBadge({ level }: { level: string }) {
-  if (!level) return null;
-  return <Badge tone={levelTone(level)}>{level}</Badge>;
+const KIND_TONE: Record<string, "blue" | "danger" | "gold" | "neutral"> = {
+  duplicates: "blue",
+  hot: "danger",
+  unanswered: "gold",
+  stalled: "neutral",
+};
+
+function IssueChip({ i }: { i: IssueRef }) {
+  return (
+    <a
+      href={i.url}
+      target="_blank"
+      rel="noreferrer"
+      className="inline-flex items-center gap-1.5 rounded-[4px] border border-line bg-surface px-2 py-0.5 font-mono text-[10px] text-muted transition-colors hover:border-primary hover:text-primary"
+    >
+      #{i.number}
+      {i.reactions > 0 && (
+        <span className="flex items-center gap-0.5">
+          <Heart size={9} /> {i.reactions}
+        </span>
+      )}
+      {i.comments > 0 && (
+        <span className="flex items-center gap-0.5">
+          <MessageCircle size={9} /> {i.comments}
+        </span>
+      )}
+    </a>
+  );
+}
+
+function PrLine({ p, ageColor = "text-gold" }: { p: PrRef; ageColor?: string }) {
+  return (
+    <div className="text-sm leading-relaxed">
+      <a href={p.url} target="_blank" rel="noreferrer" className="text-ink hover:text-primary">
+        <span className="font-mono text-xs text-faint">#{p.number}</span> {p.title}
+      </a>
+      {p.author && <span className="text-xs text-faint"> · @{p.author}</span>}
+      {p.age_days != null && p.age_days >= 7 && (
+        <span className={`text-xs ${ageColor}`}> · {p.age_days}d</span>
+      )}
+      {p.note && <p className="mt-0.5 text-xs text-muted">{p.note}</p>}
+    </div>
+  );
 }
 
 export default function BriefPage() {
@@ -44,24 +89,24 @@ export default function BriefPage() {
       .finally(() => setLoaded(true));
   }, [selected, projLoaded]);
 
-  // ── no projects yet → onboarding hero ──────────────────────────
+  // ── onboarding hero ────────────────────────────────────────────
   if (projLoaded && !selected) {
     return (
       <div className="mx-auto mt-10 max-w-3xl">
         <div className="flex flex-col items-center text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-muted">
             <Sparkles size={12} className="text-primary" />
-            Powered by Unsiloed
+            For open-source maintainers
           </span>
           <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight text-ink">
-            The brief every maintainer
+            Know what to do
             <br />
-            wishes they <span className="text-primary">had.</span>
+            in your repo <span className="text-primary">this week.</span>
           </h1>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-muted">
-            Pick an open-source project, add a few documents, and get a weekly
-            intelligence brief — feature momentum, ecosystem mentions, competitor
-            moves, and security alerts, every claim linked to its source.
+            Point Maintainer Brief at a GitHub project and get a weekly email of
+            what actually needs you: duplicate issues to close, PRs ready to
+            merge, newcomers going stale, and threads worth a reply.
           </p>
           <div className="mt-8">
             <ButtonLink href="/new" arrow>
@@ -69,31 +114,29 @@ export default function BriefPage() {
             </ButtonLink>
           </div>
           <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.16em] text-faint">
-            Weekly · Cited sources · No noise
+            Weekly · Every item links to the source
           </p>
         </div>
 
-        {/* framed sample preview */}
         <Frame label="Sample brief" dots className="mt-14">
           <div className="space-y-5 p-6">
-            <SectionLabel label="Top Requested Features" icon={TrendingUp} index={1} total={6} />
+            <SectionLabel label="Triage This Week" icon={ListChecks} />
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-display text-base font-semibold text-ink">
-                  WASM plugin support
+                  Duplicate: dark-mode flicker
                 </h3>
-                <Badge tone="danger">high</Badge>
+                <Badge tone="blue">duplicates</Badge>
               </div>
-              <p className="mt-1 text-sm leading-relaxed text-muted">
-                Clustered across 14 GitHub issues and 3 community threads — the
-                most-requested capability this cycle.
+              <p className="mt-1 text-sm font-medium text-primary">
+                → Close #482 and #491 as duplicates of #470, ship the fix.
               </p>
             </div>
-            <SectionLabel label="Security Alerts" icon={ShieldAlert} index={5} total={6} />
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-semibold text-ink">CVE-2026-1042</h3>
-              <Badge tone="gold">moderate</Badge>
-            </div>
+            <SectionLabel label="Ship It" icon={Rocket} />
+            <p className="text-sm text-muted">
+              <Check size={14} className="mr-1 inline text-success" />4 PRs approved and
+              ready to merge.
+            </p>
           </div>
         </Frame>
       </div>
@@ -107,20 +150,27 @@ export default function BriefPage() {
     (selected?.config?.newsletter as { sections?: Partial<Record<SectionKey, boolean>> })
       ?.sections ?? {};
   const on = (k: SectionKey) => sections[k] !== false;
-  const b = brief?.brief_json;
+  const b = brief?.brief_json as BriefJson | undefined;
+  const ship = b?.ship_it;
+  const hasShip =
+    ship &&
+    (ship.ready_to_merge.length ||
+      ship.release_summary ||
+      ship.needs_review.length ||
+      ship.security.length);
 
   return (
     <div className="mx-auto max-w-3xl">
-      {/* page header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="font-display text-4xl font-semibold tracking-tight text-ink">
             {selected!.name}
           </h1>
-          {brief && (
+          {b?.stats && (
             <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">
-              {brief.period_start} – {brief.period_end}
-              {brief.sent_at && " · delivered"}
+              {b.stats.open_issues != null && `${b.stats.open_issues} open issues · `}
+              {b.stats.open_prs != null && `${b.stats.open_prs} open PRs`}
+              {brief?.sent_at && " · delivered"}
             </p>
           )}
         </div>
@@ -140,8 +190,7 @@ export default function BriefPage() {
           <div className="px-10 py-14 text-center">
             <p className="font-display text-xl font-semibold text-ink">No brief generated yet.</p>
             <p className="mt-3 text-sm text-muted">
-              Add documents (PDFs, decks, reports) on the Documents page, then hit
-              “Run brief now”.
+              Hit “Run brief now” to pull your repo’s live state and generate this week’s brief.
             </p>
           </div>
         </Frame>
@@ -151,19 +200,25 @@ export default function BriefPage() {
         <Card className="mt-8 px-8 py-8 sm:px-10">
           <p className="font-display text-xl font-medium leading-relaxed text-ink">{b.headline}</p>
 
-          {on("top_requested_features") && b.top_requested_features?.length > 0 && (
+          {/* TRIAGE */}
+          {on("triage") && b.triage?.length > 0 && (
             <section className="mt-10">
-              <SectionLabel label="Top Requested Features" icon={TrendingUp} index={1} total={6} />
-              <div className="mt-5 space-y-5">
-                {b.top_requested_features.map((f, i) => (
+              <SectionLabel label="Triage This Week" icon={ListChecks} />
+              <div className="mt-5 space-y-6">
+                {b.triage.map((t, i) => (
                   <div key={i}>
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-display text-lg font-semibold text-ink">{f.cluster_name}</h3>
-                      <UrgencyBadge level={f.urgency} />
+                      <h3 className="font-display text-base font-semibold text-ink">{t.title}</h3>
+                      <Badge tone={KIND_TONE[t.kind] ?? "neutral"}>{t.kind}</Badge>
                     </div>
-                    <p className="mt-1 text-sm leading-relaxed text-ink/80">{f.summary}</p>
-                    <div className="mt-2">
-                      <SourceLinks ids={f.signal_ids} />
+                    <p className="mt-1.5 flex items-start gap-1.5 text-sm font-medium text-primary">
+                      <ArrowRight size={15} className="mt-0.5 shrink-0" />
+                      {t.action}
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {t.issues.map((iss) => (
+                        <IssueChip key={iss.number} i={iss} />
+                      ))}
                     </div>
                   </div>
                 ))}
@@ -171,109 +226,128 @@ export default function BriefPage() {
             </section>
           )}
 
-          {on("community_health") && b.community_health && (
+          {/* SHIP IT */}
+          {on("ship_it") && hasShip && (
             <section className="mt-10">
-              <SectionLabel label="Community Health" icon={HeartPulse} index={2} total={6} />
-              <p className="mt-4 text-sm leading-relaxed text-ink/80">
-                {b.community_health.summary}
+              <SectionLabel label="Ship It" icon={Rocket} />
+              <div className="mt-4 space-y-5">
+                {ship!.ready_to_merge.length > 0 && (
+                  <div>
+                    <p className="flex items-center gap-1.5 text-sm font-semibold text-success">
+                      <Check size={15} /> Ready to merge ({ship!.ready_to_merge.length})
+                    </p>
+                    <div className="mt-2 space-y-2">
+                      {ship!.ready_to_merge.map((p) => (
+                        <PrLine key={p.number} p={p} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {ship!.release_summary && (
+                  <div>
+                    <p className="flex items-center gap-1.5 text-sm font-semibold text-ink">
+                      <Package size={15} className="text-primary" /> Unreleased (
+                      {ship!.unreleased_count} merged since {ship!.latest_release ?? "last release"})
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-ink/80">
+                      {ship!.release_summary}
+                    </p>
+                  </div>
+                )}
+
+                {ship!.needs_review.length > 0 && (
+                  <div>
+                    <p className="flex items-center gap-1.5 text-sm font-semibold text-ink">
+                      <Clock size={15} className="text-gold" /> Aging — needs review
+                    </p>
+                    <div className="mt-2 space-y-2">
+                      {ship!.needs_review.map((p) => (
+                        <PrLine key={p.number} p={p} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {ship!.security.length > 0 && (
+                  <div>
+                    <p className="flex items-center gap-1.5 text-sm font-semibold text-danger">
+                      <ShieldAlert size={15} /> Security
+                    </p>
+                    <div className="mt-2 space-y-1.5">
+                      {ship!.security.map((s) => (
+                        <a
+                          key={s.id}
+                          href={s.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block text-sm text-ink hover:text-primary"
+                        >
+                          <span className="font-mono text-xs text-danger">{s.id}</span>
+                          <span className="text-xs text-faint"> · {s.severity}</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* PEOPLE */}
+          {on("people") && b.people?.length > 0 && (
+            <section className="mt-10">
+              <SectionLabel label="People" icon={Users} />
+              <p className="mt-3 text-sm text-muted">
+                First-time contributors whose PRs are going stale — a reply keeps them around.
               </p>
-              <div className="mt-3 space-y-1.5">
-                {b.community_health.metrics_callouts?.map((c, i) => (
-                  <p key={i} className="flex items-start gap-2 text-sm text-ink">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                    {c}
-                  </p>
+              <div className="mt-3 space-y-3">
+                {b.people.map((p) => (
+                  <div key={p.number} className="text-sm">
+                    <span className="font-semibold text-ink">@{p.author}</span>{" "}
+                    <a
+                      href={p.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-ink hover:text-primary"
+                    >
+                      <span className="font-mono text-xs text-faint">#{p.number}</span> {p.title}
+                    </a>
+                    {p.age_days != null && (
+                      <span className="text-xs text-gold"> · {p.age_days}d waiting</span>
+                    )}
+                    {p.note && <p className="mt-0.5 text-xs text-muted">{p.note}</p>}
+                  </div>
                 ))}
               </div>
             </section>
           )}
 
-          {on("ecosystem_mentions") && b.ecosystem_mentions?.length > 0 && (
+          {/* WORTH REPLYING TO */}
+          {on("worth_replying_to") && b.worth_replying_to?.length > 0 && (
             <section className="mt-10">
-              <SectionLabel label="Ecosystem Mentions" icon={Megaphone} index={3} total={6} />
+              <SectionLabel label="Worth Replying To" icon={MessagesSquare} />
               <div className="mt-4 space-y-4">
-                {b.ecosystem_mentions.map((m, i) => (
+                {b.worth_replying_to.map((t, i) => (
                   <div key={i}>
-                    <p className="text-sm leading-relaxed text-ink/80">
-                      {m.context}
-                      {m.prominence && (
-                        <span className="ml-1.5 text-xs text-faint">({m.prominence})</span>
-                      )}
+                    <p className="text-sm">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-faint">
+                        {t.source}
+                      </span>{" "}
+                      <a
+                        href={t.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 font-medium text-ink hover:text-primary"
+                      >
+                        {t.title}
+                        <ExternalLink size={11} className="text-faint" />
+                      </a>
                     </p>
-                    <div className="mt-2">
-                      <SourceLinks ids={m.signal_ids} />
-                    </div>
+                    {t.why && <p className="mt-0.5 text-sm text-primary">{t.why}</p>}
                   </div>
                 ))}
               </div>
-            </section>
-          )}
-
-          {on("competitor_watch") && b.competitor_watch?.length > 0 && (
-            <section className="mt-10">
-              <SectionLabel label="Competitor Watch" icon={Crosshair} index={4} total={6} />
-              <div className="mt-5 space-y-5">
-                {b.competitor_watch.map((c, i) => (
-                  <div key={i}>
-                    <h3 className="font-display text-lg font-semibold text-ink">{c.competitor}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-ink/80">{c.development}</p>
-                    <p className="mt-1 text-sm text-muted">
-                      <span className="font-medium text-ink">Why it matters:</span>{" "}
-                      {c.why_it_matters}
-                    </p>
-                    <div className="mt-2">
-                      <SourceLinks ids={c.signal_ids} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {on("security_alerts") && b.security_alerts?.length > 0 && (
-            <section className="mt-10">
-              <SectionLabel label="Security Alerts" icon={ShieldAlert} index={5} total={6} />
-              <div className="mt-4 space-y-4">
-                {b.security_alerts.map((s, i) => (
-                  <div key={i}>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="text-base font-semibold text-ink">{s.identifier}</h3>
-                      <UrgencyBadge level={s.severity} />
-                    </div>
-                    <p className="mt-1 text-sm leading-relaxed text-ink/80">{s.action}</p>
-                    <div className="mt-2">
-                      <SourceLinks ids={s.signal_ids} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {on("maintainer_recommendations") && b.maintainer_recommendations?.length > 0 && (
-            <section className="mt-10">
-              <SectionLabel label="Recommended Actions" icon={ListChecks} index={6} total={6} />
-              <ol className="mt-5 space-y-4">
-                {b.maintainer_recommendations.map((r, i) => (
-                  <li key={i} className="flex gap-3">
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-[5px] bg-primary-soft font-mono text-xs font-semibold text-primary">
-                      {i + 1}
-                    </span>
-                    <div>
-                      <p className="text-sm font-semibold text-ink">
-                        {r.recommendation}
-                        <span className="ml-2 align-middle">
-                          <Badge tone="neutral">{r.effort}</Badge>
-                        </span>
-                      </p>
-                      <p className="mt-1 text-sm text-muted">{r.rationale}</p>
-                      <div className="mt-2">
-                        <SourceLinks ids={r.supporting_signal_ids} />
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ol>
             </section>
           )}
         </Card>
