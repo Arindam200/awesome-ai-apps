@@ -1,0 +1,31 @@
+# Fly.io config for the Maintainer Brief backend.
+# Deploy: fly launch --no-deploy  (once) then `fly deploy` from backend/.
+# Set secrets with: fly secrets set OPENAI_API_KEY=... GITHUB_TOKEN=... etc.
+app = "maintainer-brief-api"
+primary_region = "iad"
+
+[build]
+
+[env]
+  # Public URL of THIS backend (for one-click feedback links in the email).
+  API_PUBLIC_URL = "https://maintainer-brief-api.fly.dev"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  # The APScheduler cron lives in-process, so the machine must stay up and
+  # must NOT scale beyond one instance (or the weekly brief sends N times).
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [http_service.checks]
+    [[http_service.checks.http]]
+      method = "GET"
+      path = "/health"
+      interval = "30s"
+      timeout = "5s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

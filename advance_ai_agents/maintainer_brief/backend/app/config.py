@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     resend_api_key: str = ""
     database_url: str = "postgresql+psycopg://brief:brief@localhost:5433/maintainer_brief"
     app_url: str = "http://localhost:3005"
+    # Public URL of THIS backend — used for one-click 👍/👎 links in the email.
+    api_public_url: str = "http://localhost:8000"
+    # HMAC secret for signing feedback links (set a real random value in prod).
+    feedback_secret: str = "dev-insecure-change-me"
 
     unsiloed_base_url: str = "https://prod.visionapi.unsiloed.ai"
     unsiloed_model: str = "beta"

@@ -1,0 +1,52 @@
+# Full self-host stack: Postgres + backend + frontend.
+#   cp .env.example .env   # fill in UNSILOED/OPENAI/GITHUB/RESEND keys
+#   docker compose -f docker-compose.selfhost.yml up --build
+# Then open http://localhost:3005
+#
+# (The plain docker-compose.yml starts ONLY Postgres, for local dev.)
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: brief
+      POSTGRES_PASSWORD: brief
+      POSTGRES_DB: maintainer_brief
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brief -d maintainer_brief"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://brief:brief@postgres:5432/maintainer_brief
+      APP_URL: http://localhost:3005
+      API_PUBLIC_URL: http://localhost:8000
+      UNSILOED_API_KEY: ${UNSILOED_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      LLM_PROVIDER: ${LLM_PROVIDER:-openai}
+      NEBIUS_API_KEY: ${NEBIUS_API_KEY:-}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      FEEDBACK_SECRET: ${FEEDBACK_SECRET:-dev-insecure-change-me}
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+    depends_on:
+      - backend
+    ports:
+      - "3005:3000"
+
+volumes:
+  pgdata:

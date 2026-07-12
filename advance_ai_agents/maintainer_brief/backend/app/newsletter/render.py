@@ -5,6 +5,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.config import settings
+from app.feedback import url as feedback_url
 from app.models import Brief, Project, Signal
 
 _env = Environment(
@@ -31,6 +32,10 @@ def render_brief_html(db: Session, project: Project, brief: Brief, subject: str 
         )
     )
     template = _env.get_template("brief.html.j2")
+
+    def fb(kind: str, ref, vote: str) -> str:
+        return feedback_url(brief.id, kind, ref, vote)
+
     return template.render(
         project_name=project.name,
         brief=brief.brief_json,
@@ -39,4 +44,5 @@ def render_brief_html(db: Session, project: Project, brief: Brief, subject: str 
         period_end=brief.period_end.strftime("%b %d, %Y"),
         signal_count=signal_count or 0,
         app_url=settings.app_url.rstrip("/"),
+        fb=fb,
     )

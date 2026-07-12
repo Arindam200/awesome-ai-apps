@@ -30,6 +30,14 @@
   <a href="{{ i.url }}" style="display:inline-block; font-family:'SF Mono',Consolas,Menlo,monospace; font-size:10px; color:#6b6f76; text-decoration:none; border:1px solid #e5e7eb; border-radius:4px; padding:2px 6px; margin:2px 4px 0 0;">#{{ i.number }}{% if i.reactions %} &#9829;{{ i.reactions }}{% endif %}{% if i.comments %} &#128172;{{ i.comments }}{% endif %}</a>
   {%- endmacro %}
 
+  {% macro feedback(kind, ref) -%}
+  <span style="float:right; font-size:12px;">
+    <span style="color:#c7ccd3;">useful?</span>
+    <a href="{{ fb(kind, ref, 'up') }}" style="text-decoration:none; margin-left:4px;">&#128077;</a>
+    <a href="{{ fb(kind, ref, 'down') }}" style="text-decoration:none; margin-left:2px;">&#128078;</a>
+  </span>
+  {%- endmacro %}
+
   <!-- Header -->
   <tr><td style="padding:34px 40px 22px 40px; border-bottom:1px solid #e5e7eb;">
     <div style="font-family:'SF Mono',Consolas,Menlo,monospace; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#9aa0a6;">Maintainer Brief</div>
@@ -50,7 +58,7 @@
   {{ section_header("Triage This Week") }}
   {% for t in brief.triage %}
   <tr><td style="padding:16px 40px 4px 40px;">
-    <div style="font-size:15px; color:#2b2926; font-weight:bold;">{{ t.title }}&nbsp;&nbsp;{{ kind_badge(t.kind) }}</div>
+    <div style="font-size:15px; color:#2b2926; font-weight:bold;">{{ t.title }}&nbsp;&nbsp;{{ kind_badge(t.kind) }}{{ feedback('triage', loop.index0) }}</div>
     <div style="font-size:14px; color:#3553ff; line-height:1.5; margin-top:5px;"><strong>&rarr; {{ t.action }}</strong></div>
     <div style="margin-top:6px;">{% for i in t.issues %}{{ issue_chip(i) }}{% endfor %}</div>
   </td></tr>

@@ -142,6 +142,22 @@ class TrendMetric(Base):
     prior_value: Mapped[float | None] = mapped_column(Float)
 
 
+class Feedback(Base):
+    """Per-item 👍/👎 from the email. Measures whether the brief was useful —
+    the metric the dogfood launch gate reads (design doc §1)."""
+
+    __tablename__ = "feedback"
+    __table_args__ = (UniqueConstraint("brief_id", "item_kind", "item_ref"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    brief_id: Mapped[int] = mapped_column(ForeignKey("briefs.id", ondelete="CASCADE"))
+    project_id: Mapped[int | None] = mapped_column(ForeignKey("projects.id"))
+    item_kind: Mapped[str] = mapped_column(Text)  # triage|ship|people|thread
+    item_ref: Mapped[str] = mapped_column(Text)   # cluster index / PR number / thread index
+    vote: Mapped[str] = mapped_column(Text)        # up|down
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
 class Brief(Base):
     __tablename__ = "briefs"
 

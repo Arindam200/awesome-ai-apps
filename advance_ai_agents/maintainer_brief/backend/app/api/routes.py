@@ -5,7 +5,7 @@ import threading
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
@@ -13,10 +13,12 @@ from sqlalchemy.orm import Session, selectinload
 from app.connectors.documents import ALLOWED_SUFFIXES, register_document
 from app.connectors.github_conn import repo_metadata
 from app.db import SessionLocal, get_db
+from app.feedback import verify as verify_feedback
 from app.models import (
     Brief,
     Document,
     DocumentPage,
+    Feedback,
     PipelineRun,
     Project,
     Signal,
@@ -431,3 +433,67 @@ def page_image(document_id: int, page_no: int, db: Session = Depends(get_db)):
     if not page:
         raise HTTPException(404, "page not rendered")
     return FileResponse(page.image_path, media_type="image/png")
+
+
+# ---------- feedback (one-click 👍/👎 from the email) ----------
+
+_THANKS_HTML = """<!doctype html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thanks</title></head>
+<body style="margin:0;font-family:Helvetica,Arial,sans-serif;background:#f6f7f9;color:#2b2926">
+<div style="max-width:420px;margin:18vh auto;text-align:center;background:#fff;border:1px solid #e5e7eb;border-top:3px solid #3553ff;border-radius:6px;padding:40px 32px">
+<div style="font-size:34px">{emoji}</div>
+<h2 style="margin:14px 0 6px;font-size:20px">Thanks — noted.</h2>
+<p style="margin:0;color:#6b6f76;font-size:14px">{msg}</p>
+</div></body></html>"""
+
+
+@router.get("/feedback", response_class=HTMLResponse)
+def record_feedback(t: str, db: Session = Depends(get_db)):
+    data = verify_feedback(t)
+    if not data:
+        return HTMLResponse(
+            _THANKS_HTML.format(emoji="⚠️", msg="This feedback link is invalid or expired."),
+            status_code=400,
+        )
+    brief = db.get(Brief, data["brief_id"])
+    # upsert on (brief_id, item_kind, item_ref) so re-clicks update, not duplicate
+    existing = db.scalar(
+        select(Feedback).where(
+            Feedback.brief_id == data["brief_id"],
+            Feedback.item_kind == data["kind"],
+            Feedback.item_ref == str(data["ref"]),
+        )
+    )
+    if existing:
+        existing.vote = data["vote"]
+    else:
+        db.add(
+            Feedback(
+                brief_id=data["brief_id"],
+                project_id=brief.project_id if brief else None,
+                item_kind=data["kind"],
+                item_ref=str(data["ref"]),
+                vote=data["vote"],
+            )
+        )
+    db.commit()
+    up = data["vote"] == "up"
+    return HTMLResponse(
+        _THANKS_HTML.format(
+            emoji="👍" if up else "👎",
+            msg="Glad it was useful." if up else "We'll tune this kind of item down.",
+        )
+    )
+
+
+@router.get("/feedback/summary")
+def feedback_summary(brief_id: int, db: Session = Depends(get_db)):
+    rows = list(db.scalars(select(Feedback).where(Feedback.brief_id == brief_id)))
+    up = sum(1 for r in rows if r.vote == "up")
+    down = sum(1 for r in rows if r.vote == "down")
+    by_item = [
+        {"kind": r.item_kind, "ref": r.item_ref, "vote": r.vote}
+        for r in sorted(rows, key=lambda r: r.created_at)
+    ]
+    return {"brief_id": brief_id, "up": up, "down": down, "total": len(rows), "items": by_item}
