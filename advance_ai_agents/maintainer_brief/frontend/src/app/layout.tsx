@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Inter_Tight, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/components/AuthProvider";
 import { ProjectProvider } from "@/components/ProjectProvider";
 import Header from "@/components/Header";
 
@@ -25,10 +26,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${interTight.variable} ${geistMono.variable}`}>
       <body className="min-h-screen">
-        <ProjectProvider>
-          <Header />
-          <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
-        </ProjectProvider>
+        <AuthProvider>
+          <ProjectProvider>
+            <Header />
+            <main className="mx-auto max-w-5xl px-6 py-10">{children}</main>
+          </ProjectProvider>
+        </AuthProvider>
       </body>
     </html>
   );

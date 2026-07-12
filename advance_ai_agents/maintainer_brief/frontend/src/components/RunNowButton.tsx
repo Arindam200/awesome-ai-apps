@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Play } from "lucide-react";
-import { API_URL, Run } from "@/lib/api";
+import { API_URL, Run, authHeaders } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 
 const STAGE_LABELS: Record<string, string> = {
@@ -39,7 +39,7 @@ export default function RunNowButton({
     try {
       const res = await fetch(`${API_URL}/runs`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: authHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ project_id: projectId, dry_run: dryRun }),
       });
       if (!res.ok) {
@@ -48,9 +48,9 @@ export default function RunNowButton({
       }
       const { run_id } = await res.json();
       timer.current = setInterval(async () => {
-        const r: Run = await fetch(`${API_URL}/runs/${run_id}`).then((x) =>
-          x.json(),
-        );
+        const r: Run = await fetch(`${API_URL}/runs/${run_id}`, {
+          headers: authHeaders(),
+        }).then((x) => x.json());
         setRun(r);
         if (r.status !== "running") {
           stopPolling();

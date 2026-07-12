@@ -16,9 +16,19 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname
 logger = logging.getLogger(__name__)
 
 
+def _migrate():
+    """Additive, idempotent schema sync. create_all makes new tables (users,
+    feedback); the ALTER back-fills owner_id on DBs that predate auth. Any
+    pre-auth project ends up with owner_id NULL → invisible to every user (they
+    filter by owner), which is the safe state until it's cleaned up."""
+    Base.metadata.create_all(engine)
+    with engine.begin() as c:
+        c.execute(text("ALTER TABLE projects ADD COLUMN IF NOT EXISTS owner_id INTEGER"))
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    Base.metadata.create_all(engine)
+    _migrate()
     if settings.feedback_secret == "dev-insecure-change-me":
         logger.warning("FEEDBACK_SECRET is the insecure default — set a random value in production")
     db = SessionLocal()

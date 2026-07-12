@@ -30,6 +30,13 @@ class Settings(BaseSettings):
     # HMAC secret for signing feedback links (set a real random value in prod).
     feedback_secret: str = "dev-insecure-change-me"
 
+    # ── Auth (GitHub OAuth) ──
+    github_oauth_client_id: str = ""
+    github_oauth_client_secret: str = ""
+    # HMAC secret for signing session tokens (set a real random value in prod).
+    session_secret: str = "dev-insecure-change-me"
+    session_ttl_days: int = 30
+
     unsiloed_base_url: str = "https://prod.visionapi.unsiloed.ai"
     unsiloed_model: str = "beta"
 

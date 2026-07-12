@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { UploadCloud, FileText } from "lucide-react";
-import { API_URL, DocumentRow, api } from "@/lib/api";
+import { API_URL, DocumentRow, api, authHeaders } from "@/lib/api";
 import { useProject } from "@/components/ProjectProvider";
 import RunNowButton from "@/components/RunNowButton";
 import { Card } from "@/components/ui/Card";
@@ -35,6 +35,7 @@ export default function DocumentsPage() {
       form.append("file", file);
       const res = await fetch(`${API_URL}/documents/upload?project_id=${selected.id}`, {
         method: "POST",
+        headers: authHeaders(),
         body: form,
       });
       const body = await res.json().catch(() => ({}));

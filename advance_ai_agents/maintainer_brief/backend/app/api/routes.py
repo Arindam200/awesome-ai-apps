@@ -1,15 +1,30 @@
-"""All API routes. Small app — one router file beats six."""
+"""All API routes. Small app — one router file beats six.
+
+Auth model: every project-scoped endpoint requires a logged-in user
+(`Depends(current_user)`) and only ever touches rows that user owns
+(`_owned_project` / `_owned_brief`). Public endpoints are limited to /auth/*,
+/health, /feedback (email links), and /assets page images.
+"""
 
 import re
 import threading
 
 import httpx
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from pydantic import BaseModel
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session, selectinload
 
+from app.auth import (
+    current_user,
+    exchange_and_upsert,
+    frontend_redirect,
+    login_url,
+    mint_session,
+    check_state,
+    user_public,
+)
 from app.connectors.documents import ALLOWED_SUFFIXES, register_document
 from app.connectors.github_conn import repo_metadata
 from app.db import SessionLocal, get_db
@@ -23,6 +38,7 @@ from app.models import (
     Project,
     Signal,
     SignalCitation,
+    User,
 )
 from app.newsletter.render import render_brief_html, section_flags
 from app.newsletter.send import build_subject, send_brief
@@ -32,6 +48,50 @@ from app.scheduler import schedule_project, unschedule_project
 router = APIRouter()
 
 
+# ---------- auth ----------
+
+@router.get("/auth/login")
+def auth_login():
+    return RedirectResponse(login_url())
+
+
+@router.get("/auth/callback")
+def auth_callback(code: str | None = None, state: str | None = None, db: Session = Depends(get_db)):
+    if not code or not state or not check_state(state):
+        raise HTTPException(400, "invalid oauth callback")
+    user = exchange_and_upsert(db, code)
+    return RedirectResponse(frontend_redirect(mint_session(user.id)))
+
+
+@router.get("/auth/me")
+def auth_me(user: User = Depends(current_user)):
+    return user_public(user)
+
+
+@router.post("/auth/logout")
+def auth_logout():
+    # stateless tokens — client drops it; nothing to revoke server-side
+    return {"ok": True}
+
+
+# ---------- ownership helpers ----------
+
+def _owned_project(db: Session, project_id: int, user: User) -> Project:
+    p = db.get(Project, project_id)
+    # 404 (not 403) so we never confirm a project exists to a non-owner
+    if not p or p.owner_id != user.id:
+        raise HTTPException(404, "project not found")
+    return p
+
+
+def _owned_brief(db: Session, brief_id: int, user: User) -> Brief:
+    b = db.get(Brief, brief_id)
+    if not b:
+        raise HTTPException(404, "brief not found")
+    _owned_project(db, b.project_id, user)
+    return b
+
+
 # ---------- projects ----------
 
 def _project_dict(p: Project) -> dict:
@@ -39,17 +99,16 @@ def _project_dict(p: Project) -> dict:
 
 
 @router.get("/projects")
-def list_projects(db: Session = Depends(get_db)):
-    projects = db.scalars(select(Project).order_by(Project.created_at)).all()
+def list_projects(user: User = Depends(current_user), db: Session = Depends(get_db)):
+    projects = db.scalars(
+        select(Project).where(Project.owner_id == user.id).order_by(Project.created_at)
+    ).all()
     return [_project_dict(p) for p in projects]
 
 
 @router.get("/projects/{project_id}")
-def get_project(project_id: int, db: Session = Depends(get_db)):
-    p = db.get(Project, project_id)
-    if not p:
-        raise HTTPException(404, "project not found")
-    return _project_dict(p)
+def get_project(project_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    return _project_dict(_owned_project(db, project_id, user))
 
 
 def _slugify(name: str) -> str:
@@ -66,14 +125,19 @@ def _unique_slug(db: Session, base: str) -> str:
 
 class ProjectCreate(BaseModel):
     name: str
-    config: dict  # github/keywords/competitors/community/security/newsletter/documents
+    config: dict
 
 
 @router.post("/projects")
-def create_project(req: ProjectCreate, db: Session = Depends(get_db)):
+def create_project(req: ProjectCreate, user: User = Depends(current_user), db: Session = Depends(get_db)):
     if not req.name.strip():
         raise HTTPException(422, "name is required")
-    project = Project(slug=_unique_slug(db, _slugify(req.name)), name=req.name.strip(), config=req.config or {})
+    project = Project(
+        owner_id=user.id,
+        slug=_unique_slug(db, _slugify(req.name)),
+        name=req.name.strip(),
+        config=req.config or {},
+    )
     db.add(project)
     db.commit()
     schedule_project(project)
@@ -86,10 +150,11 @@ class ProjectUpdate(BaseModel):
 
 
 @router.patch("/projects/{project_id}")
-def update_project(project_id: int, req: ProjectUpdate, db: Session = Depends(get_db)):
-    p = db.get(Project, project_id)
-    if not p:
-        raise HTTPException(404, "project not found")
+def update_project(
+    project_id: int, req: ProjectUpdate,
+    user: User = Depends(current_user), db: Session = Depends(get_db),
+):
+    p = _owned_project(db, project_id, user)
     if req.name:
         p.name = req.name.strip()
     if req.config is not None:
@@ -107,12 +172,9 @@ def _deep_merge(base: dict, patch: dict) -> dict:
 
 
 @router.delete("/projects/{project_id}")
-def delete_project(project_id: int, db: Session = Depends(get_db)):
-    p = db.get(Project, project_id)
-    if not p:
-        raise HTTPException(404, "project not found")
+def delete_project(project_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    p = _owned_project(db, project_id, user)
     slug = p.slug
-    # children (signals/citations/documents/briefs/runs) cascade by project_id cleanup
     db.query(SignalCitation).filter(
         SignalCitation.signal_id.in_(select(Signal.id).where(Signal.project_id == project_id))
     ).delete(synchronize_session=False)
@@ -127,7 +189,7 @@ def delete_project(project_id: int, db: Session = Depends(get_db)):
 # ---------- github helpers ----------
 
 @router.get("/github/repo")
-def github_repo(repo: str):
+def github_repo(repo: str, user: User = Depends(current_user)):
     repo = repo.strip().removeprefix("https://github.com/").strip("/")
     if repo.count("/") != 1:
         raise HTTPException(422, "expected 'org/name'")
@@ -137,7 +199,6 @@ def github_repo(repo: str):
         if e.response.status_code == 404:
             raise HTTPException(404, "repository not found")
         raise HTTPException(502, f"github error: {e.response.status_code}")
-    # derive starter keywords from topics + repo name words
     words = re.split(r"[-_/]", meta["name"])
     keywords = sorted({*(t for t in meta["topics"]), *(w.lower() for w in words if len(w) > 2)})
     meta["suggested_keywords"] = keywords[:8]
@@ -161,10 +222,8 @@ def _run_in_thread(run_id: int):
 
 
 @router.post("/runs")
-def create_run(req: RunRequest, db: Session = Depends(get_db)):
-    project = db.get(Project, req.project_id)
-    if not project:
-        raise HTTPException(404, "project not found")
+def create_run(req: RunRequest, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    project = _owned_project(db, req.project_id, user)
     active = db.scalar(
         select(PipelineRun.id).where(
             PipelineRun.project_id == project.id, PipelineRun.status == "running"
@@ -180,10 +239,11 @@ def create_run(req: RunRequest, db: Session = Depends(get_db)):
 
 
 @router.get("/runs/{run_id}")
-def get_run(run_id: int, db: Session = Depends(get_db)):
+def get_run(run_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
     run = db.get(PipelineRun, run_id)
     if not run:
         raise HTTPException(404, "run not found")
+    _owned_project(db, run.project_id, user)
     return {
         "id": run.id,
         "status": run.status,
@@ -204,8 +264,10 @@ def list_signals(
     signal_type: str | None = None,
     source_kind: str | None = None,
     limit: int = 100,
+    user: User = Depends(current_user),
     db: Session = Depends(get_db),
 ):
+    _owned_project(db, project_id, user)
     q = (
         select(Signal)
         .options(selectinload(Signal.citations))
@@ -254,10 +316,11 @@ def _signal_dict(s: Signal, include_citations: bool = False) -> dict:
 
 
 @router.get("/signals/{signal_id}")
-def get_signal(signal_id: int, db: Session = Depends(get_db)):
+def get_signal(signal_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
     signal = db.get(Signal, signal_id, options=[selectinload(Signal.citations)])
     if not signal:
         raise HTTPException(404, "signal not found")
+    _owned_project(db, signal.project_id, user)
     result = _signal_dict(signal, include_citations=True)
     if signal.document_id:
         doc = db.get(Document, signal.document_id)
@@ -287,7 +350,8 @@ def get_signal(signal_id: int, db: Session = Depends(get_db)):
 # ---------- briefs ----------
 
 @router.get("/briefs")
-def list_briefs(project_id: int, db: Session = Depends(get_db)):
+def list_briefs(project_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    _owned_project(db, project_id, user)
     briefs = db.scalars(
         select(Brief).where(Brief.project_id == project_id).order_by(Brief.created_at.desc()).limit(20)
     ).all()
@@ -305,7 +369,8 @@ def list_briefs(project_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/briefs/latest")
-def latest_brief(project_id: int, db: Session = Depends(get_db)):
+def latest_brief(project_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    _owned_project(db, project_id, user)
     brief = db.scalar(
         select(Brief).where(Brief.project_id == project_id).order_by(Brief.created_at.desc()).limit(1)
     )
@@ -315,11 +380,8 @@ def latest_brief(project_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/briefs/{brief_id}")
-def get_brief(brief_id: int, db: Session = Depends(get_db)):
-    brief = db.get(Brief, brief_id)
-    if not brief:
-        raise HTTPException(404, "brief not found")
-    return _brief_dict(brief)
+def get_brief(brief_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    return _brief_dict(_owned_brief(db, brief_id, user))
 
 
 def _brief_dict(b: Brief) -> dict:
@@ -337,11 +399,9 @@ def _brief_dict(b: Brief) -> dict:
 
 
 @router.get("/briefs/{brief_id}/html")
-def brief_html(brief_id: int, db: Session = Depends(get_db)):
+def brief_html(brief_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
     """Live-rendered email HTML honoring the project's current section toggles."""
-    brief = db.get(Brief, brief_id)
-    if not brief:
-        raise HTTPException(404, "brief not found")
+    brief = _owned_brief(db, brief_id, user)
     project = db.get(Project, brief.project_id)
     return {
         "html": render_brief_html(db, project, brief),
@@ -359,12 +419,13 @@ class SendRequest(BaseModel):
 
 
 @router.post("/briefs/{brief_id}/send")
-def send_brief_endpoint(brief_id: int, req: SendRequest, db: Session = Depends(get_db)):
-    brief = db.get(Brief, brief_id)
-    if not brief:
-        raise HTTPException(404, "brief not found")
+def send_brief_endpoint(
+    brief_id: int, req: SendRequest,
+    user: User = Depends(current_user), db: Session = Depends(get_db),
+):
+    brief = _owned_brief(db, brief_id, user)
     project = db.get(Project, brief.project_id)
-    html = render_brief_html(db, project, brief)  # honor current section toggles
+    html = render_brief_html(db, project, brief)
     try:
         result = send_brief(
             db, project, brief,
@@ -381,7 +442,8 @@ def send_brief_endpoint(brief_id: int, req: SendRequest, db: Session = Depends(g
 # ---------- documents ----------
 
 @router.get("/documents")
-def list_documents(project_id: int, db: Session = Depends(get_db)):
+def list_documents(project_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    _owned_project(db, project_id, user)
     docs = db.scalars(
         select(Document).where(Document.project_id == project_id).order_by(Document.created_at.desc())
     ).all()
@@ -408,10 +470,11 @@ def list_documents(project_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/documents/upload")
-async def upload_document(project_id: int, file: UploadFile, db: Session = Depends(get_db)):
-    project = db.get(Project, project_id)
-    if not project:
-        raise HTTPException(404, "project not found")
+async def upload_document(
+    project_id: int, file: UploadFile,
+    user: User = Depends(current_user), db: Session = Depends(get_db),
+):
+    project = _owned_project(db, project_id, user)
     from pathlib import Path
 
     if Path(file.filename or "").suffix.lower() not in ALLOWED_SUFFIXES:
@@ -425,7 +488,7 @@ async def upload_document(project_id: int, file: UploadFile, db: Session = Depen
     return {"status": "created", "document_id": doc.id}
 
 
-# ---------- page image assets ----------
+# ---------- page image assets (public; low-sensitivity rendered pages) ----------
 
 @router.get("/assets/pages/{document_id}/{page_no}.png")
 def page_image(document_id: int, page_no: int, db: Session = Depends(get_db)):
@@ -435,7 +498,7 @@ def page_image(document_id: int, page_no: int, db: Session = Depends(get_db)):
     return FileResponse(page.image_path, media_type="image/png")
 
 
-# ---------- feedback (one-click 👍/👎 from the email) ----------
+# ---------- feedback (one-click 👍/👎 from the email — public by design) ----------
 
 _THANKS_HTML = """<!doctype html><html><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -457,7 +520,6 @@ def record_feedback(t: str, db: Session = Depends(get_db)):
             status_code=400,
         )
     brief = db.get(Brief, data["brief_id"])
-    # upsert on (brief_id, item_kind, item_ref) so re-clicks update, not duplicate
     existing = db.scalar(
         select(Feedback).where(
             Feedback.brief_id == data["brief_id"],
@@ -488,7 +550,8 @@ def record_feedback(t: str, db: Session = Depends(get_db)):
 
 
 @router.get("/feedback/summary")
-def feedback_summary(brief_id: int, db: Session = Depends(get_db)):
+def feedback_summary(brief_id: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    _owned_brief(db, brief_id, user)
     rows = list(db.scalars(select(Feedback).where(Feedback.brief_id == brief_id)))
     up = sum(1 for r in rows if r.vote == "up")
     down = sum(1 for r in rows if r.vote == "down")

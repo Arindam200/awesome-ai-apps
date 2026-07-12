@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Plus, Newspaper, Send, Activity, FileText, Settings2 } from "lucide-react";
+import { ChevronDown, Plus, Newspaper, Send, Activity, FileText, Settings2, LogOut } from "lucide-react";
 import { useProject } from "./ProjectProvider";
+import { useAuth } from "./AuthProvider";
 
 const NAV = [
   { href: "/", label: "Brief", icon: Newspaper },
@@ -26,6 +27,7 @@ function LogoMark() {
 
 export default function Header() {
   const { projects, selected, setSelectedId } = useProject();
+  const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const ref = useRef<HTMLDivElement>(null);
@@ -112,6 +114,24 @@ export default function Header() {
               );
             })}
           </nav>
+
+          {user && (
+            <div className="flex items-center gap-2 pl-2">
+              <span className="h-5 w-px bg-line" />
+              {user.avatar_url && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={user.avatar_url} alt="" className="h-6 w-6 rounded-full" />
+              )}
+              <span className="hidden text-sm text-muted sm:inline">{user.login}</span>
+              <button
+                onClick={logout}
+                title="Sign out"
+                className="rounded-[6px] p-1.5 text-muted transition-colors hover:bg-surface-2 hover:text-ink"
+              >
+                <LogOut size={15} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
