@@ -92,6 +92,30 @@ function SignInScreen() {
       <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.16em] text-faint">
         Your projects are private to you
       </p>
+
+      {/* footer — powered by + credit */}
+      <div className="mt-14 flex flex-col items-center gap-3 border-t border-line pt-8">
+        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-faint">
+          Powered by
+        </span>
+        <a
+          href="https://tokenfactory.nebius.com/"
+          target="_blank"
+          rel="noreferrer"
+          title="Nebius Token Factory"
+          className="transition-opacity hover:opacity-80"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/nebius-token-factory.png"
+            alt="Nebius Token Factory"
+            className="h-14 w-14 rounded-[10px] shadow-sm"
+          />
+        </a>
+        <p className="mt-1 text-xs text-muted">
+          Built and maintained by <span className="font-medium text-ink">Shivay Lamba</span>
+        </p>
+      </div>
     </div>
   );
 }
