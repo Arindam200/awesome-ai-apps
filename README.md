@@ -244,8 +244,9 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🎙️ Voice Agents
 
-**Real-time voice assistants and streaming speech pipelines.** _8 projects_
+**Real-time voice assistants and streaming speech pipelines.** _9 projects_
 
+- [FunASR + Nebius Voice Note Analyst](voice_agents/funasr_nebius_voice_note_analyst) - Local multilingual FunASR transcription with optional Nebius summaries, key points, and action items
 - [Gradium + Nebius Voice Coach](voice_agents/voice-agent-gradium-nebius-langchain) - Conversational pitch coach using Gradium STT/TTS, LangChain orchestration, and Nebius reasoning
 - [Healthcare Voice Contact Center](voice_agents/healthcare_contact_center) - Pipecat healthcare contact center with appointment booking, FAQ handling, and supervisor escalation
 - [LiveKit + Gemini Realtime](voice_agents/livekit_gemini_agents) - LiveKit Agents with Google Gemini Live (`gemini` multimodal realtime) for low-latency voice conversations in a LiveKit room

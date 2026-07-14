@@ -45,6 +45,13 @@ st.markdown(
     }
     [data-testid="stHeader"] {
         background: var(--paper);
+        min-height: 0;
+        height: 0;
+    }
+    [data-testid="stToolbar"],
+    [data-testid="stStatusWidget"],
+    [data-testid="stDecoration"] {
+        display: none !important;
     }
     .block-container {
         max-width: 1240px;
@@ -66,8 +73,12 @@ st.markdown(
         line-height: 1.35 !important;
     }
     [data-testid="stImage"] img {
-        max-height: 64px;
+        max-height: 72px;
+        width: auto;
         object-fit: contain;
+    }
+    [data-testid="stImage"] button {
+        display: none !important;
     }
     [data-testid="stHorizontalBlock"] {
         gap: 1.5rem;
@@ -78,6 +89,9 @@ st.markdown(
     textarea,
     button {
         border-radius: 6px !important;
+    }
+    [data-testid="stButton"] button p {
+        white-space: nowrap;
     }
     [data-testid="stFileUploaderDropzone"] {
         background: var(--surface);
@@ -160,7 +174,7 @@ def _render_brief(brief: VoiceNoteBrief) -> None:
             }
             for item in brief.action_items
         ]
-        st.dataframe(rows, hide_index=True, use_container_width=True)
+        st.dataframe(rows, hide_index=True, width="stretch")
     else:
         st.write("No action items")
 
@@ -173,7 +187,7 @@ def _render_brief(brief: VoiceNoteBrief) -> None:
         file_name="voice-note-brief.json",
         mime="application/json",
         icon=":material/download:",
-        use_container_width=True,
+        width="stretch",
     )
 
 
@@ -196,11 +210,11 @@ funasr_logo, app_title, nebius_logo = st.columns(
     vertical_alignment="center",
 )
 with funasr_logo:
-    st.image(str(APP_DIR / "assets" / "funasr-logo.png"), width=90)
+    st.image(str(APP_DIR / "assets" / "funasr-logo.png"), width=112)
 with app_title:
     st.title("FunASR + Nebius Voice Note Analyst")
 with nebius_logo:
-    st.image(str(APP_DIR / "assets" / "nebius.png"), width=72)
+    st.image(str(APP_DIR / "assets" / "nebius.png"), width=92)
 
 st.divider()
 transcription_column, analysis_column = st.columns([1, 1], gap="large")
@@ -221,7 +235,7 @@ with transcription_column:
         type="primary",
         icon=":material/transcribe:",
         disabled=audio_payload is None,
-        use_container_width=True,
+        width="stretch",
     )
     if transcribe_clicked and audio_payload is not None:
         audio_bytes, filename, _ = audio_payload
@@ -245,7 +259,7 @@ with transcription_column:
             st.error(str(exc))
 
 with analysis_column:
-    analysis_title, reset_column = st.columns([5, 1], vertical_alignment="center")
+    analysis_title, reset_column = st.columns([3, 1], vertical_alignment="center")
     with analysis_title:
         st.subheader("2. Transcript and brief")
     with reset_column:
@@ -253,7 +267,7 @@ with analysis_column:
             "Reset",
             icon=":material/restart_alt:",
             help="Reset transcript and brief",
-            use_container_width=True,
+            width="stretch",
         ):
             _reset_analysis_state()
             st.rerun()
@@ -273,7 +287,7 @@ with analysis_column:
             file_name="transcript.txt",
             mime="text/plain",
             icon=":material/download:",
-            use_container_width=True,
+            width="stretch",
         )
 
     entered_nebius_key = st.text_input(
@@ -287,8 +301,7 @@ with analysis_column:
         "Generate brief",
         icon=":material/auto_awesome:",
         disabled=not transcript.strip() or not active_nebius_key,
-        help="Requires a transcript and Nebius API key",
-        use_container_width=True,
+        width="stretch",
     )
     if generate_clicked:
         try:
