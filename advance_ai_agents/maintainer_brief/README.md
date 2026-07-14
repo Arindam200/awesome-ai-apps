@@ -42,7 +42,7 @@ per source.
 
 - **Backend** — Python / FastAPI, SQLAlchemy, PostgreSQL, APScheduler (cron), pymupdf (page rendering)
 - **Extraction** — Unsiloed `/classify` + `/v2/extract` (async jobs, schema registry in `backend/app/unsiloed/schemas/`)
-- **Intelligence** — Claude (structured outputs via `messages.parse`) for the brief; Haiku for batched sentiment
+- **Intelligence** — configurable structured LLM outputs for the brief and batched sentiment
 - **Email** — Jinja2 table-layout HTML via Resend
 - **Frontend** — Next.js + Tailwind: brief viewer, signals explorer, citation viewer
 
@@ -50,7 +50,7 @@ per source.
 
 ```bash
 # 1. Keys
-cp .env.example .env   # fill in UNSILOED_API_KEY, ANTHROPIC_API_KEY, RESEND_API_KEY, GITHUB_TOKEN
+cp .env.example .env   # fill in UNSILOED_API_KEY, an LLM key, RESEND_API_KEY, GITHUB_TOKEN
 
 # 2. Postgres
 docker compose up -d
@@ -72,6 +72,16 @@ Then either click **Run brief now** on the dashboard, or:
 curl -X POST localhost:8000/runs -H "Content-Type: application/json" \
   -d '{"project_id": 1, "dry_run": true}'   # dry_run skips the email send
 ```
+
+## LLM provider configuration
+
+Set `LLM_PROVIDER=minimax` and provide `MINIMAX_API_KEY` to use MiniMax. Set
+`MINIMAX_REGION=global_en` or `cn_zh` to select the regional endpoints, then set
+`MINIMAX_PROTOCOL=openai` or `anthropic` to select the compatible API. The default
+models are `MiniMax-M3` for synthesis and `MiniMax-M2.7` for sentiment. OpenAI-compatible
+requests use the regional `/v1` endpoint, while Anthropic-compatible requests use the
+regional `/anthropic` endpoint. See the [global API overview](https://platform.minimax.io/docs/api-reference/api-overview)
+or [China API overview](https://platform.minimaxi.com/docs/api-reference/api-overview).
 
 ## Configure your project
 

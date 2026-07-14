@@ -2,9 +2,9 @@
 
 Provider is chosen by settings.llm_provider:
   - "auto" (default): Anthropic if its key is set, else OpenAI.
-  - "openai" | "anthropic" | "nebius": forced.
-Nebius Token Factory is OpenAI-compatible (custom base_url) — set LLM_PROVIDER=nebius
-+ NEBIUS_API_KEY to use it. All paths return a validated Pydantic instance.
+  - "openai" | "anthropic" | "nebius" | "minimax": forced.
+OpenAI-compatible providers use a custom base_url when configured. All paths return
+a validated Pydantic instance.
 """
 
 import json
@@ -13,7 +13,7 @@ from typing import TypeVar
 
 from pydantic import BaseModel
 
-from app.config import settings
+from app.config import minimax_base_url, settings
 
 logger = logging.getLogger(__name__)
 
@@ -25,18 +25,20 @@ TIER_MODELS = {
         "anthropic": settings.synthesis_model,
         "openai": settings.openai_synthesis_model,
         "nebius": settings.nebius_synthesis_model,
+        "minimax": settings.minimax_synthesis_model,
     },
     "sentiment": {
         "anthropic": settings.sentiment_model,
         "openai": settings.openai_sentiment_model,
         "nebius": settings.nebius_sentiment_model,
+        "minimax": settings.minimax_sentiment_model,
     },
 }
 
 
 def _resolve_provider() -> str:
     p = (settings.llm_provider or "auto").lower()
-    if p in ("openai", "anthropic", "nebius"):
+    if p in ("openai", "anthropic", "nebius", "minimax"):
         return p
     return "anthropic" if settings.anthropic_api_key else "openai"
 
@@ -45,7 +47,7 @@ def _openai_compatible_parse(
     *, api_key: str, base_url: str | None, model: str,
     system: str, user_content: str, output_model: type[T], max_tokens: int,
 ) -> T | None:
-    """Shared path for OpenAI and any OpenAI-compatible endpoint (Nebius).
+    """Shared path for OpenAI and any OpenAI-compatible endpoint.
     Tries native structured outputs; falls back to JSON-object mode + manual
     validation for endpoints/models that don't support json_schema."""
     from openai import OpenAI
@@ -108,6 +110,39 @@ def parse_structured(
             **kwargs,
         )
         return response.parsed_output
+
+    if provider == "minimax":
+        if not settings.minimax_api_key:
+            raise RuntimeError("LLM_PROVIDER=minimax but MINIMAX_API_KEY is not set")
+        protocol = (settings.minimax_protocol or "openai").lower()
+        if protocol == "anthropic":
+            import anthropic
+
+            client = anthropic.Anthropic(
+                api_key=settings.minimax_api_key,
+                base_url=minimax_base_url("anthropic"),
+            )
+            kwargs = {"thinking": {"type": "adaptive"}} if tier == "synthesis" else {}
+            response = client.messages.parse(
+                model=models["minimax"],
+                max_tokens=max_tokens,
+                system=system,
+                messages=[{"role": "user", "content": user_content}],
+                output_format=output_model,
+                **kwargs,
+            )
+            return response.parsed_output
+        if protocol == "openai":
+            return _openai_compatible_parse(
+                api_key=settings.minimax_api_key,
+                base_url=minimax_base_url("openai"),
+                model=models["minimax"],
+                system=system,
+                user_content=user_content,
+                output_model=output_model,
+                max_tokens=max_tokens,
+            )
+        raise ValueError("MINIMAX_PROTOCOL must be openai or anthropic")
 
     if provider == "nebius":
         if not settings.nebius_api_key:
