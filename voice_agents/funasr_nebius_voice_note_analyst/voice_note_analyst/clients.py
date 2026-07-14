@@ -1,11 +1,25 @@
 import math
 import re
 from pathlib import Path
+from typing import Any
 from urllib.parse import urlsplit, urlunsplit
 
 import httpx
+from openai import OpenAI
+from pydantic import ValidationError
 
-from voice_note_analyst.models import TranscriptionResult
+from voice_note_analyst.models import TranscriptionResult, VoiceNoteBrief
+
+
+BRIEF_SYSTEM_PROMPT = """You turn a voice-note transcript into a concise structured brief.
+Write every output field in the same language as the transcript.
+Do not invent an owner or due date. Use null when either value is not explicit.
+Return exactly one JSON object with these fields:
+- summary: string
+- key_points: array of strings
+- action_items: array of objects with task, owner, and due fields
+- follow_up_message: string
+Do not include Markdown or commentary outside the JSON object."""
 
 
 class ProviderError(RuntimeError):
@@ -124,6 +138,67 @@ class FunASRClient:
         self.close()
 
 
+class NebiusBriefClient:
+    def __init__(
+        self,
+        *,
+        api_key: str | None,
+        base_url: str,
+        model: str,
+        timeout_seconds: float = 60,
+        client: Any | None = None,
+    ) -> None:
+        cleaned_model = model.strip()
+        if not cleaned_model:
+            raise ValueError("Nebius model must not be empty.")
+        if not math.isfinite(timeout_seconds) or timeout_seconds <= 0:
+            raise ValueError("Nebius timeout must be a finite number greater than zero.")
+
+        if client is None:
+            cleaned_key = api_key.strip() if api_key else ""
+            if not cleaned_key:
+                raise ValueError("NEBIUS_API_KEY is required to generate a brief.")
+            client = OpenAI(
+                api_key=cleaned_key,
+                base_url=base_url,
+                timeout=timeout_seconds,
+            )
+        self._client = client
+        self.model = cleaned_model
+
+    def create_brief(self, transcript: str) -> VoiceNoteBrief:
+        cleaned = transcript.strip()
+        if not cleaned:
+            raise ValueError("Transcript is empty.")
+
+        try:
+            response = self._client.chat.completions.create(
+                model=self.model,
+                temperature=0.2,
+                max_tokens=1200,
+                response_format={"type": "json_object"},
+                messages=[
+                    {"role": "system", "content": BRIEF_SYSTEM_PROMPT},
+                    {"role": "user", "content": cleaned},
+                ],
+            )
+        except Exception as exc:
+            raise ProviderError("Nebius could not generate the voice-note brief.") from exc
+
+        choices = getattr(response, "choices", None)
+        if not choices:
+            raise ProviderError("Nebius returned an empty response.")
+        message = getattr(choices[0], "message", None)
+        content = getattr(message, "content", None)
+        if not isinstance(content, str) or not content.strip():
+            raise ProviderError("Nebius returned an empty response.")
+
+        try:
+            return VoiceNoteBrief.model_validate_json(_extract_json(content))
+        except (ValueError, ValidationError) as exc:
+            raise ProviderError("Nebius returned a brief with an invalid JSON shape.") from exc
+
+
 def _audio_content_type(filename: str) -> str:
     suffix = Path(filename).suffix.lower()
     return {
@@ -134,6 +209,18 @@ def _audio_content_type(filename: str) -> str:
         ".wav": "audio/wav",
         ".webm": "audio/webm",
     }.get(suffix, "application/octet-stream")
+
+
+def _extract_json(content: str) -> str:
+    cleaned = content.strip()
+    if cleaned.startswith("```"):
+        lines = cleaned.splitlines()
+        if len(lines) < 3 or lines[0].lower() not in {"```", "```json"} or lines[-1] != "```":
+            raise ValueError("Response must contain one complete JSON object.")
+        cleaned = "\n".join(lines[1:-1]).strip()
+    if not cleaned.startswith("{") or not cleaned.endswith("}"):
+        raise ValueError("Response must contain one complete JSON object.")
+    return cleaned
 
 
 def _http_error(
