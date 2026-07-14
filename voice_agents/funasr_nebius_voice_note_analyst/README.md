@@ -26,11 +26,13 @@ SenseVoiceSmall supports Chinese, Cantonese, English, Japanese, and Korean. Sens
 From the `examples/openai_api` directory in a FunASR checkout:
 
 ```bash
-pip install funasr fastapi uvicorn python-multipart
+pip install funasr==1.3.14 fastapi uvicorn python-multipart
 python server.py --model sensevoice --device cuda --port 8000
 ```
 
 The canonical server exposes `POST /v1/audio/transcriptions`. Use `--device cpu` when CUDA is unavailable.
+
+For remote deployments, place the FunASR server behind an authenticated TLS gateway and set `FUNASR_API_KEY` for that gateway. Keep the Streamlit app private or protect it with access control; do not expose provider keys in URLs, source files, or browser-visible configuration.
 
 ## Install And Run
 
@@ -91,7 +93,7 @@ uv run ruff check .
 uv run ruff format --check .
 ```
 
-The suite covers settings validation, FunASR multipart and error contracts, Nebius structured output parsing, secret-safe failures, and initial Streamlit rendering. Real endpoint validation uses FunASR 1.3.14 with SenseVoice on an NVIDIA H100.
+The suite covers settings validation, FunASR multipart and error contracts, Nebius structured output parsing, secret-safe failures, and the stateful Streamlit transcription, editing, analysis, audio-change, and reset flows. Real endpoint validation uses FunASR 1.3.14 with SenseVoice on an NVIDIA H100.
 
 ## References
 

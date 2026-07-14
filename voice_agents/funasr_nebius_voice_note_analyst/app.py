@@ -1,12 +1,22 @@
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
 
 import streamlit as st
 
-from voice_note_analyst.clients import FunASRClient, NebiusBriefClient, ProviderError
+from voice_note_analyst.clients import (
+    FunASRClient,
+    NebiusBriefClient,
+    ProviderError,
+    build_transcriptions_url,
+)
 from voice_note_analyst.models import VoiceNoteBrief
-from voice_note_analyst.settings import load_settings
+from voice_note_analyst.settings import (
+    load_funasr_settings,
+    load_nebius_api_key,
+    load_nebius_settings,
+)
 
 
 APP_DIR = Path(__file__).resolve().parent
@@ -103,6 +113,13 @@ st.markdown(
         background: var(--surface);
         color: var(--ink);
     }
+    [data-testid="stText"],
+    [data-testid="stText"] * {
+        font-family: inherit !important;
+        overflow-wrap: anywhere !important;
+        white-space: pre-wrap !important;
+        word-break: break-word;
+    }
     [data-testid="stButton"] button[kind="primary"] {
         background: var(--teal);
         border-color: var(--teal);
@@ -138,12 +155,24 @@ st.markdown(
 
 
 def _reset_analysis_state() -> None:
-    for key in ("transcript_editor", "detected_language", "brief"):
+    for key in (
+        "transcript_editor",
+        "detected_language",
+        "brief",
+        "transcribed_audio_fingerprint",
+    ):
         st.session_state.pop(key, None)
 
 
 def _clear_brief() -> None:
     st.session_state["brief"] = None
+
+
+def _clear_transcription() -> None:
+    st.session_state["transcript_editor"] = ""
+    st.session_state["detected_language"] = None
+    st.session_state["brief"] = None
+    st.session_state["transcribed_audio_fingerprint"] = None
 
 
 def _audio_payload(uploaded: Any, recorded: Any) -> tuple[bytes, str, str | None] | None:
@@ -158,28 +187,25 @@ def _audio_payload(uploaded: Any, recorded: Any) -> tuple[bytes, str, str | None
 def _render_brief(brief: VoiceNoteBrief) -> None:
     st.subheader("Brief")
     st.markdown("**Summary**")
-    st.write(brief.summary)
+    st.text(brief.summary)
 
     st.markdown("**Key points**")
     for point in brief.key_points:
-        st.markdown(f"- {point}")
+        st.text(f"- {point}")
 
     st.markdown("**Action items**")
     if brief.action_items:
-        rows = [
-            {
-                "Task": item.task,
-                "Owner": item.owner or "Not specified",
-                "Due": item.due or "Not specified",
-            }
-            for item in brief.action_items
-        ]
-        st.dataframe(rows, hide_index=True, width="stretch")
+        for index, item in enumerate(brief.action_items, start=1):
+            st.text(
+                f"{index}. {item.task}\n"
+                f"Owner: {item.owner or 'Not specified'}\n"
+                f"Due: {item.due or 'Not specified'}"
+            )
     else:
         st.write("No action items")
 
     st.markdown("**Follow-up message**")
-    st.write(brief.follow_up_message)
+    st.text(brief.follow_up_message)
     serialized = json.dumps(brief.model_dump(mode="json"), ensure_ascii=False, indent=2)
     st.download_button(
         "Download brief",
@@ -192,15 +218,18 @@ def _render_brief(brief: VoiceNoteBrief) -> None:
 
 
 try:
-    settings = load_settings()
+    funasr_settings = load_funasr_settings()
 except ValueError as exc:
     st.error(str(exc))
     st.stop()
+nebius_api_key = load_nebius_api_key()
 
 for state_key, initial_value in (
     ("transcript_editor", ""),
     ("detected_language", None),
     ("brief", None),
+    ("transcribed_audio_fingerprint", None),
+    ("funasr_status", "not checked"),
 ):
     if state_key not in st.session_state:
         st.session_state[state_key] = initial_value
@@ -225,6 +254,17 @@ with transcription_column:
     uploaded_audio = st.file_uploader("Upload audio", type=AUDIO_TYPES)
     selected_language = st.selectbox("Language", list(LANGUAGES))
     audio_payload = _audio_payload(uploaded_audio, recorded_audio)
+    audio_fingerprint = (
+        hashlib.sha256(audio_payload[0]).hexdigest() if audio_payload is not None else None
+    )
+    previous_fingerprint = st.session_state["transcribed_audio_fingerprint"]
+    if previous_fingerprint is not None and previous_fingerprint != audio_fingerprint:
+        _clear_transcription()
+    endpoint_status = st.empty()
+    endpoint = build_transcriptions_url(funasr_settings.funasr_base_url)
+    endpoint_status.caption(
+        f"ASR endpoint: {endpoint} | Status: {st.session_state['funasr_status']}"
+    )
 
     if audio_payload is not None:
         audio_bytes, _, content_type = audio_payload
@@ -239,13 +279,14 @@ with transcription_column:
     )
     if transcribe_clicked and audio_payload is not None:
         audio_bytes, filename, _ = audio_payload
+        _clear_transcription()
         try:
             with st.spinner("Transcribing"):
                 with FunASRClient(
-                    base_url=settings.funasr_base_url,
-                    model=settings.funasr_model,
-                    api_key=settings.funasr_api_key,
-                    timeout_seconds=settings.funasr_timeout_seconds,
+                    base_url=funasr_settings.funasr_base_url,
+                    model=funasr_settings.funasr_model,
+                    api_key=funasr_settings.funasr_api_key,
+                    timeout_seconds=funasr_settings.funasr_timeout_seconds,
                 ) as client:
                     transcription = client.transcribe(
                         audio_bytes,
@@ -255,7 +296,12 @@ with transcription_column:
             st.session_state["transcript_editor"] = transcription.text
             st.session_state["detected_language"] = transcription.language
             st.session_state["brief"] = None
+            st.session_state["transcribed_audio_fingerprint"] = audio_fingerprint
+            st.session_state["funasr_status"] = "ready"
+            endpoint_status.caption(f"ASR endpoint: {endpoint} | Status: ready")
         except (ValueError, ProviderError) as exc:
+            st.session_state["funasr_status"] = "error"
+            endpoint_status.caption(f"ASR endpoint: {endpoint} | Status: error")
             st.error(str(exc))
 
 with analysis_column:
@@ -296,7 +342,7 @@ with analysis_column:
         value="",
         autocomplete="off",
     )
-    active_nebius_key = entered_nebius_key.strip() or settings.nebius_api_key
+    active_nebius_key = entered_nebius_key.strip() or nebius_api_key
     generate_clicked = st.button(
         "Generate brief",
         icon=":material/auto_awesome:",
@@ -305,14 +351,15 @@ with analysis_column:
     )
     if generate_clicked:
         try:
+            nebius_settings = load_nebius_settings()
             with st.spinner("Generating brief"):
-                brief_client = NebiusBriefClient(
+                with NebiusBriefClient(
                     api_key=active_nebius_key,
-                    base_url=settings.nebius_base_url,
-                    model=settings.nebius_model,
-                    timeout_seconds=settings.nebius_timeout_seconds,
-                )
-                generated_brief = brief_client.create_brief(transcript)
+                    base_url=nebius_settings.nebius_base_url,
+                    model=nebius_settings.nebius_model,
+                    timeout_seconds=nebius_settings.nebius_timeout_seconds,
+                ) as brief_client:
+                    generated_brief = brief_client.create_brief(transcript)
             st.session_state["brief"] = generated_brief.model_dump(mode="json")
         except (ValueError, ProviderError) as exc:
             st.error(str(exc))

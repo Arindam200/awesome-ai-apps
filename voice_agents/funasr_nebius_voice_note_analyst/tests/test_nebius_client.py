@@ -1,5 +1,6 @@
 import json
 from types import SimpleNamespace
+from unittest.mock import Mock
 
 import pytest
 
@@ -82,6 +83,21 @@ def test_real_client_configuration_strips_key_and_uses_provider_settings(monkeyp
         "base_url": "https://api.tokenfactory.nebius.com/v1",
         "timeout": 42,
     }
+
+
+def test_context_manager_closes_the_provider_client(monkeypatch):
+    fake, _ = fake_client(content=json.dumps(VALID_BRIEF))
+    fake.close = Mock()
+    monkeypatch.setattr(clients_module, "OpenAI", lambda **_: fake)
+
+    with NebiusBriefClient(
+        api_key="private-key",
+        base_url="https://api.tokenfactory.nebius.com/v1",
+        model="Qwen/Qwen3-235B-A22B",
+    ):
+        pass
+
+    fake.close.assert_called_once_with()
 
 
 def test_create_brief_sends_structured_same_language_request():

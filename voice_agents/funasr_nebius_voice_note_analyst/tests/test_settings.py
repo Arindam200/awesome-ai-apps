@@ -1,6 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
+import voice_note_analyst.settings as settings_module
 from voice_note_analyst.models import ActionItem, TranscriptionResult, VoiceNoteBrief
 from voice_note_analyst.settings import load_settings
 
@@ -62,6 +63,35 @@ def test_load_settings_rejects_invalid_timeout(value):
 def test_load_settings_rejects_empty_model_name():
     with pytest.raises(ValueError, match="FUNASR_MODEL"):
         load_settings({"FUNASR_MODEL": "  "})
+
+
+def test_funasr_settings_ignore_invalid_optional_nebius_configuration():
+    settings = settings_module.load_funasr_settings(
+        {
+            "FUNASR_BASE_URL": "http://localhost:9000/v1",
+            "NEBIUS_BASE_URL": "not-a-url",
+            "NEBIUS_TIMEOUT_SECONDS": "not-a-number",
+        }
+    )
+
+    assert settings.funasr_base_url == "http://localhost:9000/v1"
+    assert settings.funasr_model == "sensevoice"
+
+
+def test_nebius_settings_remain_strict_when_analysis_is_requested():
+    with pytest.raises(ValueError, match="NEBIUS_TIMEOUT_SECONDS"):
+        settings_module.load_nebius_settings({"NEBIUS_TIMEOUT_SECONDS": "not-a-number"})
+
+
+def test_nebius_api_key_can_be_read_without_validating_other_nebius_values():
+    key = settings_module.load_nebius_api_key(
+        {
+            "NEBIUS_API_KEY": " optional-key ",
+            "NEBIUS_BASE_URL": "not-a-url",
+        }
+    )
+
+    assert key == "optional-key"
 
 
 def test_result_models_validate_structured_provider_output():

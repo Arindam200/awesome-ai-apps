@@ -8,23 +8,38 @@ from dotenv import load_dotenv
 
 
 @dataclass(frozen=True)
-class Settings:
+class FunASRSettings:
     funasr_base_url: str
     funasr_model: str
     funasr_api_key: str | None
     funasr_timeout_seconds: float
+
+
+@dataclass(frozen=True)
+class NebiusSettings:
     nebius_api_key: str | None
     nebius_base_url: str
     nebius_model: str
     nebius_timeout_seconds: float
 
 
-def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
+@dataclass(frozen=True)
+class Settings(FunASRSettings, NebiusSettings):
+    pass
+
+
+def _environment(environ: Mapping[str, str] | None) -> Mapping[str, str]:
     if environ is None:
         load_dotenv()
-        environ = os.environ
+        return os.environ
+    return environ
 
-    return Settings(
+
+def load_funasr_settings(
+    environ: Mapping[str, str] | None = None,
+) -> FunASRSettings:
+    environ = _environment(environ)
+    return FunASRSettings(
         funasr_base_url=_validated_url(
             "FUNASR_BASE_URL",
             environ.get("FUNASR_BASE_URL", "http://127.0.0.1:8000/v1"),
@@ -35,6 +50,14 @@ def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
             "FUNASR_TIMEOUT_SECONDS",
             environ.get("FUNASR_TIMEOUT_SECONDS", "120"),
         ),
+    )
+
+
+def load_nebius_settings(
+    environ: Mapping[str, str] | None = None,
+) -> NebiusSettings:
+    environ = _environment(environ)
+    return NebiusSettings(
         nebius_api_key=_optional(environ.get("NEBIUS_API_KEY")),
         nebius_base_url=_validated_url(
             "NEBIUS_BASE_URL",
@@ -49,6 +72,17 @@ def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
             environ.get("NEBIUS_TIMEOUT_SECONDS", "60"),
         ),
     )
+
+
+def load_nebius_api_key(environ: Mapping[str, str] | None = None) -> str | None:
+    return _optional(_environment(environ).get("NEBIUS_API_KEY"))
+
+
+def load_settings(environ: Mapping[str, str] | None = None) -> Settings:
+    environ = _environment(environ)
+    funasr = load_funasr_settings(environ)
+    nebius = load_nebius_settings(environ)
+    return Settings(**funasr.__dict__, **nebius.__dict__)
 
 
 def _optional(value: str | None) -> str | None:

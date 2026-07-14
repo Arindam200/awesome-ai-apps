@@ -198,6 +198,15 @@ class NebiusBriefClient:
         except (ValueError, ValidationError) as exc:
             raise ProviderError("Nebius returned a brief with an invalid JSON shape.") from exc
 
+    def close(self) -> None:
+        self._client.close()
+
+    def __enter__(self) -> "NebiusBriefClient":
+        return self
+
+    def __exit__(self, *_: object) -> None:
+        self.close()
+
 
 def _audio_content_type(filename: str) -> str:
     suffix = Path(filename).suffix.lower()
