@@ -8,7 +8,6 @@ dependencies = [
     "openai>=1.97.1",
     "pillow>=11.3.0",
     "pymupdf>=1.26.3",
-    "pypdf2>=3.0.1",
     "python-dotenv>=1.1.1",
     "streamlit>=1.47.0",
 ]
