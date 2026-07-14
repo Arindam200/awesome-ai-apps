@@ -21,6 +21,7 @@ class NebiusSettings:
     nebius_base_url: str
     nebius_model: str
     nebius_timeout_seconds: float
+    nebius_max_tokens: int
 
 
 @dataclass(frozen=True)
@@ -71,6 +72,10 @@ def load_nebius_settings(
             "NEBIUS_TIMEOUT_SECONDS",
             environ.get("NEBIUS_TIMEOUT_SECONDS", "60"),
         ),
+        nebius_max_tokens=_positive_integer(
+            "NEBIUS_MAX_TOKENS",
+            environ.get("NEBIUS_MAX_TOKENS", "4096"),
+        ),
     )
 
 
@@ -107,6 +112,16 @@ def _positive_seconds(name: str, value: str | None) -> float:
     if not math.isfinite(seconds) or seconds <= 0:
         raise ValueError(f"{name} must be a finite number greater than zero.")
     return seconds
+
+
+def _positive_integer(name: str, value: str | None) -> int:
+    try:
+        number = int(_required(name, value))
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{name} must be an integer greater than zero.") from exc
+    if number <= 0:
+        raise ValueError(f"{name} must be an integer greater than zero.")
+    return number
 
 
 def _validated_url(name: str, value: str | None) -> str:

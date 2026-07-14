@@ -370,6 +370,7 @@ with analysis_column:
                     base_url=nebius_settings.nebius_base_url,
                     model=nebius_settings.nebius_model,
                     timeout_seconds=nebius_settings.nebius_timeout_seconds,
+                    max_tokens=nebius_settings.nebius_max_tokens,
                 ) as brief_client:
                     generated_brief = brief_client.create_brief(transcript)
             st.session_state["brief"] = generated_brief.model_dump(mode="json")

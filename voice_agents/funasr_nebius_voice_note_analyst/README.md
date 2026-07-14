@@ -75,6 +75,7 @@ Open `http://localhost:8501`.
 | `NEBIUS_BASE_URL` | `https://api.tokenfactory.nebius.com/v1` | Nebius OpenAI-compatible base URL |
 | `NEBIUS_MODEL` | `Qwen/Qwen3-235B-A22B` | Nebius model used for brief generation |
 | `NEBIUS_TIMEOUT_SECONDS` | `60` | Nebius request timeout |
+| `NEBIUS_MAX_TOKENS` | `4096` | Maximum output tokens for the generated brief |
 
 Provider URLs must be absolute HTTP(S) URLs without credentials, query strings, or fragments. Keys belong in environment variables or the password field, never in a URL.
 

@@ -146,6 +146,7 @@ class NebiusBriefClient:
         base_url: str,
         model: str,
         timeout_seconds: float = 60,
+        max_tokens: int = 4096,
         client: Any | None = None,
     ) -> None:
         cleaned_model = model.strip()
@@ -153,6 +154,8 @@ class NebiusBriefClient:
             raise ValueError("Nebius model must not be empty.")
         if not math.isfinite(timeout_seconds) or timeout_seconds <= 0:
             raise ValueError("Nebius timeout must be a finite number greater than zero.")
+        if isinstance(max_tokens, bool) or not isinstance(max_tokens, int) or max_tokens <= 0:
+            raise ValueError("Nebius max tokens must be an integer greater than zero.")
 
         if client is None:
             cleaned_key = api_key.strip() if api_key else ""
@@ -165,6 +168,7 @@ class NebiusBriefClient:
             )
         self._client = client
         self.model = cleaned_model
+        self.max_tokens = max_tokens
 
     def create_brief(self, transcript: str) -> VoiceNoteBrief:
         cleaned = transcript.strip()
@@ -175,7 +179,7 @@ class NebiusBriefClient:
             response = self._client.chat.completions.create(
                 model=self.model,
                 temperature=0.2,
-                max_tokens=1200,
+                max_tokens=self.max_tokens,
                 response_format={"type": "json_object"},
                 messages=[
                     {"role": "system", "content": BRIEF_SYSTEM_PROMPT},

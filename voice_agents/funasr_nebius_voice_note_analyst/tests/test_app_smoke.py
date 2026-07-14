@@ -133,6 +133,7 @@ def test_stateful_transcription_analysis_edit_and_reset(monkeypatch):
 
     assert app.session_state["brief"]["action_items"][0]["task"] == "Review the note"
     assert FakeNebiusClient.calls[0]["init"]["api_key"] == "widget-key"
+    assert FakeNebiusClient.calls[0]["init"]["max_tokens"] == 4096
     assert FakeNebiusClient.calls[-1] == {"transcript": "Initial transcript"}
     rendered_plain_text = [item.value for item in app.text]
     assert "![remote](https://example.com/pixel.png)" in rendered_plain_text

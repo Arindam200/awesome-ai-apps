@@ -38,12 +38,14 @@ def fake_client(*, content=None, response=None, error=None):
     return SimpleNamespace(chat=SimpleNamespace(completions=completions)), completions
 
 
-def make_brief_client(fake, *, api_key=None):
+def make_brief_client(fake, *, api_key=None, max_tokens=None):
+    extra = {"max_tokens": max_tokens} if max_tokens is not None else {}
     return NebiusBriefClient(
         api_key=api_key,
         base_url="https://api.tokenfactory.nebius.com/v1",
         model="Qwen/Qwen3-235B-A22B",
         client=fake,
+        **extra,
     )
 
 
@@ -113,7 +115,7 @@ def test_create_brief_sends_structured_same_language_request():
     request = completions.calls[0]
     assert request["model"] == "Qwen/Qwen3-235B-A22B"
     assert request["temperature"] == 0.2
-    assert request["max_tokens"] == 1200
+    assert request["max_tokens"] == 4096
     assert request["response_format"] == {"type": "json_object"}
     system_prompt = request["messages"][0]["content"].lower()
     assert "same language" in system_prompt
@@ -121,6 +123,14 @@ def test_create_brief_sends_structured_same_language_request():
     assert "owner" in system_prompt
     assert "due date" in system_prompt
     assert request["messages"][1] == {"role": "user", "content": transcript}
+
+
+def test_create_brief_uses_configured_max_tokens():
+    fake, completions = fake_client(content=json.dumps(VALID_BRIEF))
+
+    make_brief_client(fake, max_tokens=2048).create_brief("Release transcript")
+
+    assert completions.calls[0]["max_tokens"] == 2048
 
 
 def test_create_brief_accepts_single_markdown_json_fence():

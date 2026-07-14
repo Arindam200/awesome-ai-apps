@@ -17,6 +17,7 @@ def test_load_settings_uses_safe_defaults():
     assert settings.nebius_base_url == "https://api.tokenfactory.nebius.com/v1"
     assert settings.nebius_model == "Qwen/Qwen3-235B-A22B"
     assert settings.nebius_timeout_seconds == 60
+    assert settings.nebius_max_tokens == 4096
 
 
 def test_load_settings_normalizes_optional_keys_and_overrides():
@@ -28,6 +29,7 @@ def test_load_settings_normalizes_optional_keys_and_overrides():
             "FUNASR_TIMEOUT_SECONDS": "15.5",
             "NEBIUS_API_KEY": "  ",
             "NEBIUS_MODEL": " openai/gpt-oss-20b ",
+            "NEBIUS_MAX_TOKENS": "2048",
         }
     )
 
@@ -37,6 +39,7 @@ def test_load_settings_normalizes_optional_keys_and_overrides():
     assert settings.funasr_timeout_seconds == 15.5
     assert settings.nebius_api_key is None
     assert settings.nebius_model == "openai/gpt-oss-20b"
+    assert settings.nebius_max_tokens == 2048
 
 
 @pytest.mark.parametrize(
@@ -58,6 +61,12 @@ def test_load_settings_rejects_unsafe_provider_url(name, value):
 def test_load_settings_rejects_invalid_timeout(value):
     with pytest.raises(ValueError, match="NEBIUS_TIMEOUT_SECONDS"):
         load_settings({"NEBIUS_TIMEOUT_SECONDS": value})
+
+
+@pytest.mark.parametrize("value", ["0", "-1", "1.5", "nan", "not-a-number"])
+def test_load_settings_rejects_invalid_max_tokens(value):
+    with pytest.raises(ValueError, match="NEBIUS_MAX_TOKENS"):
+        load_settings({"NEBIUS_MAX_TOKENS": value})
 
 
 def test_load_settings_rejects_empty_model_name():
