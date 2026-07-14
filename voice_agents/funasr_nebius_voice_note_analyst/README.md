@@ -34,6 +34,15 @@ The canonical server exposes `POST /v1/audio/transcriptions`. Use `--device cpu`
 
 For remote deployments, place the FunASR server behind an authenticated TLS gateway and set `FUNASR_API_KEY` for that gateway. Keep the Streamlit app private or protect it with access control; do not expose provider keys in URLs, source files, or browser-visible configuration.
 
+Set an upload limit appropriate for voice notes and enforce the same or a lower request-body limit at the gateway. For example, `.streamlit/config.toml` can cap each upload at 50 MB:
+
+```toml
+[server]
+maxUploadSize = 50
+```
+
+Rate-limit upload and transcription routes at the gateway as well. This bounds repeated hashing and provider requests when the app is exposed to multiple users.
+
 ## Install And Run
 
 ```bash
@@ -94,6 +103,8 @@ uv run ruff format --check .
 ```
 
 The suite covers settings validation, FunASR multipart and error contracts, Nebius structured output parsing, secret-safe failures, and the stateful Streamlit transcription, editing, analysis, audio-change, and reset flows. Real endpoint validation uses FunASR 1.3.14 with SenseVoice on an NVIDIA H100.
+
+The repository intentionally ignores `uv.lock`. The validation matrix resolved the direct toolchain to `streamlit==1.59.2`, `openai==2.45.0`, `httpx==0.28.1`, `pydantic==2.13.4`, `python-dotenv==1.2.2`, `pytest==9.1.1`, and `ruff==0.15.21`. Pin these versions in a deployment image when reproducible rebuilds are required.
 
 ## References
 

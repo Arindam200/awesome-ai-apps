@@ -124,6 +124,11 @@ st.markdown(
         background: var(--teal);
         border-color: var(--teal);
     }
+    button[data-variant="segmented_control"][aria-checked="true"] {
+        background: #e5f2ef !important;
+        border-color: var(--teal) !important;
+        color: var(--teal) !important;
+    }
     [data-testid="stDownloadButton"] button {
         border-color: var(--teal);
         color: var(--teal);
@@ -175,8 +180,7 @@ def _clear_transcription() -> None:
     st.session_state["transcribed_audio_fingerprint"] = None
 
 
-def _audio_payload(uploaded: Any, recorded: Any) -> tuple[bytes, str, str | None] | None:
-    selected = uploaded if uploaded is not None else recorded
+def _audio_payload(selected: Any) -> tuple[bytes, str, str | None] | None:
     if selected is None:
         return None
     filename = getattr(selected, "name", None) or "recording.wav"
@@ -250,10 +254,18 @@ transcription_column, analysis_column = st.columns([1, 1], gap="large")
 
 with transcription_column:
     st.subheader("1. Transcription")
-    recorded_audio = st.audio_input("Record a voice note")
-    uploaded_audio = st.file_uploader("Upload audio", type=AUDIO_TYPES)
+    audio_source = st.segmented_control(
+        "Audio source",
+        ["Upload", "Record"],
+        default="Upload",
+        width="stretch",
+    )
+    if audio_source == "Record":
+        selected_audio = st.audio_input("Record a voice note")
+    else:
+        selected_audio = st.file_uploader("Upload audio", type=AUDIO_TYPES)
     selected_language = st.selectbox("Language", list(LANGUAGES))
-    audio_payload = _audio_payload(uploaded_audio, recorded_audio)
+    audio_payload = _audio_payload(selected_audio)
     audio_fingerprint = (
         hashlib.sha256(audio_payload[0]).hexdigest() if audio_payload is not None else None
     )

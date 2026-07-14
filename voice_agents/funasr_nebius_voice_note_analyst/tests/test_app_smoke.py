@@ -182,3 +182,21 @@ def test_changed_audio_clears_old_output_and_provider_failures_are_isolated(monk
     assert app.session_state["transcript_editor"] == "Initial transcript"
     assert app.session_state["brief"] is None
     assert any(error.value == "Safe Nebius failure" for error in app.error)
+
+
+def test_switching_audio_source_hides_inactive_input_and_clears_output():
+    app = AppTest.from_file(str(APP_PATH)).run(timeout=20)
+
+    assert app.segmented_control[0].value == "Upload"
+    assert len(app.file_uploader) == 1
+    app.file_uploader[0].set_value(("note.wav", b"first-audio", "audio/wav")).run()
+    button(app, "Transcribe").click().run(timeout=20)
+    assert app.session_state["transcript_editor"] == "Initial transcript"
+
+    app.segmented_control[0].set_value("Record").run(timeout=20)
+
+    assert app.segmented_control[0].value == "Record"
+    assert len(app.file_uploader) == 0
+    assert app.session_state["transcript_editor"] == ""
+    assert app.session_state["brief"] is None
+    assert app.session_state["transcribed_audio_fingerprint"] is None
