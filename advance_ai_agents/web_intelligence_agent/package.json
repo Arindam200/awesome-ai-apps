@@ -10,7 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@mastra/core": "^1.41.0",
+    "@mastra/core": "^1.51.0",
     "@veltdev/react": "^4.0.0",
     "@veltdev/types": "^4.0.0",
     "clsx": "^2.1.1",

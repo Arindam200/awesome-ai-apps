@@ -1,5 +1,5 @@
 streamlit==1.54.0
-agno==2.3.24
+agno==2.7.3
 requests==2.33.0
 beautifulsoup4==4.14.2
 lxml==6.1.0

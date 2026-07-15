@@ -3,4 +3,4 @@ memorisdk==2.3.0
 python-dotenv==1.2.2
 brightdata-sdk==1.1.3
 pydantic==2.12.3
-agno==2.3.24
+agno==2.7.3
