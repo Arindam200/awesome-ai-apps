@@ -313,7 +313,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _24 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _25 projects_
 
 - [Deep Research + Writing Agents Workshop](advance_ai_agents/deep_research_writing_agents_nebius_okahu) - Nebius-powered LangChain MCP workshop with Exa research, Gemini image generation, and Okahu/Monocle eval observability
 - [Nebius AutoResearch](advance_ai_agents/nebius-autoresearch-autoresearch-mar30) - NYC taxi analytics pipeline optimizer; iterative code search with Nebius Token Factory (real-time or batch inference)
@@ -339,6 +339,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Customer Support Resolution Agent](advance_ai_agents/customer_support_resolution_agent) - LangChain and Nebius support agent with knowledge-base retrieval, order lookup, and human ticket escalation
 - [Web Intelligence Agent](advance_ai_agents/web_intelligence_agent) - Mastra multi-agent pipeline that turns Olostep web evidence into Nemotron-verified case studies with SQLite persistence and Velt audit trail
 - [Temporal Agents](advance_ai_agents/temporal_agents/) - Examples of Temporal based AI Agents
+- [OpenAcme — AI Workforce Platform](https://github.com/sandydasari/openacme) - Named role-specialized agents with their own tools, memory, and MCP servers that delegate tasks to each other; local-first, BYO model, no telemetry <sub>↗ external</sub>
 
 ### 🧬 Fine-Tuning
 
