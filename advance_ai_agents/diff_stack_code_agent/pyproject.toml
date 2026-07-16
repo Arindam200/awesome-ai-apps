@@ -1,0 +1,17 @@
+[project]
+name = "diff-stack-code-agent"
+version = "0.1.0"
+description = "Multi-agent coding harness with a human-reviewed diff stack, built with LangGraph and Nebius Token Factory"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "langchain>=1.0",
+    "langchain-core>=1.0",
+    "langchain-nebius>=0.1.0",
+    "langchain-community>=0.4",
+    "langgraph>=1.0",
+    "e2b>=2.3.4",
+    "streamlit>=1.36.0",
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.7.0",
+]
