@@ -1,0 +1,15 @@
+[project]
+name = "coding-model-arena"
+version = "0.1.0"
+description = "Head-to-head coding model arena on Nebius Token Factory: same prompt, multiple models, real tests + an LLM judge decide the winner"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.47.0",
+    "openai>=1.50.0",
+    "python-dotenv>=1.1.1",
+]
+
+[project.optional-dependencies]
+# Only needed if SANDBOX_BACKEND=contree (real isolation via Nebius Sandboxes)
+sandboxes = ["contree-sdk>=0.3.3"]
