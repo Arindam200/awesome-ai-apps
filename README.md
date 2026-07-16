@@ -21,6 +21,7 @@ This repository is a comprehensive collection of **80+ practical examples, tutor
   - [🧠 Memory Agents](#-memory-agents)
   - [📚 RAG Applications](#-rag-applications)
   - [🔬 Advanced Agents](#-advanced-agents)
+  - [🧬 Fine-Tuning](#-fine-tuning)
 - [📺 Tutorials & Videos](#-tutorials--videos)
 - [🚀 Getting Started](#getting-started)
 - [🤝 Contributing](#-contributing)
@@ -339,6 +340,17 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Customer Support Resolution Agent](advance_ai_agents/customer_support_resolution_agent) - LangChain and Nebius support agent with knowledge-base retrieval, order lookup, and human ticket escalation
 - [Web Intelligence Agent](advance_ai_agents/web_intelligence_agent) - Mastra multi-agent pipeline that turns Olostep web evidence into Nemotron-verified case studies with SQLite persistence and Velt audit trail
 - [Temporal Agents](advance_ai_agents/temporal_agents/) - Examples of Temporal based AI Agents
+
+### 🧬 Fine-Tuning
+
+**End-to-end examples of fine-tuning open-source LLMs, from data prep to deployment.** _6 projects_
+
+- [Open-Source LLM Fine-Tuning on Token Factory](fine_tuning/open_source_llms_token_factory) - Colab-first LoRA fine-tuning walkthrough: upload a dataset, train, monitor, and deploy
+- [Customer Support Fine-Tuning with Data Lab](fine_tuning/customer_support_datalab) - Teacher-student distillation workflow: generate support data, curate in Data Lab, fine-tune, and deploy
+- [Customer Support Standalone Colab](fine_tuning/customer_support_standalone_colab) - Fully standalone Colab notebook for the customer-support distillation and fine-tuning flow
+- [Insurance Claims Fine-Tuning](fine_tuning/insurance_claims_finetuning) - Data Lab + LoRA fine-tuning + Gradio comparison app for insurance claims
+- [Legal Tech Fine-Tuning (Self-Hosted)](fine_tuning/legal-tech-fine-tuning-nebius-cloud) - Fine-tunes Gemma on UK legislation with LoRA, serves with vLLM, and exposes a FastAPI layer
+- [Legal Tech Fine-Tuning (Token Factory)](fine_tuning/legal-tech-fine-tuning-token-factory) - Managed LoRA fine-tuning on Nebius Token Factory with private model deployment
 
 ## 📺 Tutorials & Videos
 

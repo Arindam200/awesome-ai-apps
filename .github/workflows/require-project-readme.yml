@@ -1,0 +1,121 @@
+name: Require README for new projects
+
+# Flags PRs that introduce a brand-new project directory (under one of the
+# category folders) without a README.md in it, and leaves a comment
+# explaining the contribution policy.
+#
+# Uses pull_request_target so the workflow can comment on PRs from forks.
+# This is safe because the PR's code is never checked out or executed —
+# the job only reads the diff and directory listings via the GitHub API.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  require-project-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for new project directories missing a README
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const MARKER = '<!-- require-project-readme-check -->';
+            const LABEL = 'needs-readme';
+            const CATEGORY_ROOTS = [
+              'starter_ai_agents', 'simple_ai_agents', 'mcp_ai_agents',
+              'memory_agents', 'rag_apps', 'advance_ai_agents',
+              'voice_agents', 'fine_tuning', 'course',
+            ];
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+            const baseSha = context.payload.pull_request.base.sha;
+
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner, repo, pull_number: prNumber, per_page: 100,
+            });
+
+            // Collect candidate project directories (<category>/<project>) touched by this PR.
+            const projectDirs = new Set();
+            for (const f of files) {
+              const parts = f.filename.split('/');
+              if (parts.length >= 3 && CATEGORY_ROOTS.includes(parts[0])) {
+                projectDirs.add(`${parts[0]}/${parts[1]}`);
+              }
+            }
+
+            const missing = [];
+            for (const dir of projectDirs) {
+              const hasReadmeInDiff = files.some(
+                f => f.filename === `${dir}/README.md` && f.status !== 'removed'
+              );
+              if (hasReadmeInDiff) continue;
+
+              // Only flag directories this PR is actually introducing — editing an
+              // existing project that predates this check is not this workflow's job.
+              let existedBefore = true;
+              try {
+                await github.rest.repos.getContent({ owner, repo, path: dir, ref: baseSha });
+              } catch (e) {
+                if (e.status === 404) {
+                  existedBefore = false;
+                } else {
+                  throw e;
+                }
+              }
+              if (existedBefore) continue;
+
+              missing.push(dir);
+            }
+
+            core.info(`projectDirs=${[...projectDirs].join(',')} missingReadme=${missing.join(',')}`);
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number: prNumber, per_page: 100,
+            });
+            const alreadyCommented = comments.some(c => c.body && c.body.includes(MARKER));
+
+            if (missing.length > 0) {
+              if (!alreadyCommented) {
+                const repoUrl = `https://github.com/${owner}/${repo}`;
+                const body = [
+                  MARKER,
+                  `Hi @${context.payload.pull_request.user.login}, thanks for the contribution! 🙏`,
+                  '',
+                  `This PR adds a new project director${missing.length > 1 ? 'ies' : 'y'} without a \`README.md\`: ${missing.map(d => `\`${d}\``).join(', ')}.`,
+                  '',
+                  '**Every project in this repository needs its own `README.md`** describing what it does, prerequisites, setup, and usage — see [README_TEMPLATE.md](' + repoUrl + '/blob/main/.github/README_TEMPLATE.md) and [CONTRIBUTING.md](' + repoUrl + '/blob/main/CONTRIBUTING.md).',
+                  '',
+                  'Push a `README.md` to the project directory in this PR and this notice will resolve itself.',
+                ].join('\n');
+
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: prNumber, body,
+                });
+              }
+
+              try {
+                await github.rest.issues.addLabels({
+                  owner, repo, issue_number: prNumber, labels: [LABEL],
+                });
+              } catch (e) {
+                core.warning(`Could not add label "${LABEL}": ${e.message}`);
+              }
+
+              core.setFailed(`New project directory missing README.md: ${missing.join(', ')}`);
+            } else {
+              const labels = context.payload.pull_request.labels.map(l => l.name);
+              if (labels.includes(LABEL)) {
+                try {
+                  await github.rest.issues.removeLabel({
+                    owner, repo, issue_number: prNumber, name: LABEL,
+                  });
+                } catch (e) {
+                  core.warning(`Could not remove label "${LABEL}": ${e.message}`);
+                }
+              }
+            }

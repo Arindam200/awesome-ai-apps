@@ -19,3 +19,6 @@ dev = [
     "black>=25.1.0",
     "isort>=6.0.1",
 ]
+
+[tool.uv]
+override-dependencies = ["transformers>=5.5.0"]

@@ -3,12 +3,13 @@ import { restoreCaseStudyDoc } from "@/lib/db";
 
 export const runtime = "nodejs";
 
-export async function POST(request: Request, { params }: { params: { runId: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ runId: string }> }) {
+  const { runId } = await params;
   const body = (await request.json().catch(() => ({}))) as {
     lastEditor?: string;
   };
 
-  const doc = restoreCaseStudyDoc(params.runId, body.lastEditor?.trim() || "Signals reviewer");
+  const doc = restoreCaseStudyDoc(runId, body.lastEditor?.trim() || "Signals reviewer");
   if (!doc) {
     return NextResponse.json({ error: "Case study run not found" }, { status: 404 });
   }

@@ -28,5 +28,9 @@
     "@types/ws": "^8.18.1",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"
+  },
+  "overrides": {
+    "undici": "^6.27.0",
+    "esbuild": "^0.28.1"
   }
 }

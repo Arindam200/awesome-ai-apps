@@ -17,14 +17,15 @@ function cleanSourceList(sources: string[]) {
     .slice(0, 12);
 }
 
-export default function PrintCaseStudyPage({
+export default async function PrintCaseStudyPage({
   params,
   searchParams
 }: {
-  params: { runId: string };
-  searchParams?: { print?: string };
+  params: Promise<{ runId: string }>;
+  searchParams?: Promise<{ print?: string }>;
 }) {
-  const runId = decodeURIComponent(params.runId);
+  const { runId: rawRunId } = await params;
+  const runId = decodeURIComponent(rawRunId);
   const run = getRun(runId);
   const doc = getOrCreateCaseStudyDoc(runId);
 
@@ -33,7 +34,7 @@ export default function PrintCaseStudyPage({
   }
 
   const sources = cleanSourceList(run.structuredOutput?.sources ?? run.fetchResult?.sources ?? []);
-  const shouldPrint = searchParams?.print === "1";
+  const shouldPrint = (await searchParams)?.print === "1";
 
   return (
     <main className="min-h-screen bg-[#f5f3ec] px-6 py-8 text-[#111827] print:bg-white sm:px-10">

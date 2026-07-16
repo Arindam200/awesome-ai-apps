@@ -1,7 +1,7 @@
-streamlit==1.49.1
-agno==2.0.2
-requests==2.32.5
+streamlit==1.54.0
+agno==2.7.3
+requests==2.33.0
 beautifulsoup4==4.14.2
-lxml==6.0.2
+lxml==6.1.0
 memorisdk==2.3.0
-python-dotenv==1.1.1
+python-dotenv==1.2.2

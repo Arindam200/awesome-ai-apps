@@ -1,0 +1,104 @@
+name: README link-only PR check
+
+# Flags PRs that only add a link / a couple of lines to a README without
+# including the project's source code, and leaves a comment explaining the
+# contribution policy.
+#
+# Uses pull_request_target so the workflow can comment on PRs from forks.
+# This is safe because the PR's code is never checked out or executed —
+# the job only reads the diff via the GitHub API.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  issues: write
+
+jobs:
+  check-readme-link-only:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for link-only README changes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const MARKER = '<!-- readme-link-only-check -->';
+            const LABEL = 'needs-source-code';
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner, repo, pull_number: prNumber, per_page: 100,
+            });
+
+            const markdownOnly = files.length > 0 &&
+              files.every(f => f.filename.toLowerCase().endsWith('.md'));
+
+            const totalAdditions = files.reduce((n, f) => n + f.additions, 0);
+            const totalDeletions = files.reduce((n, f) => n + f.deletions, 0);
+
+            const addedLines = files
+              .flatMap(f => (f.patch || '').split('\n'))
+              .filter(l => l.startsWith('+') && !l.startsWith('+++'));
+            const hasLink = addedLines.some(l =>
+              /https?:\/\/|\]\(\.?\//.test(l));
+
+            const isLinkOnlyPr = markdownOnly && (
+              (totalAdditions <= 5 && hasLink) ||
+              (totalAdditions + totalDeletions <= 2)
+            );
+
+            core.info(`markdownOnly=${markdownOnly} additions=${totalAdditions} deletions=${totalDeletions} hasLink=${hasLink} => flagged=${isLinkOnlyPr}`);
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number: prNumber, per_page: 100,
+            });
+            const alreadyCommented = comments.some(c => c.body && c.body.includes(MARKER));
+
+            if (isLinkOnlyPr) {
+              if (!alreadyCommented) {
+                const repoUrl = `https://github.com/${owner}/${repo}`;
+                const body = [
+                  MARKER,
+                  `Hi @${context.payload.pull_request.user.login}, thanks for your interest in contributing! 🙏`,
+                  '',
+                  'It looks like this PR only adds a link (or a line or two) to a README without including the project\'s source code. **We don\'t accept link-only README PRs** — every project listed in this repository must have its full source code hosted here.',
+                  '',
+                  '**How to get your project accepted:**',
+                  '1. Open an issue describing your project first.',
+                  `2. Create a new PR that includes the **complete source code** of your project in the appropriate category folder (e.g. \`starter_ai_agents/\`, \`simple_ai_agents/\`, \`rag_apps/\`, \`advance_ai_agents/\`, ...), following the structure in [CONTRIBUTING.md](${repoUrl}/blob/main/CONTRIBUTING.md).`,
+                  `3. Include a \`README.md\` (see [README_TEMPLATE.md](${repoUrl}/blob/main/.github/README_TEMPLATE.md)), a \`requirements.txt\` or \`pyproject.toml\`, and a \`.env.example\`.`,
+                  '4. Once the source code is part of the PR, you can add the entry to the main README as part of the same PR.',
+                  '',
+                  'If you push the full source code to this PR, this notice will resolve itself. Otherwise, this PR will be closed. Thanks for understanding! 🚀',
+                ].join('\n');
+
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: prNumber, body,
+                });
+              }
+
+              try {
+                await github.rest.issues.addLabels({
+                  owner, repo, issue_number: prNumber, labels: [LABEL],
+                });
+              } catch (e) {
+                core.warning(`Could not add label "${LABEL}": ${e.message}`);
+              }
+
+              core.setFailed('This PR only changes a README with a link and does not include project source code.');
+            } else {
+              // PR is fine (or was fixed by a later push): remove the label if we set it.
+              const labels = context.payload.pull_request.labels.map(l => l.name);
+              if (labels.includes(LABEL)) {
+                try {
+                  await github.rest.issues.removeLabel({
+                    owner, repo, issue_number: prNumber, name: LABEL,
+                  });
+                } catch (e) {
+                  core.warning(`Could not remove label "${LABEL}": ${e.message}`);
+                }
+              }
+            }
