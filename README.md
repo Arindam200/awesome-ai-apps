@@ -339,7 +339,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Customer Support Resolution Agent](advance_ai_agents/customer_support_resolution_agent) - LangChain and Nebius support agent with knowledge-base retrieval, order lookup, and human ticket escalation
 - [Web Intelligence Agent](advance_ai_agents/web_intelligence_agent) - Mastra multi-agent pipeline that turns Olostep web evidence into Nemotron-verified case studies with SQLite persistence and Velt audit trail
 - [Temporal Agents](advance_ai_agents/temporal_agents/) - Examples of Temporal based AI Agents
-- [Diff Stack Code Agent](advance_ai_agents/diff_stack_code_agent) - LangGraph coding crew that proposes changes as a human-reviewed diff stack, with Nebius inference and E2B-sandboxed test runs
+- [Coding Agent Harness](advance_ai_agents/coding_agent_harness) - Deep LangGraph coding crew with planning, repository exploration, human-gated file edits, and E2B-sandboxed test loops
 
 ### 🧬 Fine-Tuning
 

@@ -1,8 +1,8 @@
-"""Workspace tools for the diff-stack code agent.
+"""Workspace tools for the Coding Agent Harness.
 
 `read_file` and `list_dir` are ordinary read-only tools. `propose_edit`
 is special: the coder node intercepts its tool calls and collects the
-resulting FileDiff dicts into graph state (the "diff stack") instead of
+resulting FileDiff dicts into graph state (the review queue) instead of
 writing anything to disk. Nothing in this module mutates the workspace —
 only the graph's apply_diffs node does, and only after human approval.
 """
@@ -69,7 +69,7 @@ def read_file(path: str) -> str:
 def build_file_diff(
     file_path: str, new_content: str, rationale: str, iteration: int
 ) -> dict:
-    """Compute a FileDiff dict for the pending diff stack. No disk writes."""
+    """Compute a FileDiff dict for the pending review queue. No disk writes."""
     target = _resolve_safe(file_path)
     old_content = target.read_text() if target.is_file() else ""
     diff_lines = difflib.unified_diff(
@@ -95,7 +95,7 @@ def propose_edit(file_path: str, new_content: str, rationale: str) -> str:
 
     This does NOT write to disk. Pass the COMPLETE new file content (not a
     patch or a fragment); a unified diff against the current file is
-    computed for you and queued on the diff stack for human review.
+    computed for you and queued for human review.
     `rationale` is a one-sentence explanation shown to the reviewer, e.g.
     'Fix double-discount bug by setting discount instead of adding to it'.
     Call this once per file you want to change. If a previous proposal for

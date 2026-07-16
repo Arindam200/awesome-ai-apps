@@ -1,7 +1,6 @@
-"""Streamlit UI for the Diff-Stack Code Agent."""
+"""Optional visual review UI for the Coding Agent Harness."""
 from __future__ import annotations
 
-import difflib
 import os
 import uuid
 
@@ -10,82 +9,16 @@ from dotenv import load_dotenv
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.types import Command
 
+from demo_data import DEMO_BUGGY_CART, DEMO_DIFF, DEMO_OBJECTIVE
 from graph import DEFAULT_MAX_ITERATIONS, build_graph
 
 load_dotenv()
 
 st.set_page_config(
-    page_title="Diff Stack Code Agent",
+    page_title="Coding Agent Harness",
     page_icon="🗂️",
     layout="wide",
     initial_sidebar_state="auto",
-)
-
-DEMO_OBJECTIVE = (
-    "Fix the failing pytest suite. Users report bugs in cart.py: a discount "
-    "compounds when applied twice, removing a missing item crashes, and the "
-    "total ignores quantities. Fix ONLY cart.py — never edit a test."
-)
-
-DEMO_BUGGY_CART = '''"""A small shopping cart module."""
-
-
-class ShoppingCart:
-    def __init__(self):
-        self.items = {}
-        self.discount_percent = 0.0
-
-    def add_item(self, name, price, quantity=1):
-        if name in self.items:
-            self.items[name]["quantity"] += quantity
-        else:
-            self.items[name] = {"price": price, "quantity": quantity}
-
-    def remove_item(self, name):
-        del self.items[name]
-
-    def apply_discount(self, percent):
-        self.discount_percent += percent
-
-    def total(self):
-        subtotal = sum(item["price"] for item in self.items.values())
-        return round(subtotal * (1 - self.discount_percent / 100), 2)
-'''
-
-DEMO_FIXED_CART = '''"""A small shopping cart module."""
-
-
-class ShoppingCart:
-    def __init__(self):
-        self.items = {}
-        self.discount_percent = 0.0
-
-    def add_item(self, name, price, quantity=1):
-        if name in self.items:
-            self.items[name]["quantity"] += quantity
-        else:
-            self.items[name] = {"price": price, "quantity": quantity}
-
-    def remove_item(self, name):
-        self.items.pop(name, None)
-
-    def apply_discount(self, percent):
-        self.discount_percent = percent
-
-    def total(self):
-        subtotal = sum(
-            item["price"] * item["quantity"] for item in self.items.values()
-        )
-        return round(subtotal * (1 - self.discount_percent / 100), 2)
-'''
-
-DEMO_DIFF = "".join(
-    difflib.unified_diff(
-        DEMO_BUGGY_CART.splitlines(keepends=True),
-        DEMO_FIXED_CART.splitlines(keepends=True),
-        fromfile="a/cart.py",
-        tofile="b/cart.py",
-    )
 )
 
 st.markdown(
@@ -203,7 +136,7 @@ def reset_run() -> None:
 
 
 with st.sidebar:
-    st.markdown('<div class="sidebar-brand">Diff Stack</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-brand">Code Harness</div>', unsafe_allow_html=True)
     st.markdown(
         '<p class="sidebar-copy">A coding crew with a hard boundary: the model '
         "can propose code, but only you can apply it.</p>",
@@ -239,7 +172,7 @@ st.markdown(
 )
 st.markdown(
     '<p class="hero-copy">Give a four-agent crew a real bug ticket. It can inspect, '
-    "plan, and propose a patch, but execution stops at a diff stack you control. "
+    "plan, and propose a patch, but execution stops at a review gate you control. "
     "Approve good code, reject weak code with a reason, then verify it in an isolated sandbox.</p>",
     unsafe_allow_html=True,
 )
@@ -336,7 +269,7 @@ if st.session_state.run_started:
 if st.session_state.pending_review:
     payload = st.session_state.pending_review
     st.warning("Execution paused. Nothing below has been written to disk.")
-    st.subheader(f"Review diff stack · iteration {payload['iteration'] + 1}")
+    st.subheader(f"Review proposed changes · iteration {payload['iteration'] + 1}")
     decisions = {}
     for diff in payload["diffs"]:
         with st.expander(f"{diff['file_path']} · {diff['rationale']}", expanded=True):

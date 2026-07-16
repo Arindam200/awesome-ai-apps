@@ -1,7 +1,7 @@
 [project]
-name = "diff-stack-code-agent"
+name = "coding-agent-harness"
 version = "0.1.0"
-description = "Multi-agent coding harness with a human-reviewed diff stack, built with LangGraph and Nebius Token Factory"
+description = "Deep coding agent harness with human-gated edits, LangGraph, Nebius, and E2B"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -15,4 +15,5 @@ dependencies = [
     "python-dotenv>=1.0.1",
     "pydantic>=2.7.0",
     "pytest>=8.0",
+    "rich>=13.9",
 ]

@@ -1,4 +1,4 @@
-"""Diff-Stack Code Agent — LangGraph StateGraph with a human-reviewed diff stack.
+"""Coding Agent Harness — LangGraph workflow with human-gated file edits.
 
 Flow:
     START -> planner -> explorer -> coder
@@ -8,7 +8,7 @@ Flow:
            -> (otherwise) -> coder
 
 The diff_review node pauses the graph with LangGraph's `interrupt()` and
-hands the pending diff stack to the caller (the Streamlit app). The caller
+hands the pending change queue to the caller (CLI or Streamlit). The caller
 resumes with `Command(resume={"decisions": {...}})` carrying per-diff
 approve/reject decisions. Only approved diffs ever touch the disk.
 """
@@ -46,7 +46,7 @@ class AgentState(TypedDict, total=False):
     objective: str
     plan: str
     workspace_context: str
-    pending_diffs: list[dict]  # the diff stack awaiting review (replaced wholesale)
+    pending_diffs: list[dict]  # proposed file changes awaiting human review
     diffs_to_apply: list[dict]  # approved diffs, consumed by apply_diffs
     applied_diffs: Annotated[list[dict], operator.add]
     review_feedback: str  # rejection reasons, fed back to the coder
