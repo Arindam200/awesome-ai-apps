@@ -15,7 +15,7 @@ VoxCode is a local voice AI coding workspace. You can talk to a codebase, ask fo
 
 - **Node.js / TypeScript** — Express + WebSocket backend, Vite + React client
 - **[Deepgram](https://developers.deepgram.com/docs/voice-agent)** — Voice Agent orchestration, STT, and TTS
-- **[Nebius Token Factory](https://docs.tokenfactory.nebius.com/)** — MiniMax reasoning, tool routing, and response polishing
+- **[Nebius Token Factory](https://dub.sh/nebius)** — MiniMax reasoning, tool routing, and response polishing
 - **[Cursor SDK](https://cursor.com/docs/sdk/typescript)** — Codebase inspection and file edits in `CODE_WORKSPACE`
 
 The app uses three providers with clear responsibilities:
@@ -213,4 +213,4 @@ Use **Brief** depth for faster summaries.
 - [Cursor SDK cookbook](https://github.com/cursor/cookbook)
 - [Deepgram Voice Agent docs](https://developers.deepgram.com/docs/voice-agent)
 - [Deepgram BYO LLM docs](https://developers.deepgram.com/docs/voice-agent-llm-models)
-- [Nebius Token Factory docs](https://docs.tokenfactory.nebius.com/)
+- [Nebius Token Factory docs](https://dub.sh/nebius)

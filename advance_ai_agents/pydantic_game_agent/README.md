@@ -38,7 +38,7 @@ The reviewer reads the generated HTML/CSS/JS and the typed spec, then returns a 
 ### Prerequisites
 
 - Python 3.11+
-- [Nebius Token Factory](https://tokenfactory.nebius.com/) API key
+- [Nebius Token Factory](https://dub.sh/nebius) API key
 
 ### Install
 
@@ -106,6 +106,6 @@ pydantic_game_agent/
 
 ## Provider links
 
-- [Nebius Token Factory GLM-5.2](https://tokenfactory.nebius.com/?modals=endpoint-details&model-id=zai-org/GLM-5.2)
+- [Nebius Token Factory GLM-5.2](https://dub.sh/nebius)
 - [Pydantic AI overview](https://pydantic.dev/docs/ai/overview/)
 - [Pydantic AI OpenAI provider](https://pydantic.dev/docs/ai/models/openai/)

@@ -241,8 +241,8 @@ If you encounter issues:
 
 ### Nebius Token Factory
 
-- **Website**: [Nebius Token Factory](https://console.nebius.ai/)
-- **Documentation**: [Nebius Docs](https://docs.tokenfactory.nebius.com/)
+- **Website**: [Nebius Token Factory](https://dub.sh/nebius)
+- **Documentation**: [Nebius Docs](https://dub.sh/nebius)
 - **Models**: Browse available models for customization
 
 ### OpenAI
@@ -268,7 +268,7 @@ This project is part of the [Awesome AI Apps](https://github.com/Arindam200/awes
 ## 🙏 Acknowledgments
 
 - [RouteLLM](https://github.com/RouteLLM/routellm) for the intelligent routing framework
-- [Nebius Token Factory](https://console.nebius.ai/) for providing cost-effective LLM access
+- [Nebius Token Factory](https://dub.sh/nebius) for providing cost-effective LLM access
 - [OpenAI](https://openai.com/) for GPT-4o-mini model
 - [Streamlit](https://streamlit.io/) for the web framework
 - [Meta](https://ai.meta.com/) for the Llama models

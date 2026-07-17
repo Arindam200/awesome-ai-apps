@@ -48,7 +48,7 @@ Each agent writes its **step-by-step reasoning** into a `reasoning_steps: list[s
 ### 1. Prerequisites
 
 - Python 3.8-3.13
-- A [Nebius](https://tokenfactory.nebius.com/) API key
+- A [Nebius](https://dub.sh/nebius) API key
 
 ### 2. Install
 

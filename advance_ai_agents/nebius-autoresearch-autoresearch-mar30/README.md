@@ -73,7 +73,7 @@ pip install -r requirements.txt
 
 ### 2. Get a Nebius API key
 
-Sign up at [Nebius Token Factory](https://tokenfactory.nebius.com/) and create a **project-scoped** API key ([docs](https://docs.tokenfactory.nebius.com/api-reference/introduction#authentication)).
+Sign up at [Nebius Token Factory](https://dub.sh/nebius) and create a **project-scoped** API key ([docs](https://dub.sh/nebius)).
 
 ```bash
 # Linux / macOS
@@ -154,7 +154,7 @@ Higher is better. The agent's goal is to maximize throughput while keeping every
 
 ## Model
 
-Uses **Qwen3-235B-A22B-Thinking** via [Nebius Token Factory](https://docs.tokenfactory.nebius.com/quickstart) — a reasoning model that thinks through performance bottlenecks before proposing fixes. OpenAI-compatible API (`https://api.tokenfactory.nebius.com/v1/`), no new SDK required.
+Uses **Qwen3-235B-A22B-Thinking** via [Nebius Token Factory](https://dub.sh/nebius) — a reasoning model that thinks through performance bottlenecks before proposing fixes. OpenAI-compatible API (`https://api.tokenfactory.nebius.com/v1/`), no new SDK required.
 
 ## Batch Inference
 

@@ -20,7 +20,7 @@ Project path: `memory_agents/engineering_content_agent`
 
 - Python 3.11+
 - [uv](https://github.com/astral-sh/uv) or pip
-- [Nebius Token Factory](https://studio.nebius.com/) API key (required)
+- [Nebius Token Factory](https://dub.sh/nebius) API key (required)
 - [Weaviate Engram](https://docs.weaviate.io/engram) API key (optional but recommended)
 - [DEV API key](https://developers.forem.com/api) (optional; public search works without it)
 
@@ -67,7 +67,7 @@ Project path: `memory_agents/engineering_content_agent`
    LOG_LEVEL=INFO
    ```
 
-   > **Note:** This app uses **Nebius Token Factory** via Agno's `Nebius` provider (Chat Completions). Get your API key from [Nebius Token Factory](https://studio.nebius.com/).
+   > **Note:** This app uses **Nebius Token Factory** via Agno's `Nebius` provider (Chat Completions). Get your API key from [Nebius Token Factory](https://dub.sh/nebius).
 
 ## Usage
 
@@ -131,7 +131,7 @@ engineering_content_agent/
 ## Tech Stack
 
 - [Agno](https://docs.agno.com/) >= 2.2.3 — specialist agents and Nebius model provider
-- [Nebius Token Factory](https://studio.nebius.com/) — LLM inference via Agno `Nebius` (Chat Completions)
+- [Nebius Token Factory](https://dub.sh/nebius) — LLM inference via Agno `Nebius` (Chat Completions)
 - [Weaviate Engram](https://docs.weaviate.io/engram) — persistent cross-session memory
 - [Streamlit](https://streamlit.io/) — chat UI
 - [HN Algolia API](https://hn.algolia.com/api) — developer demand signals
@@ -146,7 +146,7 @@ python -m pytest tests/ -q
 
 ## Provider Links
 
-- [Nebius Token Factory](https://studio.nebius.com/)
+- [Nebius Token Factory](https://dub.sh/nebius)
 - [Weaviate Engram docs](https://docs.weaviate.io/engram)
 - [Agno docs](https://docs.agno.com/)
 - [DEV API](https://developers.forem.com/api)

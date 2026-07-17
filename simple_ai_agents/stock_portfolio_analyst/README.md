@@ -14,7 +14,7 @@ An AI-powered Stock Portfolio Analyst built with the [Agno](https://www.agno.com
 ## 🛠️ Tech Stack
 
 - **Framework**: [Agno](https://www.agno.com/)
-- **Inference**: [Nebius Token Factory](https://dub.sh/AIStudio)
+- **Inference**: [Nebius Token Factory](https://dub.sh/nebius)
 - **Tools**: `YFinanceTools`, `DuckDuckGoTools`, `CalculatorTools`
 - **UI**: Streamlit
 
@@ -66,6 +66,6 @@ Open the URL Streamlit prints (usually http://localhost:8501).
 
 ## 🔑 Getting a Nebius API Key
 
-1. Go to [Nebius Token Factory](https://dub.sh/AIStudio)
+1. Go to [Nebius Token Factory](https://dub.sh/nebius)
 2. Sign in and open the API section
 3. Create a key and paste it into your `.env` as `NEBIUS_API_KEY`

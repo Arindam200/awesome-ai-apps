@@ -21,7 +21,7 @@ Web Intelligence Agent is useful for competitor research, product-page analysis,
 | Tool | Use in Web Intelligence Agent |
 | --- | --- |
 | [Olostep](https://www.olostep.com/) | Live web search, scrape, answers, map, and crawl operations. |
-| [Nebius](https://tokenfactory.nebius.com/) | OpenAI-compatible endpoint for Nemotron Ultra reasoning and case-study generation. |
+| [Nebius](https://dub.sh/nebius) | OpenAI-compatible endpoint for Nemotron Ultra reasoning and case-study generation. |
 | [Mastra](https://mastra.ai/) | Agent and workflow framework for the controlled multi-agent pipeline. |
 | [Velt](https://velt.dev/) | Comments, presence, notifications, and immutable audit trail. |
 | [Next.js](https://nextjs.org/) | App UI and API routes. |
@@ -145,7 +145,7 @@ To deploy it as a hosted web app, add the infrastructure choices that fit your e
 ## Provider Links
 
 - [Olostep docs](https://docs.olostep.com/)
-- [Nebius Token Factory docs](https://docs.tokenfactory.nebius.com/)
+- [Nebius Token Factory docs](https://dub.sh/nebius)
 - [Mastra docs](https://mastra.ai/docs)
 - [Velt docs](https://docs.velt.dev/)
 - [Next.js docs](https://nextjs.org/docs)

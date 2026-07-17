@@ -16,7 +16,7 @@ This example runs a single Pipecat pipeline (mic → STT → LLM → TTS → spe
 - **Python 3.11+**
 - **[Pipecat](https://docs.pipecat.ai)** (`pipecat-ai` with `daily`, `nebius`, `runner`, `sarvam`, `webrtc` extras)
 - **[Sarvam AI](https://docs.sarvam.ai)** — STT and TTS APIs
-- **[Nebius Token Factory](https://api.tokenfactory.nebius.com/)** — OpenAI-compatible Chat Completions for replies
+- **[Nebius Token Factory](https://dub.sh/nebius)** — OpenAI-compatible Chat Completions for replies
 - **FastAPI + uvicorn** — Served by the Pipecat runner (default port **7860**)
 
 ## How it works
@@ -38,7 +38,7 @@ The pipeline runs **Advanced Voice Agent** style: audio in through Daily or WebR
 - [uv](https://github.com/astral-sh/uv) (recommended) or pip
 - API keys:
   - [Sarvam](https://www.sarvam.ai/) — `SARVAM_API_KEY`
-  - [Nebius Token Factory](https://api.tokenfactory.nebius.com/) — `NEBIUS_API_KEY`
+  - [Nebius Token Factory](https://dub.sh/nebius) — `NEBIUS_API_KEY`
 - For **Daily** transport only: [Daily](https://www.daily.co/) — `DAILY_API_KEY` (optional: `DAILY_ROOM_URL` to reuse a room)
 
 ### Environment variables
@@ -87,7 +87,7 @@ In `main.py` you can pass **`model`** (and for Sarvam TTS, **`voice_id`**) into 
 
 - **STT**: e.g. `saarika:v2.5` (default in Pipecat if omitted), `saaras:v2.5`, `saaras:v3` (with `mode` where applicable)
 - **TTS**: e.g. `bulbul:v2` (default), `bulbul:v3`, `bulbul:v3-beta`
-- **LLM**: any Nebius Token Factory model id (e.g. `openai/gpt-oss-120b`, `openai/gpt-oss-20b`) — browse available models at [api.tokenfactory.nebius.com](https://api.tokenfactory.nebius.com/)
+- **LLM**: any Nebius Token Factory model id (e.g. `openai/gpt-oss-120b`, `openai/gpt-oss-20b`) — browse available models at [api.tokenfactory.nebius.com](https://dub.sh/nebius)
 
 See Pipecat’s `pipecat.services.sarvam` modules and [Sarvam API docs](https://docs.sarvam.ai) for the exact identifiers.
 

@@ -24,7 +24,7 @@ An AI-powered workspace agent that connects to [Taskade](https://taskade.com) vi
 - Python 3.10+
 - Node.js 18+ (for the Taskade MCP server)
 - A [Taskade](https://taskade.com) account and API key
-- A [Nebius AI](https://studio.nebius.ai/) API key
+- A [Nebius AI](https://dub.sh/nebius) API key
 
 ## Getting Started
 

@@ -12,7 +12,7 @@ A minimal starter for [Mastra](https://mastra.ai) — a TypeScript-first framewo
 ## Prerequisites
 
 - Node.js 20+
-- Nebius API key — [Nebius Token Factory](https://studio.nebius.ai/)
+- Nebius API key — [Nebius Token Factory](https://dub.sh/nebius)
 
 ## Installation
 
@@ -53,4 +53,4 @@ npm run dev
 
 - [Mastra](https://mastra.ai)
 - [Vercel AI SDK](https://sdk.vercel.ai)
-- [Nebius Token Factory](https://studio.nebius.ai/)
+- [Nebius Token Factory](https://dub.sh/nebius)

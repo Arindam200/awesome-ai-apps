@@ -2,7 +2,7 @@
 
 > A prompt-format benchmark harness that measures how XML, JSON, and Markdown prompt structures affect accuracy, latency, and token usage on the same task.
 
-Built on [Nebius Token Factory](https://tokenfactory.nebius.com/) for inference. Compare the *same* instructions expressed in three different formats across two task types (structured extraction and sentiment classification) and see which format your chosen model handles best.
+Built on [Nebius Token Factory](https://dub.sh/nebius) for inference. Compare the *same* instructions expressed in three different formats across two task types (structured extraction and sentiment classification) and see which format your chosen model handles best.
 
 ## 🚀 Features
 
@@ -34,7 +34,7 @@ Built on [Nebius Token Factory](https://tokenfactory.nebius.com/) for inference.
 
 - Python 3.10+
 - [uv](https://github.com/astral-sh/uv) or pip
-- A Nebius Token Factory API key — [get one here](https://tokenfactory.nebius.com/)
+- A Nebius Token Factory API key — [get one here](https://dub.sh/nebius)
 
 ### Environment Variables
 

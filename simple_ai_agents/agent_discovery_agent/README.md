@@ -25,7 +25,7 @@ A discovery agent that helps you find and compare AI agents across multiple regi
 ## Prerequisites
 
 - Python 3.10 or higher
-- Nebius API key from [Nebius Token Factory](https://tokenfactory.nebius.com/)
+- Nebius API key from [Nebius Token Factory](https://dub.sh/nebius)
 
 ## Installation
 
@@ -75,7 +75,7 @@ python main.py
 The agent uses:
 
 - [Agno Framework](https://www.agno.com/) for AI agent development
-- [Nebius AI](https://tokenfactory.nebius.com/) Qwen model for natural language understanding
+- [Nebius AI](https://dub.sh/nebius) Qwen model for natural language understanding
 - [Registry Broker API](https://hol.org/registry/docs) for multi-registry agent discovery
 
 ## API Reference
@@ -101,4 +101,4 @@ MIT License
 
 - [Registry Broker](https://hol.org/registry) - Universal AI Agent Index
 - [Agno Framework](https://www.agno.com/)
-- [Nebius Token Factory](https://tokenfactory.nebius.com/)
+- [Nebius Token Factory](https://dub.sh/nebius)

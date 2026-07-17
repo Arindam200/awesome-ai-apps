@@ -36,7 +36,7 @@ TAGS: due-diligence, multi-agent, web-scraping, tinyfish, parallel-agents, resea
 ### Prerequisites
 
 - Python 3.10+
-- A [Nebius API key](https://studio.nebius.com/) for open-source LLM inference
+- A [Nebius API key](https://dub.sh/nebius) for open-source LLM inference
 - A [TinyFish API key](https://tinyfish.ai)
 
 ### Setup

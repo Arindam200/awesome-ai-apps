@@ -16,7 +16,7 @@ This project shows the two halves of an MCP integration end to end: a small **em
 - **Python**: Core programming language
 - **[MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)** (`mcp[cli]`) with `FastMCP`: For defining the MCP server and tools
 - **[OpenAI Agents SDK](https://github.com/openai/openai-agents-python)**: For the client-side agent that calls the MCP server
-- **[Nebius Token Factory](https://tokenfactory.nebius.com/)**: OpenAI-compatible inference endpoint for the agent's LLM
+- **[Nebius Token Factory](https://dub.sh/nebius)**: OpenAI-compatible inference endpoint for the agent's LLM
 - **`smtplib`**: For sending email over SMTP
 
 ## Workflow
@@ -32,7 +32,7 @@ This project shows the two halves of an MCP integration end to end: a small **em
 
 - Python 3.11+
 - [uv](https://github.com/astral-sh/uv) for package management
-- A [Nebius Token Factory](https://tokenfactory.nebius.com/) API key
+- A [Nebius Token Factory](https://dub.sh/nebius) API key
 - A Gmail account with an [App Password](https://support.google.com/accounts/answer/185833) (regular passwords won't work with `smtplib`)
 
 ### Environment Variables

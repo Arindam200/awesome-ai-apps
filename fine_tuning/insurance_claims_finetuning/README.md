@@ -57,7 +57,7 @@ The notebook sets both; `app.py` defaults to the **Meta** chat id for the base m
 
 | Step | Where | Action |
 |------|--------|--------|
-| 1 | [Token Factory](https://tokenfactory.nebius.com/) → Project settings | Create a **project-scoped API key** |
+| 1 | [Token Factory](https://dub.sh/nebius) → Project settings | Create a **project-scoped API key** |
 | 2 | After the notebook deploys your adapter | Copy the printed **`CUSTOM_MODEL_NAME`** into `.env` for the Gradio app |
 
 Everything else (Data Lab upload, batch job, training file upload, fine-tuning, deployment, evaluation) runs in the notebook.
@@ -117,10 +117,10 @@ When finished, use the **Cleanup** cell at the end of the notebook to delete the
 
 ## References
 
-- [Fine-tuning overview](https://docs.tokenfactory.nebius.com/fine-tuning/overview)
-- [Deploy custom LoRA](https://docs.tokenfactory.nebius.com/fine-tuning/deploy-custom-model)
-- [Data Lab](https://docs.tokenfactory.nebius.com/data-lab/overview)
-- [Token Factory docs](https://docs.tokenfactory.nebius.com/)
+- [Fine-tuning overview](https://dub.sh/nebius)
+- [Deploy custom LoRA](https://dub.sh/nebius)
+- [Data Lab](https://dub.sh/nebius)
+- [Token Factory docs](https://dub.sh/nebius)
 
 ## License
 

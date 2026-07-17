@@ -300,7 +300,7 @@ What's the most complex system you've encountered recently?
 | Python 3.12+ | `python --version` | `uv python install 3.12` or [python.org](https://www.python.org/downloads/) |
 | uv 0.7+ | `uv --version` | `curl -LsSf https://astral.sh/uv/install.sh \| sh` ([docs](https://docs.astral.sh/uv/getting-started/installation/)) |
 | GNU Make | `make --version` | Pre-installed on macOS/Linux. Windows: `choco install make` |
-| Nebius API Key | — | [studio.nebius.com](https://studio.nebius.com/) (required — text LLM calls) |
+| Nebius API Key | — | [studio.nebius.com](https://dub.sh/nebius) (required — text LLM calls) |
 | Exa API Key | — | [dashboard.exa.ai](https://dashboard.exa.ai/) (required — real-time search) |
 | Gemini API Key | — | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (required — image generation) |
 | Okahu account | — | [okahu.ai](https://www.okahu.ai/) (optional, for observability and eval traces) |

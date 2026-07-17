@@ -13,7 +13,7 @@ The three agents run **sequentially**, each consuming the previous task's output
 ## 🛠️ Tech Stack
 
 - **Framework**: [CrewAI](https://www.crewai.com/)
-- **Inference**: [Nebius Token Factory](https://dub.sh/AIStudio) (Qwen3-235B by default; Llama 3.3 70B and DeepSeek V3 also available)
+- **Inference**: [Nebius Token Factory](https://dub.sh/nebius) (Qwen3-235B by default; Llama 3.3 70B and DeepSeek V3 also available)
 - **PDF parsing**: [`pypdf`](https://pypi.org/project/pypdf/)
 - **UI**: Streamlit
 

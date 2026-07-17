@@ -44,7 +44,7 @@ the embedding model (`Qwen/Qwen3-Embedding-8B`).
 ### Prerequisites
 
 - Python 3.10+
-- A [Nebius Token Factory](https://nebius.com/services/token-factory) API key
+- A [Nebius Token Factory](https://dub.sh/nebius) API key
 
 ### 1. Install
 

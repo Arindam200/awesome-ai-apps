@@ -15,7 +15,7 @@ This project showcases the integration of LlamaIndex with Nebius AI, providing a
 ## Prerequisites
 
 - Python 3.8+
-- Nebius AI API key (Get one at [studio.nebius.ai](https://studio.nebius.ai/))
+- Nebius AI API key (Get one at [studio.nebius.ai](https://dub.sh/nebius))
 
 ## Installation
 
@@ -73,10 +73,9 @@ for chunk in llm.stream_chat(messages):
 
 ## Available Models
 
-Nebius AI provides access to various state-of-the-art LLM models. Check out the full list of available models at [studio.nebius.ai](https://studio.nebius.ai/).
+Nebius AI provides access to various state-of-the-art LLM models. Check out the full list of available models at [studio.nebius.ai](https://dub.sh/nebius).
 
 ## Contributing
 
 Feel free to submit issues and enhancement requests!
-
 

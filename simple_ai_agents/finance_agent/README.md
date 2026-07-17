@@ -53,7 +53,7 @@ NEBIUS_API_KEY=your_nebius_api_key_here
 
 **How to get your Nebius API key:**
 
-1. Visit [Nebius Token Factory](https://dub.sh/AIStudio)
+1. Visit [Nebius Token Factory](https://dub.sh/nebius)
 2. Sign up or log in to your account
 3. Navigate to the API section
 4. Generate a new API key
@@ -155,7 +155,7 @@ This project is part of the [Awesome AI Apps](https://github.com/Arindam200/awes
 
 ## 🙏 Acknowledgments
 
-- [Nebius Token Factory](https://dub.sh/AIStudio) for providing the LLM infrastructure
+- [Nebius Token Factory](https://dub.sh/nebius) for providing the LLM infrastructure
 - [Agno](https://www.agno.com/) for the powerful agent framework
 - [YFinance](https://pypi.org/project/yfinance/) for financial data access
 - [DuckDuckGo](https://duckduckgo.com/) for privacy-focused web search

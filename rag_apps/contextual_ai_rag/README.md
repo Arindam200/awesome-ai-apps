@@ -19,7 +19,7 @@ A Streamlit RAG application powered by Contextual AI's managed platform. Upload 
 
 - [Contextual AI](https://app.contextual.ai) Account
 - Contextual AI API Key
-- [Nebius Token Factory](https://studio.nebius.ai) Account (Optional - for response enhancement)
+- [Nebius Token Factory](https://dub.sh/nebius) Account (Optional - for response enhancement)
 
 ### Generate API Keys
 
@@ -32,7 +32,7 @@ A Streamlit RAG application powered by Contextual AI's managed platform. Upload 
 
 **Nebius API Key (Optional):**
 
-1. Visit [Nebius Token Factory](https://console.nebius.ai/)
+1. Visit [Nebius Token Factory](https://dub.sh/nebius)
 2. Sign up for a free account or log in
 3. Navigate to the AI section and select LLM services
 4. Go to "API Keys" section in your console

@@ -29,7 +29,7 @@ An advanced AI-powered agentic application that validates and analyzes startup i
 
 - Python 3.9+
 - [uv](https://github.com/astral-sh/uv) package manager (used instead of pip)
-- [Nebius](https://dub.sh/Nebius) API key
+- [Nebius](https://dub.sh/nebius) API key
 - [Tavily](https://dub.sh/tavily) API key
 
 ### Environment Variables

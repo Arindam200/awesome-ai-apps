@@ -36,7 +36,7 @@ Before running this project, make sure you have:
 
 - Python 3.10 or higher
 - A [Bright Data](https://brightdata.com/) account and API credentials
-- [Nebius Token Factory](https://tokenfactory.nebius.com/) account and API key
+- [Nebius Token Factory](https://dub.sh/nebius) account and API key
 
 ## Project Structure
 
@@ -129,5 +129,5 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Acknowledgments
 
 - [Bright Data](https://brightdata.com/) for web scraping capabilities
-- [Nebius Token Factory](https://tokenfactory.nebius.com/) for AI model access
+- [Nebius Token Factory](https://dub.sh/nebius) for AI model access
 - [Streamlit](https://streamlit.io/) for the web interface framework

@@ -38,7 +38,7 @@ question ─► LLM → Cypher ──► run ──► subgraph rows ──► L
 
 - Python 3.10+
 - A Neo4j database (free [Neo4j AuraDB](https://neo4j.com/cloud/platform/aura-graph-database/) tier works)
-- A [Nebius Token Factory](https://studio.nebius.com/) API key
+- A [Nebius Token Factory](https://dub.sh/nebius) API key
 
 ### Environment Variables
 
@@ -122,4 +122,4 @@ MIT – see [LICENSE](https://github.com/Arindam200/awesome-llm-apps/blob/main/L
 ## 🙏 Acknowledgments
 
 - [Neo4j documentation](https://neo4j.com/docs/) for the Cypher and driver references.
-- [Nebius Token Factory](https://studio.nebius.com/) for fast, OpenAI-compatible LLM inference.
+- [Nebius Token Factory](https://dub.sh/nebius) for fast, OpenAI-compatible LLM inference.

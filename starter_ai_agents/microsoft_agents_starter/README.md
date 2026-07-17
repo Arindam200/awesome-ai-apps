@@ -42,7 +42,7 @@ source .venv/bin/activate
 ```
 
 Create a `.env` file in the project root and add your Nebius API key
-(get it from [Nebius Token Factory](https://studio.nebius.ai/)):
+(get it from [Nebius Token Factory](https://dub.sh/nebius)):
 
 ```
 NEBIUS_API_KEY=your_api_key_here
@@ -64,7 +64,7 @@ NEBIUS_API_KEY=your_api_key_here
 ## Powered by Nebius AI
 
 Every agent in these demos is backed by the **Nebius AI** model, served through
-[Nebius Token Factory](https://studio.nebius.ai/). The framework talks to Nebius
+[Nebius Token Factory](https://dub.sh/nebius). The framework talks to Nebius
 via its OpenAI-compatible endpoint, so the standard `OpenAIChatCompletionClient`
 is pointed at the Nebius `base_url`:
 
@@ -80,7 +80,7 @@ client = OpenAIChatCompletionClient(
 ```
 
 - 🔑 **Auth:** set `NEBIUS_API_KEY` in your `.env` (get a key from
-  [Nebius Token Factory](https://studio.nebius.ai/)).
+  [Nebius Token Factory](https://dub.sh/nebius)).
 - 🌐 **Endpoint:** `https://api.tokenfactory.nebius.com/v1/` (OpenAI-compatible).
 - 🤖 **Model:** `Qwen/Qwen3.5-397B-A17B` — swap in any model your Nebius account supports.
 
@@ -363,11 +363,10 @@ Switch `monocle_exporters_list` to another exporter to ship traces elsewhere.
 
 1. https://github.com/microsoft/agent-framework/tree/main
 2. https://commandline.microsoft.com/assert-written-intent-executable-evals/
-3. [Nebius Token Factory](https://studio.nebius.ai/)
+3. [Nebius Token Factory](https://dub.sh/nebius)
 4. Orchestration docs:
    [Sequential](https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/sequential) ·
    [Concurrent](https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/concurrent) ·
    [Handoff](https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/handoff) ·
    [Group Chat](https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/group-chat) ·
    [Magentic](https://learn.microsoft.com/en-us/agent-framework/workflows/orchestrations/magentic)
-

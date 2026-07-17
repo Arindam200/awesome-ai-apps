@@ -18,7 +18,7 @@ The agent handles patient appointment booking, answers FAQ on insurance, billing
 - **Python 3.11+**
 - **[Pipecat](https://docs.pipecat.ai)** (`pipecat-ai` with `cartesia`, `nebius`, `runner`, `webrtc`, `daily`, `silero` extras)
 - **[Cartesia](https://cartesia.ai)** — `ink-whisper` STT, `sonic-3` TTS with multiple voice IDs
-- **[Nebius Token Factory](https://api.tokenfactory.nebius.com/)** — OpenAI-compatible Chat Completions with tool use
+- **[Nebius Token Factory](https://dub.sh/nebius)** — OpenAI-compatible Chat Completions with tool use
 - **FastAPI + uvicorn** — Served by the Pipecat runner (default port **7860**)
 
 ## How it works
@@ -46,7 +46,7 @@ caller audio ──► Cartesia STT ──► user context ──► Nebius LLM 
 - [uv](https://github.com/astral-sh/uv) (recommended) or pip
 - API keys:
   - [Cartesia](https://cartesia.ai) — `CARTESIA_API_KEY`
-  - [Nebius Token Factory](https://api.tokenfactory.nebius.com/) — `NEBIUS_API_KEY`
+  - [Nebius Token Factory](https://dub.sh/nebius) — `NEBIUS_API_KEY`
 - For **Daily** transport only: [Daily](https://www.daily.co/) — `DAILY_API_KEY` (optional `DAILY_ROOM_URL`)
 
 ### Environment variables
@@ -120,4 +120,4 @@ Talk to the agent and try each capability:
 - [Pipecat documentation](https://docs.pipecat.ai)
 - [Pipecat function calling guide](https://docs.pipecat.ai/pipecat/learn/function-calling)
 - [Cartesia voices](https://docs.cartesia.ai)
-- [Nebius Token Factory](https:/docs.tokenfactory.nebius.com/)
+- [Nebius Token Factory](https://dub.sh/nebius)

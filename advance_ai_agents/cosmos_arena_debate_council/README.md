@@ -32,7 +32,7 @@ The flow runs `START → proponent → opponent →` then either `increment_roun
 
 - Python 3.11+
 - [Nebius Token Factory](https://dub.sh/nebius) account
-- [Nebius API Key](https://tokenfactory.nebius.com/)
+- [Nebius API Key](https://dub.sh/nebius)
 - `uv` installed (for dependency management):
 
   ```bash

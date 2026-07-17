@@ -1,6 +1,6 @@
 # Trustworthy RAG
 
-A RAG (Retrieval-Augmented Generation) application that adds a **citation verification** and **hallucination scoring** layer on top of any standard RAG pipeline. Built with Streamlit, LlamaIndex, and [Nebius Token Factory](https://tokenfactory.nebius.com/).
+A RAG (Retrieval-Augmented Generation) application that adds a **citation verification** and **hallucination scoring** layer on top of any standard RAG pipeline. Built with Streamlit, LlamaIndex, and [Nebius Token Factory](https://dub.sh/nebius).
 
 Every factual sentence in the answer is:
 1. Forced to carry an inline citation (`[1]`, `[2,3]`, ...) pointing to the retrieved chunks.
@@ -19,7 +19,7 @@ Every factual sentence in the answer is:
 ## Prerequisites
 
 - Python 3.10+
-- [Nebius Token Factory](https://tokenfactory.nebius.com/) account and API key
+- [Nebius Token Factory](https://dub.sh/nebius) account and API key
 
 ## Installation
 

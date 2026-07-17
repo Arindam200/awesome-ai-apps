@@ -19,7 +19,7 @@ A powerful AI-powered database query tool that translates natural language quest
 ## Prerequisites 🛠️
 
 - Python 3.10+
-- [Nebius AI API key](https://dub.sh/AIStudio)
+- [Nebius AI API key](https://dub.sh/nebius)
 - [GibsonAI DB connection](https://www.gibsonai.com)
 - MySQL database access
 
@@ -102,7 +102,7 @@ mysql://username:password@host/database
 
 ## API Keys 🔑
 
-- **Nebius AI API Key**: Get your API key from [https://tokenfactory.nebius.com/](https://dub.sh/AIStudio)
+- **Nebius AI API Key**: Get your API key from [https://tokenfactory.nebius.com/](https://dub.sh/nebius)
 
 ## Architecture 🏗️
 

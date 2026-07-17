@@ -90,7 +90,7 @@ Full mapping in [`docs/SECURITY.md`](docs/SECURITY.md). Architecture in [`docs/A
 
 - Docker + Docker Compose
 - API keys (optional — the **security demo needs none**):
-  - [Nebius AI](https://nebius.com/) — agent chat (Kimi-K2.6)
+  - [Nebius AI](https://dub.sh/nebius) — agent chat (Kimi-K2.6)
   - [Google AI](https://aistudio.google.com/) — Gemini embeddings (semantic search only)
 
 ### Installation

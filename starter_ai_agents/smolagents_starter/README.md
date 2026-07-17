@@ -12,7 +12,7 @@ A minimal starter for [HuggingFace smolagents](https://github.com/huggingface/sm
 ## Prerequisites
 
 - Python 3.10+
-- Nebius API key — [Nebius Token Factory](https://studio.nebius.ai/)
+- Nebius API key — [Nebius Token Factory](https://dub.sh/nebius)
 
 ## Installation
 
@@ -55,4 +55,4 @@ python main.py
 ## Acknowledgments
 
 - [smolagents](https://github.com/huggingface/smolagents)
-- [Nebius Token Factory](https://studio.nebius.ai/)
+- [Nebius Token Factory](https://dub.sh/nebius)

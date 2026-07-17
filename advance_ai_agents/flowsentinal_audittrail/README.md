@@ -36,7 +36,7 @@ A Next.js dashboard that orchestrates AI agent workflows through n8n, powered by
 
 | Component | Tool | Role |
 |-----------|------|------|
-| **AI Brain** | [Nebius Token Factory](https://docs.tokenfactory.nebius.com/) | Powers chat + workflow planning with Nemotron Super |
+| **AI Brain** | [Nebius Token Factory](https://dub.sh/nebius) | Powers chat + workflow planning with Nemotron Super |
 | **Live Research** | Built-in Web Research | Fetches time-sensitive updates (for example, latest vendor announcements) and grounds responses with sources |
 | **Orchestrator** | [n8n](https://docs.n8n.io/) | Chains multi-step AI workflows via webhook + visual automation |
 | **Auditor** | [Velt Activity Logs](https://docs.velt.dev/) | Immutable, real-time trail of every human & AI action |
@@ -92,7 +92,7 @@ cp .env.example .env.local
 
 | Service | Where to get it | Env variable |
 |---------|----------------|--------------|
-| **Nebius** | [Nebius](https://dub.sh/nebius/) | `NEBIUS_API_KEY` |
+| **Nebius** | [Nebius](https://dub.sh/nebius) | `NEBIUS_API_KEY` |
 | **n8n** | [n8n.io/download](https://n8n.io/download) or `npx n8n` | `N8N_WEBHOOK_URL`, `N8N_API_KEY` (optional), `N8N_BASE_URL` |
 | **Velt** | [console.velt.dev](https://console.velt.dev/) | `NEXT_PUBLIC_VELT_API_KEY` (UI), `VELT_API_KEY` (backend ingestion) |
 
@@ -180,7 +180,7 @@ Use the **Plan** button when you want a full workflow plan staged for execution.
 
 ## Models
 
-Uses **Nemotron Super** (configurable via `NEBIUS_MODEL`) via [Nebius Token Factory API](https://docs.tokenfactory.nebius.com/api-reference). The integration stays OpenAI-compatible (no new SDK required) and can be extended to Nebius fine-tuned/custom models for broader production use cases.
+Uses **Nemotron Super** (configurable via `NEBIUS_MODEL`) via [Nebius Token Factory API](https://dub.sh/nebius). The integration stays OpenAI-compatible (no new SDK required) and can be extended to Nebius fine-tuned/custom models for broader production use cases.
 
 ```typescript
 import OpenAI from "openai";
@@ -193,7 +193,7 @@ const client = new OpenAI({
 
 ## Provider Links
 
-- [Nebius Token Factory docs](https://docs.tokenfactory.nebius.com/)
+- [Nebius Token Factory docs](https://dub.sh/nebius)
 - [n8n docs](https://docs.n8n.io/)
 - [Velt docs](https://docs.velt.dev/)
 - [Tailscale Funnel docs](https://tailscale.com/kb/1312/funnel)

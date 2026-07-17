@@ -15,7 +15,7 @@ Because `gemini-embedding-2-preview` embeds **video clips and text queries into 
 
 - Python 3.10+
 - `ffmpeg` and `ffprobe` on PATH (`brew install ffmpeg` / `apt install ffmpeg`)
-- [Nebius Token Factory](https://tokenfactory.nebius.com/) API key
+- [Nebius Token Factory](https://dub.sh/nebius) API key
 - [Google AI Studio](https://aistudio.google.com/apikey) API key for Gemini
 - Weaviate running locally (docker) or a Weaviate Cloud cluster
 

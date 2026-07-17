@@ -16,7 +16,7 @@ For an event in `data/event.json` and a list of RSVPs in `data/attendees.json`:
 - **Python 3.10+**
 - **[LiveKit Agents](https://docs.livekit.io/agents/)** — voice pipeline orchestration
 - **[LiveKit Telephony / SIP](https://docs.livekit.io/telephony/)** — outbound PSTN calls via a SIP trunk
-- **[Nebius Token Factory](https://api.tokenfactory.nebius.com/)** — LLM (`meta-llama/Meta-Llama-3.1-70B-Instruct`)
+- **[Nebius Token Factory](https://dub.sh/nebius)** — LLM (`meta-llama/Meta-Llama-3.1-70B-Instruct`)
 - **[Deepgram](https://deepgram.com)** — streaming STT (`nova-3`)
 - **[Cartesia](https://cartesia.ai)** — streaming TTS (`sonic-3`)
 - **Silero** — VAD
@@ -119,4 +119,4 @@ Voicemail / long silence → leave a brief message and `end_call`.
 - [Outbound calls guide](https://docs.livekit.io/telephony/making-calls/outbound-calls)
 - [LiveKit Agents — sessions](https://docs.livekit.io/agents/logic/sessions)
 - [Function tools](https://docs.livekit.io/agents/logic/tools/definition)
-- [Nebius Token Factory](https://api.tokenfactory.nebius.com/)
+- [Nebius Token Factory](https://dub.sh/nebius)

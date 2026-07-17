@@ -19,7 +19,7 @@ The terminal is the primary experience, like the harness in [ai-engineering-hub 
 
 - **[LangGraph](https://langchain-ai.github.io/langgraph/)** — StateGraph orchestration, `interrupt()` human-in-the-loop, checkpointing
 - **[LangChain](https://python.langchain.com/)** + **[langchain-nebius](https://pypi.org/project/langchain-nebius/)** — tool-calling agents on `ChatNebius`
-- **[Nebius Token Factory](https://tokenfactory.nebius.com/)** — LLM inference (default: `Qwen/Qwen3-30B-A3B`)
+- **[Nebius Token Factory](https://dub.sh/nebius)** — LLM inference (default: `Qwen/Qwen3-30B-A3B`)
 - **[E2B](https://e2b.dev)** — isolated sandbox for running the test suite
 - **[Rich](https://rich.readthedocs.io/)** — terminal diff, status, and review presentation
 - **[Streamlit](https://streamlit.io/)** — diff review UI
@@ -63,7 +63,7 @@ START ──▶ planner ──▶ explorer ──▶ coder ──▶ diff_review
 ### Prerequisites
 
 - Python 3.10+
-- A [Nebius Token Factory](https://tokenfactory.nebius.com/) API key
+- A [Nebius Token Factory](https://dub.sh/nebius) API key
 - An [E2B](https://e2b.dev) API key
 
 ### Environment Variables
@@ -169,4 +169,4 @@ This project is part of the [awesome-llm-apps](https://github.com/Arindam200/awe
 ## 🙏 Acknowledgments
 
 - Inspired by [Add Coding Agent Harness, PR #252](https://github.com/patchy631/ai-engineering-hub/pull/252) — rebuilt with LangGraph, Nebius, and a per-file approval gate before disk writes.
-- [Nebius Token Factory](https://tokenfactory.nebius.com/) for inference and [E2B](https://e2b.dev) for sandboxing.
+- [Nebius Token Factory](https://dub.sh/nebius) for inference and [E2B](https://e2b.dev) for sandboxing.

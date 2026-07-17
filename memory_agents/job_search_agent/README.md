@@ -19,7 +19,7 @@ An AI-powered job search agent that uses ExaAI for intelligent web search and Me
 - Python 3.11 or higher
 - [uv](https://github.com/astral-sh/uv) package manager (fast Python package installer)
 - ExaAI API key ([Get one here](https://exa.ai/))
-- Nebius API key ([Get one here](https://nebius.ai/))
+- Nebius API key ([Get one here](https://dub.sh/nebius))
 
 ## Installation
 

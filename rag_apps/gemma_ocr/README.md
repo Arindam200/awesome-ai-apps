@@ -18,8 +18,8 @@ A fast OCR-based document and image processing app powered by Nebius Token Facto
 ## Prerequisites
 
 * Python 3.10+
-* [Nebius Token Factory](https://tokenfactory.nebius.com/) Account
-* [Nebius API Key](https://tokenfactory.nebius.com/)
+* [Nebius Token Factory](https://dub.sh/nebius) Account
+* [Nebius API Key](https://dub.sh/nebius)
 * `uv` installed (for dependency management):
   Install it globally:
 

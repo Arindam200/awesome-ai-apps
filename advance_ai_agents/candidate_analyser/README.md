@@ -8,7 +8,7 @@
   <a href="https://streamlit.io" target="_blank">
     <img src="https://img.shields.io/badge/Built%20With-Streamlit-%23FF4B4B?style=for-the-badge" alt="Streamlit">
   </a>
-  <a href="https://tokenfactory.nebius.com/" target="_blank">
+  <a href="https://dub.sh/nebius" target="_blank">
   <img src="https://img.shields.io/badge/Built%20With-Nebius%20Token%20Factory-%230073e6?style=for-the-badge" alt="Nebius Token Factory">
 </a>
   <a href="https://agno.com" target="_blank">
@@ -79,7 +79,7 @@ uv sync
 
 You'll need:
 
-- 🔑 **Nebius API Key** → [Get from Nebius Token Factory](https://tokenfactory.nebius.com/)
+- 🔑 **Nebius API Key** → [Get from Nebius Token Factory](https://dub.sh/nebius)
 - 🔑 **GitHub API Key** → [Generate Here](https://github.com/settings/tokens)
 - 🔑 **Exa API Key** → [Get from Exa](https://exa.ai)
 
@@ -146,7 +146,7 @@ Agent(
 ## 🔗 Links
 
 - [Agno Documentation](https://docs.agno.ai)
-- [Nebius](Nebius.com)
+- [Nebius](https://dub.sh/nebius)
 - [Exa Search](https://exa.ai)
 - [GitHubTools Docs](https://github.com/features/copilot)
 

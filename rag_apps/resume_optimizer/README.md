@@ -23,8 +23,8 @@ A powerful AI-powered resume optimization tool that helps job seekers enhance th
 
 - Python 3.10 or higher
 - PDF resume file
-- Create an account at [Nebius Token Factory](https://tokenfactory.nebius.com/)
-- Get Nebius [API Keys](https://tokenfactory.nebius.com/)
+- Create an account at [Nebius Token Factory](https://dub.sh/nebius)
+- Get Nebius [API Keys](https://dub.sh/nebius)
 
 ## Installation
 

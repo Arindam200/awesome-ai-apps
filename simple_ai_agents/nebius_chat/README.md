@@ -69,7 +69,7 @@ A powerful Streamlit-based chat interface for interacting with Nebius Token Fact
 
 ### API Key Setup
 
-1. Sign up at [Nebius Token Factory](https://console.nebius.ai/ai/llm)
+1. Sign up at [Nebius Token Factory](https://dub.sh/nebius)
 2. Generate your API key from the console
 3. Add the key to your `.env` file or enter it in the sidebar
 
@@ -209,7 +209,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- [Nebius Token Factory](https://console.nebius.ai/) for providing the API
+- [Nebius Token Factory](https://dub.sh/nebius) for providing the API
 - [Streamlit](https://streamlit.io/) for the web framework
 - [DeepSeek](https://www.deepseek.com/) and [Qwen](https://qwen.ai/) for the language models
 
@@ -218,7 +218,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 For support and questions:
 
 - Create an issue in the repository
-- Check the [Nebius Token Factory documentation](https://docs.tokenfactory.nebius.com/)
+- Check the [Nebius Token Factory documentation](https://dub.sh/nebius)
 - Review the application logs for debugging
 
 ## 🔄 Changelog

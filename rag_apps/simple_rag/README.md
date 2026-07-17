@@ -15,7 +15,7 @@ This is the smallest possible RAG example in this repo: point it at a folder of 
 
 - **Python**: Core programming language
 - **[LlamaIndex](https://www.llamaindex.ai/)** (`llama-index-llms-nebius`, `llama-index-embeddings-nebius`): For document indexing and retrieval
-- **[Nebius Token Factory](https://tokenfactory.nebius.com/)**: LLM (`deepseek-ai/DeepSeek-V3` by default) and embedding model (`BAAI/bge-en-icl` by default) provider
+- **[Nebius Token Factory](https://dub.sh/nebius)**: LLM (`deepseek-ai/DeepSeek-V3` by default) and embedding model (`BAAI/bge-en-icl` by default) provider
 
 ## Workflow
 
@@ -28,7 +28,7 @@ This is the smallest possible RAG example in this repo: point it at a folder of 
 ### Prerequisites
 
 - Python 3.9+
-- A [Nebius Token Factory](https://tokenfactory.nebius.com/) API key
+- A [Nebius Token Factory](https://dub.sh/nebius) API key
 
 ### Environment Variables
 

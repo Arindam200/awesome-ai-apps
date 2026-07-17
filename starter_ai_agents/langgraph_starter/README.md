@@ -12,7 +12,7 @@ A minimal starter for [LangGraph](https://langchain-ai.github.io/langgraph/) —
 ## Prerequisites
 
 - Python 3.10+
-- Nebius API key — [Nebius Token Factory](https://studio.nebius.ai/)
+- Nebius API key — [Nebius Token Factory](https://dub.sh/nebius)
 
 ## Installation
 
@@ -57,4 +57,4 @@ To move beyond the prebuilt agent, define your own `StateGraph` with explicit `n
 ## Acknowledgments
 
 - [LangGraph](https://github.com/langchain-ai/langgraph)
-- [Nebius Token Factory](https://studio.nebius.ai/)
+- [Nebius Token Factory](https://dub.sh/nebius)

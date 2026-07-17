@@ -252,6 +252,6 @@ This project follows the license of the parent repository and the upstream WFGY 
 
 ## 🙏 Acknowledgments
 
-* [Nebius AI](https://nebius.com/) for the OpenAI compatible infrastructure.
+* [Nebius AI](https://dub.sh/nebius) for the OpenAI compatible infrastructure.
 * [WFGY Project](https://github.com/onestardao/WFGY) for the Problem Map, TXTOS, and the semantic firewall idea.
 * The awesome-llm-apps maintainers for curating a high quality gallery of practical LLM and RAG applications.

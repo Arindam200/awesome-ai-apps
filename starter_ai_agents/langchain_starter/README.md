@@ -12,7 +12,7 @@ A minimal starter for [LangChain](https://python.langchain.com/) — the most wi
 ## Prerequisites
 
 - Python 3.10+
-- Nebius API key — [Nebius Token Factory](https://studio.nebius.ai/)
+- Nebius API key — [Nebius Token Factory](https://dub.sh/nebius)
 
 ## Installation
 
@@ -53,4 +53,4 @@ python main.py
 ## Acknowledgments
 
 - [LangChain](https://github.com/langchain-ai/langchain)
-- [Nebius Token Factory](https://studio.nebius.ai/)
+- [Nebius Token Factory](https://dub.sh/nebius)

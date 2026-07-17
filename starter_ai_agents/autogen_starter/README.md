@@ -12,7 +12,7 @@ A minimal starter for [Microsoft AutoGen](https://microsoft.github.io/autogen/) 
 ## Prerequisites
 
 - Python 3.10+
-- Nebius API key — [Nebius Token Factory](https://studio.nebius.ai/)
+- Nebius API key — [Nebius Token Factory](https://dub.sh/nebius)
 
 ## Installation
 
@@ -53,4 +53,4 @@ python main.py
 ## Acknowledgments
 
 - [AutoGen](https://github.com/microsoft/autogen)
-- [Nebius Token Factory](https://studio.nebius.ai/)
+- [Nebius Token Factory](https://dub.sh/nebius)

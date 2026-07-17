@@ -15,7 +15,7 @@ Unlike [`legal-tech-fine-tuning-nebius-cloud`](../legal-tech-fine-tuning-nebius-
 ## 🛠️ Tech Stack
 
 - **Python**: Core programming language
-- **[Nebius Token Factory](https://tokenfactory.nebius.com/)**: Hosted fine-tuning, checkpoints, and private model deployment
+- **[Nebius Token Factory](https://dub.sh/nebius)**: Hosted fine-tuning, checkpoints, and private model deployment
 - **OpenAI Python SDK**: Used against Token Factory's OpenAI-compatible API for file uploads, fine-tuning jobs, and chat completions
 - **`requests`**: For the custom-model deployment endpoints not covered by the OpenAI SDK
 
@@ -44,7 +44,7 @@ State from each stage is saved to `artifacts/legal_finetune_state.json`, so `dep
 ### Prerequisites
 
 - Python 3.10+
-- A [Nebius Token Factory](https://tokenfactory.nebius.com/) API key with fine-tuning access
+- A [Nebius Token Factory](https://dub.sh/nebius) API key with fine-tuning access
 
 ### Environment Variables
 

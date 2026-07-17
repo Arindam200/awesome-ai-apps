@@ -71,7 +71,7 @@ adk web
 
 ## Required API Keys
 
-- [Nebius AI](https://dub.sh/AIStudio) - For LLM inference
+- [Nebius AI](https://dub.sh/nebius) - For LLM inference
 - [Exa](https://exa.ai/) - For AI news search
 - [Tavily](https://tavily.com/) - For specialized search
 - [Firecrawl](https://firecrawl.dev/) - For web scraping

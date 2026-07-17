@@ -15,7 +15,7 @@ A powerful AI agent built with Agno that analyzes and provides insights about Ha
 ## Prerequisites
 
 - Python 3.10 or higher
-- Nebius API key (get it from [Nebius Token Factory](https://studio.nebius.ai/))
+- Nebius API key (get it from [Nebius Token Factory](https://dub.sh/nebius))
 
 ## Installation
 
@@ -75,4 +75,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Acknowledgments
 
 - [Agno Framework](https://www.agno.com/)
-- [Nebius Token Factory](https://studio.nebius.ai/)
+- [Nebius Token Factory](https://dub.sh/nebius)

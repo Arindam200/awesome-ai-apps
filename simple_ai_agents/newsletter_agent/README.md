@@ -25,7 +25,7 @@ A powerful AI-powered newsletter generator that researches, analyzes, and create
 ## Prerequisites
 
 - Python 3.10 or higher
-- [Nebius AI API key](https://tokenfactory.nebius.com/)
+- [Nebius AI API key](https://dub.sh/nebius)
 - [Firecrawl API key](https://www.firecrawl.dev/app/api-keys)
 
 ## Project Structure
@@ -126,7 +126,7 @@ The generated newsletters follow this structure:
 ## API Keys
 
 - **Firecrawl API Key**: Get your API key from [https://firecrawl.dev](https://www.firecrawl.dev/app/api-keys)
-- **Nebius API Key**: Your Nebius AI API key from [https://tokenfactory.nebius.com](https://tokenfactory.nebius.com/)
+- **Nebius API Key**: Your Nebius AI API key from [https://tokenfactory.nebius.com](https://dub.sh/nebius)
 
 ## Contributing
 
