@@ -340,7 +340,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Web Intelligence Agent](advance_ai_agents/web_intelligence_agent) - Mastra multi-agent pipeline that turns Olostep web evidence into Nemotron-verified case studies with SQLite persistence and Velt audit trail
 - [Temporal Agents](advance_ai_agents/temporal_agents/) - Examples of Temporal based AI Agents
 - [Coding Agent Harness](advance_ai_agents/coding_agent_harness) - Deep LangGraph coding crew with planning, repository exploration, human-gated file edits, and E2B-sandboxed test loops
-- [Coding Model Arena](advance_ai_agents/coding_model_arena) - Nebius benchmark for two coding models with seven curated challenges, weighted local hidden tests, partial-credit scoring, and an independent judge
+- [Coding Model Arena](advance_ai_agents/coding_model_arena) - [Nebius Token Factory](https://dub.sh/nebius) benchmark for two coding models with seven curated challenges, weighted local hidden tests, partial-credit scoring, and an independent judge
 
 ### 🧬 Fine-Tuning
 

@@ -87,10 +87,10 @@ JUDGE_MODELS: list[ModelSpec] = [
 DEFAULT_JUDGE = "Qwen/Qwen3-235B-A22B-Instruct-2507"
 
 DEFAULT_SELECTION = [
-    "moonshotai/Kimi-K2.7-Code",
-    "zai-org/GLM-5.2",
     "MiniMaxAI/MiniMax-M3",
-    "openai/gpt-oss-120b",
+    "zai-org/GLM-5.2",
+    "Qwen/Qwen3.5-397B-A17B",
+    "deepseek-ai/DeepSeek-V4-Pro",
 ]
 
 

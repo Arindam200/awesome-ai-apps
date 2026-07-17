@@ -1,6 +1,7 @@
+![demo](./assets/demo.png)
 # Coding Model Arena
 
-A professional Streamlit demo for comparing two coding models served by [Nebius Token Factory](https://tokenfactory.nebius.com/). Both models receive the same challenge, generate Python solutions in parallel, run against weighted hidden tests, and receive an independent model review.
+A professional Streamlit demo for comparing two coding models served by [Nebius Token Factory](https://dub.sh/nebius). Both models receive the same challenge, generate Python solutions in parallel, run against weighted hidden tests, and receive an independent model review.
 
 ## How it works
 
@@ -12,6 +13,12 @@ A professional Streamlit demo for comparing two coding models served by [Nebius 
 6. Calculate the final score from 60% hidden-test performance and 40% judge review.
 
 If a model spends its response budget on reasoning and returns no code, the arena retries once with a larger completion budget. An incomplete response is reported as a generation failure and is never presented as a valid zero-point benchmark.
+Hybrid GLM and Qwen3.5 contestants run in their supported non-thinking mode so
+the completion budget is reserved for the code answer. Every live API request
+also has a hard timeout, so a slow or overloaded model becomes an explicit
+failure instead of leaving the benchmark running indefinitely.
+MiniMax M3 receives a larger completion budget for its native reasoning before
+the code answer.
 
 ## Challenges
 
@@ -38,6 +45,7 @@ The expert challenges use multiple weighted behavioral cases so partially correc
 - Independent batched judge review
 - Generated code and execution diagnostics for each contestant
 - Explicit generation, execution, and judge failure states
+- Per-model progress updates and bounded live API calls
 
 ## Project structure
 
@@ -58,7 +66,7 @@ coding_model_arena/
 ## Prerequisites
 
 - Python 3.10 or newer
-- A [Nebius Token Factory](https://tokenfactory.nebius.com/) API key
+- A [Nebius Token Factory](https://dub.sh/nebius) API key
 
 ## Installation
 

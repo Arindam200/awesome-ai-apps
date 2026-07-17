@@ -12,7 +12,7 @@ sys.path.insert(0, str(PROJECT_DIR))
 
 from execution import run_candidate, run_contree, run_local  # noqa: E402
 from judge import judge_submissions  # noqa: E402
-from challenges import by_id as challenge_by_id  # noqa: E402
+from challenges import HiddenTest, by_id as challenge_by_id  # noqa: E402
 from runner import generate_solution  # noqa: E402
 
 
@@ -239,6 +239,28 @@ class ExecutionRegressionTests(unittest.TestCase):
         self.assertTrue(config_result.passed, config_result.stdout)
         self.assertEqual(config_result.test_score, 100)
 
+    def test_timeout_preserves_completed_hidden_case_credit(self):
+        code = """\
+def two_sum(nums, target):
+    if target == 99:
+        while True:
+            pass
+    return [0, 1]
+"""
+        tests = (
+            HiddenTest("completed first", "assert solution([1, 2], 3) == [0, 1]", weight=2),
+            HiddenTest("hangs second", "solution([1, 2], 99)", weight=3),
+        )
+
+        with patch("execution.TIMEOUT_SECONDS", 0.2):
+            result = run_local(code, tests)
+
+        self.assertFalse(result.passed)
+        self.assertEqual(result.passed_tests, 1)
+        self.assertEqual(result.earned_points, 2)
+        self.assertEqual(result.total_points, 5)
+        self.assertIn("TIMEOUT", result.stdout)
+
 
 class JudgeRegressionTests(unittest.TestCase):
     def test_empty_judge_response_has_actionable_error(self):
@@ -307,6 +329,64 @@ class GenerationRegressionTests(unittest.TestCase):
         self.assertIn("did not return a complete code answer", result.error)
         self.assertEqual(result.finish_reason, "length")
         self.assertEqual(client.chat.completions.create.call_count, 2)
+
+    def test_stopped_response_without_required_entrypoint_is_retried(self):
+        client = MagicMock()
+        client.chat.completions.create.side_effect = [
+            self._response("```python\nvalue = 42\n```", "stop"),
+            self._response(f"```python\n{GOOD_TWO_SUM}```", "stop"),
+        ]
+
+        result = generate_solution(client, "test/model", "def two_sum(nums, target): ...")
+
+        self.assertFalse(result.error)
+        self.assertIn("def two_sum", result.code)
+        self.assertEqual(result.attempts, 2)
+        self.assertEqual(client.chat.completions.create.call_count, 2)
+
+    def test_generation_requests_have_a_hard_timeout(self):
+        client = MagicMock()
+        client.chat.completions.create.return_value = self._response(
+            f"```python\n{GOOD_TWO_SUM}```", "stop"
+        )
+
+        generate_solution(client, "test/model", "def two_sum(nums, target): ...")
+
+        self.assertEqual(
+            client.chat.completions.create.call_args.kwargs["timeout"],
+            90,
+        )
+
+    def test_hybrid_models_disable_thinking_to_preserve_answer_budget(self):
+        client = MagicMock()
+        client.chat.completions.create.return_value = self._response(
+            f"```python\n{GOOD_TWO_SUM}```", "stop"
+        )
+
+        generate_solution(client, "zai-org/GLM-5.2", "def two_sum(nums, target): ...")
+
+        self.assertEqual(
+            client.chat.completions.create.call_args.kwargs["extra_body"],
+            {"chat_template_kwargs": {"enable_thinking": False}},
+        )
+
+    def test_minimax_receives_enough_budget_for_native_reasoning_and_code(self):
+        client = MagicMock()
+        client.chat.completions.create.return_value = self._response(
+            f"```python\n{GOOD_TWO_SUM}```", "stop"
+        )
+
+        result = generate_solution(
+            client,
+            "MiniMaxAI/MiniMax-M3",
+            "def two_sum(nums, target): ...",
+        )
+
+        self.assertFalse(result.error)
+        self.assertEqual(
+            client.chat.completions.create.call_args.kwargs["max_completion_tokens"],
+            24000,
+        )
 
 
 if __name__ == "__main__":

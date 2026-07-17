@@ -7,7 +7,7 @@ efficiency.
 
 import base64
 import os
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 import streamlit as st
@@ -348,6 +348,7 @@ with st.sidebar:
         index=contestant_ids.index(DEFAULT_SELECTION[0]),
         format_func=lambda model_id: contestant_labels[model_id],
         help="The first model in this head-to-head benchmark.",
+        key="model_a_selector_v3",
     )
     model_b_options = [model_id for model_id in contestant_ids if model_id != model_a]
     preferred_model_b = DEFAULT_SELECTION[1] if DEFAULT_SELECTION[1] in model_b_options else model_b_options[0]
@@ -357,6 +358,7 @@ with st.sidebar:
         index=model_b_options.index(preferred_model_b),
         format_func=lambda model_id: contestant_labels[model_id],
         help="The second model. A model cannot compete against itself.",
+        key="model_b_selector_v3",
     )
     selected_ids = [model_a, model_b]
     run_clicked = st.button(
@@ -393,17 +395,28 @@ with st.container():
     st.markdown(f'<div class="challenge-prompt">{challenge.prompt}</div>', unsafe_allow_html=True)
 
 
-def run_arena(challenge: Challenge, model_ids: list[str], judge_model: str, client: OpenAI):
+def run_arena(
+    challenge: Challenge,
+    model_ids: list[str],
+    judge_model: str,
+    client: OpenAI,
+    progress=None,
+):
     """Generate, execute, and judge submissions for one arena run."""
+    notify = progress or (lambda _message: None)
     generations: dict[str, GenerationResult] = {}
     with ThreadPoolExecutor(max_workers=max(len(model_ids), 1)) as pool:
         futures = {
             pool.submit(generate_solution, client, model_id, challenge.prompt): model_id
             for model_id in model_ids
         }
-        for future in futures:
+        for future in as_completed(futures):
+            model_id = futures[future]
             generation = future.result()
-            generations[generation.model_id] = generation
+            generations[model_id] = generation
+            label = model_by_id(model_id).label
+            state = "finished" if generation.code else "failed"
+            notify(f"{label} generation {state} in {format_duration(generation.latency_seconds)}.")
 
     executions: dict[str, ExecutionResult] = {}
     with ThreadPoolExecutor(max_workers=max(len(model_ids), 1)) as pool:
@@ -414,9 +427,14 @@ def run_arena(challenge: Challenge, model_ids: list[str], judge_model: str, clie
             for model_id in model_ids
             if generations[model_id].code
         }
-        for future in futures:
+        for future in as_completed(futures):
             model_id = futures[future]
             executions[model_id] = future.result()
+            execution = executions[model_id]
+            notify(
+                f"{model_by_id(model_id).label} passed "
+                f"{execution.passed_tests}/{execution.total_tests} hidden cases."
+            )
 
     submissions = {
         model_by_id(model_id).label: {
@@ -461,13 +479,17 @@ def run_arena(challenge: Challenge, model_ids: list[str], judge_model: str, clie
             error="Judging was skipped because the hidden-test backend did not run."
         )
     else:
+        notify("Hidden tests finished. Starting independent judging.")
         verdict = judge_submissions(client, judge_model, challenge.prompt, submissions)
     return generations, executions, verdict
 
 
 def unavailable_models(client: OpenAI, model_ids: list[str]) -> list[str]:
     """Return requested model IDs missing from the authenticated live catalog."""
-    available_ids = {model.id for model in client.models.list().data}
+    available_ids = {
+        model.id
+        for model in client.with_options(timeout=20, max_retries=0).models.list().data
+    }
     return [model_id for model_id in model_ids if model_id not in available_ids]
 
 
@@ -482,7 +504,12 @@ if run_clicked:
     if not api_key:
         st.error("Add a Nebius Token Factory API key in the sidebar before starting the benchmark.")
     else:
-        client = OpenAI(api_key=api_key, base_url=NEBIUS_BASE_URL)
+        client = OpenAI(
+            api_key=api_key,
+            base_url=NEBIUS_BASE_URL,
+            timeout=90,
+            max_retries=0,
+        )
         run_status = st.status("Running the model benchmark", expanded=True)
         run_status.write("Validating the selected models against the live Token Factory catalog.")
         try:
@@ -494,7 +521,11 @@ if run_clicked:
                 )
             run_status.write(f"Sending the brief to {len(selected_ids)} models in parallel.")
             generations, executions, verdict = run_arena(
-                challenge, selected_ids, judge_model, client
+                challenge,
+                selected_ids,
+                judge_model,
+                client,
+                progress=run_status.write,
             )
         except Exception as exc:  # Keep API/runtime failures inside the app UI.
             run_status.update(label="Benchmark stopped", state="error", expanded=True)

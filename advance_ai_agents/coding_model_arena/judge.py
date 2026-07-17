@@ -29,6 +29,7 @@ JUDGE_SYSTEM_PROMPT = (
 )
 
 JSON_BLOCK_RE = re.compile(r"\{.*\}", re.DOTALL)
+JUDGE_TIMEOUT_SECONDS = 60
 
 
 @dataclass
@@ -83,6 +84,7 @@ def judge_submissions(
             temperature=0.0,
             max_tokens=2000,
             response_format={"type": "json_object"},
+            timeout=JUDGE_TIMEOUT_SECONDS,
         )
         raw = response.choices[0].message.content or ""
         if not raw.strip():

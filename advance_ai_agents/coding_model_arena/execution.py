@@ -89,8 +89,8 @@ for name, test_code, weight in test_cases:
         results.append({{'name': name, 'passed': False, 'weight': weight, 'error': error}})
     else:
         results.append({{'name': name, 'passed': True, 'weight': weight, 'error': ''}})
+    print('{RESULTS_MARKER}' + json.dumps(results), flush=True)
 
-print('{RESULTS_MARKER}' + json.dumps(results))
 """
 
 
@@ -110,6 +110,65 @@ def run_local(
     total_points = sum(test.weight for test in tests)
     start = time.perf_counter()
     path = None
+
+    def build_result(
+        stdout: str,
+        stderr: str,
+        elapsed: float,
+        *,
+        timed_out: bool = False,
+    ) -> ExecutionResult:
+        result_line = next(
+            (
+                line
+                for line in reversed(stdout.splitlines())
+                if line.startswith(RESULTS_MARKER)
+            ),
+            "",
+        )
+        try:
+            case_results = (
+                json.loads(result_line.removeprefix(RESULTS_MARKER))
+                if result_line
+                else []
+            )
+        except json.JSONDecodeError:
+            case_results = []
+        passed_tests = sum(1 for result in case_results if result["passed"])
+        earned_points = sum(
+            result["weight"] for result in case_results if result["passed"]
+        )
+        passed = (
+            not timed_out
+            and bool(case_results)
+            and len(case_results) == len(tests)
+            and passed_tests == len(tests)
+        )
+        report = [
+            f"{'PASS' if result['passed'] else 'FAIL'}: {result['name']}"
+            + (f": {result['error']}" if result["error"] else "")
+            for result in case_results
+        ]
+        if timed_out:
+            report.append(
+                f"TIMEOUT: candidate exceeded {TIMEOUT_SECONDS}s after "
+                f"{len(case_results)}/{len(tests)} hidden cases"
+            )
+        elif passed:
+            report.append(SUCCESS_MARKER)
+        return ExecutionResult(
+            passed=passed,
+            stdout="\n".join(report),
+            stderr=stderr.strip(),
+            elapsed_seconds=elapsed,
+            backend="local-subprocess",
+            failure_kind=None if passed else "candidate",
+            passed_tests=passed_tests,
+            total_tests=len(tests),
+            earned_points=earned_points,
+            total_points=total_points,
+        )
+
     try:
         with tempfile.NamedTemporaryFile(
             mode="w", suffix=".py", delete=False
@@ -123,45 +182,24 @@ def run_local(
             timeout=TIMEOUT_SECONDS,
         )
         elapsed = time.perf_counter() - start
-        result_line = next(
-            (line for line in reversed(proc.stdout.splitlines()) if line.startswith(RESULTS_MARKER)),
-            "",
+        return build_result(
+            proc.stdout,
+            proc.stderr,
+            elapsed,
         )
-        case_results = json.loads(result_line.removeprefix(RESULTS_MARKER)) if result_line else []
-        passed_tests = sum(1 for result in case_results if result["passed"])
-        earned_points = sum(
-            result["weight"] for result in case_results if result["passed"]
-        )
-        passed = bool(case_results) and passed_tests == len(tests)
-        report = [
-            f"{'PASS' if result['passed'] else 'FAIL'}: {result['name']}"
-            + (f": {result['error']}" if result["error"] else "")
-            for result in case_results
-        ]
-        if passed:
-            report.append(SUCCESS_MARKER)
-        return ExecutionResult(
-            passed=passed,
-            stdout="\n".join(report),
-            stderr=proc.stderr.strip(),
-            elapsed_seconds=elapsed,
-            backend="local-subprocess",
-            failure_kind=None if passed else "candidate",
-            passed_tests=passed_tests,
-            total_tests=len(tests),
-            earned_points=earned_points,
-            total_points=total_points,
-        )
-    except subprocess.TimeoutExpired:
-        return ExecutionResult(
-            passed=False,
-            stdout="",
-            stderr=f"Timed out after {TIMEOUT_SECONDS}s",
-            elapsed_seconds=TIMEOUT_SECONDS,
-            backend="local-subprocess",
-            failure_kind="candidate",
-            total_tests=len(tests),
-            total_points=total_points,
+    except subprocess.TimeoutExpired as exc:
+        elapsed = time.perf_counter() - start
+        stdout = exc.stdout or ""
+        stderr = exc.stderr or ""
+        if isinstance(stdout, bytes):
+            stdout = stdout.decode(errors="replace")
+        if isinstance(stderr, bytes):
+            stderr = stderr.decode(errors="replace")
+        return build_result(
+            stdout,
+            stderr,
+            elapsed,
+            timed_out=True,
         )
     finally:
         if path:
