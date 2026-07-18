@@ -208,7 +208,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🪶 Simple Agents
 
-**Straightforward, practical use-cases for everyday AI applications.** _18 projects_
+**Straightforward, practical use-cases for everyday AI applications.** _19 projects_
 
 - [Agno Agent Examples](simple_ai_agents/agno_ai_examples): Simple to multi-agent examples with web search and a knowledge base
 - [Agno Agent UI](simple_ai_agents/agno_ui_agent): Interactive UI for web and finance agents
@@ -223,6 +223,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Natural-Language Database Assistant](simple_ai_agents/talk_to_db): Natural language database queries with GibsonAI and LangChain
 - [Natural-Language SQL Agent (LangChain)](simple_ai_agents/langchain_data_agent_poc): Natural-language-to-SQL data agent with LangGraph, Nebius, read-only SQL safety, and Streamlit charts
 - [Nebius Chat](simple_ai_agents/nebius_chat): Chat interface for Nebius Token Factory
+- [Nebius Social Campaign Planner](simple_ai_agents/nebius_social_campaign_planner): Streamlit app that turns a launch brief into social posts, content pillars, and a 7-day calendar with Nebius
 - [Newsletter Generator](simple_ai_agents/newsletter_agent): AI-powered newsletter builder with Firecrawl integration
 - [Stock Market Finance Agent](simple_ai_agents/finance_agent): Real-time stock and market data tracking agent
 - [Stock Portfolio Analyst](simple_ai_agents/stock_portfolio_analyst): Live portfolio valuation, concentration analysis, risk flags, and rebalancing ideas with Agno
