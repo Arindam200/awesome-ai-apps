@@ -8,7 +8,7 @@
 
 </div>
 
-This repository is a comprehensive collection of **126 practical projects, tutorials, and recipes** for building powerful LLM-powered applications, including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
+This repository is a comprehensive collection of **127 practical projects, tutorials, and recipes** for building powerful LLM-powered applications, including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
 
 ## 📋 Table of Contents
 
@@ -281,13 +281,14 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 📚 RAG Applications
 
-**Retrieval-augmented generation examples for document understanding and knowledge bases.** _16 projects_
+**Retrieval-augmented generation examples for document understanding and knowledge bases.** _17 projects_
 
 - [Agentic RAG with Agno and GPT-5](rag_apps/agentic_rag): Agentic RAG implementation with Agno and GPT-5
 - [Codebase Q&A RAG](rag_apps/chat_with_code): Conversational code explorer and documentation assistant
 - [Enterprise Contextual RAG](rag_apps/contextual_ai_rag): Enterprise-level RAG with managed datastores and quality evaluation
 - [Gemma 3 Document OCR](rag_apps/gemma_ocr/): OCR-based document and image processor using the Gemma 3 model
 - [GraphRAG with Neo4j](rag_apps/graphrag_neo4j): Knowledge graph extraction and Cypher-backed retrieval with Neo4j and Nebius
+- [LiteParse Invoice & Receipt Auditor](rag_apps/liteparse_invoice_auditor): Local OCR with LiteParse bounding boxes, Nebius LLM audit for math errors and duplicate charges, evidence pinning on scans, and an LLM batch summary
 - [LlamaIndex RAG Starter](rag_apps/llamaIndex_starter): LlamaIndex and Nebius RAG starter template
 - [LLM and RAG Debugger (WFGY 16-Problem Map)](rag_apps/wfgy_llm_debugger): 16-mode map-based debugger for LLM and RAG bugs
 - [Multi-PDF RAG Analyzer](rag_apps/pdf_rag_analyser): Multi-PDF chat and analysis system

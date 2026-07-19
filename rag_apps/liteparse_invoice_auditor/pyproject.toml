@@ -1,0 +1,21 @@
+[project]
+name = "liteparse-invoice-auditor"
+version = "0.1.0"
+description = "AI invoice & receipt auditor — local OCR with LiteParse, audited by Nebius Token Factory, findings pinned to the scan"
+requires-python = ">=3.10"
+dependencies = [
+    "liteparse>=2.6.0",
+    "streamlit>=1.40.0",
+    "llama-index-llms-nebius>=0.3.0",
+    "python-dotenv>=1.0.0",
+    "pillow>=10.0.0",
+    "pandas>=2.0.0",
+    "watchdog>=4.0.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["app"]

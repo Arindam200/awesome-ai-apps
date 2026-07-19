@@ -1,0 +1,5 @@
+[theme]
+base = "dark"
+
+[browser]
+gatherUsageStats = false
