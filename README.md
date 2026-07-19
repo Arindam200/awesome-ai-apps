@@ -8,7 +8,7 @@
 
 </div>
 
-This repository is a comprehensive collection of **127 practical projects, tutorials, and recipes** for building powerful LLM-powered applications, including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
+This repository is a comprehensive collection of **128 practical projects, tutorials, and recipes** for building powerful LLM-powered applications, including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
 
 ## 📋 Table of Contents
 
@@ -281,9 +281,10 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 📚 RAG Applications
 
-**Retrieval-augmented generation examples for document understanding and knowledge bases.** _17 projects_
+**Retrieval-augmented generation examples for document understanding and knowledge bases.** _18 projects_
 
 - [Agentic RAG with Agno and GPT-5](rag_apps/agentic_rag): Agentic RAG implementation with Agno and GPT-5
+- [Agentic Typed RAG with LlamaIndex](rag_apps/agentic_typed_rag_llamaindex): Typed, citation-verified RAG with structured answers, local document parsing, and deterministic refusal for weak evidence
 - [Codebase Q&A RAG](rag_apps/chat_with_code): Conversational code explorer and documentation assistant
 - [Enterprise Contextual RAG](rag_apps/contextual_ai_rag): Enterprise-level RAG with managed datastores and quality evaluation
 - [Gemma 3 Document OCR](rag_apps/gemma_ocr/): OCR-based document and image processor using the Gemma 3 model

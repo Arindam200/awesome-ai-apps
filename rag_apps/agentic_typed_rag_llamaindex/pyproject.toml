@@ -1,0 +1,15 @@
+[project]
+name = "agentic-typed-rag-llamaindex"
+version = "0.1.0"
+description = "Typed, citation-verified agentic RAG with LlamaIndex and Nebius"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "liteparse>=2.6.0",
+    "llama-index-core>=0.14.23",
+    "llama-index-embeddings-nebius>=0.5.1",
+    "llama-index-llms-nebius>=0.3.0",
+    "pydantic>=2.13.4",
+    "python-dotenv>=1.2.2",
+    "streamlit>=1.59.2",
+]
