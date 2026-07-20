@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/arindam200-awesome-ai-apps-badge.png)](https://mseep.ai/app/arindam200-awesome-ai-apps)
+
 ![Banner](/assets/banner_new.png)
 
 <div align="center">
