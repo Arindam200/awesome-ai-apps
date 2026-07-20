@@ -133,19 +133,6 @@ This repository is a comprehensive collection of **128 practical projects, tutor
       </sub>
     </td>
     <td width="200" valign="middle" align="center">
-      <a href="https://dub.sh/serpApi" target="_blank" title="Visit SerpApi">
-        <img src="assets/serpapi.png" height="36" style="max-width:180px;" alt="SerpApi - Google Search API">
-      </a>
-      <br>
-      <sub>
-        <span style="white-space:nowrap;">Google Search API</span>
-        <br>
-        <a href="https://dub.sh/serpApi" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit SerpApi website">
-        </a>
-      </sub>
-    </td>
-    <td width="200" valign="middle" align="center">
       <a href="https://dub.sh/agentfield" target="_blank" title="Visit AgentField">
         <img src="assets/agentfield.png" height="40" style="max-width:180px;" alt="AgentField - Kubernetes for AI Agents">
       </a>
