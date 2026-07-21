@@ -340,6 +340,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🎓 Course Playlists
 
+- [Darkmoon](https://github.com/ASCIT31/Dark-Moon) - Open source autonomous pentest engine (GPL-3.0): AD + Kubernetes + web, evidence trail on every finding, runs on local or hosted models.
 - [**AWS Strands Course**](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lrc43ZtUXAwYu9DhnqxzRKZ): Complete 8-lesson course on building AI agents with AWS Strands SDK
 
 ### 🔧 Framework Tutorials
