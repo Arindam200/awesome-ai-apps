@@ -46,8 +46,8 @@ export const BUILTIN_PRESETS: ProviderPreset[] = [
     baseUrl: 'https://api.deepseek.com',
     protocol: 'openai',
     models: [
-      { name: 'deepseek-chat', maxTokens: 65536 },
-      { name: 'deepseek-reasoner', maxTokens: 65536 },
+      { name: 'deepseek-v4-flash', maxTokens: 65536 },
+      { name: 'deepseek-v4-pro', maxTokens: 65536 },
     ],
     embeddingModels: [],
   },

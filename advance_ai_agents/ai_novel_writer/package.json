@@ -6,6 +6,9 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.11.0",
+  "engines": {
+    "node": ">=20"
+  },
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",

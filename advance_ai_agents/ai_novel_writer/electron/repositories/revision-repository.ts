@@ -49,7 +49,7 @@ export class RevisionRepository {
     /** 创建修稿（事务：先入内容池再建元数据） */
     static create(params: {
         baseDraftId: number
-        revisionIndex: number
+        revisionIndex?: number
         revisionType: 'refine' | 'review-fix'
         userPrompt?: string
         reviewSourceId?: number
@@ -59,7 +59,13 @@ export class RevisionRepository {
         const db = getProjectDb()
         if (!db) throw new Error('[RevisionRepository] 数据库未连接')
 
+        // 事务内原子分配 revision_index，避免 getNextIndex + create 竞态
         const tx = db.transaction(() => {
+            const row = db.prepare(`
+        SELECT MAX(revision_index) as maxIdx FROM revisions WHERE base_draft_id = ?
+      `).get(params.baseDraftId) as { maxIdx: number | null }
+            const revisionIndex = (row.maxIdx ?? 0) + 1
+
             const contentId = ContentRepository.create(params.content)
             const result = db.prepare(`
         INSERT INTO revisions (
@@ -68,7 +74,7 @@ export class RevisionRepository {
         ) VALUES (?, ?, ?, ?, ?, ?, ?)
       `).run(
                 params.baseDraftId,
-                params.revisionIndex,
+                revisionIndex,
                 params.revisionType,
                 params.userPrompt ?? '',
                 params.reviewSourceId ?? null,

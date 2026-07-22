@@ -25,7 +25,10 @@ export interface FrontmatterResult {
  * @param content 完整文件内容
  */
 export function extractFrontmatter(content: string): FrontmatterResult {
-  const match = content.match(/^(---[\s\S]*?---\n\n?)/)
+  // 按行边界匹配 --- 分隔符，支持 LF/CRLF，以及仅 frontmatter（闭合 --- 后直接 EOF）
+  const match = content.match(
+    /^(---\r?\n[\s\S]*?\r?\n---(?:(?:\r?\n){1,2}|$))/
+  )
   if (!match) {
     return { frontmatter: '', body: content }
   }

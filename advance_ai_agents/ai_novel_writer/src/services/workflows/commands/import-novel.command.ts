@@ -217,7 +217,7 @@ export class InferGlobalSettingsCommand extends BaseWorkflowCommand<void> {
       await ipc.invoke('db:project-core-update', {
         premise: inferResult.architectureFiles.premise,
         charactersArch: inferResult.architectureFiles.characters,
-        worldbuilding: inferResult.architectureFiles.world,
+        worldbuilding: inferResult.architectureFiles.worldbuilding,
         synopsis: inferResult.architectureFiles.synopsis,
       })
       callbacks.log('四段式故事架构已持久化到数据库')

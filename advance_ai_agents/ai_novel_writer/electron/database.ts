@@ -124,7 +124,7 @@ function createTables(db: BetterSqlite3.Database) {
       cs_mental_state TEXT DEFAULT '',            -- 心理状态
       cs_key_items TEXT DEFAULT '',               -- 关键道具
       cs_recent_events TEXT DEFAULT '',           -- 最近事件
-      cs_updated_at_chapter INTEGER DEFAULT 0,    -- 状态更新于第几章
+      cs_updated_at_chapter INTEGER DEFAULT NULL, -- 状态更新于第几章；NULL = 无 currentState
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now'))
     );
@@ -154,6 +154,8 @@ function createTables(db: BetterSqlite3.Database) {
       FOREIGN KEY (content_id) REFERENCES contents(id) ON DELETE RESTRICT
     );
     CREATE INDEX IF NOT EXISTS idx_drafts_chapter ON drafts(chapter_number);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_drafts_chapter_version
+      ON drafts(chapter_number, version);
 
     -- ============================================================
     -- 6. revisions — 修稿（派生自 draft）
@@ -174,6 +176,8 @@ function createTables(db: BetterSqlite3.Database) {
       FOREIGN KEY (base_draft_id) REFERENCES drafts(id) ON DELETE CASCADE,
       FOREIGN KEY (content_id) REFERENCES contents(id) ON DELETE RESTRICT
     );
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_revisions_draft_index
+      ON revisions(base_draft_id, revision_index);
 
     -- ============================================================
     -- 7. reviews — 审稿（派生自 draft）
@@ -187,6 +191,8 @@ function createTables(db: BetterSqlite3.Database) {
       FOREIGN KEY (base_draft_id) REFERENCES drafts(id) ON DELETE CASCADE,
       FOREIGN KEY (content_id) REFERENCES contents(id) ON DELETE RESTRICT
     );
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_reviews_draft_index
+      ON reviews(base_draft_id, review_index);
 
     -- ============================================================
     -- 8. post_process_runs — 后处理跑批实例
@@ -250,4 +256,20 @@ function createTables(db: BetterSqlite3.Database) {
     -- 索引
     CREATE INDEX IF NOT EXISTS idx_llm_calls_time ON llm_calls(created_at);
   `)
+
+  // 兼容旧库：将「无 currentState」的哨兵 0 迁移为 NULL（chapter 0 合法状态不受影响）
+  try {
+    db.prepare(`
+      UPDATE characters SET cs_updated_at_chapter = NULL
+      WHERE cs_updated_at_chapter = 0
+        AND IFNULL(cs_location, '') = ''
+        AND IFNULL(cs_power_level, '') = ''
+        AND IFNULL(cs_physical_state, '') = ''
+        AND IFNULL(cs_mental_state, '') = ''
+        AND IFNULL(cs_key_items, '') = ''
+        AND IFNULL(cs_recent_events, '') = ''
+    `).run()
+  } catch {
+    // 旧库结构差异时忽略
+  }
 }

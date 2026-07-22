@@ -38,8 +38,8 @@ export default function GenerateConfigDialog({ isOpen, onClose, onGenerated }: P
   const [confirming, setConfirming] = useState(false)
 
   // 直接从 Store 读取规模参数 — 单一数据源，无需 local state 镜像
-  const totalChapters = currentProject?.novelConfig.totalChapters ?? 100
-  const wordsPerChapter = currentProject?.novelConfig.wordsPerChapter ?? 3000
+  const totalChapters = currentProject?.novelConfig?.totalChapters ?? 100
+  const wordsPerChapter = currentProject?.novelConfig?.wordsPerChapter ?? 3000
 
   /** 修改总章数：直接写 Store，允许清空（失焦时由 Input 组件全局兜底） */
   const handleTotalChaptersChange = (val: string) => {
@@ -123,7 +123,7 @@ export default function GenerateConfigDialog({ isOpen, onClose, onGenerated }: P
   }
 
   // 每次打开时预填当前项目的核心大纲
-  const defaultIdea = currentProject?.novelConfig.coreOutline || ''
+  const defaultIdea = currentProject?.novelConfig?.coreOutline || ''
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>

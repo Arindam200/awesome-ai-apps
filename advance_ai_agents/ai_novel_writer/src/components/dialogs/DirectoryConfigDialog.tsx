@@ -126,7 +126,7 @@ export default function DirectoryConfigDialog({ isOpen, onClose, existingCount, 
                       onBlur={() => {
                         const v = Number(rangeStart)
                         if (!v || v < 1) setRangeStart(1)
-                        else if (v > existingCount + 1) setRangeStart(existingCount + 1)
+                        else if (v > total) setRangeStart(total)
                       }}
                       className="w-16 h-6 text-xs px-2 py-0"
                       onClick={e => e.stopPropagation()}
@@ -140,6 +140,7 @@ export default function DirectoryConfigDialog({ isOpen, onClose, existingCount, 
                         const v = Number(rangeEnd)
                         const start = Number(rangeStart) || 1
                         if (!v || v < start) setRangeEnd(start)
+                        else if (v > total) setRangeEnd(total)
                       }}
                       className="w-16 h-6 text-xs px-2 py-0"
                       onClick={e => e.stopPropagation()}

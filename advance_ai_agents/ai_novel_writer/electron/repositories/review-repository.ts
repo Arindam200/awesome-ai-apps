@@ -34,18 +34,24 @@ export class ReviewRepository {
     /** 创建审稿（事务：先入内容池再建元数据） */
     static create(params: {
         baseDraftId: number
-        reviewIndex: number
+        reviewIndex?: number
         content: string
     }): number {
         const db = getProjectDb()
         if (!db) throw new Error('[ReviewRepository] 数据库未连接')
 
+        // 事务内原子分配 review_index，避免 getNextIndex + create 竞态
         const tx = db.transaction(() => {
+            const row = db.prepare(`
+        SELECT MAX(review_index) as maxIdx FROM reviews WHERE base_draft_id = ?
+      `).get(params.baseDraftId) as { maxIdx: number | null }
+            const reviewIndex = (row.maxIdx ?? 0) + 1
+
             const contentId = ContentRepository.create(params.content)
             const result = db.prepare(`
         INSERT INTO reviews (base_draft_id, review_index, content_id)
         VALUES (?, ?, ?)
-      `).run(params.baseDraftId, params.reviewIndex, contentId)
+      `).run(params.baseDraftId, reviewIndex, contentId)
             return Number(result.lastInsertRowid)
         })
 

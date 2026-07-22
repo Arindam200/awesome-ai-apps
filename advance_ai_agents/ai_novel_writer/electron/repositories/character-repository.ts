@@ -49,9 +49,9 @@ function rowToData(row: Record<string, unknown>): CharacterData {
         notes: (row.notes as string) || '',
     }
 
-    // 只有当 cs_updated_at_chapter > 0 时才构建 currentState
-    const updatedChapter = row.cs_updated_at_chapter as number
-    if (updatedChapter > 0) {
+    // currentState 存在与否由列是否为 NULL 决定（chapter 0 为合法状态）
+    const updatedChapter = row.cs_updated_at_chapter as number | null
+    if (updatedChapter !== null && updatedChapter !== undefined) {
         data.currentState = {
             location: (row.cs_location as string) || '',
             powerLevel: (row.cs_power_level as string) || '',
@@ -163,7 +163,7 @@ export class CharacterRepository {
             cs?.mentalState ?? '',
             cs?.keyItems ?? '',
             cs?.recentEvents ?? '',
-            cs?.updatedAtChapter ?? 0,
+            cs?.updatedAtChapter ?? null,
         )
     }
 

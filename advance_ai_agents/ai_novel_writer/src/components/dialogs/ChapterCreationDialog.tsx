@@ -63,7 +63,7 @@ export default function ChapterCreationDialog({ isOpen, onClose, prefill }: Prop
 
   // 如果是在这弹窗里发起的任务，一旦跑完，isChapterRunning 会变成 false，此时自动关闭弹窗
   useEffect(() => {
-    let prevRunning = false
+    let prevRunning = useWorkflowStore.getState().isTypeRunning('chapter_creation')
     const unsub = useWorkflowStore.subscribe((state) => {
       const running = state.isTypeRunning('chapter_creation')
       if (prevRunning && !running && isOpen) {

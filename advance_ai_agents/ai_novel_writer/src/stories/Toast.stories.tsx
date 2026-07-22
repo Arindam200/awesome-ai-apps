@@ -26,7 +26,7 @@ export const Demo: StoryObj = {
         Success Toast
       </Button>
       <Button
-        variant="warning"
+        variant="outline"
         onClick={() => toast.warning('Word count exceeds limit')}
       >
         Warning Toast

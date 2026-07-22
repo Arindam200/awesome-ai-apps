@@ -41,13 +41,16 @@ function StatusIcon({ status }: { status: ToolCallInfo['status'] }) {
 }
 
 /** 状态文字 */
-function statusLabel(status: ToolCallInfo['status']): string {
+function statusLabel(
+  status: ToolCallInfo['status'],
+  text: ReturnType<typeof useLocaleStore.getState>['text'],
+): string {
   switch (status) {
-    case 'completed': return '完成'
-    case 'failed': return '失败'
-    case 'running': return '执行中'
-    case 'waiting_confirm': return '待确认'
-    case 'pending': return '等待中'
+    case 'completed': return text('完成', 'Completed')
+    case 'failed': return text('失败', 'Failed')
+    case 'running': return text('执行中', 'Running')
+    case 'waiting_confirm': return text('待确认', 'Waiting for confirmation')
+    case 'pending': return text('等待中', 'Pending')
     default: return ''
   }
 }
@@ -70,14 +73,18 @@ export default function ToolCallBlock({ toolCall }: Props) {
         {/* 来源徽章 */}
         {source && (
           <span className={`tool-call-source-badge ${source}`}>
-            {source === 'builtin' ? '内置' : source === 'mcp' ? 'MCP' : 'Skill'}
+            {source === 'builtin'
+              ? text('内置', 'Built-in')
+              : source === 'mcp'
+                ? 'MCP'
+                : text('Skill', 'Skill')}
           </span>
         )}
 
         {/* 状态 */}
         <div className="tool-call-status" style={{ marginLeft: 'auto' }}>
           <StatusIcon status={status} />
-          <span>{statusLabel(status)}</span>
+          <span>{statusLabel(status, text)}</span>
         </div>
 
         {/* 展开箭头 */}

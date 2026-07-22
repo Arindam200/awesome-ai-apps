@@ -27,54 +27,58 @@ export class OpenAIProvider implements ILLMProvider {
   }
 
   async generate(model: ModelProfile, messages: Array<{ role: string; content: string }>, opts: LLMGenerateOptions): Promise<LLMResponse> {
-    const url = this.buildUrl(model.baseUrl)
+    try {
+      const url = this.buildUrl(model.baseUrl)
 
-    const body: Record<string, unknown> = {
-      model: model.modelName,
-      messages,
-      max_tokens: opts.maxTokens ?? model.maxTokens,
-      stream: false,
-    }
+      const body: Record<string, unknown> = {
+        model: model.modelName,
+        messages,
+        max_tokens: opts.maxTokens ?? model.maxTokens,
+        stream: false,
+      }
 
-    // 思考模式下 temperature/top_p 等参数不生效（DeepSeek 会静默忽略），仅在非思考模式下传递
-    if (opts.thinking) {
-      // thinking 参数直接放在请求体顶层（非 extra_body，那是 OpenAI SDK 层概念）
-      body.thinking = { type: 'enabled' }
-    } else {
-      body.temperature = opts.temperature ?? model.temperature
-    }
+      // 思考模式下 temperature/top_p 等参数不生效（DeepSeek 会静默忽略），仅在非思考模式下传递
+      if (opts.thinking) {
+        // thinking 参数直接放在请求体顶层（非 extra_body，那是 OpenAI SDK 层概念）
+        body.thinking = { type: 'enabled' }
+      } else {
+        body.temperature = opts.temperature ?? model.temperature
+      }
 
-    if (opts.responseFormat) body.response_format = opts.responseFormat
+      if (opts.responseFormat) body.response_format = opts.responseFormat
 
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${model.apiKey}`,
-      },
-      body: JSON.stringify(body),
-    })
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${model.apiKey}`,
+        },
+        body: JSON.stringify(body),
+      })
 
-    if (!res.ok) {
-      const text = await res.text()
-      return { success: false, content: '', error: `API 调用失败 (${res.status}): ${text}` }
-    }
+      if (!res.ok) {
+        const text = await res.text()
+        return { success: false, content: '', error: `API 调用失败 (${res.status}): ${text}` }
+      }
 
-    const data = await res.json() as {
-      choices: Array<{ message: { content: string; reasoning_content?: string } }>
-      usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number }
-    }
+      const data = await res.json() as {
+        choices: Array<{ message: { content: string; reasoning_content?: string } }>
+        usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number }
+      }
 
-    const finalContent = this.stripThinking(data.choices?.[0]?.message?.content ?? '')
+      const finalContent = this.stripThinking(data.choices?.[0]?.message?.content ?? '')
 
-    return {
-      success: true,
-      content: finalContent,
-      usage: data.usage ? {
-        promptTokens: data.usage.prompt_tokens,
-        completionTokens: data.usage.completion_tokens,
-        totalTokens: data.usage.total_tokens,
-      } : undefined,
+      return {
+        success: true,
+        content: finalContent,
+        usage: data.usage ? {
+          promptTokens: data.usage.prompt_tokens,
+          completionTokens: data.usage.completion_tokens,
+          totalTokens: data.usage.total_tokens,
+        } : undefined,
+      }
+    } catch (error) {
+      return { success: false, content: '', error: String(error) }
     }
   }
 
@@ -123,14 +127,17 @@ export class OpenAIProvider implements ILLMProvider {
       const decoder = new TextDecoder()
       let fullText = ''
       let isThinking = false
+      let buffer = ''
 
       const hasMore = true
       while (hasMore) {
         const { done, value } = await reader.read()
         if (done) break
 
-        const text = decoder.decode(value, { stream: true })
-        const lines = text.split('\n').filter((l) => l.startsWith('data: '))
+        buffer += decoder.decode(value, { stream: true })
+        const segments = buffer.split('\n')
+        buffer = segments.pop() ?? ''
+        const lines = segments.filter((l) => l.startsWith('data: '))
 
         for (const line of lines) {
           const json = line.slice(6).trim()
@@ -150,8 +157,8 @@ export class OpenAIProvider implements ILLMProvider {
                 emitChunk += '<think>\n'
               }
               emitChunk += delta.reasoning_content
-            }
-
+            } 
+            
             // 如果开始输出正文
             if (delta?.content !== undefined && delta?.content !== null) {
               if (isThinking) {

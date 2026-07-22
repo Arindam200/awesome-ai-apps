@@ -14,9 +14,12 @@
         try {
           var raw = localStorage.getItem('ai-novel-writer-theme');
           if (raw) {
-            var state = JSON.parse(raw).state;
-            theme = state.resolvedTheme || state.theme || 'dark';
-            if (theme === 'night') theme = 'dark'; // 兼容旧版
+            var state = JSON.parse(raw).state || {};
+            var candidate = state.resolvedTheme || state.theme;
+            if (candidate === 'night') candidate = 'dark'; // 兼容旧版
+            if (Object.prototype.hasOwnProperty.call(bgMap, candidate)) {
+              theme = candidate;
+            }
           }
         } catch(e) {}
 

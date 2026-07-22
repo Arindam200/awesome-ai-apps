@@ -70,6 +70,7 @@ export default function App() {
 
     // C) 工作流完成时弹出 ActionToast 通知（不依赖任何面板状态）
     const unsubActionToast = globalEventBus.on('WORKFLOW_COMPLETE', () => {
+      const text = useLocaleStore.getState().text
       const { history } = useWorkflowStore.getState()
       const latest = history.find(r => r.status === 'completed')
       if (!latest) return
@@ -87,7 +88,7 @@ export default function App() {
       }).catch(() => {})
       unsubActionToast()
     }
-  }, [initLocale, initTheme, initLLM, loadRecentProjects, text])
+  }, [initLocale, initTheme, initLLM, loadRecentProjects])
 
   // 全局快捷键: Cmd+N 新建项目，Cmd+O 打开项目
   // 注意：Cmd+=/- 缩放已由 TitleBar.tsx 统一处理，此处不重复注册

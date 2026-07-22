@@ -3,7 +3,7 @@ import { useAgentStore } from '../../../stores/agent-store'
 import { useLayoutStore } from '../../../stores/layout-store'
 import { useMCPStore } from '../../../stores/mcp-store'
 import { skillRegistry, type LoadedSkill } from '../../../services/agent/skill-registry'
-import { useRef, useState, useMemo } from 'react'
+import { useRef, useState } from 'react'
 import { confirm } from '../../ui/Confirm'
 import { IconBtn } from '../../ui/IconBtn'
 import { MenuItem } from '../../ui/MenuItem'
@@ -26,8 +26,8 @@ export default function AgentHeader() {
   const { servers: mcpServers, tools: mcpTools } = useMCPStore()
   const connectedCount = mcpServers.filter(s => s.status === 'connected').length
 
-  // Skill 列表
-  const skills = useMemo(() => skillRegistry.listAll(), [])
+  // Skill 列表（每次渲染重新读取，避免异步加载完成后仍展示旧列表）
+  const skills = skillRegistry.listAll()
 
   /** 新建会话 */
   const handleNew = () => {

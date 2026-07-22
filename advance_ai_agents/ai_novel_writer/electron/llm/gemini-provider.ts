@@ -19,49 +19,58 @@ export class GeminiProvider implements ILLMProvider {
     return { contents, systemInstruction }
   }
   async generate(model: ModelProfile, messages: Array<{ role: string; content: string }>, opts: LLMGenerateOptions): Promise<LLMResponse> {
-    const baseUrl = model.baseUrl.replace(/\/$/, '')
-    const url = `${baseUrl}/v1beta/models/${model.modelName}:generateContent`
+    try {
+      const baseUrl = model.baseUrl.replace(/\/$/, '')
+      const url = `${baseUrl}/v1beta/models/${model.modelName}:generateContent`
 
-    const { contents, systemInstruction } = this.toGeminiContents(messages)
+      const { contents, systemInstruction } = this.toGeminiContents(messages)
 
-    const body: Record<string, unknown> = {
-      contents,
-      generationConfig: {
+      const generationConfig: Record<string, unknown> = {
         temperature: opts.temperature ?? model.temperature,
         maxOutputTokens: opts.maxTokens ?? model.maxTokens,
-      },
+      }
+      if (opts.responseFormat?.type === 'json_object') {
+        generationConfig.responseMimeType = 'application/json'
+      }
+
+      const body: Record<string, unknown> = {
+        contents,
+        generationConfig,
+      }
+      if (systemInstruction) {
+        body.systemInstruction = { parts: [{ text: systemInstruction }] }
+      }
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': model.apiKey,
+        },
+        body: JSON.stringify(body),
+      })
+
+      if (!res.ok) {
+        const text = await res.text()
+        return { success: false, content: '', error: `Gemini API 调用失败 (${res.status}): ${text}` }
+      }
+
+      const data = await res.json() as {
+        candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>
+        usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; totalTokenCount?: number }
+      }
+
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+      const usage = data.usageMetadata ? {
+        promptTokens: data.usageMetadata.promptTokenCount ?? 0,
+        completionTokens: data.usageMetadata.candidatesTokenCount ?? 0,
+        totalTokens: data.usageMetadata.totalTokenCount ?? 0,
+      } : undefined
+
+      return { success: true, content: text, usage }
+    } catch (error) {
+      return { success: false, content: '', error: String(error) }
     }
-    if (systemInstruction) {
-      body.systemInstruction = { parts: [{ text: systemInstruction }] }
-    }
-
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': model.apiKey,
-      },
-      body: JSON.stringify(body),
-    })
-
-    if (!res.ok) {
-      const text = await res.text()
-      return { success: false, content: '', error: `Gemini API 调用失败 (${res.status}): ${text}` }
-    }
-
-    const data = await res.json() as {
-      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>
-      usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; totalTokenCount?: number }
-    }
-
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
-    const usage = data.usageMetadata ? {
-      promptTokens: data.usageMetadata.promptTokenCount ?? 0,
-      completionTokens: data.usageMetadata.candidatesTokenCount ?? 0,
-      totalTokens: data.usageMetadata.totalTokenCount ?? 0,
-    } : undefined
-
-    return { success: true, content: text, usage }
   }
 
   async generateStream(model: ModelProfile, messages: Array<{ role: string; content: string }>, opts: LLMStreamOptions): Promise<void> {
@@ -71,12 +80,17 @@ export class GeminiProvider implements ILLMProvider {
 
       const { contents, systemInstruction } = this.toGeminiContents(messages)
 
+      const generationConfig: Record<string, unknown> = {
+        temperature: opts.temperature ?? model.temperature,
+        maxOutputTokens: opts.maxTokens ?? model.maxTokens,
+      }
+      if (opts.responseFormat?.type === 'json_object') {
+        generationConfig.responseMimeType = 'application/json'
+      }
+
       const body: Record<string, unknown> = {
         contents,
-        generationConfig: {
-          temperature: opts.temperature ?? model.temperature,
-          maxOutputTokens: opts.maxTokens ?? model.maxTokens,
-        },
+        generationConfig,
       }
       if (systemInstruction) {
         body.systemInstruction = { parts: [{ text: systemInstruction }] }
@@ -107,14 +121,17 @@ export class GeminiProvider implements ILLMProvider {
       const decoder = new TextDecoder()
       let fullText = ''
       let usage: { promptTokens: number; completionTokens: number; totalTokens: number } | undefined
+      let buffer = ''
 
       const hasMore = true
       while (hasMore) {
         const { done, value } = await reader.read()
         if (done) break
 
-        const text = decoder.decode(value, { stream: true })
-        const lines = text.split('\n').filter((l) => l.startsWith('data: '))
+        buffer += decoder.decode(value, { stream: true })
+        const segments = buffer.split('\n')
+        buffer = segments.pop() ?? ''
+        const lines = segments.filter((l) => l.startsWith('data: '))
 
         for (const line of lines) {
           const json = line.slice(6).trim()

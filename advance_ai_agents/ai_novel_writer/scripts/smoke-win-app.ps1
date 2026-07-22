@@ -1,4 +1,4 @@
-param(
+﻿param(
   [string]$ExePath,
   [int]$ObservationSeconds = 12
 )

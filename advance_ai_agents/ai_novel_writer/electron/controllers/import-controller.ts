@@ -228,16 +228,8 @@ export function registerImportController() {
         }
       }
 
-      // 去重排序：按章节号排序，重复章号保留后者
-      const chapterMap = new Map<number, ParsedChapter>()
-      for (const ch of allChapters) {
-        chapterMap.set(ch.number, ch)
-      }
-      const finalChapters = Array.from(chapterMap.values())
-        .sort((a, b) => a.number - b.number)
-
-      // 重新编号（确保从1开始连续）
-      const renumbered = finalChapters.map((ch, idx) => ({
+      // 保留原始顺序，直接连续重新编号，避免同号（含 fallback 章号）误删章节
+      const renumbered = allChapters.map((ch, idx) => ({
         ...ch,
         number: idx + 1,
       }))

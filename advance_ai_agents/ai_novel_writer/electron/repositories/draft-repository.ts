@@ -47,7 +47,7 @@ export class DraftRepository {
      */
     static create(params: {
         chapterNumber: number
-        version: number
+        version?: number
         source: 'write' | 'rewrite'
         content: string
         wordCount: number
@@ -55,15 +55,20 @@ export class DraftRepository {
         const db = getProjectDb()
         if (!db) throw new Error('[DraftRepository] 数据库未连接')
 
-        // 事务：先入内容池，再建元数据
+        // 事务内原子分配 version，避免 getNextVersion + create 竞态
         const tx = db.transaction(() => {
+            const row = db.prepare(`
+        SELECT MAX(version) as maxVer FROM drafts WHERE chapter_number = ?
+      `).get(params.chapterNumber) as { maxVer: number | null }
+            const version = (row.maxVer ?? 0) + 1
+
             const contentId = ContentRepository.create(params.content)
             const result = db.prepare(`
         INSERT INTO drafts (chapter_number, version, source, content_id, word_count)
         VALUES (?, ?, ?, ?, ?)
       `).run(
                 params.chapterNumber,
-                params.version,
+                version,
                 params.source,
                 contentId,
                 params.wordCount,
