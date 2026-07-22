@@ -366,6 +366,9 @@ try {
     Write-Host "[info] Skipping npm.cmd ci"
   } else {
     npm.cmd ci
+    if ($LASTEXITCODE -ne 0) {
+      throw "npm.cmd ci failed with exit code $LASTEXITCODE."
+    }
   }
 
   $cargoBin = Join-Path $env:USERPROFILE ".cargo\bin"

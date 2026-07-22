@@ -4,6 +4,15 @@ import type { VocabPreset, VocabPresetStore } from './types';
 
 export const DEFAULT_VOCAB_PRESETS: VocabPreset[] = defaultPresetsJson as VocabPreset[];
 
+export function vocabPresetsEqual(a: VocabPreset, b: VocabPreset): boolean {
+  return (
+    a.id === b.id &&
+    a.name === b.name &&
+    a.phrases.length === b.phrases.length &&
+    a.phrases.every((phrase, index) => phrase === b.phrases[index])
+  );
+}
+
 export async function loadVocabPresets(): Promise<VocabPreset[]> {
   const store = await listVocabPresets();
   const builtin = new Map(DEFAULT_VOCAB_PRESETS.map(p => [p.id, p] as const));
@@ -33,7 +42,7 @@ export async function persistVocabPresets(presets: VocabPreset[]) {
       continue;
     }
     seenBuiltin.add(preset.id);
-    if (JSON.stringify(base) !== JSON.stringify(preset)) {
+    if (!vocabPresetsEqual(base, preset)) {
       store.overrides.push(preset);
     }
   }
