@@ -1,0 +1,183 @@
+/**
+ * 三栏合并视图 — CSS Grid 单容器布局
+ * 零 JS 高度计算 | 零滚动同步 | CSS Grid 自动行高对齐
+ */
+
+.three-way-merge {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+/* 工具栏 */
+.twm-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.twm-toolbar-progress {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-left: auto;
+}
+
+/* 固定表头 */
+.twm-headers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+.twm-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  background: var(--color-bg-elevated);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  gap: 6px;
+  border-right: 1px solid var(--color-border);
+}
+.twm-header:last-child { border-right: none; }
+
+.twm-tag {
+  font-size: 0.65rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+.twm-tag.readonly {
+  background: rgba(100, 116, 139, 0.15);
+  color: var(--color-text-muted);
+}
+.twm-tag.editable {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+}
+
+/* 单滚动容器 */
+.twm-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* CSS Grid — 3 列，每 3 个 cell 自动成 1 行，行高取最大 cell */
+.twm-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  font-family: 'Noto Serif SC', 'Source Han Serif CN', 'STSong', 'SimSun', serif;
+  font-size: 0.85rem;
+  line-height: 1.8;
+}
+
+/* 单元格 */
+.twm-cell {
+  border-bottom: 1px solid rgba(128, 128, 128, 0.06);
+}
+.twm-cell-left {
+  border-right: 1px solid var(--color-border);
+}
+.twm-cell-center {
+  border-right: 1px solid var(--color-border);
+}
+.twm-cell.processed { opacity: 0.5; }
+.twm-cell-center.pending { background: rgba(100, 116, 139, 0.04); }
+.twm-cell-center.adopted { background: rgba(34, 197, 94, 0.04); }
+
+/* contentEditable 编辑区 */
+.twm-editable {
+  padding: 0 16px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  outline: none;
+  min-height: 1.8em;
+  cursor: text;
+}
+.twm-editable:focus {
+  box-shadow: inset 0 0 0 1px rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.03);
+}
+
+/* ===== 行样式 ===== */
+.twm-line-same {
+  padding: 0 16px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+.twm-line-removed {
+  padding: 0 16px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  background: rgba(239, 68, 68, 0.08);
+  box-shadow: inset 3px 0 0 rgba(239, 68, 68, 0.4);
+}
+.twm-line-added {
+  padding: 0 16px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  background: rgba(34, 197, 94, 0.08);
+  box-shadow: inset 3px 0 0 rgba(34, 197, 94, 0.4);
+}
+.twm-line-padding {
+  padding: 0 16px;
+  white-space: pre-wrap;
+  background: rgba(128, 128, 128, 0.04);
+}
+.twm-line-placeholder {
+  padding: 0 16px;
+  white-space: pre-wrap;
+  color: var(--color-text-muted);
+  opacity: 0.4;
+  font-style: italic;
+}
+
+/* ===== 右栏 hunk 行（含采用按钮） ===== */
+.twm-hunk-row {
+  display: flex;
+  flex-direction: row;
+  min-height: 100%;
+}
+
+/* 采用按钮 — flex 内联，不遮挡文字 */
+.twm-adopt {
+  width: 26px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 4px;
+  border: none;
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-right: 1px solid rgba(59, 130, 246, 0.15);
+}
+.twm-adopt:hover {
+  background: #3b82f6;
+  color: white;
+}
+.twm-adopt.adopted {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+.twm-adopt.adopted:hover {
+  background: #ef4444;
+  color: white;
+}
+
+.twm-hunk-text {
+  flex: 1;
+  min-width: 0;
+}

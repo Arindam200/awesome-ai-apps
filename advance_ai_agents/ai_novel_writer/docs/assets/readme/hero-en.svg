@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-labelledby="title desc">
+  <title id="title">AI Novel Writer</title>
+  <desc id="desc">A warm editorial writing desk with manuscript pages and a production pipeline.</desc>
+  <rect width="1200" height="400" fill="#11100f"/>
+  <circle cx="1030" cy="70" r="210" fill="#845a2b" opacity="0.14"/>
+  <circle cx="1080" cy="360" r="250" fill="#c9a968" opacity="0.07"/>
+  <g transform="translate(750 58) rotate(-4 160 140)">
+    <rect x="25" y="24" width="310" height="270" rx="8" fill="#2a2520" stroke="#6c5a45"/>
+    <rect width="310" height="270" rx="8" fill="#f4eadc"/>
+    <rect x="28" y="28" width="92" height="8" rx="4" fill="#845a2b" opacity="0.8"/>
+    <rect x="28" y="52" width="230" height="5" rx="2.5" fill="#8f877d" opacity="0.45"/>
+    <rect x="28" y="68" width="252" height="5" rx="2.5" fill="#8f877d" opacity="0.35"/>
+    <rect x="28" y="84" width="210" height="5" rx="2.5" fill="#8f877d" opacity="0.35"/>
+    <g transform="translate(28 126)">
+      <circle cx="8" cy="8" r="8" fill="#845a2b"/>
+      <line x1="28" y1="8" x2="85" y2="8" stroke="#845a2b" stroke-width="3"/>
+      <circle cx="105" cy="8" r="8" fill="#c9a968"/>
+      <line x1="125" y1="8" x2="182" y2="8" stroke="#c9a968" stroke-width="3"/>
+      <circle cx="202" cy="8" r="8" fill="#11100f"/>
+      <line x1="222" y1="8" x2="252" y2="8" stroke="#11100f" stroke-width="3"/>
+    </g>
+    <rect x="28" y="176" width="252" height="48" rx="5" fill="#e8d9c5"/>
+    <rect x="42" y="190" width="156" height="5" rx="2.5" fill="#845a2b" opacity="0.55"/>
+    <rect x="42" y="205" width="210" height="5" rx="2.5" fill="#8f877d" opacity="0.35"/>
+    <text x="28" y="250" fill="#845a2b" font-family="Georgia, serif" font-size="12" letter-spacing="2">MANUSCRIPT  /  BLUEPRINT  /  REVIEW</text>
+  </g>
+  <g font-family="Inter, Segoe UI, Arial, sans-serif">
+    <text x="72" y="82" fill="#c9a968" font-size="14" font-weight="700" letter-spacing="3">LOCAL-FIRST FICTION PRODUCTION</text>
+    <text x="72" y="157" fill="#f4eadc" font-family="Georgia, serif" font-size="56" font-weight="700">AI Novel Writer</text>
+    <text x="72" y="202" fill="#bfb6aa" font-size="21">A production workspace for long-form fiction.</text>
+    <text x="72" y="248" fill="#8f877d" font-size="15">Architecture · Characters · Blueprints · Drafts · Reviews · Final manuscripts</text>
+    <rect x="72" y="286" width="134" height="38" rx="19" fill="#845a2b"/>
+    <text x="139" y="311" text-anchor="middle" fill="#fff8e8" font-size="14" font-weight="700">Windows x64</text>
+    <rect x="220" y="286" width="112" height="38" rx="19" fill="none" stroke="#c9a968" opacity="0.85"/>
+    <text x="276" y="311" text-anchor="middle" fill="#c9a968" font-size="14" font-weight="700">Bilingual</text>
+  </g>
+</svg>

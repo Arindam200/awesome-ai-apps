@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product-proof split README hero</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root { --accent: #8b3dff; }
+    html, body { margin: 0; width: 2560px; height: 1280px; overflow: hidden; }
+    body {
+      position: relative;
+      color: #050a14;
+      background-color: #fefefe;
+      background-image:
+        linear-gradient(45deg, rgba(15, 23, 42, 0.026) 25%, transparent 25%, transparent 75%, rgba(15, 23, 42, 0.026) 75%),
+        linear-gradient(-45deg, rgba(15, 23, 42, 0.026) 25%, transparent 25%, transparent 75%, rgba(15, 23, 42, 0.026) 75%);
+      background-size: 260px 260px;
+      background-position: 0 0, 130px 130px;
+      font-family: "Segoe UI", "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+    }
+    .left {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 1060px;
+      height: 1280px;
+      z-index: 30;
+      padding: 150px 0 0 180px;
+      background: linear-gradient(90deg, rgba(255,255,255,.96) 0%, rgba(255,255,255,.88) 70%, rgba(255,255,255,0) 100%);
+    }
+    .brand { display: flex; align-items: center; gap: 26px; }
+    .brand-logo {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 24px rgba(37, 99, 235, .18));
+    }
+    .brand-name {
+      max-width: 690px;
+      font-size: 70px;
+      font-weight: 660;
+      line-height: 1;
+      letter-spacing: -2px;
+      white-space: nowrap;
+    }
+    .brand-byline {
+      max-width: 690px;
+      margin-top: 12px;
+      color: #7c828d;
+      font-size: 34px;
+      font-weight: 500;
+      letter-spacing: .4px;
+      white-space: nowrap;
+    }
+    .headline {
+      margin-top: 165px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .headline span {
+      display: block;
+      max-width: 790px;
+      padding: 18px 24px 20px;
+      border-radius: 8px;
+      color: #fff;
+      background: #07101f;
+      font-size: 56px;
+      font-weight: 430;
+      line-height: 1.06;
+      letter-spacing: .2px;
+      white-space: nowrap;
+      box-shadow: 0 10px 24px rgba(7, 16, 31, .08);
+    }
+    .proof-row { margin-top: 72px; display: flex; align-items: center; gap: 28px; }
+    .proof-logo {
+      width: 94px;
+      height: 94px;
+      object-fit: contain;
+      filter: drop-shadow(0 12px 24px rgba(37, 99, 235, .16));
+    }
+    .plus { font-size: 68px; line-height: 1; font-weight: 600; color: #050a14; }
+    .proof-card {
+      min-width: 370px;
+      height: 94px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 26px;
+      border: 2px solid rgba(15, 23, 42, .08);
+      border-radius: 18px;
+      background: rgba(255,255,255,.78);
+      box-shadow: 0 12px 28px rgba(15, 23, 42, .06);
+    }
+    .proof-marks { display: flex; align-items: center; gap: 10px; }
+    .proof-marks:empty { display: none; }
+    .proof-marks img { width: 50px; height: 50px; object-fit: contain; border-radius: 10px; }
+    .proof-copy strong { display: block; max-width: 360px; font-size: 25px; font-weight: 650; white-space: nowrap; }
+    .proof-copy small { display: block; max-width: 360px; margin-top: 3px; color: #6b7280; font-size: 19px; white-space: nowrap; }
+    .features {
+      margin: 80px 0 0 3px;
+      padding: 0;
+      list-style: none;
+      font-size: 35px;
+      line-height: 1.58;
+      font-weight: 430;
+      letter-spacing: .1px;
+    }
+    .features li { max-width: 790px; white-space: nowrap; }
+    .features li::before { content: "·"; margin-right: 20px; font-weight: 700; color: var(--accent); }
+    .shots { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+    .shot {
+      position: absolute;
+      display: none;
+      width: 800px;
+      height: 600px;
+      object-fit: contain;
+      object-position: center;
+      border: 6px solid rgba(255,255,255,.96);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 34px 78px rgba(15, 23, 42, .27), 0 8px 22px rgba(15, 23, 42, .15);
+    }
+    .shot.visible { display: block; }
+    .shot-a { left: 1400px; top: -230px; transform: rotate(8deg); z-index: 2; }
+    .shot-b { left: 2170px; top: -75px; transform: rotate(8deg); z-index: 3; }
+    .shot-main { left: 1198px; top: 335px; transform: rotate(8deg); z-index: 9; }
+    .shot-c { left: 1944px; top: 533px; transform: rotate(8deg); z-index: 7; }
+    .shot-d { left: 1102px; top: 841px; transform: rotate(8deg); z-index: 5; }
+    .shot-e { left: 1937px; top: 1007px; transform: rotate(8deg); z-index: 6; }
+    .triangle-black {
+      position: absolute;
+      left: 92px;
+      top: 330px;
+      z-index: 34;
+      width: 0;
+      height: 0;
+      border-left: 28px solid transparent;
+      border-right: 28px solid transparent;
+      border-bottom: 78px solid #07101f;
+      transform: rotate(141deg);
+    }
+    .triangle-accent {
+      position: absolute;
+      left: 100px;
+      top: 397px;
+      z-index: 35;
+      width: 0;
+      height: 0;
+      border-left: 13px solid transparent;
+      border-right: 13px solid transparent;
+      border-bottom: 37px solid var(--accent);
+      transform: rotate(154deg);
+    }
+  </style>
+  <script src="./hero-data.js"></script>
+</head>
+<body data-profile="product-proof-split-v1">
+  <main class="left">
+    <section class="brand">
+      <img class="brand-logo" id="brand-logo" alt="" />
+      <div>
+        <div class="brand-name" id="brand-name"></div>
+        <div class="brand-byline" id="brand-byline"></div>
+      </div>
+    </section>
+    <section class="headline" aria-label="Product positioning">
+      <span id="headline-one"></span>
+      <span id="headline-two"></span>
+    </section>
+    <section class="proof-row" aria-label="Verified product fact">
+      <img class="proof-logo" id="proof-logo" alt="" />
+      <div class="plus">+</div>
+      <div class="proof-card">
+        <div class="proof-marks" id="proof-marks"></div>
+        <div class="proof-copy">
+          <strong id="proof-title"></strong>
+          <small id="proof-subtitle"></small>
+        </div>
+      </div>
+    </section>
+    <ul class="features" id="features"></ul>
+  </main>
+  <section class="shots" aria-label="Real product interface screenshots">
+    <img class="shot shot-a" alt="" />
+    <img class="shot shot-b" alt="" />
+    <img class="shot shot-main" alt="" />
+    <img class="shot shot-c" alt="" />
+    <img class="shot shot-d" alt="" />
+    <img class="shot shot-e" alt="" />
+  </section>
+  <div class="triangle-black"></div>
+  <div class="triangle-accent"></div>
+  <script>
+    (() => {
+      const config = window.README_HERO_CONFIG;
+      if (!config || !config.locales) throw new Error("README_HERO_CONFIG is required");
+      const requested = new URLSearchParams(location.search).get("lang");
+      const lang = requested && config.locales[requested] ? requested : Object.keys(config.locales)[0];
+      const value = config.locales[lang];
+      if (!value || !Array.isArray(value.headline) || value.headline.length !== 2) {
+        throw new Error(`Invalid hero locale configuration: ${lang}`);
+      }
+      const screenshots = Array.isArray(value.screenshots) ? value.screenshots : [];
+      if (screenshots.length < 4 || screenshots.length > 6) {
+        throw new Error(`Product-proof split requires four to six screenshots, received ${screenshots.length}`);
+      }
+      document.documentElement.lang = value.htmlLang || lang;
+      document.documentElement.style.setProperty("--accent", config.accent || "#8b3dff");
+      document.getElementById("brand-logo").src = value.logo;
+      document.getElementById("proof-logo").src = value.logo;
+      document.getElementById("brand-name").textContent = value.brand;
+      document.getElementById("brand-byline").textContent = value.byline;
+      document.getElementById("headline-one").textContent = value.headline[0];
+      document.getElementById("headline-two").textContent = value.headline[1];
+      document.getElementById("proof-title").textContent = value.proof?.title || "";
+      document.getElementById("proof-subtitle").textContent = value.proof?.subtitle || "";
+      const marks = document.getElementById("proof-marks");
+      (value.proof?.logos || []).slice(0, 3).forEach(src => {
+        const image = document.createElement("img");
+        image.src = src;
+        image.alt = "";
+        marks.appendChild(image);
+      });
+      const featureList = document.getElementById("features");
+      (value.features || []).slice(0, 4).forEach(text => {
+        const item = document.createElement("li");
+        item.textContent = text;
+        featureList.appendChild(item);
+      });
+      const slotOrder = [".shot-main", ".shot-a", ".shot-c", ".shot-d", ".shot-b", ".shot-e"];
+      screenshots.forEach((src, index) => {
+        const image = document.querySelector(slotOrder[index]);
+        image.src = src;
+        image.classList.add("visible");
+      });
+      document.body.dataset.ready = "true";
+      document.body.dataset.locale = lang;
+    })();
+  </script>
+</body>
+</html>

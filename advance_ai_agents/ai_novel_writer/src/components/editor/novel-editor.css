@@ -1,0 +1,94 @@
+/* ===== Vela 统一编辑器样式 ===== */
+
+/* ── 消除浏览器默认焦点样式（黄色边框来源）─────────────────────────────── */
+.vela-editor-content:focus,
+.vela-editor-content *:focus,
+.vela-editor-content .ProseMirror:focus,
+.vela-editor-content .ProseMirror-focused {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ── 编辑器内容区基础样式 ───────────────────────────────────────────────── */
+.vela-editor-content {
+  outline: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* ProseMirror 根节点：撑满容器，消除一切焦点样式 */
+.vela-editor-content .ProseMirror {
+  outline: none !important;
+  box-shadow: none !important;
+  width: 100%;
+  min-height: 100%;
+  caret-color: var(--color-accent);
+}
+
+/* ── 选中文本高亮 ────────────────────────────────────────────────────────── */
+.vela-editor-content ::selection {
+  background-color: var(--color-editor-selection, rgba(99, 102, 241, 0.2));
+}
+
+/* ── Placeholder ────────────────────────────────────────────────────────── */
+.vela-editor-content .is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--color-text-muted);
+  pointer-events: none;
+  height: 0;
+  font-style: italic;
+}
+
+/* ── 去除所有自定义的 .prose-mode 和 .document-mode 的内部细节 ── */
+/* 统一交由 TailwindCSS 的 @tailwindcss/typography 插件进行管理 */
+
+/* ── 兼容旧 class（尚未迁移的调用方） ─────────────────────────────────── */
+.novel-editor-content {
+  outline: none;
+}
+.novel-editor-content .ProseMirror,
+.novel-editor-content .ProseMirror-focused {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.arch-editor-content {
+  outline: none;
+}
+.arch-editor-content .ProseMirror,
+.arch-editor-content .ProseMirror-focused {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   react-resizable-panels 分隔条样式
+   ═══════════════════════════════════════════════════════════════════════════ */
+[data-separator] {
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+[data-group][style*="flex-direction: row"] > [data-separator] {
+  width: 1px;
+  background: var(--color-border);
+  cursor: col-resize;
+}
+
+[data-group][style*="flex-direction: row"] > [data-separator]:hover,
+[data-group][style*="flex-direction: row"] > [data-separator][data-separator="dragging"] {
+  width: 2px;
+  background: var(--color-sash-hover);  /* 白色微光，非蓝色 */
+}
+
+[data-group][style*="flex-direction: column"] > [data-separator] {
+  height: 1px;
+  background: var(--color-border);
+  cursor: row-resize;
+}
+
+[data-group][style*="flex-direction: column"] > [data-separator]:hover,
+[data-group][style*="flex-direction: column"] > [data-separator][data-separator="dragging"] {
+  height: 2px;
+  background: var(--color-sash-hover);  /* 白色微光，非蓝色 */
+}

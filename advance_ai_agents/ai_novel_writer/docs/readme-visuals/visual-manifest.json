@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "profile": "product-proof-split-v1",
+  "composition_source": "docs/readme-visuals/product-proof-split-v1.html",
+  "data_source": "docs/readme-visuals/hero-data.js",
+  "heroes": {
+    "zh": {
+      "readme": "README.md",
+      "output": "docs/assets/readme/hero-zh-v2.png",
+      "ui_locale": "zh-CN",
+      "screenshots": [
+        { "path": "docs/assets/readme/hero-captures/zh/01-overview.png", "role": "primary", "capture_provenance": "computer-use-capture", "complete_window": true, "ui_locale": "zh-CN" },
+        { "path": "docs/assets/readme/hero-captures/zh/02-model-activity.png", "role": "supporting", "capture_provenance": "computer-use-capture", "complete_window": true, "ui_locale": "zh-CN" },
+        { "path": "docs/assets/readme/hero-captures/zh/03-model-settings.png", "role": "supporting", "capture_provenance": "computer-use-capture", "complete_window": true, "ui_locale": "zh-CN" },
+        { "path": "docs/assets/readme/hero-captures/zh/04-about.png", "role": "supporting", "capture_provenance": "computer-use-capture", "complete_window": true, "ui_locale": "zh-CN" }
+      ]
+    },
+    "en": {
+      "readme": "README_en.md",
+      "output": "docs/assets/readme/hero-en-v2.png",
+      "ui_locale": "en",
+      "screenshots": [
+        { "path": "docs/assets/readme/hero-captures/en/01-overview.png", "role": "primary", "capture_provenance": "project-authored-screenshot", "complete_window": true, "ui_locale": "en" },
+        { "path": "docs/assets/readme/hero-captures/en/02-model-settings.png", "role": "supporting", "capture_provenance": "computer-use-capture", "complete_window": true, "ui_locale": "en" },
+        { "path": "docs/assets/readme/hero-captures/en/03-prompt-settings.png", "role": "supporting", "capture_provenance": "computer-use-capture", "complete_window": true, "ui_locale": "en" },
+        { "path": "docs/assets/readme/hero-captures/en/04-about.png", "role": "supporting", "capture_provenance": "computer-use-capture", "complete_window": true, "ui_locale": "en" }
+      ]
+    }
+  }
+}

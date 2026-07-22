@@ -1,0 +1,49 @@
+// @see - https://www.electron.build/configuration/configuration
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "com.ai-novel-writer.app",
+  "asar": true,
+  "asarUnpack": [
+    "node_modules/apache-arrow/**/*",
+    "node_modules/better-sqlite3/**/*",
+    "node_modules/@lancedb/lancedb/**/*",
+    "node_modules/@lancedb/lancedb-darwin-*/**/*",
+    "node_modules/@lancedb/lancedb-linux-*/**/*",
+    "node_modules/@lancedb/lancedb-win32-*/**/*",
+    "node_modules/@lancedb/lancedb-win32-x64-msvc/**/*"
+  ],
+  "productName": "AI小说作家",
+  "directories": {
+    "output": "release/${version}"
+  },
+  "files": [
+    "dist",
+    "dist-electron",
+    "build"
+  ],
+  "mac": {
+    "target": ["dmg"],
+    "artifactName": "${productName}-Mac-${version}-Installer.${ext}",
+    "category": "public.app-category.productivity"
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ]
+  },
+  "nsis": {
+    "artifactName": "${productName}-${version}-setup.${ext}",
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": false
+  },
+  "linux": {
+    "target": ["AppImage"],
+    "artifactName": "${productName}-Linux-${version}.${ext}",
+    "category": "Office"
+  }
+}

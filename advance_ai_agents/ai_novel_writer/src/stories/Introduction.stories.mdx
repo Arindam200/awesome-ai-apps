@@ -1,0 +1,91 @@
+import { Meta, ColorPalette, ColorItem, Typeset } from '@storybook/blocks'
+import { tokens } from '../tokens'
+
+<Meta title="AI Novel Writer UI/Introduction" />
+
+# AI小说作家 Design System
+
+AI小说作家是一个 AI 深度驱动的小说创作 IDE，其 UI 设计系统基于 Tailwind CSS v4 + CSS 变量实现主题化。
+
+## Design Tokens
+
+AI小说作家使用 CSS 自定义属性（CSS Variables）作为设计 token 的单一数据源，支持 4 套主题：
+
+| Theme | Description | Preview |
+|-------|-------------|---------|
+| `light` | 清冷蓝调浅色主题 | <div style={{width: 60, height: 30, background: '#F7F9FC', border: '1px solid #DEE3ED', borderRadius: 4}} /> |
+| `galaxy` | 深邃星空深色主题 | <div style={{width: 60, height: 30, background: '#0A1628', border: '1px solid #172B42', borderRadius: 4}} /> |
+| `paper` | 温暖纸质感主题 | <div style={{width: 60, height: 30, background: '#F5F0E8', border: '1px solid #DDD8D0', borderRadius: 4}} /> |
+| `dark` | VS Code 暗黑风格 | <div style={{width: 60, height: 30, background: '#1E1E1E', border: '1px solid #3C3C3C', borderRadius: 4}} /> |
+
+## Color System
+
+### Light Theme Colors
+
+<ColorPalette>
+  <ColorItem title="Background" colors={{ bg: '#F7F9FC', sidebar: '#EFF2F7', panel: '#EFF2F7' }} />
+  <ColorItem title="Text" colors={{ primary: '#1A2233', secondary: '#4A5568', muted: '#8A9AAB' }} />
+  <ColorItem title="Accent" colors={{ accent: '#5B9ED6', gold: '#C9A76C' }} />
+  <ColorItem title="Semantic" colors={{ success: '#10b981', warning: '#f59e0b', error: '#f43f5e', info: '#5B9ED6' }} />
+</ColorPalette>
+
+### Galaxy Theme Colors
+
+<ColorPalette>
+  <ColorItem title="Background" colors={{ bg: '#0A1628', sidebar: '#0E1B30', panel: '#0E1B30' }} />
+  <ColorItem title="Text" colors={{ primary: '#E0ECF4', secondary: '#8BA4BE', muted: '#5A7A96' }} />
+  <ColorItem title="Accent" colors={{ accent: '#7EC8E3', gold: '#C9A76C' }} />
+  <ColorItem title="Semantic" colors={{ success: '#4ade80', warning: '#fbbf24', error: '#fb7185', info: '#7EC8E3' }} />
+</ColorPalette>
+
+## Typography
+
+### Font Families
+
+- **Sans**: Inter, system-ui, -apple-system
+- **Writing**: LXGW WenKai, Noto Serif SC (for novel writing mode)
+- **Mono**: JetBrains Mono, Fira Code
+
+### Type Scale
+
+<Typeset
+  fontSizes={['0.625rem', '0.75rem', '0.875rem', '1rem', '1.25rem']}
+  fontWeight={400}
+  sampleText="AI Novel Writer - AI Novel Writing IDE"
+/>
+
+## Spacing Scale
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `1` | 4px | Tight grouping |
+| `2` | 8px | Default internal spacing |
+| `3` | 12px | Component padding |
+| `4` | 16px | Section padding |
+| `5` | 20px | Large gaps |
+| `6` | 24px | Panel padding |
+
+## Border Radius
+
+| Token | Value | Usage |
+|-------|-------|-------|
+| `sm` | 4px | Small elements |
+| `md` | 6px | Buttons, inputs |
+| `lg` | 10px | Cards |
+| `xl` | 14px | Modals |
+| `2xl` | 20px | Large panels |
+
+## Components
+
+AI小说作家 UI 提供 20+ 原子组件，位于 `src/components/ui/`：
+
+- **Button** - 按钮组件，支持 6 种变体
+- **Badge** - 标签组件，用于状态标识
+- **Input** - 输入框组件
+- **Dialog** - 对话框组件
+- **Toast** - 全局通知系统
+- **Tooltip** - 提示组件
+- **Switch** - 开关组件
+- **...**
+
+详见各组件文档。
