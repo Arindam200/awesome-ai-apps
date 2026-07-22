@@ -52,16 +52,32 @@ export default function DirectoryConfigDialog({ isOpen, onClose, existingCount, 
     let params: DirectoryWorkflowParams
 
     if (rangeMode === 'full') {
+      // 追加全量：若已无剩余章节则拒绝（覆盖模式仍可从第 1 章重生成）
+      if (overwriteMode === 'append' && existingCount >= total) {
+        toast.warning(text('没有可追加生成的章节', 'No chapters remain to generate.'))
+        return
+      }
       params = { mode: overwriteMode === 'full' ? 'full' : 'append', count: 0 }
     } else if (rangeMode === 'front') {
       if (existingCount > 0 && overwriteMode === 'append') {
-        params = { mode: 'append', startChapter: existingCount + 1, count: Number(frontN) || 50 }
+        if (existingCount >= total) {
+          toast.warning(text('没有可追加生成的章节', 'No chapters remain to generate.'))
+          return
+        }
+        const remaining = total - existingCount
+        const count = Math.min(remaining, Math.max(1, Number(frontN) || 50))
+        params = { mode: 'append', startChapter: existingCount + 1, count }
       } else {
-        params = { mode: 'full', count: Number(frontN) || 50 }
+        params = { mode: 'full', count: Math.min(total, Math.max(1, Number(frontN) || 50)) }
       }
     } else {
-      const start = Number(rangeStart) || 1
-      const end = Math.max(start, Number(rangeEnd) || start)
+      // 指定范围：提交时归一化，不依赖 blur；全书已有蓝图时拒绝追加
+      if (existingCount >= total) {
+        toast.warning(text('没有可追加生成的章节', 'No chapters remain to generate.'))
+        return
+      }
+      const start = Math.min(total, Math.max(1, Number(rangeStart) || 1))
+      const end = Math.min(total, Math.max(start, Number(rangeEnd) || start))
       params = { mode: 'append', startChapter: start, count: Math.max(1, end - start + 1) }
     }
 

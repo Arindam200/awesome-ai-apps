@@ -45,8 +45,6 @@ export class RefineFromReviewCommand extends BaseWorkflowCommand<string> {
     const baseDraft = await parseDraftMeta(this.params.draftPath)
     if (!baseDraft) throw new Error('找不到基准草稿版本')
 
-    const revIndex = await ipc.invoke('db:revision-next-index', baseDraft.id)
-
     // 清理该草稿下已有的 pending 状态修稿，保证只保留最新的一条
     const pendingRevs = await ipc.invoke('db:revision-get-pending', baseDraft.id)
     for (const rev of pendingRevs) {
@@ -55,12 +53,13 @@ export class RefineFromReviewCommand extends BaseWorkflowCommand<string> {
 
     const createRes = await ipc.invoke('db:revision-create', {
       baseDraftId: baseDraft.id,
-      revisionIndex: revIndex,
       revisionType: 'review-fix',
       content: cleanRefined,
       wordCount: cleanRefined.length,
       userPrompt: this.params.userRefinePrompt,
-    }) as { success: boolean; id: number }
+    }) as { success: boolean; id: number; revisionIndex?: number }
+
+    const revIndex = createRes.revisionIndex ?? 0
 
     const { useEditorStore } = await import('../../../stores/editor-store')
     useEditorStore.getState().openFile({

@@ -224,7 +224,6 @@ export function registerDatabaseController() {
   // ============================================================
 ipcMain.handle('db:revision-create', async (_event, params: {
     baseDraftId: number
-    revisionIndex: number
     revisionType: 'refine' | 'review-fix'
     userPrompt?: string
     reviewSourceId?: number
@@ -232,8 +231,8 @@ ipcMain.handle('db:revision-create', async (_event, params: {
     wordCount: number
   }) => {
     try {
-      const id = RevisionRepository.create(params)
-      return { success: true, id }
+      const created = RevisionRepository.create(params)
+      return { success: true, id: created.id, revisionIndex: created.revisionIndex }
     } catch (err) {
       return { success: false, error: String(err) }
     }

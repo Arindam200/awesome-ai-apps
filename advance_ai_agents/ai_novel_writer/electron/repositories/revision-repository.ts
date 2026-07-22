@@ -46,20 +46,21 @@ function rowToMeta(row: Record<string, unknown>): RevisionMeta {
 }
 
 export class RevisionRepository {
-    /** 创建修稿（事务：先入内容池再建元数据） */
+    /**
+     * 创建修稿（事务内原子分配 revision_index，再入内容池 + 元数据）
+     * 不接受调用方传入序号，避免与落库结果不一致。
+     */
     static create(params: {
         baseDraftId: number
-        revisionIndex?: number
         revisionType: 'refine' | 'review-fix'
         userPrompt?: string
         reviewSourceId?: number
         content: string
         wordCount: number
-    }): number {
+    }): { id: number; revisionIndex: number } {
         const db = getProjectDb()
         if (!db) throw new Error('[RevisionRepository] 数据库未连接')
 
-        // 事务内原子分配 revision_index，避免 getNextIndex + create 竞态
         const tx = db.transaction(() => {
             const row = db.prepare(`
         SELECT MAX(revision_index) as maxIdx FROM revisions WHERE base_draft_id = ?
@@ -81,7 +82,7 @@ export class RevisionRepository {
                 contentId,
                 params.wordCount,
             )
-            return Number(result.lastInsertRowid)
+            return { id: Number(result.lastInsertRowid), revisionIndex }
         })
 
         return tx()
@@ -142,26 +143,34 @@ export class RevisionRepository {
         return (row.maxIdx ?? 0) + 1
     }
 
-    /** 标记为已合并 */
+    /** 标记为已合并（仅 pending → merged） */
     static markMerged(id: number, mergedToDraftId: number): void {
         const db = getProjectDb()
         if (!db) return
 
-        db.prepare(`
+        const result = db.prepare(`
       UPDATE revisions
       SET status = 'merged', merged_to_draft_id = ?, updated_at = datetime('now')
-      WHERE id = ?
+      WHERE id = ? AND status = 'pending'
     `).run(mergedToDraftId, id)
+
+        if (result.changes === 0) {
+            throw new Error(`[RevisionRepository] 无法合并修稿 #${id}：不存在或非 pending 状态`)
+        }
     }
 
-    /** 标记为已弃用 */
+    /** 标记为已弃用（仅 pending → discarded） */
     static markDiscarded(id: number): void {
         const db = getProjectDb()
         if (!db) return
 
-        db.prepare(`
+        const result = db.prepare(`
       UPDATE revisions SET status = 'discarded', updated_at = datetime('now')
-      WHERE id = ?
+      WHERE id = ? AND status = 'pending'
     `).run(id)
+
+        if (result.changes === 0) {
+            throw new Error(`[RevisionRepository] 无法弃用修稿 #${id}：不存在或非 pending 状态`)
+        }
     }
 }
