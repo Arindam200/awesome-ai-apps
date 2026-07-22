@@ -2,11 +2,11 @@
 
 > An agent that answers on-chain DEX questions (token prices, liquidity pools, OHLCV history) by calling the keyless DexPaprika MCP server.
 
-Ask it things like "what are the top WETH pools on Ethereum by volume?" or "what is PEPE trading at, and on which chain?" and it works out which DexPaprika tools to call and reads the answer back. DexPaprika's API is keyless, so the only credential you supply is your OpenAI key.
+Ask it things like "what are the top WETH pools on Ethereum by volume?" or "what is PEPE trading at, and on which chain?" and it works out which DexPaprika tools to call and reads the answer back. DexPaprika's API is keyless, so the only credential you supply is your Nebius key.
 
 ## Features
 
-- **Keyless data source.** DexPaprika needs no API key or signup. The only credential in this project is your OpenAI key.
+- **Keyless data source.** DexPaprika needs no API key or signup. The only credential in this project is your Nebius key.
 - **Real DEX market data.** Token search, pool discovery, current prices, and OHLCV history across the chains DexPaprika covers.
 - **MCP over stdio.** The agent loads the DexPaprika MCP server (`npx dexpaprika-mcp`) as its toolset, so there is no custom tool wiring to maintain.
 - **Ask your own question.** Pass a question as a command-line argument, or run with no arguments for a default query.
@@ -17,7 +17,7 @@ Ask it things like "what are the top WETH pools on Ethereum by volume?" or "what
 - **LangChain / LangGraph** for the ReAct agent loop (`create_react_agent`)
 - **langchain-mcp-adapters** to load the MCP server's tools
 - **DexPaprika MCP** (`dexpaprika-mcp`, keyless) as the data source
-- **OpenAI** (`gpt-4o` by default) for the model
+- **Nebius Token Factory** (`Qwen/Qwen3-235B-A22B-Instruct-2507` by default) for the model
 
 ## Workflow
 
@@ -29,17 +29,17 @@ The agent opens one persistent connection to the DexPaprika MCP server over stdi
 
 - Python 3.10+
 - [Node.js](https://nodejs.org) (the DexPaprika MCP server runs through `npx`)
-- An [OpenAI API key](https://platform.openai.com/api-keys)
+- A [Nebius Token Factory API key](https://tokenfactory.nebius.com/project/api-keys)
 
 ### Environment Variables
 
 Copy `.env.example` to `.env` and add your key:
 
 ```env
-OPENAI_API_KEY="your_openai_api_key"
+NEBIUS_API_KEY="your_nebius_api_key"
 
-# Optional, defaults to gpt-4o:
-# OPENAI_MODEL="gpt-4o-mini"
+# Optional, defaults to Qwen/Qwen3-235B-A22B-Instruct-2507:
+# NEBIUS_MODEL="openai/gpt-oss-120b"
 ```
 
 The DexPaprika side needs nothing. The API is public and keyless.
@@ -75,19 +75,21 @@ Sample run:
 ```
 Question: What are the top 3 WETH liquidity pools on Ethereum by 24h volume, and what DEX is each on? Also give WETH's current USD price.
 
-(agent made 2 DexPaprika tool call(s))
+(agent made 3 DexPaprika tool call(s))
 
-The top 3 WETH liquidity pools on Ethereum by 24h volume are all on Uniswap V3:
-1. Uniswap V3, WETH/USDC, 24h volume $81,784,150.62
-2. Uniswap V3, WETH/USDC, 24h volume $38,008,827.56
-3. Uniswap V3, WETH/USDT, 24h volume $30,798,091.80
-WETH's current price is about $1,879.71.
+The top 3 WETH liquidity pools on Ethereum by 24h volume are:
+1. Uniswap V3, WETH/USDC 0.05%, 24h volume $115,546,896.64
+2. Uniswap V3, WETH/USDC 0.3%, 24h volume $30,334,025.60
+3. Curve, WETH/stETH, 24h volume $14,129,442.68
+WETH's current price is about $1,922.39.
 ```
+
+(Numbers are live, so your run will differ.)
 
 The first run downloads the DexPaprika MCP server through `npx`, so give it a few extra seconds.
 
 ## Notes
 
 - The MCP server is pinned to `@latest` so `npx` never serves a stale cached build.
-- `gpt-4o-mini` works and is cheaper, but I found `gpt-4o` more reliable on multi-step pool queries. Set `OPENAI_MODEL` to switch.
+- A large, capable model handles the multi-step pool queries reliably. Very small models sometimes send numeric arguments (like a result limit) as strings, which the MCP rejects, so they can stall. `openai/gpt-oss-120b` is a good lighter alternative; set `NEBIUS_MODEL` to switch.
 - More on the data source: [DexPaprika API docs](https://docs.dexpaprika.com) and the [MCP server](https://github.com/coinpaprika/dexpaprika-mcp).

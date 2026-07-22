@@ -14,7 +14,7 @@ import warnings
 from dotenv import load_dotenv
 from langchain_mcp_adapters.client import MultiServerMCPClient
 from langchain_mcp_adapters.tools import load_mcp_tools
-from langchain_openai import ChatOpenAI
+from langchain_nebius import ChatNebius
 from langgraph.prebuilt import create_react_agent
 
 load_dotenv()
@@ -69,9 +69,14 @@ async def main() -> None:
     # process on every tool call.
     async with client.session("dexpaprika") as session:
         tools = await load_mcp_tools(session)
-        # gpt-4o handles the multi-step tool use reliably; set OPENAI_MODEL to a
-        # cheaper model (e.g. gpt-4o-mini) if you prefer.
-        model = ChatOpenAI(model=os.environ.get("OPENAI_MODEL", "gpt-4o"), temperature=0)
+        # A large, capable model handles the multi-step tool use reliably. Very
+        # small models sometimes send numeric arguments as strings and stall, so
+        # this defaults to a strong one; set NEBIUS_MODEL to switch (for example
+        # openai/gpt-oss-120b also works well).
+        model = ChatNebius(
+            model=os.environ.get("NEBIUS_MODEL", "Qwen/Qwen3-235B-A22B-Instruct-2507"),
+            temperature=0,
+        )
         agent = create_react_agent(model, tools, prompt=SYSTEM_PROMPT)
         result = await agent.ainvoke(
             {"messages": [{"role": "user", "content": question}]},
