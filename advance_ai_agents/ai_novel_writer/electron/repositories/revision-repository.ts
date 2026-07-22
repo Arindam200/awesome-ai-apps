@@ -146,7 +146,7 @@ export class RevisionRepository {
     /** 标记为已合并（仅 pending → merged） */
     static markMerged(id: number, mergedToDraftId: number): void {
         const db = getProjectDb()
-        if (!db) return
+        if (!db) throw new Error('[RevisionRepository] 数据库未连接')
 
         const result = db.prepare(`
       UPDATE revisions
@@ -162,7 +162,7 @@ export class RevisionRepository {
     /** 标记为已弃用（仅 pending → discarded） */
     static markDiscarded(id: number): void {
         const db = getProjectDb()
-        if (!db) return
+        if (!db) throw new Error('[RevisionRepository] 数据库未连接')
 
         const result = db.prepare(`
       UPDATE revisions SET status = 'discarded', updated_at = datetime('now')
