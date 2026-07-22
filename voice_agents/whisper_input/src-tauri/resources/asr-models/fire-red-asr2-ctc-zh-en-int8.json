@@ -1,0 +1,28 @@
+{
+  "modelId": "sherpa-onnx-fire-red-asr2-ctc-zh_en-int8-2026-02-25",
+  "version": "2026-02-25",
+  "files": [
+    {
+      "path": "sherpa-onnx-fire-red-asr2-ctc-zh_en-int8-2026-02-25/sherpa-onnx-fire-red-asr2-ctc-zh_en-int8-2026-02-25/model.int8.onnx",
+      "size": 775861420,
+      "sha256": "ca3dbabd82170110cc0b343c2890866d449984bc9cd92b9a18371ff80a81bb99"
+    },
+    {
+      "path": "sherpa-onnx-fire-red-asr2-ctc-zh_en-int8-2026-02-25/sherpa-onnx-fire-red-asr2-ctc-zh_en-int8-2026-02-25/tokens.txt",
+      "size": 79172,
+      "sha256": "1bc613de2112d257e61a349c3e72d1b1a9cf19c33d3ca954197ad2171e5ea07b"
+    },
+    {
+      "path": "silero_vad.onnx",
+      "size": 643854,
+      "sha256": "9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6"
+    }
+  ],
+  "sources": [
+    {
+      "id": "github-release",
+      "label": "官方 GitHub 源",
+      "baseUrl": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models"
+    }
+  ]
+}

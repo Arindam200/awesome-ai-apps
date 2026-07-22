@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --ol-white: #ffffff;
+  --ol-canvas: #f5f5f6;
+  --ol-surface: #ffffff;
+  --ol-surface-2: #f8f8f9;
+  --ol-surface-3: #f1f2f4;
+  --ol-line: rgba(0, 0, 0, 0.09);
+  --ol-line-strong: rgba(0, 0, 0, 0.14);
+  --ol-line-soft: rgba(0, 0, 0, 0.05);
+
+  --ol-ink: #0a0a0b;
+  --ol-ink-2: #2a2a2d;
+  --ol-ink-3: rgba(10, 10, 11, 0.62);
+  --ol-ink-4: rgba(10, 10, 11, 0.56);
+  --ol-ink-5: rgba(10, 10, 11, 0.24);
+
+  --ol-blue: #2563eb;
+  --ol-blue-hover: #1d4ed8;
+  --ol-blue-soft: #eff4ff;
+  --ol-blue-ring: rgba(37, 99, 235, 0.22);
+  --ol-nav-active-bg: #eceef2;
+  --ol-command-bg: rgba(255, 255, 255, 0.72);
+  --ol-command-bg-hover: rgba(255, 255, 255, 0.95);
+
+  --ol-glass-bg: rgba(255, 255, 255, 0.88);
+  --ol-glass-bg-strong: rgba(255, 255, 255, 0.94);
+  --ol-glass-border: rgba(0, 0, 0, 0.08);
+  --ol-glass-blur: 10px;
+  --ol-glass-blur-strong: 14px;
+
+  --ol-motion-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ol-motion-soft: cubic-bezier(0.22, 0.8, 0.22, 1);
+  --ol-motion-quick: cubic-bezier(0.2, 0, 0, 1);
+
+  --ol-shadow-sm: 0 1px 2px rgba(15, 17, 22, 0.04), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+  --ol-shadow-md: 0 1px 2px rgba(15, 17, 22, 0.05), 0 6px 24px -12px rgba(15, 17, 22, 0.10), 0 0 0 0.5px rgba(0, 0, 0, 0.04);
+  --ol-shadow-lg: 0 20px 60px -20px rgba(15, 17, 22, 0.18), 0 8px 32px -16px rgba(15, 17, 22, 0.10), 0 0 0 0.5px rgba(0, 0, 0, 0.06);
+  --ol-shadow-xl: 0 40px 120px -40px rgba(15, 17, 22, 0.30), 0 24px 60px -24px rgba(15, 17, 22, 0.15), 0 0 0 0.5px rgba(0, 0, 0, 0.06);
+  --ol-card-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 252, 255, 0.96));
+  --ol-card-shadow: 0 0 0 1px rgba(15, 23, 42, 0.055), 0 1px 2px -1px rgba(15, 23, 42, 0.08), 0 16px 38px -30px rgba(15, 23, 42, 0.34);
+
+  --ol-r-sm: 6px;
+  --ol-r-md: 10px;
+  --ol-r-lg: 14px;
+  --ol-r-xl: 18px;
+  --ol-r-2xl: 22px;
+  --ol-r-pill: 999px;
+
+  --ol-font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --ol-font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+
+  --ol-ok: #16a34a;
+  --ol-ok-soft: #ecfdf5;
+  --ol-warn: #d97706;
+  --ol-warn-soft: #fff7ed;
+  --ol-err: #dc2626;
+}
+
+:root[data-theme='dark'] {
+  --ol-white: #ffffff;
+  --ol-canvas: #1f2023;
+  --ol-surface: #25262a;
+  --ol-surface-2: #2b2c31;
+  --ol-surface-3: #34363b;
+  --ol-line: rgba(255, 255, 255, 0.10);
+  --ol-line-strong: rgba(255, 255, 255, 0.18);
+  --ol-line-soft: rgba(255, 255, 255, 0.06);
+  --ol-ink: #f4f4f5;
+  --ol-ink-2: #d9dadd;
+  --ol-ink-3: rgba(244, 244, 245, 0.68);
+  --ol-ink-4: rgba(244, 244, 245, 0.62);
+  --ol-ink-5: rgba(244, 244, 245, 0.30);
+  --ol-blue: #6ea8fe;
+  --ol-blue-hover: #8bbcff;
+  --ol-blue-soft: rgba(110, 168, 254, 0.16);
+  --ol-blue-ring: rgba(110, 168, 254, 0.30);
+  --ol-nav-active-bg: #32343a;
+  --ol-command-bg: rgba(49, 50, 55, 0.82);
+  --ol-command-bg-hover: rgba(62, 64, 70, 0.96);
+  --ol-glass-bg: rgba(35, 36, 40, 0.90);
+  --ol-glass-bg-strong: rgba(39, 40, 45, 0.96);
+  --ol-glass-border: rgba(255, 255, 255, 0.10);
+  --ol-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.22), 0 0 0 0.5px rgba(255, 255, 255, 0.04);
+  --ol-shadow-md: 0 1px 2px rgba(0, 0, 0, 0.22), 0 8px 24px -14px rgba(0, 0, 0, 0.42), 0 0 0 0.5px rgba(255, 255, 255, 0.04);
+  --ol-shadow-lg: 0 20px 60px -22px rgba(0, 0, 0, 0.55), 0 8px 32px -18px rgba(0, 0, 0, 0.45), 0 0 0 0.5px rgba(255, 255, 255, 0.05);
+  --ol-shadow-xl: 0 40px 120px -42px rgba(0, 0, 0, 0.64), 0 24px 60px -28px rgba(0, 0, 0, 0.52), 0 0 0 0.5px rgba(255, 255, 255, 0.05);
+  --ol-card-bg: linear-gradient(180deg, rgba(42, 43, 48, 0.98), rgba(34, 35, 40, 0.96));
+  --ol-card-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 14px 36px -28px rgba(0, 0, 0, 0.62);
+  --ol-ok-soft: rgba(22, 163, 74, 0.16);
+  --ol-warn-soft: rgba(217, 119, 6, 0.16);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--ol-font-sans);
+  color: var(--ol-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv11', 'ss01', 'ss03';
+}
+
+.ol-noscrollbar::-webkit-scrollbar { display: none; }
+.ol-noscrollbar { scrollbar-width: none; }
+
+.ol-thinscroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.ol-thinscroll::-webkit-scrollbar-track { background: transparent; }
+.ol-thinscroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 3px;
+}
+.ol-thinscroll::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.28); }
+.ol-thinscroll { scrollbar-width: thin; scrollbar-color: rgba(0, 0, 0, 0.18) transparent; }
+
+.ol-glass {
+  background: var(--ol-glass-bg);
+  backdrop-filter: blur(var(--ol-glass-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--ol-glass-blur)) saturate(160%);
+  border: 0.5px solid var(--ol-glass-border);
+}
+
+.ol-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--ol-blue-ring);
+}
