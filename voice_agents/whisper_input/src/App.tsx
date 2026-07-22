@@ -34,6 +34,10 @@ export function App({ isCapsule, isQa }: AppProps) {
     return <QaPanel />;
   }
 
+  return <MainApp />;
+}
+
+function MainApp() {
   const os = detectOS();
   // Windows 启动不应被权限探测阻塞首屏。
   const [gate, setGate] = useState<Gate>(isTauri ? 'checking' : 'ready');

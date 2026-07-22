@@ -225,6 +225,7 @@ impl QwenRealtimeASR {
     pub async fn send_last_frame(&self) -> Result<(), QwenRealtimeASRError> {
         let started = self.session_started.notified();
         tokio::pin!(started);
+        started.as_mut().enable();
         if !self.state.lock().session_started {
             tokio::time::timeout(FINAL_RESULT_TIMEOUT, &mut started)
                 .await

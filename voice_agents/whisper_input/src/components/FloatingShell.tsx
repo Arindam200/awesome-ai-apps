@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ComponentType } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Icon } from './Icon';
 import { WindowChrome, detectOS, type OS } from './WindowChrome';
@@ -11,9 +11,12 @@ import { Vocab } from '../pages/Vocab';
 import { Style } from '../pages/Style';
 import { Settings } from '../pages/Settings';
 import { applyFontScale, readFontScale } from '../lib/fontScale';
+import { isHotkeyModeMigrationNoticeActive, HOTKEY_MODE_MIGRATION_ACK_KEY, HOTKEY_MODE_MIGRATION_DEFERRED_KEY, shouldShowHotkeyModeMigrationPrompt } from '../lib/hotkeyMigration';
+import { getCredentials } from '../lib/ipc';
 import i18n, { setLocalePreference } from '../i18n';
 import { APP_TABS } from '../lib/appNavigation';
 import { PRODUCT_NAME, PRODUCT_NAME_ZH } from '../lib/product';
+import { PROVIDER_SETUP_PROMPT_DEFERRED_KEY, shouldShowProviderSetupPrompt } from '../lib/providerSetup';
 import { type SettingsSectionId } from '../pages/Settings';
 import { useAppState, type AppTab } from '../state/useAppState';
 
@@ -77,6 +80,7 @@ function FloatingShellBody({
   const { t } = useTranslation();
   const { currentTab, setCurrentTab } = useAppState(initialSettings ? 'settings' : initialTab);
   const [settingsInitialSection, setSettingsInitialSection] = useState<SettingsSectionId | undefined>(initialSettingsSection);
+  const [startupPrompt, setStartupPrompt] = useState<'provider' | 'hotkey' | null>(null);
 
   const [displayTab, setDisplayTab] = useState<AppTab>(currentTab);
   const [tabPhase, setTabPhase] = useState<'idle' | 'exiting'>('idle');
@@ -98,10 +102,10 @@ function FloatingShellBody({
     () => NAV_BASE.map(b => ({ ...b, name: t(`nav.${b.id}`) })),
     [t],
   );
-  const openSettingsPage = (section?: SettingsSectionId) => {
+  const openSettingsPage = useCallback((section?: SettingsSectionId) => {
     setSettingsInitialSection(section);
     setCurrentTab('settings');
-  };
+  }, [setCurrentTab]);
   const openHelp = () => openSettingsPage('about');
   const Page = (NAV.find((n) => n.id === displayTab) ?? NAV[0]).cmp;
   const sidebarItems = useMemo(
@@ -112,19 +116,65 @@ function FloatingShellBody({
       active: currentTab === n.id,
       onClick: () => n.id === 'settings' ? openSettingsPage() : setCurrentTab(n.id),
     })),
-    [NAV, currentTab, setCurrentTab],
+    [NAV, currentTab, openSettingsPage, setCurrentTab],
   );
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.metaKey && e.key === ',') {
+      const modifierPressed = os === 'mac' ? e.metaKey : e.ctrlKey;
+      if (modifierPressed && e.key === ',') {
         e.preventDefault();
         openSettingsPage();
       }
     };
     window.addEventListener('keydown', onKeyDown, true);
     return () => window.removeEventListener('keydown', onKeyDown, true);
-  }, [setCurrentTab]);
+  }, [openSettingsPage, os]);
+
+  useEffect(() => {
+    if (os !== 'win') return;
+    let cancelled = false;
+
+    const loadStartupPrompt = async () => {
+      const credentials = await getCredentials();
+      if (cancelled) return;
+      if (shouldShowProviderSetupPrompt(credentials, window.sessionStorage.getItem(PROVIDER_SETUP_PROMPT_DEFERRED_KEY))) {
+        setStartupPrompt('provider');
+      } else if (shouldShowHotkeyModeMigrationPrompt(
+        window.localStorage.getItem(HOTKEY_MODE_MIGRATION_ACK_KEY),
+        window.sessionStorage.getItem(HOTKEY_MODE_MIGRATION_DEFERRED_KEY),
+      )) {
+        setStartupPrompt('hotkey');
+      }
+    };
+
+    void loadStartupPrompt().catch(error => {
+      console.warn('[startup] failed to determine setup prompt', error);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [os]);
+
+  const deferStartupPrompt = () => {
+    if (startupPrompt === 'provider') {
+      window.sessionStorage.setItem(PROVIDER_SETUP_PROMPT_DEFERRED_KEY, '1');
+    } else if (startupPrompt === 'hotkey') {
+      window.sessionStorage.setItem(HOTKEY_MODE_MIGRATION_DEFERRED_KEY, '1');
+    }
+    setStartupPrompt(null);
+  };
+
+  const openStartupPromptSettings = () => {
+    if (startupPrompt === 'provider') {
+      window.sessionStorage.setItem(PROVIDER_SETUP_PROMPT_DEFERRED_KEY, '1');
+      openSettingsPage('models');
+    } else if (startupPrompt === 'hotkey') {
+      window.localStorage.setItem(HOTKEY_MODE_MIGRATION_ACK_KEY, '1');
+      openSettingsPage('recording');
+    }
+    setStartupPrompt(null);
+  };
 
   const switchLocale = () => {
     const currentLanguage = (i18n.resolvedLanguage || i18n.language || '').toLowerCase();
@@ -143,6 +193,13 @@ function FloatingShellBody({
             onOpenHelp={openHelp}
             onToggleLocale={switchLocale}
           />
+        }
+        overlays={
+          startupPrompt === 'provider' ? (
+            <ProviderSetupPrompt onLater={deferStartupPrompt} onOpenSettings={openStartupPromptSettings} />
+          ) : startupPrompt === 'hotkey' && isHotkeyModeMigrationNoticeActive() ? (
+            <HotkeyModeMigrationPrompt onLater={deferStartupPrompt} onOpenSettings={openStartupPromptSettings} />
+          ) : null
         }
       >
         <PageContainer key={displayTab} phase={tabPhase}>

@@ -6,6 +6,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+. (Join-Path $PSScriptRoot "windows-common.ps1")
+
 $env:PATH = "$env:USERPROFILE\.cargo\bin;$env:USERPROFILE\scoop\persist\rustup\.cargo\bin;$env:USERPROFILE\scoop\apps\rustup\current\.cargo\bin;$env:USERPROFILE\scoop\apps\mingw\current\bin;$env:PATH"
 
 function Test-Command($Name) {
@@ -101,38 +103,6 @@ function Test-IsAdministrator {
   return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
-function Test-WebView2Runtime {
-  $paths = @(
-    "HKLM:\SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
-    "HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
-  )
-  foreach ($path in $paths) {
-    if (Test-Path $path) {
-      Write-Host "[ok] WebView2 Runtime registry key found"
-      return $true
-    }
-  }
-
-  $runtimeRoots = @(
-    "${env:ProgramFiles(x86)}\Microsoft\EdgeWebView\Application",
-    "${env:ProgramFiles}\Microsoft\EdgeWebView\Application"
-  )
-  foreach ($root in $runtimeRoots) {
-    if (-not (Test-Path $root)) {
-      continue
-    }
-    $runtime = Get-ChildItem -LiteralPath $root -Recurse -Filter "msedgewebview2.exe" -ErrorAction SilentlyContinue |
-      Select-Object -First 1
-    if ($runtime) {
-      Write-Host "[ok] WebView2 Runtime executable -> $($runtime.FullName)"
-      return $true
-    }
-  }
-
-  Write-Host "[warn] WebView2 Runtime registry key not found; install Evergreen runtime if the app window is blank."
-  return $false
-}
-
 function Test-RequiredFile($Path, $MissingMessage) {
   if (Test-Path $Path) {
     Write-Host "[ok] $(Split-Path -Leaf $Path) -> $Path"
@@ -171,8 +141,8 @@ if ($Toolchain -eq "all" -or $Toolchain -eq "msvc") {
       $failed = $true
     }
     if (-not (Test-RequiredFile `
-        (Join-Path $binariesRoot "sherpa-onnx-offline.exe") `
-        "Missing sherpa-onnx-offline.exe. Run scripts\check-sherpa-assets.ps1 to download and verify the pinned sherpa runtime before packaging with -IncludeLocalAsrExperiment.")) {
+        (Join-Path $binariesRoot "sherpa-onnx-offline-$windowsMsvcTarget.exe") `
+        "Missing sherpa-onnx-offline-$windowsMsvcTarget.exe. Run scripts\check-sherpa-assets.ps1 to download and verify the pinned sherpa runtime before packaging with -IncludeLocalAsrExperiment.")) {
       $failed = $true
     }
   } else {

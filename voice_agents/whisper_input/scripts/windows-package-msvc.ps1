@@ -8,6 +8,8 @@ param(
 
 $ErrorActionPreference = "Stop"
 
+. (Join-Path $PSScriptRoot "windows-common.ps1")
+
 $appRoot = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 $releaseRoot = Join-Path $appRoot "src-tauri\target\x86_64-pc-windows-msvc\release"
 if ([string]::IsNullOrWhiteSpace($ArtifactsRoot)) {
@@ -163,37 +165,6 @@ function Get-NsisPath {
   return Join-Path $bundleDir "Whisper_Input_$(Get-PackageVersion)_x64-setup.exe"
 }
 
-function Test-WebView2Runtime {
-  $paths = @(
-    "HKLM:\SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
-    "HKLM:\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
-  )
-  foreach ($path in $paths) {
-    if (Test-Path $path) {
-      Write-Host "[ok] WebView2 Runtime registry key found"
-      return
-    }
-  }
-
-  $runtimeRoots = @(
-    "${env:ProgramFiles(x86)}\Microsoft\EdgeWebView\Application",
-    "${env:ProgramFiles}\Microsoft\EdgeWebView\Application"
-  )
-  foreach ($root in $runtimeRoots) {
-    if (-not (Test-Path $root)) {
-      continue
-    }
-    $runtime = Get-ChildItem -LiteralPath $root -Recurse -Filter "msedgewebview2.exe" -ErrorAction SilentlyContinue |
-      Select-Object -First 1
-    if ($runtime) {
-      Write-Host "[ok] WebView2 Runtime executable -> $($runtime.FullName)"
-      return
-    }
-  }
-
-  Write-Warning "WebView2 Runtime registry key not found. Install Evergreen runtime if the app window is blank."
-}
-
 function Invoke-MsvcBuild {
   param(
     [string]$VsDevCmd,
@@ -295,15 +266,11 @@ function Reset-ArtifactsRoot {
   }
 
   $resolvedAppRoot = (Resolve-Path $appRoot).Path
-  $projectRoot = (Resolve-Path (Join-Path $appRoot "..")).Path
-  $allowedProjectArtifactsRoot = Join-Path $projectRoot "app"
   if (Test-Path $ArtifactsRoot) {
     $resolvedArtifactsRoot = (Resolve-Path $ArtifactsRoot).Path
     $insideAppRoot = $resolvedArtifactsRoot.Equals($resolvedAppRoot, [System.StringComparison]::OrdinalIgnoreCase) -or
       $resolvedArtifactsRoot.StartsWith("$resolvedAppRoot\", [System.StringComparison]::OrdinalIgnoreCase)
-    $insideProjectArtifactsRoot = $resolvedArtifactsRoot.Equals($allowedProjectArtifactsRoot, [System.StringComparison]::OrdinalIgnoreCase) -or
-      $resolvedArtifactsRoot.StartsWith("$allowedProjectArtifactsRoot\", [System.StringComparison]::OrdinalIgnoreCase)
-    if (-not $insideAppRoot -and -not $insideProjectArtifactsRoot) {
+    if (-not $insideAppRoot) {
       throw "-CleanArtifacts refuses to delete output outside the app root: $resolvedArtifactsRoot"
     }
     Remove-Item -LiteralPath $resolvedArtifactsRoot -Recurse -Force

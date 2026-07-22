@@ -461,8 +461,10 @@ mod platform {
         ) -> CfRunLoopSourceRef;
         fn CFRunLoopGetCurrent() -> CfRunLoopRef;
         fn CFRunLoopAddSource(rl: CfRunLoopRef, source: CfRunLoopSourceRef, mode: CfStringRef);
+        fn CFRunLoopRemoveSource(rl: CfRunLoopRef, source: CfRunLoopSourceRef, mode: CfStringRef);
         fn CFRunLoopRun();
         fn CFRunLoopStop(rl: CfRunLoopRef);
+        fn CFRelease(cf: *const c_void);
         static kCFRunLoopCommonModes: CfStringRef;
     }
 
@@ -526,6 +528,9 @@ mod platform {
             // CFRunLoopRun 阻塞直到 CFRunLoopStop 被调用（由 MacHotkeyAdapter::shutdown
             // 触发）。返回后 listener 线程清理 context 并自然退出。
             CFRunLoopRun();
+            CFRunLoopRemoveSource(runloop, source, kCFRunLoopCommonModes);
+            CFRelease(source.cast());
+            CFRelease(tap.cast());
             let _ = Box::from_raw(context);
         }
     }

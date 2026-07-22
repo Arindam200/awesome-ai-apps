@@ -656,7 +656,7 @@ impl OpenAICompatibleLLMProvider {
         // SSE 流：一帧 = 若干行，以 `\n\n` 分隔。每行如 `data: {...}` 或 `data: [DONE]`。
         // 一个 chunk() 可能包含半帧或多帧；用 buffer 累积后再按 `\n\n` 切。
         let mut response = response;
-        let mut buffer = String::new();
+        let mut byte_buffer = Vec::new();
         let mut full_text = String::new();
         let mut stream_done = false;
         loop {
@@ -671,13 +671,9 @@ impl OpenAICompatibleLLMProvider {
                 .await
                 .map_err(|e| LLMError::Network(e.to_string()))?;
             let Some(chunk) = chunk_opt else { break };
-            let s = std::str::from_utf8(&chunk)
-                .map_err(|e| LLMError::Network(format!("non-utf8 SSE chunk: {e}")))?;
-            buffer.push_str(s);
+            byte_buffer.extend_from_slice(&chunk);
 
-            while let Some(idx) = buffer.find('\n') {
-                let line = buffer[..idx].trim_end_matches('\r').to_string();
-                buffer.drain(..idx + 1);
+            for line in drain_complete_sse_lines(&mut byte_buffer)? {
                 let Some(payload) = line
                     .strip_prefix("data: ")
                     .or_else(|| line.strip_prefix("data:"))
@@ -719,15 +715,20 @@ impl OpenAICompatibleLLMProvider {
                 }
             }
             if !stream_done {
-                if let Some(payload) = buffer
-                    .strip_prefix("data: ")
-                    .or_else(|| buffer.strip_prefix("data:"))
+                let trailing_payload = std::str::from_utf8(&byte_buffer)
+                    .ok()
+                    .and_then(|buffer| {
+                        buffer
+                            .strip_prefix("data: ")
+                            .or_else(|| buffer.strip_prefix("data:"))
+                    })
                     .map(str::trim)
-                {
+                    .map(str::to_owned);
+                if let Some(payload) = trailing_payload {
                     if payload == "[DONE]" {
                         stream_done = true;
-                        buffer.clear();
-                    } else if let Ok(v) = serde_json::from_str::<Value>(payload) {
+                        byte_buffer.clear();
+                    } else if let Ok(v) = serde_json::from_str::<Value>(&payload) {
                         if let Some(delta) = v["choices"][0]["delta"]["content"].as_str() {
                             if !delta.is_empty() {
                                 if !ttft_logged {
@@ -743,7 +744,7 @@ impl OpenAICompatibleLLMProvider {
                                 on_delta(delta);
                             }
                         }
-                        buffer.clear();
+                        byte_buffer.clear();
                     }
                 }
             }
@@ -832,7 +833,7 @@ impl OpenAICompatibleLLMProvider {
         }
 
         let mut response = response;
-        let mut buffer = String::new();
+        let mut byte_buffer = Vec::new();
         let mut full_text = String::new();
         let mut delta_count: u64 = 0;
         let mut stream_done = false;
@@ -850,13 +851,9 @@ impl OpenAICompatibleLLMProvider {
                 .await
                 .map_err(|e| LLMError::Network(e.to_string()))?;
             let Some(chunk) = chunk_opt else { break };
-            let s = std::str::from_utf8(&chunk)
-                .map_err(|e| LLMError::Network(format!("non-utf8 SSE chunk: {e}")))?;
-            buffer.push_str(s);
+            byte_buffer.extend_from_slice(&chunk);
 
-            while let Some(idx) = buffer.find('\n') {
-                let line = buffer[..idx].trim_end_matches('\r').to_string();
-                buffer.drain(..idx + 1);
+            for line in drain_complete_sse_lines(&mut byte_buffer)? {
                 let Some(payload) = line
                     .strip_prefix("data: ")
                     .or_else(|| line.strip_prefix("data:"))
@@ -899,15 +896,20 @@ impl OpenAICompatibleLLMProvider {
                 }
             }
             if !stream_done {
-                if let Some(payload) = buffer
-                    .strip_prefix("data: ")
-                    .or_else(|| buffer.strip_prefix("data:"))
+                let trailing_payload = std::str::from_utf8(&byte_buffer)
+                    .ok()
+                    .and_then(|buffer| {
+                        buffer
+                            .strip_prefix("data: ")
+                            .or_else(|| buffer.strip_prefix("data:"))
+                    })
                     .map(str::trim)
-                {
+                    .map(str::to_owned);
+                if let Some(payload) = trailing_payload {
                     if payload == "[DONE]" {
                         stream_done = true;
-                        buffer.clear();
-                    } else if let Ok(v) = serde_json::from_str::<Value>(payload) {
+                        byte_buffer.clear();
+                    } else if let Ok(v) = serde_json::from_str::<Value>(&payload) {
                         if let Some(delta) = v["choices"][0]["delta"]["content"].as_str() {
                             if !delta.is_empty() {
                                 if !ttft_logged {
@@ -924,7 +926,7 @@ impl OpenAICompatibleLLMProvider {
                                 on_delta(delta);
                             }
                         }
-                        buffer.clear();
+                        byte_buffer.clear();
                     }
                 }
             }
@@ -1242,7 +1244,7 @@ impl CodexOAuthLLMProvider {
         }
 
         let mut response = response;
-        let mut buffer = String::new();
+        let mut byte_buffer = Vec::new();
         let mut full_text = String::new();
         let mut final_text = String::new();
         loop {
@@ -1255,18 +1257,18 @@ impl CodexOAuthLLMProvider {
                 .await
                 .map_err(|e| LLMError::Network(e.to_string()))?;
             let Some(chunk) = chunk_opt else { break };
-            let s = std::str::from_utf8(&chunk)
-                .map_err(|e| LLMError::Network(format!("non-utf8 SSE chunk: {e}")))?;
-            buffer.push_str(s);
+            byte_buffer.extend_from_slice(&chunk);
 
-            while let Some((idx, delimiter_len)) = find_sse_event_delimiter(&buffer) {
-                let event = buffer[..idx].to_string();
-                buffer.drain(..idx + delimiter_len);
+            for event in drain_complete_sse_events(&mut byte_buffer)? {
                 handle_codex_sse_event(&event, &mut full_text, &mut final_text, &on_delta);
             }
         }
-        if !buffer.trim().is_empty() {
-            handle_codex_sse_event(&buffer, &mut full_text, &mut final_text, &on_delta);
+        if !byte_buffer.is_empty() {
+            let trailing_event = String::from_utf8(byte_buffer)
+                .map_err(|e| LLMError::Network(format!("non-utf8 SSE event: {e}")))?;
+            if !trailing_event.trim().is_empty() {
+                handle_codex_sse_event(&trailing_event, &mut full_text, &mut final_text, &on_delta);
+            }
         }
 
         if full_text.is_empty() && !final_text.is_empty() {
@@ -1336,13 +1338,39 @@ fn chat_completions_url(base_url: &str) -> String {
     format!("{}/chat/completions", without_trailing)
 }
 
-fn find_sse_event_delimiter(buffer: &str) -> Option<(usize, usize)> {
-    match (buffer.find("\n\n"), buffer.find("\r\n\r\n")) {
-        (Some(lf), Some(crlf)) if crlf < lf => Some((crlf, 4)),
-        (Some(lf), _) => Some((lf, 2)),
-        (None, Some(crlf)) => Some((crlf, 4)),
-        (None, None) => None,
+fn drain_complete_sse_lines(buffer: &mut Vec<u8>) -> Result<Vec<String>, LLMError> {
+    let mut lines = Vec::new();
+    while let Some(end) = buffer.iter().position(|byte| *byte == b'\n') {
+        let mut line: Vec<u8> = buffer.drain(..=end).collect();
+        line.pop();
+        if line.last() == Some(&b'\r') {
+            line.pop();
+        }
+        let line = String::from_utf8(line)
+            .map_err(|e| LLMError::Network(format!("non-utf8 SSE line: {e}")))?;
+        lines.push(line);
     }
+    Ok(lines)
+}
+
+fn drain_complete_sse_events(buffer: &mut Vec<u8>) -> Result<Vec<String>, LLMError> {
+    let mut events = Vec::new();
+    loop {
+        let crlf = buffer.windows(4).position(|window| window == b"\r\n\r\n");
+        let lf = buffer.windows(2).position(|window| window == b"\n\n");
+        let (end, delimiter_len) = match (crlf, lf) {
+            (Some(crlf), Some(lf)) if crlf <= lf => (crlf, 4),
+            (Some(_), Some(lf)) => (lf, 2),
+            (Some(crlf), None) => (crlf, 4),
+            (None, Some(lf)) => (lf, 2),
+            (None, None) => break,
+        };
+        let event: Vec<u8> = buffer.drain(..end + delimiter_len).take(end).collect();
+        let event = String::from_utf8(event)
+            .map_err(|e| LLMError::Network(format!("non-utf8 SSE event: {e}")))?;
+        events.push(event);
+    }
+    Ok(events)
 }
 
 pub(crate) fn http_client_builder(base_url: &str, timeout_secs: u64) -> reqwest::ClientBuilder {
@@ -3636,13 +3664,21 @@ mod tests {
     }
 
     #[test]
-    fn sse_event_delimiter_accepts_lf_and_crlf_frames() {
-        assert_eq!(find_sse_event_delimiter("data: one\n\nrest"), Some((9, 2)));
+    fn sse_buffers_preserve_split_utf8_and_frame_delimiters() {
+        let mut lines = b"data: \xE4\xBD".to_vec();
+        assert!(drain_complete_sse_lines(&mut lines).unwrap().is_empty());
+        lines.extend_from_slice(b"\xA0\n");
         assert_eq!(
-            find_sse_event_delimiter("data: one\r\n\r\nrest"),
-            Some((9, 4))
+            drain_complete_sse_lines(&mut lines).unwrap(),
+            vec!["data: 你"]
         );
-        assert_eq!(find_sse_event_delimiter("data: partial"), None);
+
+        let mut events = b"data: one\r\n\r\ndata: two\n\npartial".to_vec();
+        assert_eq!(
+            drain_complete_sse_events(&mut events).unwrap(),
+            vec!["data: one", "data: two"]
+        );
+        assert_eq!(events, b"partial");
     }
 
     #[test]

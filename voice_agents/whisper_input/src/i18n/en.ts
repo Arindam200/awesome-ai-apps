@@ -101,6 +101,10 @@ export const en: typeof zhCN = {
       openSettings: 'Open Recording',
     },
   },
+  sidebar: {
+    version: 'Version {{version}}',
+    tagline: 'Cloud voice input',
+  },
   onboarding: {
     welcome: 'Welcome to Whisper Input',
     intro: 'Finish cloud provider setup, permissions, and hotkey checks before dictating into any text field.',

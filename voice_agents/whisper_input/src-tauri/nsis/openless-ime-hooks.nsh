@@ -101,6 +101,8 @@
 !macro NSIS_HOOK_POSTUNINSTALL
   Delete "$INSTDIR\windows-ime\x64\OpenLessIme.dll"
   Delete "$INSTDIR\windows-ime\x86\OpenLessIme.dll"
+  Delete "$INSTDIR\windows-ime\x64\OpenLessIme.dll.new"
+  Delete "$INSTDIR\windows-ime\x86\OpenLessIme.dll.new"
   RMDir "$INSTDIR\windows-ime\x64"
   RMDir "$INSTDIR\windows-ime\x86"
   RMDir "$INSTDIR\windows-ime"

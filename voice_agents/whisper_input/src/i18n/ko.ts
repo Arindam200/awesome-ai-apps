@@ -103,6 +103,10 @@ export const ko: typeof zhCN = {
       openSettings: '녹음 설정 열기',
     },
   },
+  sidebar: {
+    version: '버전 {{version}}',
+    tagline: '클라우드 음성 입력',
+  },
   onboarding: {
     ...en.onboarding,
     welcome: 'Whisper Input 에 오신 것을 환영합니다',

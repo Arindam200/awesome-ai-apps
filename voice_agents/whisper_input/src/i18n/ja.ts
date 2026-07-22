@@ -103,6 +103,10 @@ export const ja: typeof zhCN = {
       openSettings: '録音設定を開く',
     },
   },
+  sidebar: {
+    version: 'バージョン {{version}}',
+    tagline: 'クラウド音声入力',
+  },
   onboarding: {
     ...en.onboarding,
     welcome: 'Whisper Input へようこそ',

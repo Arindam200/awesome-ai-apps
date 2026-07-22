@@ -16,6 +16,7 @@ import {
   DOUBAO_ASR_PROVIDER_ID,
   DOUBAO_LLM_PROVIDER_ID,
   GEMINI_PROVIDER_ID,
+  LOCAL_ASR_PROVIDER_ID,
   OPENAI_COMPATIBLE_PROVIDER_ID,
   QWEN_LLM_PROVIDER_ID,
   QWEN_REALTIME_ASR_PROVIDER_ID,
@@ -41,6 +42,9 @@ interface OverviewProps {
 const ASR_NAME_KEY_BY_ID: Record<string, string> = {
   [QWEN_REALTIME_ASR_PROVIDER_ID]: 'asrQwenRealtime',
   [DOUBAO_ASR_PROVIDER_ID]: 'asrDoubaoStreaming',
+  [LOCAL_ASR_PROVIDER_ID]: 'asrQingyuLocalSpeech',
+  'foundry-local-whisper': 'asrFoundryLocalWhisper',
+  'local-qwen3': 'asrLocalQwen3',
 };
 
 const LLM_NAME_KEY_BY_ID: Record<string, string> = {
@@ -121,13 +125,8 @@ export function Overview({ onOpenHistory, onOpenSettings }: OverviewProps) {
   const llmNameKey = LLM_NAME_KEY_BY_ID[llmProviderId];
   const asrProviderName = asrNameKey
     ? t(`settings.providers.presets.${asrNameKey}`)
-    : t('settings.providers.presets.asrQwenRealtime');
-  const asrProviderSubname =
-    asrProviderId === QWEN_REALTIME_ASR_PROVIDER_ID
-      ? 'Qwen realtime'
-      : asrProviderId === DOUBAO_ASR_PROVIDER_ID
-        ? 'Doubao backup'
-        : 'Qwen realtime';
+    : asrProviderId;
+  const asrProviderSubname = asrProviderId;
   const llmProviderName = llmNameKey
     ? t(`settings.providers.presets.${llmNameKey}`)
     : llmProviderId;
@@ -438,9 +437,8 @@ function providerSummary(session: DictationSession, t: ReturnType<typeof useTran
 }
 
 function asrProviderDisplayName(providerId: string, t: ReturnType<typeof useTranslation>['t']): string {
-  if (providerId === QWEN_REALTIME_ASR_PROVIDER_ID) return t('history.providerQwenRealtime');
-  if (providerId === DOUBAO_ASR_PROVIDER_ID) return t('history.providerDoubaoStreaming');
-  return t('history.providerQwenRealtime');
+  const nameKey = ASR_NAME_KEY_BY_ID[providerId];
+  return nameKey ? t(`settings.providers.presets.${nameKey}`) : providerId;
 }
 
 function llmProviderDisplayName(providerId: string, t: ReturnType<typeof useTranslation>['t']): string {

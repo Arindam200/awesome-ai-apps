@@ -123,10 +123,12 @@ fn simulate_copy_and_read() -> Option<String> {
         }
     };
     let original = match clipboard.get_text() {
-        Ok(t) => Some(t),
+        Ok(t) => t,
         Err(e) => {
-            log::info!("[selection] clipboard get_text returned err (likely empty): {e}");
-            None
+            // The text API cannot distinguish an empty clipboard from an unreadable non-text
+            // payload. Do not overwrite data we cannot restore.
+            log::info!("[selection] clipboard text unavailable; preserving existing contents: {e}");
+            return None;
         }
     };
 
@@ -152,15 +154,8 @@ fn simulate_copy_and_read() -> Option<String> {
     let captured = clipboard.get_text().ok();
 
     // f) 还原原剪贴板
-    if let Some(prev) = original {
-        if let Err(e) = clipboard.set_text(prev) {
-            log::warn!("[selection] clipboard restore failed: {e}");
-        }
-    } else {
-        // 用户原剪贴板就是空 → 把 sentinel / 选区清掉，避免污染。
-        if let Err(e) = clipboard.set_text("") {
-            log::warn!("[selection] clipboard clear failed: {e}");
-        }
+    if let Err(e) = clipboard.set_text(original) {
+        log::warn!("[selection] clipboard restore failed: {e}");
     }
 
     let captured = captured?;

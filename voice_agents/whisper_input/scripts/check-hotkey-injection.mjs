@@ -1,24 +1,25 @@
 import { spawnSync } from 'node:child_process';
+import { resolve } from 'node:path';
 
-const npx = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 const cargo = process.platform === 'win32' ? 'cargo.exe' : 'cargo';
 const githubActions = process.env.GITHUB_ACTIONS === 'true';
+const tsxCli = resolve('node_modules/tsx/dist/cli.mjs');
 
 const checks = [
   {
     label: 'ShortcutRecorder UI recording contract',
-    command: npx,
-    args: ['--yes', 'tsx', 'src/components/ShortcutRecorder.test.ts'],
+    command: process.execPath,
+    args: [tsxCli, 'src/components/ShortcutRecorder.test.ts'],
   },
   {
     label: 'Hotkey recorder parser',
-    command: npx,
-    args: ['--yes', 'tsx', 'src/lib/hotkeyRecorder.test.ts'],
+    command: process.execPath,
+    args: [tsxCli, 'src/lib/hotkeyRecorder.test.ts'],
   },
   {
     label: 'Window hotkey fallback',
-    command: npx,
-    args: ['--yes', 'tsx', 'src/lib/windowHotkeyFallback.test.ts'],
+    command: process.execPath,
+    args: [tsxCli, 'src/lib/windowHotkeyFallback.test.ts'],
   },
   {
     label: githubActions
@@ -49,7 +50,7 @@ for (const check of checks) {
   console.log(`\n==> ${check.label}`);
   const result = spawnSync(check.command, check.args, {
     stdio: 'inherit',
-    shell: process.platform === 'win32',
+    shell: false,
   });
 
   if (result.error) {

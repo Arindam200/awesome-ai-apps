@@ -3233,7 +3233,7 @@ export function AboutUpdateControl({ tagline }: { tagline: string }) {
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
-        <span style={{ fontSize: 12, color: 'var(--ol-ink-3)' }}>{tagline} 路 {APP_VERSION_LABEL}</span>
+        <span style={{ fontSize: 12, color: 'var(--ol-ink-3)' }}>{tagline} · {APP_VERSION_LABEL}</span>
         <Btn variant="ghost" size="sm" onClick={u.checkForUpdates} disabled={u.checking || u.busy}>
           {u.checking ? t('settings.about.checkingUpdate') : t('settings.about.checkUpdateBtn')}
         </Btn>

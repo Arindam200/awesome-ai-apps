@@ -1242,7 +1242,7 @@ fn encode_wav_16k_mono_silence(duration_ms: u32) -> Vec<u8> {
 }
 
 async fn fetch_provider_models(config: &ProviderConfig) -> Result<Vec<String>, String> {
-    let url = models_url(&config.base_url);
+    let url = models_url(&config.base_url)?;
     let is_gemini = config.model_list_protocol == ModelListProtocol::GeminiNative;
     log::info!("[provider-check] GET {url} (gemini={is_gemini})");
     let client = http_client_builder(&config.base_url, 15)
@@ -1280,15 +1280,19 @@ async fn fetch_provider_models(config: &ProviderConfig) -> Result<Vec<String>, S
     }
 }
 
-fn models_url(base_url: &str) -> String {
-    let trimmed = base_url.trim().trim_end_matches('/');
-    if trimmed.ends_with("/models") {
-        return trimmed.to_string();
-    }
-    if let Some(prefix) = trimmed.strip_suffix("/chat/completions") {
-        return format!("{prefix}/models");
-    }
-    format!("{trimmed}/models")
+fn models_url(base_url: &str) -> Result<String, String> {
+    let parsed = reqwest::Url::parse(base_url.trim()).map_err(|_| "endpointInvalid".to_string())?;
+    let mut url = parsed.clone();
+    let path = parsed.path().trim_end_matches('/');
+    let next_path = if path.ends_with("/models") {
+        path.to_string()
+    } else if let Some(prefix) = path.strip_suffix("/chat/completions") {
+        format!("{prefix}/models")
+    } else {
+        format!("{path}/models")
+    };
+    url.set_path(&next_path);
+    Ok(url.to_string())
 }
 
 fn parse_model_ids(body: &str) -> Result<Vec<String>, String> {
@@ -3132,12 +3136,16 @@ mod tests {
     #[test]
     fn models_url_accepts_base_or_chat_endpoint() {
         assert_eq!(
-            models_url("https://api.openai.com/v1"),
+            models_url("https://api.openai.com/v1").unwrap(),
             "https://api.openai.com/v1/models"
         );
         assert_eq!(
-            models_url("https://api.openai.com/v1/chat/completions"),
+            models_url("https://api.openai.com/v1/chat/completions").unwrap(),
             "https://api.openai.com/v1/models"
+        );
+        assert_eq!(
+            models_url("https://api.openai.com/v1?api-version=2024-12-01").unwrap(),
+            "https://api.openai.com/v1/models?api-version=2024-12-01"
         );
     }
 

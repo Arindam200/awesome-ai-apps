@@ -99,6 +99,10 @@ export const zhCN = {
       openSettings: '去录音设置',
     },
   },
+  sidebar: {
+    version: '版本 {{version}}',
+    tagline: '云端语音输入',
+  },
   onboarding: {
     welcome: '欢迎使用轻语输入 / Whisper Input',
     intro: '先完成云端提供商、权限和快捷键检查，就可以在任意输入框说话落字。',

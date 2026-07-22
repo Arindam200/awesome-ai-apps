@@ -101,6 +101,10 @@ export const zhTW: typeof zhCN = {
       openSettings: '去錄音設置',
     },
   },
+  sidebar: {
+    version: '版本 {{version}}',
+    tagline: '雲端語音輸入',
+  },
   onboarding: {
     welcome: '歡迎使用輕語輸入 / Whisper Input',
     intro: '先完成雲端提供商、權限和快捷鍵檢查，就可以在任意輸入框說話落字。',

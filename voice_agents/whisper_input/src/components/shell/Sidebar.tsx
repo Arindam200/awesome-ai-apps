@@ -1,4 +1,5 @@
 import { Icon } from '../Icon';
+import { useTranslation } from 'react-i18next';
 import { APP_VERSION_LABEL } from '../../lib/appVersion';
 
 export interface SidebarItem {
@@ -14,6 +15,7 @@ interface SidebarProps {
 }
 
 export function Sidebar({ items }: SidebarProps) {
+  const { t } = useTranslation();
   return (
     <aside className="wi-sidebar">
       <nav className="wi-side-nav">
@@ -31,8 +33,8 @@ export function Sidebar({ items }: SidebarProps) {
         ))}
       </nav>
       <div className="wi-side-foot">
-        <div>版本 {APP_VERSION_LABEL}</div>
-        <div><span className="wi-side-dot" />云端语音输入</div>
+        <div>{t('sidebar.version', { version: APP_VERSION_LABEL })}</div>
+        <div><span className="wi-side-dot" />{t('sidebar.tagline')}</div>
       </div>
     </aside>
   );

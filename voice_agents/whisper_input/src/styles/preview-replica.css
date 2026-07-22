@@ -394,7 +394,6 @@
   font-size: 13px;
   line-height: 1.5;
   overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 .wi-table th {
@@ -507,7 +506,7 @@
 
 .wi-history-time,
 .wi-history-duration {
-  font-family: Consolas, "SFMono-Regular", ui-monospace, monospace;
+  font-family: Consolas, SFMono-Regular, ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
   font-size: 12px;
   line-height: 1.4;
@@ -528,7 +527,6 @@
   color: var(--wi-text);
   line-height: 1.45;
   overflow-wrap: anywhere;
-  word-break: break-word;
   text-wrap: pretty;
 }
 
@@ -1514,7 +1512,7 @@
 .wi-recent-time > span,
 .wi-recent-duration {
   color: var(--wi-muted);
-  font-family: Consolas, "SFMono-Regular", ui-monospace, monospace;
+  font-family: Consolas, SFMono-Regular, ui-monospace, monospace;
   font-size: 12px;
   line-height: 1.4;
   white-space: nowrap;
@@ -1557,6 +1555,7 @@
     0 0 0 1px rgba(15, 23, 42, 0.075),
     0 2px 4px -2px rgba(15, 23, 42, 0.10),
     0 22px 46px -30px rgba(15, 23, 42, 0.38);
+
   height: 100%;
   min-height: 0;
   display: flex;
@@ -2471,7 +2470,7 @@
   border-radius: 999px;
   background: var(--wi-control);
   color: var(--wi-text);
-  font-family: Consolas, "SFMono-Regular", ui-monospace, monospace;
+  font-family: Consolas, SFMono-Regular, ui-monospace, monospace;
   font-size: 12px;
   line-height: 1;
   box-shadow: var(--wi-inset-ring-soft);
