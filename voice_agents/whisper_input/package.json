@@ -12,7 +12,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "check:hotkey-injection": "node scripts/check-hotkey-injection.mjs"
+    "check:hotkey-injection": "node scripts/check-hotkey-injection.mjs",
+    "check:nebius-token-factory": "node scripts/check-nebius-token-factory.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.1.1",

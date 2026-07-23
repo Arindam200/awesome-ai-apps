@@ -2232,7 +2232,7 @@ where
         log::info!("[coord] streaming polish skipped: mode=Raw, fall back to one-shot");
         return StreamingPolishOutcome::UnsupportedFallback;
     }
-    let active_llm = CredentialsVault::get_active_llm();
+    let active_llm = active_llm_provider_id();
     if active_llm == crate::product::GEMINI_PROVIDER_ID {
         let credentials = match read_gemini_credentials() {
             Ok(c) => c,
@@ -2377,7 +2377,7 @@ async fn polish_text(
     // LLM 凭据账户名仍沿用 ark.* 以兼容旧 IPC；persistence.rs 会按 active
     // provider bucket 路由。Gemini 走原生 generateContent，其余统一走
     // OpenAI-compatible Chat Completions 风格接口。
-    let active_llm = CredentialsVault::get_active_llm();
+    let active_llm = active_llm_provider_id();
     if active_llm == crate::product::GEMINI_PROVIDER_ID {
         let credentials = read_gemini_credentials()?;
         let provider = GeminiProvider::new(
@@ -2453,7 +2453,7 @@ async fn translate_text(
     front_app: Option<&str>,
 ) -> anyhow::Result<String> {
     // 见 polish_text 顶部注释——同样的 Gemini / OpenAI-compatible 路由逻辑。
-    let active_llm = CredentialsVault::get_active_llm();
+    let active_llm = active_llm_provider_id();
     if active_llm == crate::product::GEMINI_PROVIDER_ID {
         let credentials = read_gemini_credentials()?;
         let provider = GeminiProvider::new(
@@ -3000,7 +3000,7 @@ async fn end_qa_session(inner: &Arc<Inner>) -> Result<(), String> {
     // mode=Raw、error_code=Some("qaSession") 的 placeholder，避免污染 schema 同时
     // 让用户能在历史里翻到这次问答的字面值。详见 issue #118。
     if prefs.history_enabled && prefs.qa_save_history {
-        let llm_provider_id = CredentialsVault::get_active_llm();
+        let llm_provider_id = active_llm_provider_id();
         let session = DictationSession {
             id: Uuid::new_v4().to_string(),
             created_at: Utc::now().to_rfc3339(),
@@ -3111,7 +3111,7 @@ where
 {
     // 见 polish_text 顶部注释——同样的 Gemini / OpenAI-compatible 路由逻辑，
     // QA 流式回答走 Gemini 原生 :streamGenerateContent?alt=sse。
-    let active_llm = CredentialsVault::get_active_llm();
+    let active_llm = active_llm_provider_id();
     if active_llm == crate::product::GEMINI_PROVIDER_ID {
         let credentials = read_gemini_credentials()?;
         let provider = GeminiProvider::new(
@@ -3209,6 +3209,48 @@ fn read_doubao_llm_config(llm_thinking_enabled: bool) -> anyhow::Result<OpenAICo
     )
 }
 
+const NEBIUS_LLM_PROVIDER_ENV: &str = "WHISPER_INPUT_LLM_PROVIDER";
+const NEBIUS_API_KEY_ENV: &str = "NEBIUS_API_KEY";
+const NEBIUS_MODEL_ENV: &str = "NEBIUS_MODEL";
+
+/// Enables Nebius only when explicitly requested by the process environment.
+/// This preserves the existing persisted provider and keeps the experimental
+/// integration out of the end-user model picker.
+pub(super) fn active_llm_provider_id() -> String {
+    let configured = std::env::var(NEBIUS_LLM_PROVIDER_ENV).unwrap_or_default();
+    let normalized = crate::product::normalize_active_llm_provider_id(&configured);
+    if !configured.trim().is_empty()
+        && normalized == crate::product::NEBIUS_TOKEN_FACTORY_PROVIDER_ID
+    {
+        return normalized;
+    }
+    CredentialsVault::get_active_llm()
+}
+
+fn nebius_llm_config_from_values(
+    api_key: Option<String>,
+    model: Option<String>,
+    llm_thinking_enabled: bool,
+) -> anyhow::Result<OpenAICompatibleConfig> {
+    let api_key = api_key.unwrap_or_default();
+    let model = model.unwrap_or_default();
+    llm_config_for_preset(
+        crate::product::NEBIUS_TOKEN_FACTORY_PROVIDER_ID,
+        &model,
+        &api_key,
+    )
+    .map_err(|error| anyhow::anyhow!(error))
+    .map(|config| config.with_thinking_enabled(llm_thinking_enabled))
+}
+
+fn read_nebius_llm_config(llm_thinking_enabled: bool) -> anyhow::Result<OpenAICompatibleConfig> {
+    nebius_llm_config_from_values(
+        std::env::var(NEBIUS_API_KEY_ENV).ok(),
+        std::env::var(NEBIUS_MODEL_ENV).ok(),
+        llm_thinking_enabled,
+    )
+}
+
 fn gemini_credentials_from_values(
     provider_api_key: Option<String>,
     legacy_api_key: Option<String>,
@@ -3251,7 +3293,7 @@ fn read_gemini_credentials() -> anyhow::Result<GeminiCredentials> {
 }
 
 fn build_active_llm_provider(llm_thinking_enabled: bool) -> anyhow::Result<ActiveLLMProvider> {
-    let active_llm = CredentialsVault::get_active_llm();
+    let active_llm = active_llm_provider_id();
     if active_llm == crate::product::QWEN_LLM_PROVIDER_ID {
         let config = read_qwen_llm_config(llm_thinking_enabled)?;
         return Ok(ActiveLLMProvider::OpenAI(OpenAICompatibleLLMProvider::new(
@@ -3260,6 +3302,12 @@ fn build_active_llm_provider(llm_thinking_enabled: bool) -> anyhow::Result<Activ
     }
     if active_llm == crate::product::DOUBAO_LLM_PROVIDER_ID {
         let config = read_doubao_llm_config(llm_thinking_enabled)?;
+        return Ok(ActiveLLMProvider::OpenAI(OpenAICompatibleLLMProvider::new(
+            config,
+        )));
+    }
+    if active_llm == crate::product::NEBIUS_TOKEN_FACTORY_PROVIDER_ID {
+        let config = read_nebius_llm_config(llm_thinking_enabled)?;
         return Ok(ActiveLLMProvider::OpenAI(OpenAICompatibleLLMProvider::new(
             config,
         )));
@@ -3689,6 +3737,25 @@ mod tests {
         assert_eq!(config.api_key, "doubao-shared-key");
         assert_eq!(config.base_url, crate::polish::DOUBAO_LLM_BASE_URL_CN);
         assert_eq!(config.model, crate::polish::DOUBAO_LLM_DEFAULT_MODEL);
+    }
+
+    #[test]
+    fn nebius_runtime_config_uses_official_defaults_without_affecting_other_providers() {
+        let config = nebius_llm_config_from_values(Some("nebius-key".into()), None, false).unwrap();
+
+        assert_eq!(
+            config.provider_id,
+            crate::product::NEBIUS_TOKEN_FACTORY_PROVIDER_ID
+        );
+        assert_eq!(config.api_key, "nebius-key");
+        assert_eq!(
+            config.base_url,
+            crate::polish::NEBIUS_TOKEN_FACTORY_BASE_URL
+        );
+        assert_eq!(
+            config.model,
+            crate::polish::NEBIUS_TOKEN_FACTORY_DEFAULT_MODEL
+        );
     }
 
     #[test]

@@ -213,7 +213,7 @@ fn new_begin_error_trace(
         prefs.hotkey.mode,
         front_app,
         asr_provider_id.to_string(),
-        CredentialsVault::get_active_llm(),
+        super::active_llm_provider_id(),
     );
     trace.trace_id = current_session_id.to_string();
     trace.session.cancelled = cancelled;
@@ -1442,7 +1442,7 @@ pub(super) async fn end_session(inner: &Arc<Inner>) -> Result<(), String> {
 
     let elapsed = inner.state.lock().started_at.elapsed().as_millis() as u64;
     let asr_provider_id = CredentialsVault::get_active_asr();
-    let llm_provider_id = CredentialsVault::get_active_llm();
+    let llm_provider_id = super::active_llm_provider_id();
     let trace_prefs = inner.prefs.get();
     let trace_front_app = inner.state.lock().front_app.clone();
     let mut diagnostic_trace = new_dictation_trace(
@@ -2107,7 +2107,7 @@ pub(super) async fn end_session(inner: &Arc<Inner>) -> Result<(), String> {
     log::info!(
         "[coord] polish dispatch: translation={translation_active} output_operation={output_operation:?} mode={mode:?} stream_enabled={} streaming_eligible={streaming_eligible} active_llm={}",
         prefs.streaming_insert,
-        CredentialsVault::get_active_llm()
+        super::active_llm_provider_id()
     );
 
     let focus_target = inner.state.lock().focus_target;

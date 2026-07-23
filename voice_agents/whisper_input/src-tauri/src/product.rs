@@ -13,6 +13,10 @@ pub const DEFAULT_ASR_PROVIDER_ID: &str = QWEN_REALTIME_ASR_PROVIDER_ID;
 pub const QWEN_LLM_PROVIDER_ID: &str = "qwen-llm";
 pub const DOUBAO_LLM_PROVIDER_ID: &str = "doubao-llm";
 pub const GEMINI_PROVIDER_ID: &str = "gemini";
+/// Backend-only provider selected through `WHISPER_INPUT_LLM_PROVIDER`.
+/// It is deliberately excluded from the product UI while the integration is
+/// evaluated externally.
+pub const NEBIUS_TOKEN_FACTORY_PROVIDER_ID: &str = "nebius-token-factory";
 pub const OPENAI_COMPATIBLE_PROVIDER_ID: &str = "openai-compatible";
 pub const DEFAULT_LLM_PROVIDER_ID: &str = QWEN_LLM_PROVIDER_ID;
 pub const SHOW_SELECTION_ASK: bool = false;
@@ -69,6 +73,7 @@ pub fn normalize_active_llm_provider_id(id: &str) -> String {
             DOUBAO_LLM_PROVIDER_ID.into()
         }
         GEMINI_PROVIDER_ID => GEMINI_PROVIDER_ID.into(),
+        NEBIUS_TOKEN_FACTORY_PROVIDER_ID | "nebius" => NEBIUS_TOKEN_FACTORY_PROVIDER_ID.into(),
         OPENAI_COMPATIBLE_PROVIDER_ID | "ark" | "deepseek" | "ollama" | "openai" => {
             OPENAI_COMPATIBLE_PROVIDER_ID.into()
         }
@@ -94,10 +99,25 @@ mod cloud_first_tests {
         assert!(!is_visible_active_llm_provider(
             OPENAI_COMPATIBLE_PROVIDER_ID
         ));
+        assert!(!is_visible_active_llm_provider(
+            NEBIUS_TOKEN_FACTORY_PROVIDER_ID
+        ));
         assert!(is_advanced_llm_provider(OPENAI_COMPATIBLE_PROVIDER_ID));
         assert!(!is_advanced_llm_provider(QWEN_LLM_PROVIDER_ID));
         assert!(!is_advanced_llm_provider(DOUBAO_LLM_PROVIDER_ID));
         assert!(!is_advanced_llm_provider(GEMINI_PROVIDER_ID));
+        assert!(!is_advanced_llm_provider(NEBIUS_TOKEN_FACTORY_PROVIDER_ID));
+    }
+
+    #[test]
+    fn nebius_is_normalized_but_remains_backend_only() {
+        assert_eq!(
+            normalize_active_llm_provider_id("nebius"),
+            NEBIUS_TOKEN_FACTORY_PROVIDER_ID
+        );
+        assert!(!is_visible_active_llm_provider(
+            NEBIUS_TOKEN_FACTORY_PROVIDER_ID
+        ));
     }
 
     #[test]

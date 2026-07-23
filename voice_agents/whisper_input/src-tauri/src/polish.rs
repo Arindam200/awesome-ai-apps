@@ -25,6 +25,8 @@ pub const QWEN_LLM_BASE_URL_CN: &str = "https://dashscope.aliyuncs.com/compatibl
 pub const QWEN_LLM_DEFAULT_MODEL: &str = "qwen3.5-flash";
 pub const DOUBAO_LLM_BASE_URL_CN: &str = "https://ark.cn-beijing.volces.com/api/v3";
 pub const DOUBAO_LLM_DEFAULT_MODEL: &str = "doubao-seed-2-0-lite-260215";
+pub const NEBIUS_TOKEN_FACTORY_BASE_URL: &str = "https://api.tokenfactory.nebius.com/v1";
+pub const NEBIUS_TOKEN_FACTORY_DEFAULT_MODEL: &str = "meta-llama/Meta-Llama-3.1-8B-Instruct";
 const CODEX_MIN_TOKEN_TTL_SECS: u64 = 60;
 
 #[derive(Clone, Debug)]
@@ -121,6 +123,24 @@ pub fn llm_config_for_preset(
                 crate::product::DOUBAO_LLM_PROVIDER_ID,
                 "Doubao",
                 DOUBAO_LLM_BASE_URL_CN,
+                api_key,
+                model,
+            ))
+        }
+        crate::product::NEBIUS_TOKEN_FACTORY_PROVIDER_ID => {
+            if api_key.is_empty() {
+                return Err("Nebius API key is required".to_string());
+            }
+            let model = model.trim();
+            let model = if model.is_empty() {
+                NEBIUS_TOKEN_FACTORY_DEFAULT_MODEL
+            } else {
+                model
+            };
+            Ok(OpenAICompatibleConfig::new(
+                crate::product::NEBIUS_TOKEN_FACTORY_PROVIDER_ID,
+                "Nebius Token Factory",
+                NEBIUS_TOKEN_FACTORY_BASE_URL,
                 api_key,
                 model,
             ))
