@@ -80,6 +80,18 @@ export const BUILTIN_PRESETS: ProviderPreset[] = [
     embeddingModels: ['text-embedding-004'],
   },
   {
+    /** Nebius Token Factory — OpenAI-compatible inference API */
+    provider: 'nebius',
+    displayName: 'Nebius Token Factory',
+    baseUrl: 'https://api.tokenfactory.nebius.com/v1',
+    protocol: 'openai',
+    models: [
+      { name: 'meta-llama/Meta-Llama-3.1-70B-Instruct', maxTokens: 8192 },
+      { name: 'deepseek-ai/DeepSeek-R1-0528', maxTokens: 8192 },
+    ],
+    embeddingModels: [],
+  },
+  {
     provider: 'ollama',
     displayName: 'Ollama（本地）',
     baseUrl: 'http://localhost:11434',

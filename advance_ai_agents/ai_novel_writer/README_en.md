@@ -103,7 +103,7 @@ Cloud providers will not make an exception just because you are writing fiction 
 | --- | --- |
 | **Ollama** (recommended) | One-line `ollama pull qwen3:14b-abliterated` and you're set; supports **NSFW / adult / violent / horror** fiction and any fictional topic |
 | LM Studio / vLLM / KoboldCpp | Local inference servers, OpenAI-compatible protocol; you choose the weights |
-| OpenAI / DeepSeek / Gemini | Cloud fallback when you don't want to run a model locally (still subject to cloud content policies) |
+| Nebius Token Factory / OpenAI / DeepSeek / Gemini | Cloud fallback when you don't want to run a model locally (still subject to cloud content policies) |
 | Custom OpenAI-compatible endpoint | Corporate proxy, internal inference service, or your own rig |
 
 > Set `defaultModelId` in `~/.vela/config.json` to your local model name. Project data lives entirely on disk (SQLite + project folder). **You can write offline.**
@@ -175,8 +175,31 @@ You can switch between local and cloud models at any time in settings. **Local-f
 | --- | --- | --- |
 | 🤖 Default model (local) | Ollama + qwen3:14b-abliterated | 14B class, fits 6GB VRAM, excellent Chinese writing; abliterated weight supports uncensored creation |
 | 🤖 Alternative model (local) | LM Studio / vLLM | Choose other models; good for users with more VRAM |
-| ☁️ Cloud fallback | DeepSeek / OpenAI / Gemini | When you don't want to run locally; still subject to cloud content policies |
+| ☁️ Cloud fallback | Nebius Token Factory / DeepSeek / OpenAI / Gemini | When you don't want to run locally; still subject to cloud content policies |
 | 💾 Knowledge base embedding | Default: none needed | Without embedding, SQLite FTS full-text search covers most scenarios |
+
+---
+
+## ☁️ Nebius Token Factory setup and reproducible verification
+
+Nebius Token Factory uses an OpenAI-compatible API and is available as a built-in provider preset:
+
+```text
+Provider:        Nebius Token Factory
+Protocol:        OpenAI-compatible
+Base URL:        https://api.tokenfactory.nebius.com/v1
+Model:           meta-llama/Meta-Llama-3.1-70B-Instruct
+API key:         a key created in Nebius Token Factory
+```
+
+After configuration, use **Test connection** in Model settings. For a real API smoke test from source, keep the key only in the current shell and run:
+
+```powershell
+$env:NEBIUS_API_KEY = 'your Nebius key'
+pnpm run smoke:nebius
+```
+
+The command calls `/v1/chat/completions` and prints the model ID plus a truncated response preview. Set `NEBIUS_MODEL` or `NEBIUS_BASE_URL` to use a different model or regional endpoint.
 
 ---
 

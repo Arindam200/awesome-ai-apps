@@ -176,6 +176,7 @@ function ModelForm({
             <option value="openai">OpenAI</option>
             <option value="deepseek">DeepSeek</option>
             <option value="gemini">Gemini</option>
+            <option value="nebius">Nebius Token Factory</option>
             <option value="ollama">Ollama</option>
             <option value="custom">{text('自定义', 'Custom')}</option>
           </NativeSelect>

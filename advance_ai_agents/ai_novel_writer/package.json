@@ -22,6 +22,7 @@
     "build:win-zip": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/package-win-zip.ps1",
     "verify:win-package": "node scripts/verify-win-package.mjs",
     "smoke:win-app": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/smoke-win-app.ps1",
+    "smoke:nebius": "node scripts/smoke-nebius.mjs",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",

@@ -987,6 +987,8 @@ function providerIcon(provider: string) {
       return <Database {...commonProps} />
     case 'gemini':
       return <Globe {...commonProps} />
+    case 'nebius':
+      return <Globe {...commonProps} />
     case 'ollama':
       return <Cpu {...commonProps} />
     case 'bigmodel':

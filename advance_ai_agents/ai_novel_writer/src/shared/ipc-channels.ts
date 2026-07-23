@@ -244,7 +244,7 @@ export interface TokenUsage {
 export interface ModelProfile {
   id: string
   name: string
-  provider: 'openai' | 'gemini' | 'deepseek' | 'ollama' | 'bigmodel' | 'custom'
+  provider: 'openai' | 'gemini' | 'deepseek' | 'ollama' | 'bigmodel' | 'nebius' | 'custom'
   protocol: 'openai' | 'gemini'
   modelName: string
   apiKey: string
