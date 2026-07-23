@@ -9,6 +9,7 @@ if (!apiKey) {
 
 const response = await fetch(`${baseUrl}/chat/completions`, {
   method: 'POST',
+  signal: AbortSignal.timeout(30_000),
   headers: {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${apiKey}`,

@@ -195,8 +195,13 @@ API key:         你在 Nebius Token Factory 创建的密钥
 配置后可在模型设置中点击“测试连接”。从源码运行时，也可以用下面的命令对真实 Nebius API 做最小验证（密钥只保留在当前 shell，绝不提交）：
 
 ```powershell
-$env:NEBIUS_API_KEY = '你的 Nebius 密钥'
-pnpm run smoke:nebius
+$secureKey = Read-Host 'Nebius API key' -AsSecureString
+$env:NEBIUS_API_KEY = [System.Net.NetworkCredential]::new('', $secureKey).Password
+try {
+  pnpm run smoke:nebius
+} finally {
+  Remove-Item Env:NEBIUS_API_KEY -ErrorAction SilentlyContinue
+}
 ```
 
 脚本会调用 `/v1/chat/completions`，并打印模型名和截断后的响应预览。可通过 `NEBIUS_MODEL` 或 `NEBIUS_BASE_URL` 覆盖模型与区域端点。
