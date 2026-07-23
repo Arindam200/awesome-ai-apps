@@ -26,7 +26,7 @@ every answer carries a clickable citation back to the source pixel.
 - [Prerequisites](#prerequisites)
 - [Setup & run](#setup--run)
 - [Environment variables](#environment-variables)
-- [Choosing an LLM provider (OpenAI / Nebius / Anthropic)](#choosing-an-llm-provider)
+- [Choosing an LLM provider](#choosing-an-llm-provider)
 - [Using the app](#using-the-app)
 - [The Edit API (calibrated first)](#the-edit-api-calibrated-first)
 - [API reference](#api-reference)
@@ -102,8 +102,8 @@ anomaly rules.
 - **Backend** — Python · FastAPI · SQLAlchemy · PostgreSQL
 - **Frontend** — Next.js 15 · React 19 · Tailwind v4
 - **Documents** — Unsiloed APIs (classify / extract / parse / edit) · pymupdf for page rendering
-- **LLM** (NL→SQL + synthesis) — OpenAI by default; pluggable to **Nebius Token Factory**
-  or Anthropic (see [below](#choosing-an-llm-provider))
+- **LLM** (NL→SQL + synthesis) — OpenAI by default; pluggable to **Nebius Token Factory**,
+  Anthropic, or MiniMax (see [below](#choosing-an-llm-provider))
 - **NL→SQL safety** — read-only Postgres role + `sqlglot` SELECT-only AST allowlist
 
 ## The demo corpus (included PDFs)
@@ -138,7 +138,7 @@ pages — this is what genuinely exercises Unsiloed's table extraction), **contr
 - **Python 3.11+** and [`uv`](https://github.com/astral-sh/uv) (or pip)
 - **Node 18+** and [`pnpm`](https://pnpm.io)
 - An **Unsiloed API key** → https://unsiloed.ai
-- An **LLM key** — OpenAI by default, or a Nebius / Anthropic key (see below)
+- An **LLM key** — OpenAI by default, or a Nebius, Anthropic, or MiniMax key (see below)
 
 ## Setup & run
 
@@ -181,10 +181,15 @@ Documents page, click **Process**, and explore.
 | Variable | Required | Description |
 |---|---|---|
 | `UNSILOED_API_KEY` | ✅ | Unsiloed key for classify / extract / parse / edit. |
-| `LLM_PROVIDER` | – | `openai` (default), `nebius`, or `anthropic`. |
+| `LLM_PROVIDER` | – | `openai` (default), `nebius`, `anthropic`, or `minimax`. |
 | `OPENAI_API_KEY` | ✅ (default provider) | Used for NL→SQL + synthesis when provider is `openai`. |
 | `NEBIUS_API_KEY` | when `LLM_PROVIDER=nebius` | Nebius Token Factory key. |
 | `ANTHROPIC_API_KEY` | when `LLM_PROVIDER=anthropic` | Anthropic key. |
+| `MINIMAX_API_KEY` | when `LLM_PROVIDER=minimax` | MiniMax API key. |
+| `MINIMAX_REGION` | when `LLM_PROVIDER=minimax` | `global_en` or `cn_zh`; selects the matching regional endpoints. |
+| `MINIMAX_PROTOCOL` | when `LLM_PROVIDER=minimax` | `openai` or `anthropic`; selects the compatible API. |
+| `MINIMAX_SYNTHESIS_MODEL` | – | Defaults to `MiniMax-M3`. |
+| `MINIMAX_SENTIMENT_MODEL` | – | Defaults to `MiniMax-M2.7`. |
 | `RESEND_API_KEY` | optional | Board-report email (stretch feature). |
 | `DATABASE_URL` | ✅ | Primary Postgres connection (compose default provided). |
 | `DATABASE_READONLY_URL` | ✅ | Read-only role connection for NL→SQL. |
@@ -204,6 +209,13 @@ key, then restart the backend.
   OpenAI SDK against Nebius's `base_url` and falls back to JSON-object mode + Pydantic
   validation if a model doesn't support structured parse.
 - **Anthropic** — `LLM_PROVIDER=anthropic`, `ANTHROPIC_API_KEY=...`
+- **MiniMax** — `LLM_PROVIDER=minimax`, `MINIMAX_API_KEY=...`. Set
+  `MINIMAX_REGION=global_en` or `cn_zh` and choose `MINIMAX_PROTOCOL=openai` or
+  `anthropic`. The default models are `MiniMax-M3` for synthesis and `MiniMax-M2.7`
+  for sentiment. OpenAI-compatible requests use the regional `/v1` endpoint; Anthropic-
+  compatible requests use the regional `/anthropic` endpoint. See the [global API
+  overview](https://platform.minimax.io/docs/api-reference/api-overview) or [China API
+  overview](https://platform.minimaxi.com/docs/api-reference/api-overview).
 
 ## Using the app
 

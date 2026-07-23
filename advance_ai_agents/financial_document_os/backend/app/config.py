@@ -2,6 +2,17 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+MINIMAX_ENDPOINTS = {
+    "global_en": {
+        "openai": "https://api.minimax.io/v1",
+        "anthropic": "https://api.minimax.io/anthropic",
+    },
+    "cn_zh": {
+        "openai": "https://api.minimaxi.com/v1",
+        "anthropic": "https://api.minimaxi.com/anthropic",
+    },
+}
+
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 REPO_DIR = BACKEND_DIR.parent
 DATA_DIR = BACKEND_DIR / "data"
@@ -31,7 +42,7 @@ class Settings(BaseSettings):
     unsiloed_edit_base_url: str = "https://platformbackend.unsiloed.ai"
     unsiloed_model: str = "beta"
 
-    # LLM provider: auto (anthropic if key else openai) | openai | anthropic | nebius
+    # LLM provider: auto (anthropic if key else openai) | openai | anthropic | nebius | minimax
     llm_provider: str = "auto"
     synthesis_model: str = "claude-opus-4-8"
     sentiment_model: str = "claude-haiku-4-5-20251001"
@@ -41,6 +52,12 @@ class Settings(BaseSettings):
     nebius_base_url: str = "https://api.tokenfactory.us-central1.nebius.com/v1/"
     nebius_synthesis_model: str = "nvidia/Nemotron-3-Ultra-550b-a55b"
     nebius_sentiment_model: str = "nvidia/Nemotron-3-Ultra-550b-a55b"
+    # MiniMax supports OpenAI-compatible and Anthropic-compatible requests.
+    minimax_api_key: str = ""
+    minimax_region: str = "global_en"
+    minimax_protocol: str = "openai"
+    minimax_synthesis_model: str = "MiniMax-M3"
+    minimax_sentiment_model: str = "MiniMax-M2.7"
 
     # Feature flag — calibration passed 2026-06-13 (scripts/calibrate_edit.py),
     # edit bbox space = citation corners as-is
@@ -48,6 +65,19 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def minimax_base_url(protocol: str) -> str:
+    region = (settings.minimax_region or "global_en").lower()
+    protocol = protocol.lower()
+    try:
+        return MINIMAX_ENDPOINTS[region][protocol]
+    except KeyError as exc:
+        raise ValueError(
+            "MINIMAX_REGION must be global_en or cn_zh and "
+            "MINIMAX_PROTOCOL must be openai or anthropic"
+        ) from exc
+
 
 for _d in (DOCS_DIR, PAGES_DIR, EDITED_DIR):
     _d.mkdir(parents=True, exist_ok=True)
