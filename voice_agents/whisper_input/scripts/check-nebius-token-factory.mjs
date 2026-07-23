@@ -1,6 +1,6 @@
 const apiKey = process.env.NEBIUS_API_KEY?.trim();
 const model =
-  process.env.NEBIUS_MODEL?.trim() ??
+  process.env.NEBIUS_MODEL?.trim() ||
   'meta-llama/Meta-Llama-3.1-8B-Instruct';
 const endpoint = 'https://api.tokenfactory.nebius.com/v1/chat/completions';
 
