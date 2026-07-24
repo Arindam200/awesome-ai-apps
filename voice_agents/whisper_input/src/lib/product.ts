@@ -1,0 +1,12 @@
+export const PRODUCT_NAME = 'Whisper Input';
+export const PRODUCT_NAME_ZH = '轻语输入';
+export const PRODUCT_TAGLINE_ZH = 'Windows AI 语音输入';
+export const LOCAL_ASR_PROVIDER_ID = 'qingyu-local-fired-asr';
+export const QWEN_REALTIME_ASR_PROVIDER_ID = 'qwen3-asr-flash-realtime';
+export const DOUBAO_ASR_PROVIDER_ID = 'doubao-streaming-asr-2';
+export const DEFAULT_ASR_PROVIDER_ID = QWEN_REALTIME_ASR_PROVIDER_ID;
+export const QWEN_LLM_PROVIDER_ID = 'qwen-llm';
+export const DOUBAO_LLM_PROVIDER_ID = 'doubao-llm';
+export const OPENAI_COMPATIBLE_PROVIDER_ID = 'openai-compatible';
+export const GEMINI_PROVIDER_ID = 'gemini';
+export const DEFAULT_LLM_PROVIDER_ID = QWEN_LLM_PROVIDER_ID;

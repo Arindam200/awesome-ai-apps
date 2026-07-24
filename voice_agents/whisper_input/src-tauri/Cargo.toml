@@ -1,0 +1,113 @@
+[package]
+name = "whisper-input"
+version = "1.3.30"
+description = "Whisper Input - Windows AI voice input powered by cloud speech recognition and LLM polish"
+authors = ["Qingyu Input"]
+license = "Apache-2.0"
+edition = "2021"
+rust-version = "1.77"
+default-run = "whisper-input"
+
+[lib]
+name = "openless_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+# Compile antirez/qwen-asr C sources for the local ASR engine on macOS.
+cc = "1.1"
+
+[dependencies]
+# 锁 ~2.11 因为 npm @tauri-apps/api 与 plugin-dialog 都已升 2.11；
+# tauri build 跨 minor 一致性检查会拒绝 npm 2.11 + Rust 2.10 的组合。
+tauri = { version = "~2.11", features = ["macos-private-api", "tray-icon"] }
+tauri-plugin-shell = "2"
+tauri-plugin-updater = "2"
+tauri-plugin-single-instance = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+tokio-tungstenite = { version = "0.24", features = ["rustls-tls-native-roots"] }
+futures-util = "0.3"
+reqwest = { version = "0.12", default-features = false, features = ["json", "multipart", "rustls-tls", "native-tls", "stream", "system-proxy"] }
+sha2 = "0.10"
+tar = "0.4"
+bzip2 = "0.5"
+tempfile = "3"
+zip = "2"
+thiserror = "1"
+anyhow = "1"
+log = "0.4"
+env_logger = "0.11"
+simplelog = "0.12"
+parking_lot = "0.12"
+once_cell = "1"
+uuid = { version = "1", features = ["v4", "serde"] }
+chrono = { version = "0.4", features = ["serde"] }
+bytes = "1"
+url = "2"
+raw-window-handle = "0.6"
+ferrous-opencc = "0.4"
+
+# Hotkey + audio + insertion
+global-hotkey = "0.6"
+cpal = "0.15"
+enigo = "0.2"
+arboard = "3"
+rdev = "0.5"
+
+[target.'cfg(target_os = "macos")'.dependencies.keyring]
+version = "3.6.3"
+default-features = false
+features = ["apple-native"]
+
+[target.'cfg(target_os = "windows")'.dependencies.keyring]
+version = "3.6.3"
+default-features = false
+features = ["windows-native"]
+
+[target.'cfg(all(unix, not(target_os = "macos")))'.dependencies.keyring]
+version = "3.6.3"
+default-features = false
+features = ["linux-native-sync-persistent", "crypto-rust"]
+
+[target.'cfg(target_os = "macos")'.dependencies]
+block2 = "0.5"
+core-foundation = "0.10"
+core-graphics = "0.24"
+objc2 = "0.5"
+objc2-foundation = "0.2"
+objc2-app-kit = "0.2"
+# antirez/qwen-asr 用 malloc 分配返回字符串，必须用 C `free()` 释放。
+libc = "0.2"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+foundry-local-sdk = { version = "1.1.0", features = ["winml"] }
+raw-window-handle = "0.6"
+windows = { version = "0.58", features = [
+  "Win32_Foundation",
+  "Win32_Globalization",
+  "Win32_Graphics_Dwm",
+  "Win32_Graphics_Gdi",
+  "Win32_Media_Audio",
+  "Win32_Media_Audio_Endpoints",
+  "Win32_System_Com",
+  "Win32_System_Ole",
+  "Win32_System_Registry",
+  "Win32_System_Threading",
+  "Win32_UI_Input_KeyboardAndMouse",
+  "Win32_UI_Shell",
+  "Win32_UI_TextServices",
+  "Win32_UI_WindowsAndMessaging",
+] }
+winreg = "0.52"
+
+# 跨平台磨砂层（macOS NSVisualEffectView / Windows Mica）。
+[target.'cfg(any(target_os = "macos", target_os = "windows"))'.dependencies]
+window-vibrancy = "0.7"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

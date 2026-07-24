@@ -229,6 +229,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Speed-to-Lead Sales Voice Agent](voice_agents/speed_to_lead_agent): LiveKit-based voice agent that calls inbound leads instantly, routes them to specialists, and logs to a mock CRM
 - [Voice-Powered Codebase Assistant (VoxCode)](voice_agents/Cursor_code_editor): Local voice workspace for codebase summaries and architecture Q&A; Deepgram Voice Agent + Nebius reasoning + Cursor SDK file inspection and edits
 - [Web-Search Voice Agent (LiveKit)](voice_agents/livekit_web_search_agent): LiveKit + Gemini realtime voice agent with an Olostep-backed `web_search` tool for fresh, source-cited answers
+- [Whisper Input](voice_agents/whisper_input): Windows-first AI voice input tool that converts Chinese speech into polished, structured text and inserts it at the active cursor.
 
 ### 🗂️ MCP Agents
 

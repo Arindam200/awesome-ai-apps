@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>轻语输入 / Whisper Input 需要麦克风权限来听写你的语音。</string>
+  <key>NSAccessibilityUsageDescription</key>
+  <string>轻语输入 / Whisper Input 需要辅助功能权限来监听全局快捷键并把识别结果粘贴到当前光标位置。</string>
+  <key>NSAppleEventsUsageDescription</key>
+  <string>轻语输入 / Whisper Input 需要发送按键事件，把识别结果粘贴到当前光标位置。</string>
+</dict>
+</plist>

@@ -1,0 +1,21 @@
+[
+  {
+    "id": "programmer",
+    "name": "程序员",
+    "phrases": [
+      "PR", "CI", "tag", "release", "issue", "Rust", "TypeScript",
+      "Claude", "Codex", "Copilot", "Cursor", "Windsurf",
+      "Anthropic", "OpenAI", "GPT", "ChatGPT", "Gemini", "DeepSeek"
+    ]
+  },
+  {
+    "id": "chef",
+    "name": "厨师",
+    "phrases": ["出品", "备料", "火候", "刀工", "摆盘", "sous vide"]
+  },
+  {
+    "id": "civil-servant",
+    "name": "公务员",
+    "phrases": ["公文", "批示", "督办", "政务", "会签", "材料"]
+  }
+]

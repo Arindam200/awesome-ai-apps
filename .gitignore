@@ -17,6 +17,8 @@ downloads/
 eggs/
 .eggs/
 lib/
+!voice_agents/whisper_input/src/lib/
+!voice_agents/whisper_input/src/lib/**
 lib64/
 parts/
 sdist/
