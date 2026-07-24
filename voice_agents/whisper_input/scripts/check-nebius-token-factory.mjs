@@ -3,6 +3,7 @@ const model =
   process.env.NEBIUS_MODEL?.trim() ||
   'meta-llama/Meta-Llama-3.1-8B-Instruct';
 const endpoint = 'https://api.tokenfactory.nebius.com/v1/chat/completions';
+const qwen35ReasoningModel = /^qwen\/qwen3\.5-/i.test(model);
 
 if (!apiKey) {
   console.error('NEBIUS_API_KEY is required for the Nebius Token Factory smoke test.');
@@ -18,8 +19,9 @@ const response = await fetch(endpoint, {
   body: JSON.stringify({
     model,
     messages: [{ role: 'user', content: 'Reply with exactly: ok' }],
-    max_tokens: 8,
+    max_completion_tokens: qwen35ReasoningModel ? 512 : 8,
     temperature: 0,
+    ...(qwen35ReasoningModel ? { reasoning_effort: 'low' } : {}),
   }),
   signal: AbortSignal.timeout(30_000),
 });
