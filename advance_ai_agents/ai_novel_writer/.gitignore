@@ -1,0 +1,42 @@
+# 依赖
+node_modules
+
+# 构建输出
+dist
+dist-electron
+release
+
+# 日志
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# 编辑器
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# 临时文件
+*.local
+dist-ssr
+tailwind.config.js.bak
+
+# 本地工具索引与设计会话
+.codegraph/
+.superpowers/
+.worktrees/

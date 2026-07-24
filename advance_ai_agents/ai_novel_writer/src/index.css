@@ -1,0 +1,1502 @@
+/* ========================================================================
+ * Vela — index.css
+ * TailwindCSS v4 全面适配版本
+ *
+ * 层级顺序（由低到高）：
+ *   @layer theme   — Tailwind 设计令牌
+ *   @layer base    — 全局重置、CSS变量、滚动条
+ *   @layer components — 自定义组件（panel-header, tree-item 等）
+ *   @layer utilities  — Tailwind 工具类（px-3, flex, gap-2 等）
+ *   无层样式        — CodeMirror 覆盖等需要最高优先级的样式
+ *
+ * 关键：所有自定义样式必须归入正确的 @layer，
+ * 否则无层样式会覆盖 Tailwind 工具类，导致 px-3/py-1 等全部失效。
+ * ======================================================================== */
+
+/* ===== 本地内置字体（无需网络，所有字体文件均放置于 public/fonts/） ===== */
+
+/* Sora — 现代几何无衬线，显示性强，独特但不过分 */
+@font-face {
+  font-family: 'Sora';
+  src: url('/fonts/Sora-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Sora 斜体 */
+@font-face {
+  font-family: 'Sora';
+  src: url('/fonts/Sora-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* ===== 本地内置中文写作字体（无需网络，放置于 public/fonts/） ===== */
+
+/* 霞鹜文楷 Regular — 楷体，温润典雅，适合小说写作 */
+@font-face {
+  font-family: 'LXGW WenKai';
+  src: url('/fonts/LXGWWenKai-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 霞鹜文楷 Medium — 较粗字重，阅读舒适感更强 */
+@font-face {
+  font-family: 'LXGW WenKai';
+  src: url('/fonts/LXGWWenKai-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 思源宋体 — 可变字体，支持 100-900 所有字重，印刷感强 */
+@font-face {
+  font-family: 'Noto Serif SC';
+  src: url('/fonts/NotoSerifSC-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 思源黑体 — 可变字体，支持 100-900 所有字重，现代简洁 */
+@font-face {
+  font-family: 'Noto Sans SC';
+  src: url('/fonts/NotoSansSC-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== TailwindCSS v4 核心导入 ===== */
+@import "tailwindcss";
+@plugin "tailwindcss-animate";
+@plugin "@tailwindcss/typography";
+
+/* dark 变体：匹配 .dark 或 .galaxy 类的子元素 */
+@custom-variant dark (&:is(.dark *, .galaxy *));
+
+/* ===== Tailwind v4 设计令牌（精简版 — 仅保留 Tailwind 需要的扩展） ===== */
+@theme {
+  /* 字体栈 - 使用 Sora 替代 Inter，更具个性 */
+  --font-sans: 'Sora', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  --font-writing: 'Noto Serif SC', 'Source Han Serif SC', Georgia, serif;
+
+  /* 文字尺寸 */
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+
+  /* 间距 */
+  --spacing-sidebar: 260px;
+  --spacing-panel-min: 200px;
+  --spacing-titlebar: 36px;
+  --spacing-statusbar: 24px;
+  --spacing-activity-bar: 72px;
+
+  /* Tailwind 动画 - 扩展更多交互动画 */
+  --animate-fade-in: fade-in 0.15s ease-out;
+  --animate-fade-in-up: fade-in-up 0.25s ease-out;
+  --animate-fade-in-down: fade-in-down 0.25s ease-out;
+  --animate-slide-in-right: slide-in-right 0.2s ease-out;
+  --animate-slide-in-left: slide-in-left 0.2s ease-out;
+  --animate-slide-in-up: slide-in-up 0.2s ease-out;
+  --animate-scale-in: scale-in 0.2s ease-out;
+  --animate-bounce-in: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --animate-shimmer: shimmer 2s linear infinite;
+
+  @keyframes fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @keyframes fade-in-up {
+    0% { opacity: 0; transform: translateY(12px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fade-in-down {
+    0% { opacity: 0; transform: translateY(-12px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slide-in-right {
+    0% { transform: translateX(10px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes slide-in-left {
+    0% { transform: translateX(-10px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes slide-in-up {
+    0% { transform: translateY(10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes scale-in {
+    0% { opacity: 0; transform: scale(0.92); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes bounce-in {
+    0% { opacity: 0; transform: scale(0.3); }
+    50% { transform: scale(1.05); }
+    70% { transform: scale(0.95); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+}
+
+/* =====================================================================
+ * @layer base — 全局重置、CSS变量、基础元素样式
+ * 优先级低于 utilities，保证 Tailwind 工具类能正常覆盖
+ * ===================================================================== */
+@layer base {
+
+  /* ===== CSS 变量 — 从 Logo 提取品牌色系 ===== */
+  /* Logo 核心色：深邃蓝 #0A1628 · 冰蓝 #7EC8E3 · 星空蓝 #5B9ED6
+     薰衣草紫 #9B8EC8 · 星辰金 #C9A76C */
+  :root {
+    /* 浅色主题 — 清冷蓝调（从 Logo 蓝紫色系延伸） */
+
+    /* 背景层次（冷白蓝调，与Logo深蓝形成呼应） */
+    --color-bg: #F7F9FC;
+    --color-sidebar: #EFF2F7;
+    --color-panel: #EFF2F7;
+    --color-titlebar: #F7F9FC;
+    --color-activity-bar: #E5E9F0;
+    --color-hover: #EBF0F7;
+    --color-active: #DDE3ED;
+
+    /* 文字层次 */
+    --color-text: #1A2233;
+    --color-text-secondary: #4A5568;
+    --color-text-muted: #8A9AAB;
+
+    /* 边框 */
+    --color-border: #DEE3ED;
+
+    /* 强调色（Logo 星空蓝） */
+    --color-accent: #5B9ED6;
+    --color-accent-hover: #4A8DC5;
+    --color-accent-rgb: 91, 158, 214;
+
+    /* 品牌金色（Logo 星辰点睛） */
+    --color-gold: #C9A76C;
+
+    /* 语义色（莫兰迪低饱和度高通透感） */
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-error: #f43f5e;
+    --color-info: #5B9ED6;
+
+    /* Tab 系统 */
+    --color-tab-bg: transparent;
+    --color-tab-active: #FFFFFF;
+    --color-tab-border: transparent;
+    --color-tab-indicator: #5B9ED6;
+
+    /* 状态栏 */
+    --color-statusbar: #EFF2F7;
+    --color-statusbar-text: #8994A7;
+
+    /* 标题栏文字 */
+    --color-titlebar-text: #2D3748;
+
+    /* 活动栏图标颜色 */
+    --color-activity-icon: #8994A7;
+    --color-activity-icon-active: #1A2233;
+    --color-activity-indicator: #5B9ED6;
+
+    /* 编辑器 */
+    --color-editor-bg: #F7F9FC;
+    --color-editor-line-highlight: rgba(91, 158, 214, 0.04);
+    --color-editor-selection: rgba(91, 158, 214, 0.14);
+
+    /* 分割条 Sash */
+    --color-sash: transparent;
+    --color-sash-hover: rgba(91, 158, 214, 0.15);
+
+    /* ===== 语义令牌 ===== */
+
+    /* 焦点环 */
+    --color-focus-ring: rgba(91, 158, 214, 0.45);
+    /* 遮罩层 */
+    --color-backdrop: rgba(10, 22, 40, 0.20);
+    /* Tooltip */
+    --color-tooltip-bg: #0F1A2E;
+    --color-tooltip-text: #E8ECF2;
+    /* 骨架屏 */
+    --color-skeleton: rgba(91, 158, 214, 0.08);
+    /* Badge */
+    --color-badge-bg: rgba(91, 158, 214, 0.10);
+    --color-badge-text: #5B9ED6;
+
+    /* ===== 尺寸规范 ===== */
+    --height-titlebar: 40px;
+    --height-statusbar: 28px;
+    --height-tab: 36px;
+    --height-panel-header: 36px;
+    --width-left-bar: 72px;
+    --width-right-bar: 44px;
+    --width-bottom-bar: 32px;
+
+    /* 圆角（加大圆角，更现代） */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 10px;
+    --radius-xl: 14px;
+    --radius-2xl: 20px;
+
+    /* 阴影（蓝调弥散阴影） */
+    --shadow-sm: 0 1px 2px rgba(10, 22, 40, 0.05);
+    --shadow-md: 0 4px 12px rgba(10, 22, 40, 0.07);
+    --shadow-lg: 0 12px 32px rgba(10, 22, 40, 0.09);
+    --shadow-popover: 0 16px 40px -8px rgba(10, 22, 40, 0.14), 0 4px 16px -4px rgba(10, 22, 40, 0.07);
+    --shadow-tooltip: 0 4px 12px rgba(10, 22, 40, 0.18);
+
+    /* 过渡（加入顺滑阻尼） */
+    --transition-fast: 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-spring: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+    /* 字体 */
+    --font-sans: 'Sora', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --font-writing: 'LXGW WenKai', 'Noto Serif SC', serif;
+  }
+
+  /* 星空主题 — Logo 深邃星空（直接取自 Logo 背景色 #0A1628） */
+  .galaxy {
+    /* 背景层次 — Logo 深蓝背景色为基底，逐层提亮 */
+    --color-bg: #0A1628;
+    --color-sidebar: #0E1B30;
+    --color-panel: #0E1B30;
+    --color-titlebar: #0A1628;
+    --color-activity-bar: #071220;
+    --color-hover: #142640;
+    --color-active: #1C3050;
+
+    /* 文字层次 — 冰蓝色阶梯，与Logo蓝色调和谐 */
+    --color-text: #E0ECF4;
+    --color-text-secondary: #8BA4BE;
+    --color-text-muted: #5A7A96;
+
+    /* 边框 — 深蓝色边框，微弱可见 */
+    --color-border: #172B42;
+
+    /* 强调色 — Logo 冰蓝 #7EC8E3 */
+    --color-accent: #7EC8E3;
+    --color-accent-hover: #6AB8D8;
+    --color-accent-rgb: 126, 200, 227;
+
+    /* 品牌金色 — Logo 星辰金 #C9A76C */
+    --color-gold: #C9A76C;
+
+    --color-success: #4ade80;
+    --color-warning: #fbbf24;
+    --color-error: #fb7185;
+    --color-info: #7EC8E3;
+
+    --color-tab-bg: transparent;
+    --color-tab-active: #0E1E35;
+    --color-tab-border: transparent;
+    --color-tab-indicator: #7EC8E3;
+
+    --color-statusbar: #071220;
+    --color-statusbar-text: #4A6580;
+
+    --color-titlebar-text: #8BA4BE;
+
+    --color-activity-icon: #4A6580;
+    --color-activity-icon-active: #E0ECF4;
+    --color-activity-indicator: #7EC8E3;
+
+    --color-editor-bg: #091525;
+    --color-editor-line-highlight: rgba(126, 200, 227, 0.04);
+    --color-editor-selection: rgba(126, 200, 227, 0.18);
+
+    --color-sash: transparent;
+    --color-sash-hover: rgba(126, 200, 227, 0.15);
+
+    /* 语义令牌 */
+    --color-focus-ring: rgba(126, 200, 227, 0.50);
+    --color-backdrop: rgba(5, 10, 20, 0.65);
+    --color-tooltip-bg: #E0ECF4;
+    --color-tooltip-text: #0E1B30;
+    --color-skeleton: rgba(126, 200, 227, 0.06);
+    --color-badge-bg: rgba(126, 200, 227, 0.12);
+    --color-badge-text: #7EC8E3;
+
+    /* 阴影 — 深蓝光晕 */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 12px rgba(5, 10, 20, 0.6);
+    --shadow-lg: 0 12px 32px rgba(5, 10, 20, 0.7);
+    --shadow-popover: 0 0 0 1px rgba(126, 200, 227, 0.06), 0 16px 40px -8px rgba(5, 10, 20, 0.85), 0 4px 16px -4px rgba(5, 10, 20, 0.7);
+    --shadow-tooltip: 0 4px 12px rgba(5, 10, 20, 0.5);
+  }
+
+  /* 纸质感主题 — 写作沉浸（暖纸感写作工作台 + 核桃棕强调） */
+  .paper {
+    --color-bg: #F8F1E7;
+    --color-sidebar: #EEE2D0;
+    --color-panel: #F5EBDD;
+    --color-titlebar: #E8D8C1;
+    --color-activity-bar: #DDC8AA;
+    --color-hover: #EFE1CD;
+    --color-active: #E1C49A;
+
+    --color-text: #2E261D;
+    --color-text-secondary: #6F5F4A;
+    --color-text-muted: #9A866E;
+
+    --color-border: #D4BFA4;
+
+    --color-accent: #7A5732;
+    --color-accent-hover: #684929;
+    --color-accent-rgb: 122, 87, 50;
+
+    --color-gold: #B68A4A;
+
+    --color-success: #5D8A67;
+    --color-warning: #C68A3A;
+    --color-error: #B94A48;
+    --color-info: #6E7F8F;
+
+    --color-tab-bg: transparent;
+    --color-tab-active: #FFF9EF;
+    --color-tab-border: transparent;
+    --color-tab-indicator: #7A5732;
+
+    --color-statusbar: #E8D8C1;
+    --color-statusbar-text: #6F5F4A;
+
+    --color-titlebar-text: #2E261D;
+
+    --color-activity-icon: #7B6A55;
+    --color-activity-icon-active: #2E261D;
+    --color-activity-indicator: #7A5732;
+
+    --color-editor-bg: #FFF9EF;
+    --color-editor-line-highlight: rgba(122, 87, 50, 0.05);
+    --color-editor-selection: rgba(122, 87, 50, 0.16);
+
+    --color-sash: transparent;
+    --color-sash-hover: rgba(122, 87, 50, 0.16);
+
+    /* 语义令牌 */
+    --color-focus-ring: rgba(122, 87, 50, 0.38);
+    --color-backdrop: rgba(46, 38, 29, 0.28);
+    --color-tooltip-bg: #2E261D;
+    --color-tooltip-text: #FFF9EF;
+    --color-skeleton: rgba(122, 87, 50, 0.08);
+    --color-badge-bg: rgba(122, 87, 50, 0.10);
+    --color-badge-text: #7A5732;
+
+    /* 阴影 */
+    --shadow-sm: 0 1px 2px rgba(46, 38, 29, 0.06);
+    --shadow-md: 0 4px 12px rgba(46, 38, 29, 0.08);
+    --shadow-lg: 0 12px 32px rgba(46, 38, 29, 0.10);
+    --shadow-popover: 0 16px 40px -8px rgba(46, 38, 29, 0.16), 0 4px 16px -4px rgba(46, 38, 29, 0.10);
+    --shadow-tooltip: 0 4px 12px rgba(46, 38, 29, 0.18);
+  }
+
+  /* Writer console visual system — approved AI小说作家 mock */
+  :root,
+  .paper,
+  .light,
+  .dark,
+  .galaxy {
+    --writer-walnut-950: #1b0f06;
+    --writer-walnut-900: #251406;
+    --writer-walnut-850: #2b1708;
+    --writer-walnut-800: #34200f;
+    --writer-walnut-700: #4d3219;
+    --writer-brass-600: #8a5b2e;
+    --writer-brass-500: #a36c35;
+    --writer-brass-400: #c09356;
+    --writer-paper-100: #fff8eb;
+    --writer-paper-150: #fbf1e1;
+    --writer-paper-200: #f4ead8;
+    --writer-paper-250: #eddfc8;
+    --writer-paper-300: #dcc6a8;
+    --writer-ink: #2c2319;
+    --writer-ink-muted: #7a6750;
+    --writer-green: #55a85a;
+    --writer-orange: #f28c2e;
+  }
+
+  /* 黑夜主题 — VS Code / IDEA 深灰极客风（真正的暗黑模式） */
+  .dark {
+    --color-bg: #1E1E1E;
+    --color-sidebar: #252526;
+    --color-panel: #252526;
+    --color-titlebar: #181818;
+    --color-activity-bar: #333333;
+    --color-hover: #2A2D2E;
+    --color-active: #37373D;
+
+    --color-text: #D4D4D4;
+    --color-text-secondary: #A0A0A0;
+    --color-text-muted: #888888;
+
+    --color-border: #3C3C3C;
+
+    --color-accent: #0E639C;
+    --color-accent-hover: #1177BB;
+    --color-accent-rgb: 14, 99, 156;
+
+    --color-gold: #C9A76C;
+
+    --color-success: #89D185;
+    --color-warning: #CCA700;
+    --color-error: #F14C4C;
+    --color-info: #3794FF;
+
+    --color-tab-bg: transparent;
+    --color-tab-active: #1E1E1E;
+    --color-tab-border: transparent;
+    --color-tab-indicator: #0E639C;
+
+    --color-statusbar: #181818;
+    --color-statusbar-text: #909090;
+
+    --color-titlebar-text: #CCCCCC;
+
+    --color-activity-icon: #858585;
+    --color-activity-icon-active: #FFFFFF;
+    --color-activity-indicator: #FFFFFF;
+
+    --color-editor-bg: #1E1E1E;
+    --color-editor-line-highlight: rgba(255, 255, 255, 0.04);
+    --color-editor-selection: rgba(38, 79, 120, 0.6);
+
+    --color-sash: transparent;
+    --color-sash-hover: rgba(0, 122, 204, 0.5);
+
+    --color-focus-ring: rgba(0, 122, 204, 0.4);
+    --color-backdrop: rgba(0, 0, 0, 0.4);
+    --color-tooltip-bg: #252526;
+    --color-tooltip-text: #CCCCCC;
+    --color-skeleton: rgba(255, 255, 255, 0.05);
+    --color-badge-bg: #4D4D4D;
+    --color-badge-text: #FFFFFF;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
+    --shadow-popover: 0 16px 40px -8px rgba(0, 0, 0, 0.7), 0 4px 16px -4px rgba(0, 0, 0, 0.5);
+    --shadow-tooltip: 0 4px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  /* ===== 全局基础样式 ===== */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 14px;
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-sans);
+    font-size: inherit;
+    line-height: 1.5;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* 增强的过渡曲线 */
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* 禁止文本选择（IDE 区域） */
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* 允许文本选择（编辑区域） */
+  .allow-select {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  /* ===== 滚动条样式（细腻 6px） ===== */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.25);
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(128, 128, 128, 0.45);
+  }
+
+  .galaxy ::-webkit-scrollbar-thumb {
+    background: rgba(126, 200, 227, 0.12);
+  }
+
+  .galaxy ::-webkit-scrollbar-thumb:hover {
+    background: rgba(126, 200, 227, 0.25);
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.20);
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(128, 128, 128, 0.40);
+  }
+
+  .paper ::-webkit-scrollbar-thumb {
+    background: rgba(120, 100, 80, 0.20);
+  }
+
+  .paper ::-webkit-scrollbar-thumb:hover {
+    background: rgba(120, 100, 80, 0.35);
+  }
+}
+
+/* =====================================================================
+ * @layer components — 自定义 IDE 组件样式
+ * 优先级高于 base，低于 utilities（Tailwind 工具类可覆盖）
+ * ===================================================================== */
+@layer components {
+
+  /* ===== 分隔条（拖拽调整大小）— 白色微光风格 ===== */
+  .sash {
+    position: absolute;
+    z-index: 10;
+    background: var(--color-sash);
+    transition: background var(--transition-fast);
+  }
+
+  .sash:hover,
+  .sash.active {
+    background: var(--color-sash-hover);
+  }
+
+  .sash-vertical {
+    width: 4px;
+    cursor: col-resize;
+    top: 0;
+    bottom: 0;
+  }
+
+  .sash-horizontal {
+    height: 4px;
+    cursor: row-resize;
+    left: 0;
+    right: 0;
+  }
+
+  /* ===== 面板标题栏 — JetBrains 风格：紧凑、全大写、弱化 ===== */
+  .panel-header {
+    @apply flex items-center px-3 gap-2;
+    height: var(--height-panel-header);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .writer-topbar {
+    background: linear-gradient(180deg, var(--writer-walnut-850) 0%, var(--writer-walnut-950) 100%);
+    color: #fff8e8;
+    border-bottom: 1px solid rgba(107, 74, 38, 0.72);
+    box-shadow: inset 0 -1px 0 rgba(255, 244, 223, 0.05);
+  }
+
+  .writer-command-button {
+    -webkit-app-region: no-drag;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 28px;
+    padding: 0 10px;
+    border-radius: 6px;
+    color: #fff4df;
+    border: 1px solid transparent;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    transition: background var(--transition-fast),
+                border-color var(--transition-fast),
+                color var(--transition-fast),
+                box-shadow var(--transition-fast);
+  }
+
+  .writer-command-button:hover:not(:disabled) {
+    background: rgba(255, 244, 223, 0.08);
+    border-color: rgba(255, 244, 223, 0.18);
+  }
+
+  .writer-command-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  .writer-primary-button {
+    background: linear-gradient(180deg, var(--writer-brass-600) 0%, #65401f 100%);
+    color: #fff8e8;
+    border: 1px solid rgba(67, 40, 17, 0.55);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 1px 2px rgba(54, 31, 12, 0.24);
+  }
+
+  .writer-project-tree {
+    background: var(--writer-paper-200);
+    border-right: 1px solid var(--writer-paper-300);
+    color: var(--writer-ink);
+  }
+
+  .writer-ai-panel {
+    background: var(--writer-paper-200);
+    border-left: 1px solid var(--writer-paper-300);
+    color: var(--writer-ink);
+  }
+
+  .writer-task-table {
+    background: var(--writer-paper-150);
+    border-top: 1px solid #d2ba98;
+    color: var(--writer-ink);
+  }
+
+  .writer-shell-surface {
+    background:
+      radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.34), transparent 28%),
+      linear-gradient(180deg, var(--writer-paper-100) 0%, var(--writer-paper-150) 100%);
+    color: var(--writer-ink);
+  }
+
+  .writer-panel-card {
+    background: rgba(255, 248, 235, 0.78);
+    border: 1px solid #d6c09f;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.58), 0 1px 2px rgba(82, 52, 22, 0.08);
+  }
+
+  .writer-topbar .brand-gradient {
+    background: linear-gradient(135deg, #f9e7bd, #c89445);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .writer-topbar .writer-command-button svg,
+  .writer-topbar .icon-btn svg,
+  .writer-statusbar svg {
+    color: currentColor;
+  }
+
+  .writer-statusbar {
+    background: linear-gradient(180deg, var(--writer-walnut-900), var(--writer-walnut-950));
+    color: #efe0c4;
+    border-top: 1px solid rgba(107, 74, 38, 0.72);
+  }
+
+  .writer-statusbar-segment:hover {
+    background: rgba(255, 244, 223, 0.08);
+  }
+
+  .writer-left-rail {
+    background:
+      radial-gradient(circle at 48% 0%, rgba(195, 148, 79, 0.14), transparent 26%),
+      linear-gradient(180deg, var(--writer-walnut-850), var(--writer-walnut-950));
+    border-right: 1px solid rgba(132, 93, 46, 0.72);
+    color: #f4e6ce;
+  }
+
+  .writer-left-rail .left-nav-button {
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    min-height: 66px;
+    padding: 8px 5px;
+    border-radius: 0;
+    color: rgba(255, 247, 228, 0.78);
+  }
+
+  .writer-left-rail .left-nav-button:hover {
+    background: rgba(255, 244, 223, 0.08);
+    color: #fff8e8;
+  }
+
+  .writer-left-rail .left-nav-label {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .writer-left-rail .writer-nav-divider {
+    background: rgba(255, 244, 223, 0.16);
+  }
+
+  .writer-project-tree .tree-item {
+    height: 28px;
+    margin: 1px 8px;
+    color: var(--writer-ink);
+    border-radius: 6px;
+  }
+
+  .writer-project-tree .tree-item:hover {
+    background: rgba(142, 92, 42, 0.10);
+    transform: none;
+  }
+
+  .writer-project-tree .tree-item.active {
+    background: #ead8bd;
+    box-shadow: inset 3px 0 0 var(--writer-brass-600);
+  }
+
+  .writer-ai-panel .agent-textarea,
+  .writer-ai-panel textarea,
+  .writer-ai-panel input,
+  .writer-shell-surface input,
+  .writer-shell-surface textarea,
+  .writer-shell-surface select {
+    background: rgba(255, 252, 245, 0.78);
+    border-color: #cdb696;
+    color: var(--writer-ink);
+  }
+
+  .writer-ai-panel .icon-btn,
+  .writer-task-table .icon-btn {
+    color: var(--writer-ink-muted);
+  }
+
+  .writer-ai-panel .icon-btn:hover,
+  .writer-task-table .icon-btn:hover {
+    background: rgba(142, 92, 42, 0.10);
+    color: var(--writer-ink);
+    transform: none;
+  }
+
+  .writer-task-table table th {
+    background: rgba(224, 203, 172, 0.34);
+    color: var(--writer-ink-muted);
+  }
+
+  .writer-task-table table tr {
+    border-color: rgba(201, 178, 143, 0.72) !important;
+  }
+
+  .writer-task-table table tr:hover {
+    background: rgba(142, 92, 42, 0.08);
+  }
+
+  /* ===== 树节点 — 舒适的 26px 行高，带增强悬停效果 ===== */
+  .tree-item {
+    @apply flex items-center gap-1.5 px-2 cursor-pointer;
+    height: 26px;
+    font-size: 13px;
+    color: var(--color-text);
+    transition: background var(--transition-fast),
+                box-shadow var(--transition-fast),
+                transform 0.12s ease;
+    position: relative;
+    border-radius: var(--radius-sm);
+    margin: 0 4px;
+  }
+
+  .tree-item:hover {
+    background: var(--color-hover);
+    transform: translateX(2px);
+  }
+
+  /* 激活节点：背景 + 左侧 2px 品牌色竖线 */
+  .tree-item.active {
+    background: var(--color-active);
+    box-shadow: inset 2px 0 0 var(--color-accent);
+  }
+
+  /* ===== 旧按钮类已废弃 — 请使用 <Button> 组件 (src/components/ui/Button.tsx) ===== */
+  /* .btn-primary 和 .btn-ghost 已迁移至 Button.tsx 的 cva 变体系统 */
+
+  /* ===== 图标按钮 — 22px 尺寸，带增强悬停效果 ===== */
+  .icon-btn {
+    @apply flex items-center justify-center;
+    width: 22px;
+    height: 22px;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    transition: all var(--transition-fast),
+                transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .icon-btn:hover {
+    background: var(--color-hover);
+    color: var(--color-text);
+    transform: scale(1.1);
+  }
+
+  .icon-btn:active {
+    transform: scale(0.95);
+  }
+
+  /* ===== 配置编辑器输入框 ===== */
+  .config-input {
+    @apply w-full px-2.5 py-1.5 text-xs outline-none;
+    border-radius: var(--radius-md);
+    background-color: var(--color-bg);
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    transition: border-color var(--transition-fast);
+  }
+
+  .config-input:focus {
+    border-color: var(--color-accent);
+  }
+
+  .config-input::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  /* ===== 工具窗口按钮 — 三条工具栏共用，带增强悬停效果 ===== */
+  .tool-btn {
+    @apply flex items-center justify-center relative;
+    width: 100%;
+    height: 30px;
+    color: var(--color-activity-icon);
+    transition: color var(--transition-fast),
+                background var(--transition-fast),
+                transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.2s ease;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    outline: none;
+    border-radius: var(--radius-sm);
+  }
+
+  .tool-btn:hover {
+    background: rgba(var(--color-accent-rgb), 0.08);
+    color: var(--color-text);
+    transform: scale(1.08);
+  }
+
+  .tool-btn.active {
+    color: var(--color-activity-icon-active);
+    background: rgba(var(--color-accent-rgb), 0.12);
+    box-shadow: inset 0 -2px 0 var(--color-accent);
+  }
+
+  .left-nav-button {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    min-height: 32px;
+    padding: 6px 7px;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--color-activity-icon);
+    cursor: pointer;
+    transition: color var(--transition-fast),
+                background var(--transition-fast),
+                box-shadow var(--transition-fast);
+  }
+
+  .left-nav-button:hover {
+    background: var(--color-hover);
+    color: var(--color-text);
+  }
+
+  .left-nav-label {
+    min-width: 0;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    letter-spacing: 0;
+  }
+
+  /* ===== 底部工具栏按钮（更矮） ===== */
+  .bottom-tool-btn {
+    @apply flex items-center justify-center relative w-full;
+    height: 26px;
+    color: var(--color-activity-icon);
+    transition: color var(--transition-fast), background var(--transition-fast);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    outline: none;
+  }
+
+  .bottom-tool-btn:hover {
+    background: rgba(128, 128, 128, 0.10);
+    color: var(--color-text);
+  }
+
+  .bottom-tool-btn.active {
+    color: var(--color-accent);
+    box-shadow: inset -2px 0 0 var(--color-accent);
+  }
+
+  /* ===== Agent 面板专用样式 ===== */
+  .assistant-content {
+    line-height: 1.6;
+  }
+
+  .agent-textarea::placeholder {
+    color: var(--color-text-muted);
+    opacity: 0.6;
+  }
+
+  /* ===== AI 任务胶囊指示器（StatusBar）===== */
+  .ai-task-capsule {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 8px;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    font-size: 0.68rem;
+    font-family: var(--font-sans);
+    color: var(--color-statusbar-text);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    animation: capsule-enter 0.3s ease-out;
+    white-space: nowrap;
+    max-width: 260px;
+  }
+
+  .ai-task-capsule:hover {
+    background: rgba(var(--color-accent-rgb), 0.08);
+  }
+
+  .ai-task-capsule--complete {
+    color: var(--color-success);
+    animation: capsule-complete 1.8s ease-out forwards;
+  }
+
+  /* ===== AI 输出面板 — 流式打字机光标 ===== */
+  .ai-stream-cursor {
+    display: inline-block;
+    width: 5px;
+    height: 14px;
+    margin-left: 2px;
+    vertical-align: middle;
+    background-color: var(--color-accent);
+    border-radius: 1px;
+    animation: agent-cursor-blink 1s steps(1) infinite;
+  }
+
+  /* ===== 品牌渐变文字 — 统一所有品牌标识使用（Logo 冰蓝→薰衣草紫） ===== */
+  .brand-gradient {
+    background: linear-gradient(135deg, #7A5732, #B68A4A);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ===== Default 主按钮 — 品牌冰蓝渐变 + 玻璃高光 + 增强动效 ===== */
+  .btn-primary {
+    background: linear-gradient(180deg, var(--color-accent), var(--color-accent-hover));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 2px 4px rgba(0, 0, 0, 0.15),
+      0 0 0 0 rgba(var(--color-accent-rgb), 0);
+    transition: box-shadow var(--transition-normal),
+                transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                filter 0.15s ease;
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.12);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.25),
+      0 6px 20px rgba(var(--color-accent-rgb), 0.35),
+      0 0 30px rgba(var(--color-accent-rgb), 0.15);
+    transform: translateY(-2px);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+    filter: brightness(0.95);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  /* ===== AI 极光光效按钮 — 所有 AI 功能按钮统一使用（Logo 冰蓝→薰衣草紫） ===== */
+  .ai-glow {
+    position: relative;
+    background: linear-gradient(135deg, #7A5732, #B68A4A);
+    color: #fff;
+    border: none;
+    transition: box-shadow var(--transition-normal),
+                transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .ai-glow::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(126, 200, 227, 0.5), rgba(155, 142, 200, 0.5), rgba(201, 167, 108, 0.3));
+    filter: blur(8px);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    z-index: -1;
+  }
+
+  .ai-glow:hover {
+    box-shadow: 0 6px 24px rgba(126, 200, 227, 0.35), 0 0 32px rgba(155, 142, 200, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .ai-glow:hover::before {
+    opacity: 1;
+  }
+
+  .ai-glow:active {
+    transform: translateY(0);
+  }
+}
+
+/* ===== 全局 @keyframes（不受层级影响） ===== */
+
+/* 增强的光标闪烁动画 */
+@keyframes agent-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* 脉冲动画 - 更流畅的缩放 */
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.9); }
+}
+
+/* 胶囔入场动画 */
+@keyframes capsule-enter {
+  0% { opacity: 0; transform: translateY(-4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* 胶囊完成动画 - 优雅淡出 */
+@keyframes capsule-complete {
+  0% { opacity: 1; }
+  50% { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 0; transform: scale(0.98); }
+}
+
+/* ===== 统一通知 / 对话框动画 ===== */
+
+/* Toast 进场 - 弹跳效果 */
+@keyframes toast-enter {
+  0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+  60% { transform: translateY(-4px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Toast 退场 - 下滑消失 */
+@keyframes toast-exit {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(16px) scale(0.95); }
+}
+
+/* Dialog / Confirm / AlertDialog 进场 - 缩放+上移 */
+@keyframes dialog-enter {
+  0% { opacity: 0; transform: translateY(16px) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Dialog / Confirm / AlertDialog 退场 */
+@keyframes dialog-exit {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(12px) scale(0.98); }
+}
+
+/* 遮罩层渐入 - 模糊过渡 */
+@keyframes backdrop-enter {
+  0% { opacity: 0; backdrop-filter: blur(0px); }
+  100% { opacity: 1; backdrop-filter: blur(8px); }
+}
+
+/* 遮罩层渐出 */
+@keyframes backdrop-exit {
+  0% { opacity: 1; backdrop-filter: blur(8px); }
+  100% { opacity: 0; backdrop-filter: blur(0px); }
+}
+
+/* 骨架屏呼吸动画 */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ActionToast 从右侧滑入 */
+@keyframes action-toast-enter {
+  0% { opacity: 0; transform: translateX(24px) scale(0.96); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes action-toast-exit {
+  0% { opacity: 1; transform: translateX(0) scale(1); }
+  100% { opacity: 0; transform: translateX(24px) scale(0.96); }
+}
+
+/* ===== 新增强动画 ===== */
+
+/* 弹跳进入 - 用于成功状态 */
+@keyframes bounce-in {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { transform: scale(1.08); }
+  70% { transform: scale(0.96); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* 闪烁效果 - 用于加载状态 */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* 旋转进入 */
+@keyframes spin-in {
+  0% { opacity: 0; transform: rotate(-10deg) scale(0.95); }
+  100% { opacity: 1; transform: rotate(0) scale(1); }
+}
+
+/* 渐显下滑 */
+@keyframes fade-in-down {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================================
+ * 无层样式 — CodeMirror 搜索面板覆盖（需要最高优先级）
+ * 这些样式故意不放入任何 @layer，使其优先级高于所有层级样式
+ * ===================================================================== */
+
+/* CodeMirror 搜索面板 IDEA 风格 — 扁平化嵌入式设计 */
+/* top: true 时面板在 cm-panels-top，否则在 cm-panels-bottom，统一覆盖 */
+.cm-editor .cm-panels-top:has(.cm-search),
+.cm-editor .cm-panels-bottom:has(.cm-search) {
+  position: static !important;
+  height: auto !important;
+  border: none !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  border-top: none !important;
+  background-color: var(--color-sidebar) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  order: -1 !important;
+}
+
+/* panels 容器默认有上边框，强制移除 */
+.cm-editor .cm-panels {
+  border-color: var(--color-border) !important;
+}
+
+.cm-panel.cm-search {
+  position: relative !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center;
+  padding: 6px 12px 2px 12px !important;
+  background-color: var(--color-sidebar) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-text);
+  width: 100%;
+  max-width: none !important;
+}
+
+/* br 元素作为 flex 换行符，让查找行和替换行分两行显示 */
+.cm-search br {
+  display: block !important;
+  content: "" !important;
+  width: 0 !important;
+  flex-basis: 100% !important;
+  height: 2px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+.dark .cm-search {
+  background-color: var(--color-sidebar) !important;
+  box-shadow: none !important;
+}
+
+.cm-search input.cm-textfield {
+  background: var(--color-bg) !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text) !important;
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+  font-size: 12px;
+  outline: none;
+  min-width: 130px;
+  max-width: 180px;
+  margin-right: 6px;
+  margin-bottom: 4px;
+  vertical-align: middle;
+  height: 24px;
+}
+
+.cm-search input.cm-textfield:focus {
+  border-color: var(--color-accent) !important;
+}
+
+.cm-search button {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  color: var(--color-text-secondary) !important;
+  cursor: pointer;
+  padding: 2px 6px !important;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: capitalize;
+  margin-right: 6px;
+  margin-bottom: 4px;
+  vertical-align: middle;
+  height: 24px;
+}
+
+.cm-search button:hover {
+  background: var(--color-hover) !important;
+  color: var(--color-text) !important;
+  border-color: var(--color-border) !important;
+}
+
+.cm-search label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  margin-right: 10px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.cm-search label:last-of-type {
+  margin-right: 36px !important;
+}
+
+.cm-search input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: var(--color-accent);
+  margin: 0;
+}
+
+.cm-search button[name="close"] {
+  position: absolute !important;
+  top: 6px !important;
+  right: 16px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--color-text-secondary) !important;
+  transition: background-color var(--transition-fast), color var(--transition-fast) !important;
+}
+
+.cm-search button[name="close"]:hover {
+  background: var(--color-hover) !important;
+  color: var(--color-text) !important;
+}
+
+/* 搜索结果高亮 IDEA 风格 */
+.cm-searchMatch {
+  background-color: rgba(var(--color-accent-rgb), 0.3) !important;
+  border-radius: 2px;
+}
+
+.dark .cm-searchMatch {
+  background-color: rgba(var(--color-accent-rgb), 0.4) !important;
+}
+
+.cm-searchMatch-selected {
+  background-color: var(--color-accent) !important;
+  color: white !important;
+}
+
+/* ===== View Transition API: 主题切换动画 ===== */
+/* JS 端始终对 ::view-transition-new(root) 执行 clip-path 圆形展开，
+   因此 new 层必须在 old 层上方，所有主题统一 z-index 即可。 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}
+
+/* ===== 增强动画工具类 ===== */
+
+/* 渐入动画 */
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out forwards;
+}
+
+/* 渐入上移动画 */
+.animate-fade-in-up {
+  animation: fade-in-up 0.25s ease-out forwards;
+}
+
+/* 缩放入场动画 */
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out forwards;
+}
+
+/* 弹跳入场动画 */
+.animate-bounce-in {
+  animation: bounce-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* 交错渐入 - 用于列表项依次入场 */
+.stagger-enter > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-enter > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-enter > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-enter > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-enter > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-enter > *:nth-child(6) { animation-delay: 250ms; }
+.stagger-enter > *:nth-child(7) { animation-delay: 300ms; }
+.stagger-enter > *:nth-child(8) { animation-delay: 350ms; }
+.stagger-enter > *:nth-child(9) { animation-delay: 400ms; }
+.stagger-enter > *:nth-child(10) { animation-delay: 450ms; }
+
+/* 悬停上浮效果 */
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* 悬停缩放效果 */
+.hover-scale {
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.hover-scale:hover {
+  transform: scale(1.02);
+}
+
+/* 按下缩放效果 */
+.active-press:active {
+  transform: scale(0.98);
+}
+
+/* 发光边框效果 */
+.glow-border {
+  position: relative;
+}
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-gold));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+.glow-border:hover::before {
+  opacity: 0.5;
+}
+
+/* 玻璃态效果 */
+.glass {
+  background: rgba(var(--color-bg), 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(var(--color-border), 0.5);
+}
+
+/* 渐变文字效果 */
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 平滑滚动 */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* 焦点环增强 */
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-focus-ring);
+}
+
+/* 禁用选择时的指针事件 */
+.no-pointer {
+  pointer-events: none;
+}
+
+/* 加载状态闪烁 */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-skeleton) 25%,
+    rgba(var(--color-accent-rgb), 0.12) 50%,
+    var(--color-skeleton) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}

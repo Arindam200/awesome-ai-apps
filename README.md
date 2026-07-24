@@ -292,8 +292,9 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _31 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _32 projects_
 
+- [AI Novel Writer](advance_ai_agents/ai_novel_writer): Local-first Electron workspace for long-form fiction, with outlining, character and chapter planning, revision workflows, knowledge-base support, and local-model generation.
 - [AI Hedge Fund Research Team](advance_ai_agents/ai-hedgefund): Agentic workflow for comprehensive financial analysis
 - [AI Trend Research Agent](advance_ai_agents/trend_analyzer_agent): AI trend mining and analysis with Google ADK
 - [Candidate Profile Analyzer (Candilyzer)](advance_ai_agents/candidate_analyser): Candidate analysis tool for GitHub and LinkedIn profiles

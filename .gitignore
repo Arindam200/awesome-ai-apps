@@ -18,6 +18,8 @@ eggs/
 .eggs/
 lib/
 lib64/
+!advance_ai_agents/ai_novel_writer/src/lib/
+!advance_ai_agents/ai_novel_writer/src/lib/**
 parts/
 sdist/
 var/
