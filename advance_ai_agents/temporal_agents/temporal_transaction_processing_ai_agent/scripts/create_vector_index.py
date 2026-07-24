@@ -119,15 +119,16 @@ def create_vector_index():
         response = requests.get(
             index_url,
             auth=(username, password),
-            verify=False,  # Capella uses self-signed certs
+            verify=True,  # Set REQUESTS_CA_BUNDLE env var to point to Capella CA bundle if needed
             timeout=10
         )
         if response.status_code == 200:
             print(f"✅ Index '{index_name}' already exists!")
             print(f"   Status: {response.json().get('status', 'unknown')}")
             return
-    except requests.exceptions.SSLError:
-        print("⚠️  SSL verification failed, continuing anyway...")
+    except requests.exceptions.SSLError as ssl_err:
+        print(f"❌ SSL verification failed: {ssl_err}. Ensure REQUESTS_CA_BUNDLE points to the Capella CA bundle.")
+        raise
     except Exception as e:
         # Index doesn't exist, which is fine
         pass
@@ -139,7 +140,7 @@ def create_vector_index():
             index_url,
             auth=(username, password),
             json=index_definition,
-            verify=False,  # Capella uses self-signed certs
+            verify=True,  # Set REQUESTS_CA_BUNDLE env var to point to Capella CA bundle if needed
             timeout=30,
             headers={"Content-Type": "application/json"}
         )
