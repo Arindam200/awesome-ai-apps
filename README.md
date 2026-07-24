@@ -337,6 +337,12 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Open-Source LLM Fine-Tuning on Token Factory](fine_tuning/open_source_llms_token_factory): Colab-first LoRA fine-tuning walkthrough to upload a dataset, train, monitor, and deploy
 - [Standalone Customer Support Fine-Tuning (Colab)](fine_tuning/customer_support_standalone_colab): Fully standalone Colab notebook for the customer-support distillation and fine-tuning flow
 
+### 💰 Agent Infrastructure
+
+**Payment and economic infrastructure for AI agents to transact autonomously.** _1 project_
+
+- [MoltsPay - Universal Payment Protocol](https://github.com/Yaqing2023/moltspay) - Multi-chain payment infrastructure for AI agents with support for 8 blockchains (Base, Polygon, BNB, Tempo, Solana, Ethereum, Arbitrum, Optimism). Enables agent-to-agent value exchange with protocol-specific optimizations (x402, MPP, PFS, Pre-Approval). Available in Node.js and Python SDKs.
+
 ## 📺 Tutorials & Videos
 
 ### 🎓 Course Playlists
