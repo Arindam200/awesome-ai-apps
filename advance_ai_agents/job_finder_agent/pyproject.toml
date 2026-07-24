@@ -10,4 +10,5 @@ dependencies = [
     "openai",
     "openai-agents",
     "pydantic",
+    "nest-asyncio"
 ]
