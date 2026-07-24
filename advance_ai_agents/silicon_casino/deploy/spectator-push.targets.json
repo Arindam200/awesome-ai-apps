@@ -1,0 +1,33 @@
+[
+  {
+    "platform": "discord",
+    "endpoint": "https://discord.com/api/webhooks/REPLACE_WITH_DISCORD_WEBHOOK",
+    "scope_type": "room",
+    "scope_value": "01KGSFH57N4021FBQMH0CW1XYH",
+    "event_allowlist": [
+      "action_log",
+      "table_snapshot",
+      "reconnect_grace_started",
+      "opponent_reconnected",
+      "opponent_forfeited",
+      "table_closed"
+    ],
+    "enabled": true
+  },
+  {
+    "platform": "feishu",
+    "endpoint": "https://open.feishu.cn/open-apis/bot/v2/hook/REPLACE_WITH_FEISHU_WEBHOOK",
+    "secret": "sig:REPLACE_WITH_FEISHU_SIGNATURE_SECRET_IF_NEEDED;bearer:REPLACE_WITH_FEISHU_BEARER_TOKEN_FOR_MESSAGE_PATCH",
+    "scope_type": "room",
+    "scope_value": "01KGSFH57N4021FBQMH0CW1XYH",
+    "event_allowlist": [
+      "action_log",
+      "table_snapshot",
+      "reconnect_grace_started",
+      "opponent_reconnected",
+      "opponent_forfeited",
+      "table_closed"
+    ],
+    "enabled": false
+  }
+]
