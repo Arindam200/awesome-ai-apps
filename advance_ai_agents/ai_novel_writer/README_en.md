@@ -198,13 +198,16 @@ After configuration, use **Test connection** in Model settings. For a real API s
 $secureKey = Read-Host 'Nebius API key' -AsSecureString
 $env:NEBIUS_API_KEY = [System.Net.NetworkCredential]::new('', $secureKey).Password
 try {
+  # Optional: use the verified Qwen3.5 model
+  $env:NEBIUS_MODEL = 'Qwen/Qwen3.5-397B-A17B'
   pnpm run smoke:nebius
 } finally {
   Remove-Item Env:NEBIUS_API_KEY -ErrorAction SilentlyContinue
+  Remove-Item Env:NEBIUS_MODEL -ErrorAction SilentlyContinue
 }
 ```
 
-The command calls `/v1/chat/completions` and prints the model ID plus a truncated response preview. Set `NEBIUS_MODEL` or `NEBIUS_BASE_URL` to use a different model or regional endpoint.
+The command calls `/v1/chat/completions` and prints the model ID plus a truncated response preview. Set `NEBIUS_MODEL` or `NEBIUS_BASE_URL` to use a different model or regional endpoint. For Qwen3 / Qwen3.5 reasoning models, the script disables thinking mode so the 32-token smoke test returns verifiable text.
 
 ---
 

@@ -198,13 +198,16 @@ API key:         你在 Nebius Token Factory 创建的密钥
 $secureKey = Read-Host 'Nebius API key' -AsSecureString
 $env:NEBIUS_API_KEY = [System.Net.NetworkCredential]::new('', $secureKey).Password
 try {
+  # 可选：使用已验证的 Qwen3.5 模型
+  $env:NEBIUS_MODEL = 'Qwen/Qwen3.5-397B-A17B'
   pnpm run smoke:nebius
 } finally {
   Remove-Item Env:NEBIUS_API_KEY -ErrorAction SilentlyContinue
+  Remove-Item Env:NEBIUS_MODEL -ErrorAction SilentlyContinue
 }
 ```
 
-脚本会调用 `/v1/chat/completions`，并打印模型名和截断后的响应预览。可通过 `NEBIUS_MODEL` 或 `NEBIUS_BASE_URL` 覆盖模型与区域端点。
+脚本会调用 `/v1/chat/completions`，并打印模型名和截断后的响应预览。可通过 `NEBIUS_MODEL` 或 `NEBIUS_BASE_URL` 覆盖模型与区域端点。对 Qwen3 / Qwen3.5 推理模型，脚本会关闭思考模式，确保 32-token 的短烟测能返回可验证文本。
 
 ---
 

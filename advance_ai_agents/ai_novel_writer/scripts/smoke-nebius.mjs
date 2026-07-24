@@ -1,6 +1,7 @@
 const apiKey = process.env.NEBIUS_API_KEY
 const baseUrl = (process.env.NEBIUS_BASE_URL || 'https://api.tokenfactory.nebius.com/v1').replace(/\/$/, '')
 const model = process.env.NEBIUS_MODEL || 'meta-llama/Meta-Llama-3.1-70B-Instruct'
+const isQwen3Model = /(^|\/)qwen3(?:\.5)?-/i.test(model)
 
 if (!apiKey) {
   console.error('NEBIUS_API_KEY is required. Create a Nebius Token Factory key and set it only in your shell environment.')
@@ -19,6 +20,9 @@ const response = await fetch(`${baseUrl}/chat/completions`, {
     messages: [{ role: 'user', content: 'Reply exactly: Nebius smoke test passed.' }],
     temperature: 0,
     max_tokens: 32,
+    // Qwen3 reasoning models can consume the entire small smoke-test budget
+    // before emitting an answer. Nebius supports this OpenAI-compatible flag.
+    ...(isQwen3Model ? { chat_template_kwargs: { enable_thinking: false } } : {}),
   }),
 })
 
@@ -36,5 +40,6 @@ console.log(JSON.stringify({
   provider: 'Nebius Token Factory',
   baseUrl,
   model,
+  thinkingDisabled: isQwen3Model,
   responsePreview: content.slice(0, 120),
 }, null, 2))
