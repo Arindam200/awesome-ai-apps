@@ -1,0 +1,21 @@
+# Build artifacts
+output/
+*.lance/
+*.lancedb/
+
+# Inputs (keep folder, ignore content)
+input/*
+!input/.gitkeep
+
+# Env
+.env
+*.env
+!*.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
