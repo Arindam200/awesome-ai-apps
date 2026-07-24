@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-const checkedSources = [
+const brandingSources = [
   'src/components/settings/SettingsModal.tsx',
   'electron/main.ts',
   'package.json',
@@ -11,9 +11,19 @@ const checkedSources = [
   'README.md',
 ]
 
-const visibleBrandingSource = checkedSources
-  .map((file) => readFileSync(resolve(process.cwd(), file), 'utf8'))
-  .join('\n')
+const visibleSettingsSources = [
+  'src/components/settings/SettingsModal.tsx',
+  'src/components/settings/PromptSettings.tsx',
+]
+
+function readSources(files: string[]): string {
+  return files
+    .map((file) => readFileSync(resolve(process.cwd(), file), 'utf8'))
+    .join('\n')
+}
+
+const brandingSource = readSources(brandingSources)
+const visibleSettingsSource = readSources(visibleSettingsSources)
 
 const forbiddenVisibleLegacy = [
   '"name": "vela"',
@@ -47,11 +57,11 @@ const pseudoIconPattern = new RegExp([
 describe('settings visible branding', () => {
   it('does not expose legacy support, payment QR, or pseudo-icon branding', () => {
     for (const value of forbiddenVisibleLegacy) {
-      expect(visibleBrandingSource).not.toContain(value)
+      expect(brandingSource).not.toContain(value)
     }
 
-    expect(visibleBrandingSource).not.toMatch(pseudoIconPattern)
-    expect(visibleBrandingSource).not.toMatch(/<svg\b|<path\b/)
+    expect(visibleSettingsSource).not.toMatch(pseudoIconPattern)
+    expect(visibleSettingsSource).not.toMatch(/<svg\b|<path\b/)
   })
 
   it('does not keep legacy support image assets in the repository', () => {
