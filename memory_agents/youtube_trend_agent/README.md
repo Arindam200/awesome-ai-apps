@@ -35,6 +35,15 @@ An AI-powered **YouTube Trend Coach** that uses **Memori v3** as long‑term mem
 - MiniMax account + API key (used via the OpenAI SDK)
 - Optional: Exa and Memori API keys
 
+MiniMax exposes two regional OpenAI-compatible endpoints:
+
+| Region | `OPENAI_BASE_URL` | Docs |
+|---|---|---|
+| `global_en` | `https://api.minimax.io/v1` | https://platform.minimax.io/docs |
+| `cn_zh` | `https://api.minimaxi.com/v1` | https://platform.minimaxi.com/docs |
+
+The app defaults to the `global_en` endpoint; set `OPENAI_BASE_URL` to the `cn_zh` URL to use the China region.
+
 ---
 
 ### Setup (with `uv`)
@@ -93,6 +102,6 @@ Then, in the main chat:
 The agent will:
 
 - Pull context from **Memori** (your stored video history),
-- Use **MiniMax** (`MiniMax-M2.1` by default, configurable),
+- Use **MiniMax** (`MiniMax-M3` by default, configurable via `YOUTUBE_TREND_MODEL`),
 - Optionally incorporate **Exa** web trends,
 - And respond with specific, actionable ideas and analysis.

@@ -47,10 +47,13 @@ def init_memori_with_nebius() -> Memori | None:
 
     NOTE:
     - To use MiniMax, set:
-        OPENAI_BASE_URL = "https://api.minimax.io/v1"
+        OPENAI_BASE_URL = "https://api.minimax.io/v1"        # global_en region
+        OPENAI_BASE_URL = "https://api.minimaxi.com/v1"      # cn_zh region
         OPENAI_API_KEY  = "<your-minimax-api-key>"
     """
-    # MiniMax (or other OpenAI-compatible) configuration via standard OpenAI env vars
+    # MiniMax (or other OpenAI-compatible) configuration via standard OpenAI env vars.
+    # The global_en region defaults to https://api.minimax.io/v1; the cn_zh region uses
+    # https://api.minimaxi.com/v1.
     base_url = os.getenv("OPENAI_BASE_URL", "https://api.minimax.io/v1")
     api_key = os.getenv("OPENAI_API_KEY", "")
 
@@ -304,7 +307,7 @@ Description:
             _ = client.chat.completions.create(
                 model=os.getenv(
                     "YOUTUBE_TREND_INGEST_MODEL",
-                    "MiniMax-M2.1",
+                    "MiniMax-M3",
                 ),
                 messages=[
                     {

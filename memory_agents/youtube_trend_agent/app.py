@@ -78,7 +78,11 @@ def main():
         minimax_base_url_input = st.text_input(
             "MiniMax Base URL",
             value=os.getenv("OPENAI_BASE_URL", "https://api.minimax.io/v1"),
-            help="Base URL for MiniMax's OpenAI-compatible API.",
+            help=(
+                "Base URL for MiniMax's OpenAI-compatible API. "
+                "Use https://api.minimax.io/v1 for the global_en region or "
+                "https://api.minimaxi.com/v1 for the cn_zh region."
+            ),
         )
 
         exa_api_key_input = st.text_input(
@@ -254,7 +258,7 @@ External web trends for this niche (may be partial):
                     completion = client.chat.completions.create(
                         model=os.getenv(
                             "YOUTUBE_TREND_MODEL",
-                            "MiniMax-M2.1",
+                            "MiniMax-M3",
                         ),
                         messages=[
                             {
