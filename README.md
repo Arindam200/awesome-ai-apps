@@ -348,6 +348,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [**AI Agents, MCP and more...**](https://www.youtube.com/playlist?list=PL2ambAOfYA6-LDz0KpVKu9vJKAqhv0KKI): Mixed tutorials and project demos
 - [**Build AI Agents**](https://www.youtube.com/playlist?list=PLMZM1DAlf0LqixhAG9BDk4O_FjqnaogK8): General AI agent development tutorials
 - [**Build with MCP**](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lolxax4L2HS54Me8gn1gkz4): Model Context Protocol tutorials and examples
+- [**Langhost**](https://github.com/langhost/langhost): MIT open-source self-hosted LangGraph Agent Server with PostgreSQL persistence and Redis.
 
 ---
 
