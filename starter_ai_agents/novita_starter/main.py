@@ -26,7 +26,7 @@ def word_count(text: str) -> int:
 
 def build_agent() -> AgentExecutor:
     llm = ChatOpenAI(
-        model="qwen/qwen3-30b-a3b-fp8",
+        model="moonshotai/kimi-k3",
         base_url="https://api.novita.ai/openai",
         api_key=SecretStr(os.environ["NOVITA_API_KEY"]),
     )
