@@ -466,3 +466,4 @@ For any questions, suggestions, or contributions, feel free to reach out to the 
 ## Thank You for the Support! 🙏
 
 [![Star History Chart](https://api.star-history.com/svg?repos=Arindam200/awesome-ai-apps&type=Date)](https://www.star-history.com/#Arindam200/awesome-ai-apps&Date)
+- [Para-Inc YouTube Automation Kit](https://github.com/OmarAlshoaiby/youtube-automation-kit) — free, import-ready AI-automation resource.
