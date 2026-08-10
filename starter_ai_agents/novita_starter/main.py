@@ -3,11 +3,11 @@ import os
 from datetime import datetime
 
 from dotenv import load_dotenv
-from pydantic import SecretStr
+from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
-from langchain.agents import AgentExecutor, create_tool_calling_agent
+from pydantic import SecretStr
 
 load_dotenv()
 
@@ -15,7 +15,7 @@ load_dotenv()
 @tool
 def get_current_time() -> str:
     """Return the current local date and time as an ISO-8601 string."""
-    return datetime.now().isoformat(timespec="seconds")
+    return datetime.now().astimezone().isoformat(timespec="seconds")
 
 
 @tool
@@ -26,7 +26,7 @@ def word_count(text: str) -> int:
 
 def build_agent() -> AgentExecutor:
     llm = ChatOpenAI(
-        model="moonshotai/kimi-k3",
+        model="deepseek/deepseek-v4-pro",
         base_url="https://api.novita.ai/openai",
         api_key=SecretStr(os.environ["NOVITA_API_KEY"]),
     )
@@ -35,8 +35,10 @@ def build_agent() -> AgentExecutor:
         [
             (
                 "system",
-                "You are a helpful assistant. Use tools when they are relevant "
-                "instead of guessing.",
+                (
+                    "You are a helpful assistant. Use tools when they are relevant "
+                    "instead of guessing."
+                ),
             ),
             ("placeholder", "{chat_history}"),
             ("human", "{input}"),

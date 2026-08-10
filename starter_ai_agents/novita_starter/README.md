@@ -47,7 +47,7 @@ python main.py
 
 - **Framework**: `langchain` + `langchain-openai`
 - **Agent**: `create_tool_calling_agent` wrapped in `AgentExecutor`
-- **Model**: `moonshotai/kimi-k3` via Novita AI (`ChatOpenAI` with custom `base_url`)
+- **Model**: `deepseek/deepseek-v4-pro` via Novita AI (`ChatOpenAI` with custom `base_url`)
 - **Tools**: `get_current_time`, `word_count` (plain `@tool`-decorated functions)
 
 ## Acknowledgments
