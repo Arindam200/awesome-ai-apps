@@ -1,9 +1,9 @@
-## YouTube Trend Analysis Agent with Memori & MiniMax
+## YouTube Trend Analysis Agent with Memori, Nebius & MiniMax
 
-An AI-powered **YouTube Trend Coach** that uses **Memori v3** as long‑term memory and **MiniMax (OpenAI‑compatible)** for reasoning.
+An AI-powered **YouTube Trend Coach** that uses **Memori v3** as long-term memory and **MiniMax-M3 through Nebius Token Factory** for reasoning.
 
 - **Scrapes your channel** with `yt-dlp` and stores video metadata in Memori.
-- Uses **MiniMax** to analyze your channel history plus **Exa** web trends.
+- Uses **MiniMax-M3 on Nebius Token Factory** to analyze your channel history plus **Exa** web trends.
 - Provides a **Streamlit chat UI** to ask for trends and concrete new video ideas grounded in your own content.
 
 ---
@@ -15,7 +15,7 @@ An AI-powered **YouTube Trend Coach** that uses **Memori v3** as long‑term mem
   - Stores each video as a Memori document for later semantic search.
 
 - **Memori memory store**
-  - Uses `Memori` + a MiniMax/OpenAI‑compatible client to persist “memories” of your videos.
+  - Uses `Memori` + a Nebius OpenAI-compatible client to persist “memories” of your videos.
   - Ingestion happens via `ingest_channel_into_memori` in `core.py`, which calls `client.chat.completions.create(...)` so Memori can automatically capture documents.
 
 - **Web trend context with Exa (optional)**
@@ -23,7 +23,7 @@ An AI-powered **YouTube Trend Coach** that uses **Memori v3** as long‑term mem
   - Blends Exa trends with your channel history when generating ideas.
 
 - **Streamlit UI**
-  - Sidebar for API keys, MiniMax base URL, and channel URL.
+  - Sidebar for API keys, Nebius base URL, and channel URL.
   - Main area provides a chat interface for asking about trends and ideas.
 
 ---
@@ -32,17 +32,10 @@ An AI-powered **YouTube Trend Coach** that uses **Memori v3** as long‑term mem
 
 - Python 3.11+
 - [`uv`](https://github.com/astral-sh/uv) (recommended) or `pip`
-- MiniMax account + API key (used via the OpenAI SDK)
+- Nebius Token Factory account + API key
 - Optional: Exa and Memori API keys
 
-MiniMax exposes two regional OpenAI-compatible endpoints:
-
-| Region | `OPENAI_BASE_URL` | Docs |
-|---|---|---|
-| `global_en` | `https://api.minimax.io/v1` | https://platform.minimax.io/docs |
-| `cn_zh` | `https://api.minimaxi.com/v1` | https://platform.minimaxi.com/docs |
-
-The app defaults to the `global_en` endpoint; set `OPENAI_BASE_URL` to the `cn_zh` URL to use the China region.
+The app uses Nebius Token Factory's OpenAI-compatible endpoint at `https://api.tokenfactory.nebius.com/v1` and the `MiniMaxAI/MiniMax-M3` model by default.
 
 ---
 
@@ -86,7 +79,7 @@ uv run streamlit run app.py
 
 In the **sidebar**:
 
-1. Enter your **MiniMax API Key** and (optionally) **MiniMax Base URL**.
+1. Enter your **Nebius API Key** and (optionally) **Nebius Base URL**.
 2. Optionally enter **Exa** and **Memori** API keys.
 3. Paste your **YouTube channel (or playlist) URL**.
 4. Click **“Save Settings”** to store the keys for this session.
@@ -102,6 +95,6 @@ Then, in the main chat:
 The agent will:
 
 - Pull context from **Memori** (your stored video history),
-- Use **MiniMax** (`MiniMax-M3` by default, configurable via `YOUTUBE_TREND_MODEL`),
+- Use **MiniMax** (`MiniMaxAI/MiniMax-M3` by default, configurable via `YOUTUBE_TREND_MODEL`),
 - Optionally incorporate **Exa** web trends,
 - And respond with specific, actionable ideas and analysis.
