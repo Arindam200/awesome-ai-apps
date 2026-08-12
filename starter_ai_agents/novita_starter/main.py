@@ -4,7 +4,8 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 from langchain.agents import AgentExecutor, create_tool_calling_agent
-from langchain_core.messages import count_tokens_approximately, trim_messages
+from langchain_core.messages import trim_messages
+from langchain_core.messages.utils import count_tokens_approximately
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
