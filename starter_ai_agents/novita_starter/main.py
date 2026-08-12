@@ -4,12 +4,17 @@ from datetime import datetime
 
 from dotenv import load_dotenv
 from langchain.agents import AgentExecutor, create_tool_calling_agent
+from langchain_core.messages import count_tokens_approximately, trim_messages
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from langchain_openai import ChatOpenAI
 from pydantic import SecretStr
 
 load_dotenv()
+
+# Keep room in the model context for the prompt, tool definitions, current
+# input, agent scratchpad, and generated output.
+HISTORY_MAX_TOKENS = 24_000
 
 
 @tool
@@ -64,7 +69,15 @@ def main():
         if not user:
             continue
 
-        result = agent.invoke({"input": user, "chat_history": history})
+        trimmed_history = trim_messages(
+            history,
+            token_counter=count_tokens_approximately,
+            max_tokens=HISTORY_MAX_TOKENS,
+            strategy="last",
+            include_system=True,
+            start_on="human",
+        )
+        result = agent.invoke({"input": user, "chat_history": trimmed_history})
         print(f"\nAgent: {result['output']}\n")
         history.extend(
             [("human", user), ("ai", result["output"])]
