@@ -1,0 +1,10 @@
+[project]
+name = "minimax-tts"
+version = "0.1.0"
+description = "A dependency-free MiniMax text-to-speech client and command-line tool."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+minimax-tts = "minimax_tts:main"
