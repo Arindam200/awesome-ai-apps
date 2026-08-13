@@ -1,0 +1,14 @@
+[project]
+name = "lians-temporal-memory-agent"
+version = "0.1.0"
+description = "A local PydanticAI agent with current and point-in-time Lians memory"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "lians-sdk[local]==0.5.0",
+    "pydantic-ai-slim==2.29.0",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
