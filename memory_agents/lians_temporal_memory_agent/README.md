@@ -76,10 +76,16 @@ python -m pip install -e .
 
 ## Usage
 
-Run the agent:
+Run the agent with uv:
 
 ```bash
 uv run python main.py
+```
+
+Or, from the activated pip environment:
+
+```bash
+python main.py
 ```
 
 Expected memory results:
@@ -89,10 +95,16 @@ Current recall: ["Order 1842 shipping estimate changed to Monday"]
 Historical recall: ["Order 1842 shipping estimate is Friday"]
 ```
 
-Run the executable verification:
+Run the executable verification with uv:
 
 ```bash
 uv run python verify.py
+```
+
+Or, from the activated pip environment:
+
+```bash
+python verify.py
 ```
 
 The example stores its SQLite database under `.data/`. Delete that directory to
