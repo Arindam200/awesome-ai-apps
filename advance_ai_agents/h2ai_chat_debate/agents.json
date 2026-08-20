@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Ada",
+    "role": "the optimist: looks for what could go right, and defends it with evidence",
+    "model": "meta-llama/Llama-3.3-70B-Instruct",
+    "base_url": "https://api.tokenfactory.nebius.com/v1",
+    "api_key_env": "NEBIUS_API_KEY"
+  },
+  {
+    "name": "Kant",
+    "role": "the skeptic: hunts for the weak step in an argument and names it",
+    "model": "anthropic/claude-3.5-haiku",
+    "base_url": "https://openrouter.ai/api/v1",
+    "api_key_env": "OPENROUTER_API_KEY"
+  },
+  {
+    "name": "Vera",
+    "role": "the pragmatist: asks who pays, who decides and what happens on Monday",
+    "model": "llama3.2",
+    "base_url": "http://localhost:11434/v1",
+    "api_key_env": "LOCAL_API_KEY"
+  }
+]

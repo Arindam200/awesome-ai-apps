@@ -1,0 +1,19 @@
+[project]
+name = "h2ai-chat-debate"
+version = "1.0.0"
+description = "Several different LLMs debate a topic in turns, with a human moderating"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "openai>=1.40",
+    "python-dotenv>=1.0",
+    "rich>=13.7",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.urls]
+Homepage = "https://h2aichat.com"
+Source = "https://github.com/Tonterias/h2aichat"
