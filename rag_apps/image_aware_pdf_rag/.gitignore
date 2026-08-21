@@ -1,0 +1,8 @@
+.env
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+__pycache__/
+sample_report.pdf
+sample_report.visual.json

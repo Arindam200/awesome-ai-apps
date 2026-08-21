@@ -1,0 +1,32 @@
+[project]
+name = "image-aware-pdf-rag"
+version = "0.1.0"
+description = "Page-level multimodal PDF RAG with inspectable citations"
+requires-python = ">=3.10"
+dependencies = [
+    "openai>=1.66.0",
+    "pymupdf>=1.24.0",
+    "python-dotenv>=1.0.1",
+    "reportlab>=4.2.0",
+    "streamlit>=1.41.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "ruff>=0.9.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
