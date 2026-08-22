@@ -28,11 +28,12 @@ already exists in the listed workspace; the harness will not create directories.
 For update operations, expected_old_text must be an exact unique substring of the
 current file. Add or adjust unittest tests when behaviour changes.
 
-Return only JSON: no Markdown, prose, or code fences. The top-level object must
-have plan and operations. plan must include task_understanding, files_to_modify,
-steps, tests, and risks_and_assumptions. Every operations item must include
-operation, path, and reason; create also needs content, and update also needs
-content and expected_old_text."""
+Return exactly one JSON object, either as raw JSON or inside a single `json` code
+fence. Do not add prose or any other Markdown. The top-level object must have plan
+and operations. plan must include task_understanding, files_to_modify, steps,
+tests, and risks_and_assumptions. Every operations item must include operation,
+path, and reason; create also needs content, and update also needs content and
+expected_old_text."""
 
 DEFAULT_MODEL_BASE_URL = "https://api.openai.com/v1"
 DEFAULT_MODEL_NAME = "gpt-4.1-mini"
@@ -118,21 +119,25 @@ class CodingAgent:
 
         prompt = _build_prompt(task, test_result, preparation_feedback)
         set_tracing_disabled(disabled=True)
-        model = OpenAIChatCompletionsModel(
-            model=config.model_name,
-            openai_client=AsyncOpenAI(base_url=config.base_url, api_key=config.api_key),
-        )
-        # Some OpenAI-compatible endpoints ignore JSON-schema response formats.
-        # Keep the SDK's tool loop, then validate its plain-text final output
-        # locally as one strict PatchProposal before any patch can be prepared.
-        agent = Agent(
-            name="Coding harness planner",
-            instructions=SYSTEM_INSTRUCTIONS,
-            model=model,
-            tools=[list_files, read_file, search_text],
-        )
-        result = await Runner.run(agent, prompt)
-        return _coerce_proposal(result.final_output)
+        client = AsyncOpenAI(base_url=config.base_url, api_key=config.api_key)
+        try:
+            model = OpenAIChatCompletionsModel(
+                model=config.model_name,
+                openai_client=client,
+            )
+            # Some OpenAI-compatible endpoints ignore JSON-schema response formats.
+            # Keep the SDK's tool loop, then validate its plain-text final output
+            # locally as one strict PatchProposal before any patch can be prepared.
+            agent = Agent(
+                name="Coding harness planner",
+                instructions=SYSTEM_INSTRUCTIONS,
+                model=model,
+                tools=[list_files, read_file, search_text],
+            )
+            result = await Runner.run(agent, prompt)
+            return _coerce_proposal(result.final_output)
+        finally:
+            await client.close()
 
 
 def _build_prompt(

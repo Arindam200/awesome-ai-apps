@@ -16,6 +16,3 @@ dependencies = [
 
 [tool.setuptools]
 packages = ["coding_harness"]
-
-[tool.unittest]
-start-directory = "tests"

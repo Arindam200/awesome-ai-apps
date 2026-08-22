@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+import stat
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -53,6 +54,28 @@ class PatchingTests(unittest.TestCase):
             (self.root / "module.py").read_text(encoding="utf-8"), "value = 2\n"
         )
         self.assertEqual((self.root / "new.txt").read_text(encoding="utf-8"), "new\n")
+
+    def test_unified_diff_records_are_not_double_spaced(self) -> None:
+        prepared = prepare_patch(
+            self.workspace,
+            [
+                FileOperation(
+                    operation="create",
+                    path="new.txt",
+                    content="first\nsecond\n",
+                    reason="preview two lines",
+                )
+            ],
+        )
+
+        self.assertEqual(
+            prepared.diff,
+            "--- /dev/null\n"
+            "+++ b/new.txt\n"
+            "@@ -0,0 +1,2 @@\n"
+            "+first\n"
+            "+second",
+        )
 
     def test_invalid_operation_prevents_any_partial_write(self) -> None:
         with self.assertRaises(PatchValidationError):
@@ -179,11 +202,7 @@ class PatchingTests(unittest.TestCase):
         self.assertIn("Applied: a.txt", str(raised.exception))
         self.assertIn("Not applied: b.txt", str(raised.exception))
 
-    @unittest.skipUnless(
-        os.name == "nt",
-        "case aliases are specific to case-insensitive Windows filesystems",
-    )
-    def test_windows_case_aliases_are_conflicting_patch_paths(self) -> None:
+    def test_case_aliases_are_conflicting_patch_paths_on_every_host(self) -> None:
         operations = [
             FileOperation(
                 operation="create", path="Alias.py", content="one\n", reason="first"
@@ -194,6 +213,34 @@ class PatchingTests(unittest.TestCase):
         ]
         with self.assertRaisesRegex(PatchValidationError, "duplicate or conflicting"):
             prepare_patch(self.workspace, operations)
+
+    @unittest.skipUnless(os.name == "posix", "POSIX permission bits are required")
+    def test_atomic_writes_preserve_update_mode_and_set_create_mode(self) -> None:
+        module = self.root / "module.py"
+        module.chmod(0o751)
+        prepared = prepare_patch(
+            self.workspace,
+            [
+                FileOperation(
+                    operation="update",
+                    path="module.py",
+                    expected_old_text="1",
+                    content="2",
+                    reason="preserve executable mode",
+                ),
+                FileOperation(
+                    operation="create",
+                    path="new.txt",
+                    content="new\n",
+                    reason="use the explicit create mode",
+                ),
+            ],
+        )
+
+        apply_prepared_patch(prepared)
+
+        self.assertEqual(stat.S_IMODE(module.stat().st_mode), 0o751)
+        self.assertEqual(stat.S_IMODE((self.root / "new.txt").stat().st_mode), 0o644)
 
 
 if __name__ == "__main__":

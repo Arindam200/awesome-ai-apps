@@ -47,12 +47,11 @@ class ModelConfigTests(unittest.TestCase):
         self.assertNotIn("private-model", str(captured.exception))
 
     def test_instructions_explain_workspace_relative_paths(self) -> None:
-        self.assertIn("relative to the locked workspace\nroot", SYSTEM_INSTRUCTIONS)
-        self.assertIn("Do not prefix paths with a workspace name", SYSTEM_INSTRUCTIONS)
-        self.assertIn("Return only JSON", SYSTEM_INSTRUCTIONS)
-        self.assertIn(
-            "top-level object must\nhave plan and operations", SYSTEM_INSTRUCTIONS
-        )
+        instructions = " ".join(SYSTEM_INSTRUCTIONS.split())
+        self.assertIn("relative to the locked workspace root", instructions)
+        self.assertIn("Do not prefix paths with a workspace name", instructions)
+        self.assertIn("raw JSON or inside a single `json` code fence", instructions)
+        self.assertIn("top-level object must have plan and operations", instructions)
 
         prompt = _build_prompt("add filtering", None, "tests must be a list")
         self.assertIn("no files were changed", prompt)
@@ -97,6 +96,16 @@ class ModelConfigTests(unittest.TestCase):
             async def run(agent: object, prompt: str) -> SimpleNamespace:
                 return SimpleNamespace(final_output=VALID_PROPOSAL_JSON)
 
+        class FakeAsyncOpenAI:
+            instances: list["FakeAsyncOpenAI"] = []
+
+            def __init__(self, **_: object) -> None:
+                self.closed = False
+                self.instances.append(self)
+
+            async def close(self) -> None:
+                self.closed = True
+
         class FakeWorkspace:
             def list_files(self) -> list[str]:
                 return ["todo.py"]
@@ -111,7 +120,7 @@ class ModelConfigTests(unittest.TestCase):
             FakeAgent,
             FakeRunner,
             lambda **_: object(),
-            lambda **_: object(),
+            FakeAsyncOpenAI,
             lambda function: function,
             lambda **_: None,
         )
@@ -132,6 +141,7 @@ class ModelConfigTests(unittest.TestCase):
         self.assertIsInstance(proposal, PatchProposal)
         self.assertEqual(len(captured_agent_kwargs["tools"]), 3)
         self.assertNotIn("output_type", captured_agent_kwargs)
+        self.assertTrue(FakeAsyncOpenAI.instances[0].closed)
 
 
 if __name__ == "__main__":

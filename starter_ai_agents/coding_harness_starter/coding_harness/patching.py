@@ -6,6 +6,7 @@ from dataclasses import dataclass
 import difflib
 import os
 from pathlib import Path
+import stat
 import tempfile
 from typing import Iterable
 
@@ -132,9 +133,10 @@ def prepare_patch(
 
     operations = _operations_from(proposal_or_operations)
     prepared = [_validated_operation(workspace, operation) for operation in operations]
-    # normcase catches ``A.py``/``a.py`` collisions on case-insensitive systems.
-    normalized_paths = [os.path.normcase(str(item.path)) for item in prepared]
-    if len(normalized_paths) != len(set(normalized_paths)):
+    # Reject case aliases portably so a prepared patch remains safe when the
+    # workspace lives on a case-insensitive volume on any host OS.
+    collision_keys = [item.relative_path.casefold() for item in prepared]
+    if len(collision_keys) != len(set(collision_keys)):
         raise PatchValidationError(
             "a patch cannot contain duplicate or conflicting target paths"
         )
@@ -144,7 +146,7 @@ def prepare_patch(
 
 
 def _diff_lines(text: str | None) -> list[str]:
-    return [] if text is None else text.splitlines(keepends=True)
+    return [] if text is None else text.splitlines()
 
 
 def render_unified_diff(prepared_patch: PreparedPatch) -> str:
@@ -197,12 +199,14 @@ def _assert_current_state(item: PreparedOperation) -> None:
 
 
 def _write_utf8_atomically(path: Path, content: str) -> None:
+    target_mode = stat.S_IMODE(path.stat().st_mode) if path.exists() else 0o644
     descriptor, temp_name = tempfile.mkstemp(
         prefix=".coding-harness-", suffix=".tmp", dir=path.parent
     )
     try:
         with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as handle:
             handle.write(content)
+        os.chmod(temp_name, target_mode)
         os.replace(temp_name, path)
     except Exception:
         try:
