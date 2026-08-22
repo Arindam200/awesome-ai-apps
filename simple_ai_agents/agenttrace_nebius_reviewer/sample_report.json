@@ -1,0 +1,14 @@
+{
+  "source": "sample",
+  "sessions": [
+    {
+      "id": "demo-session",
+      "agent": "codex",
+      "duration_seconds": 412,
+      "total_tokens": 18420,
+      "tool_failures": 2,
+      "health": 72,
+      "anomalies": ["long tool gap", "repeated retry"]
+    }
+  ]
+}
