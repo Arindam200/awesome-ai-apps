@@ -4,13 +4,13 @@
 
 > A compact image-aware PDF RAG app that retrieves text and visual evidence, cites every supporting page, and keeps each cited page inspectable.
 
-PageLens renders every uploaded PDF page, combines extracted text with optional multimodal descriptions, and builds an in-memory TF-IDF index. It runs with an offline sample out of the box and can use OpenAI for arbitrary visual PDFs and grounded answer synthesis.
+PageLens renders every uploaded PDF page, combines extracted text with optional multimodal descriptions, and builds an in-memory TF-IDF index. It runs with an offline sample out of the box and can use Nebius Token Factory's OpenAI-compatible API for arbitrary visual PDFs and grounded answer synthesis.
 
 ## Features
 
 - PDF validation with clear errors for empty, unreadable, encrypted, oversized, and textless documents.
 - Page-level text extraction and PNG rendering with PyMuPDF.
-- Optional chart, table, and diagram descriptions from an OpenAI vision model.
+- Optional chart, table, and diagram descriptions from a Nebius-hosted vision model.
 - Dependency-free TF-IDF cosine retrieval over text and visual evidence.
 - Answers with explicit `[p. N]` citations and expandable page previews.
 - Offline sample PDF with a text question and a chart question.
@@ -21,7 +21,8 @@ PageLens renders every uploaded PDF page, combines extracted text with optional 
 - **Python 3.10+**: Core runtime.
 - **Streamlit**: Upload, question, and cited-page inspection UI.
 - **PyMuPDF**: PDF validation, text extraction, and page rendering.
-- **OpenAI**: Optional visual descriptions and answer synthesis.
+- **Nebius Token Factory**: Optional visual descriptions and answer synthesis through its OpenAI-compatible API.
+- **OpenAI Python SDK**: The compatible client used to call Nebius endpoints.
 - **ReportLab**: Generates the license-compatible sample PDF.
 - **pytest**: Offline contract and retrieval tests.
 
@@ -41,7 +42,7 @@ flowchart LR
     I --> J[Page citations and previews]
 ```
 
-The PDF is indexed at page granularity so retrieval results and answer citations always point to an inspectable page. The OpenAI path sends rendered page images only when visual parsing is enabled. The bundled sample instead injects known visual descriptions and remains fully offline.
+The PDF is indexed at page granularity so retrieval results and answer citations always point to an inspectable page. The Nebius path sends rendered page images only when visual parsing is enabled. A provider failure on one page is logged and that page remains available through its extracted text. The bundled sample instead injects known visual descriptions and remains fully offline.
 
 ## Getting Started
 
@@ -49,19 +50,23 @@ The PDF is indexed at page granularity so retrieval results and answer citations
 
 - Python 3.10 or newer
 - `uv` or `pip`
-- An OpenAI API key only for uploaded visual PDFs or generated answers
+- A Nebius Token Factory API key only for uploaded visual PDFs or generated answers
 
 ### Environment Variables
 
 Copy `.env.example` to `.env`:
 
 ```env
-OPENAI_API_KEY=
-OPENAI_VISION_MODEL=gpt-4.1-mini
-OPENAI_ANSWER_MODEL=gpt-4.1-mini
+NEBIUS_API_KEY=
+NEBIUS_BASE_URL=https://api.studio.nebius.com/v1
+NEBIUS_VISION_MODEL=Qwen/Qwen2.5-VL-72B-Instruct
+NEBIUS_ANSWER_MODEL=Qwen/Qwen3-235B-A22B
+NEBIUS_TIMEOUT_SECONDS=60
 ```
 
-Leave `OPENAI_API_KEY` empty to use the offline sample and extractive answers.
+Leave `NEBIUS_API_KEY` empty to use the offline sample and extractive answers. The UI's **Load sample** action switches to the bundled document even if a previous upload is still retained by Streamlit. The Nebius API key is entered in the sidebar and is never written to the repository.
+
+The Python client uses the OpenAI SDK only for protocol compatibility; requests are sent to `NEBIUS_BASE_URL`. The default models are Nebius-hosted `Qwen/Qwen2.5-VL-72B-Instruct` for visual descriptions and `Qwen/Qwen3-235B-A22B` for grounded answers. Change the model IDs if your Nebius account exposes different models.
 
 ### Installation
 
@@ -128,7 +133,7 @@ image_aware_pdf_rag/
 - The demo caps uploads at 20 MB and 50 pages to keep in-memory processing predictable.
 - Retrieval is intentionally local and transparent. Swap the TF-IDF index for a vector database when persistence or corpus-scale search is required.
 - Ranked pages below 20% of the best score are discarded so weak lexical overlap does not pollute an otherwise focused answer.
-- The precomputed sample descriptions are not used for arbitrary uploads. Configure a vision model for scanned pages, charts, diagrams, or tables without a useful text layer.
+- The precomputed sample descriptions are not used for arbitrary uploads. Configure a Nebius vision model for scanned pages, charts, diagrams, or tables without a useful text layer.
 - Production deployments should add authenticated object storage, background ingestion, rate limits, and persistent indexes.
 
 ## License

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import logging
 import re
 from collections import Counter
 from collections.abc import Mapping, Sequence
@@ -10,9 +11,13 @@ from typing import Protocol
 
 import pymupdf
 
+LOGGER = logging.getLogger(__name__)
+
 MAX_PDF_BYTES = 20 * 1024 * 1024
 MAX_PDF_PAGES = 50
 MIN_RELATIVE_SCORE = 0.2
+DEFAULT_NEBIUS_BASE_URL = "https://api.studio.nebius.com/v1"
+DEFAULT_NEBIUS_TIMEOUT_SECONDS = 60.0
 _TOKEN_PATTERN = re.compile(r"[a-zA-Z0-9]+")
 _STOP_WORDS = frozenset(
     {
@@ -128,13 +133,24 @@ class Answer:
     hits: tuple[SearchHit, ...]
 
 
-class OpenAIVisionDescriber:
-    """Describe page images with an OpenAI-compatible chat model."""
+class NebiusVisionDescriber:
+    """Describe page images with a Nebius OpenAI-compatible vision model."""
 
-    def __init__(self, api_key: str, model: str = "gpt-4.1-mini") -> None:
+    def __init__(
+        self,
+        api_key: str,
+        model: str,
+        base_url: str = DEFAULT_NEBIUS_BASE_URL,
+        timeout: float = DEFAULT_NEBIUS_TIMEOUT_SECONDS,
+    ) -> None:
         from openai import OpenAI
 
-        self._client = OpenAI(api_key=api_key)
+        self._client = OpenAI(
+            api_key=api_key,
+            base_url=base_url.rstrip("/"),
+            timeout=timeout,
+            max_retries=2,
+        )
         self._model = model
 
     def describe(self, image_png: bytes, page_number: int) -> str:
@@ -181,13 +197,24 @@ class ExtractiveAnswerGenerator:
         return "\n".join(lines)
 
 
-class OpenAIAnswerGenerator:
-    """Synthesize a grounded answer from retrieved page evidence."""
+class NebiusAnswerGenerator:
+    """Synthesize a grounded answer with a Nebius chat model."""
 
-    def __init__(self, api_key: str, model: str = "gpt-4.1-mini") -> None:
+    def __init__(
+        self,
+        api_key: str,
+        model: str,
+        base_url: str = DEFAULT_NEBIUS_BASE_URL,
+        timeout: float = DEFAULT_NEBIUS_TIMEOUT_SECONDS,
+    ) -> None:
         from openai import OpenAI
 
-        self._client = OpenAI(api_key=api_key)
+        self._client = OpenAI(
+            api_key=api_key,
+            base_url=base_url.rstrip("/"),
+            timeout=timeout,
+            max_retries=2,
+        )
         self._model = model
 
     def generate(self, question: str, hits: Sequence[SearchHit]) -> str:
@@ -232,6 +259,7 @@ class ImageAwarePdfRag:
         self._answer_generator = answer_generator or ExtractiveAnswerGenerator()
         self._pages: tuple[PageEvidence, ...] = ()
         self._document_vectors: tuple[dict[str, float], ...] = ()
+        self._page_terms: tuple[frozenset[str], ...] = ()
         self._idf: dict[str, float] = {}
         self._unknown_idf = 1.0
 
@@ -264,16 +292,24 @@ class ImageAwarePdfRag:
                 raise PdfValidationError("The PDF exceeds the 50-page demo limit.")
 
             pages = []
-            descriptions = visual_descriptions or {}
+            descriptions = _normalize_visual_descriptions(visual_descriptions or {})
             for page_index, page in enumerate(document, start=1):
                 image_png = page.get_pixmap(matrix=pymupdf.Matrix(1.4, 1.4), alpha=False).tobytes(
                     "png"
                 )
                 visual_description = descriptions.get(page_index, "").strip()
                 if not visual_description:
-                    visual_description = self._vision_describer.describe(
-                        image_png, page_index
-                    ).strip()
+                    try:
+                        visual_description = (
+                            self._vision_describer.describe(image_png, page_index) or ""
+                        ).strip()
+                    except Exception:
+                        LOGGER.warning(
+                            "Vision description failed for page %s; keeping text evidence only.",
+                            page_index,
+                            exc_info=True,
+                        )
+                        visual_description = ""
                 pages.append(
                     PageEvidence(
                         page_number=page_index,
@@ -307,11 +343,12 @@ class ImageAwarePdfRag:
         question_tokens = _tokenize(question)
         query_vector = _tf_idf_vector(question_tokens, self._idf, self._unknown_idf)
         hits = []
-        for page, document_vector in zip(self._pages, self._document_vectors, strict=True):
+        for page, document_vector, page_terms in zip(
+            self._pages, self._document_vectors, self._page_terms, strict=True
+        ):
             score = _cosine(query_vector, document_vector)
             if score <= 0:
                 continue
-            page_terms = set(_tokenize(page.index_text))
             hits.append(
                 SearchHit(
                     evidence=page,
@@ -346,6 +383,7 @@ class ImageAwarePdfRag:
             for token, frequency in document_frequency.items()
         }
         self._unknown_idf = log(document_count + 1) + 1
+        self._page_terms = tuple(frozenset(tokens) for tokens in tokenized_pages)
         self._document_vectors = tuple(
             _tf_idf_vector(tokens, self._idf, self._unknown_idf) for tokens in tokenized_pages
         )
@@ -357,6 +395,24 @@ def _tokenize(text: str) -> list[str]:
         for token in _TOKEN_PATTERN.findall(text)
         if (normalized := token.casefold()) not in _STOP_WORDS
     ]
+
+
+def _normalize_visual_descriptions(
+    descriptions: Mapping[int | str, str],
+) -> dict[int, str]:
+    """Normalize JSON-loaded page keys before indexing visual evidence."""
+    normalized: dict[int, str] = {}
+    for raw_page_number, description in descriptions.items():
+        try:
+            page_number = int(raw_page_number)
+        except (TypeError, ValueError) as exc:
+            raise PdfValidationError("Visual description page numbers must be integers.") from exc
+        if page_number < 1:
+            raise PdfValidationError("Visual description page numbers must be positive.")
+        if not isinstance(description, str):
+            raise PdfValidationError("Visual descriptions must be strings.")
+        normalized[page_number] = description
+    return normalized
 
 
 def _tf_idf_vector(

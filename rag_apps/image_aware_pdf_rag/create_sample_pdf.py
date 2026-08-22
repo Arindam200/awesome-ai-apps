@@ -105,6 +105,26 @@ def write_sample_files(output_dir: Path) -> tuple[Path, Path]:
     return pdf_path, descriptions_path
 
 
+def load_visual_descriptions(path: Path) -> dict[int, str]:
+    """Load a sidecar and restore integer page keys lost by JSON encoding."""
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"Unable to read visual-description sidecar: {path}") from exc
+    if not isinstance(payload, dict):
+        raise ValueError("Visual-description sidecar must contain a JSON object.")
+    descriptions: dict[int, str] = {}
+    for raw_page_number, description in payload.items():
+        try:
+            page_number = int(raw_page_number)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("Visual-description sidecar page keys must be integers.") from exc
+        if page_number < 1 or not isinstance(description, str):
+            raise ValueError("Visual-description sidecar contains an invalid entry.")
+        descriptions[page_number] = description
+    return descriptions
+
+
 if __name__ == "__main__":
     pdf_file, descriptions_file = write_sample_files(Path.cwd())
     print(f"Created {pdf_file}")
