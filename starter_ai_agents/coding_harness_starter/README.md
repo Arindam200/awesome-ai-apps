@@ -54,7 +54,7 @@ Then edit `.env` with your Nebius settings:
 ```env
 NEBIUS_API_KEY=your_nebius_api_key_here
 MODEL_BASE_URL=https://api.tokenfactory.nebius.com/v1
-MODEL_NAME=Qwen/Qwen3-30B-A3B
+MODEL_NAME=moonshotai/Kimi-K2.7-Code
 ```
 
 `NEBIUS_API_KEY` is required. `MODEL_BASE_URL` and `MODEL_NAME` are optional overrides; their defaults match the Nebius configuration used by other starter projects in this repository. Never commit `.env`, API keys, certificates, or private workspace files. Configuration errors identify the missing setting without echoing its value.

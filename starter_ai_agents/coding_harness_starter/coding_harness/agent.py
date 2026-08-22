@@ -36,7 +36,7 @@ path, and reason; create also needs content, and update also needs content and
 expected_old_text."""
 
 DEFAULT_MODEL_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
-DEFAULT_MODEL_NAME = "Qwen/Qwen3-30B-A3B"
+DEFAULT_MODEL_NAME = "moonshotai/Kimi-K2.7-Code"
 
 
 class ProposalProvider(Protocol):
