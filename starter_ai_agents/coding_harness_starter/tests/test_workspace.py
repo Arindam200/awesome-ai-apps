@@ -61,7 +61,7 @@ class WorkspaceTests(unittest.TestCase):
 
     def test_rejects_sensitive_binary_and_oversized_files(self) -> None:
         (self.root / ".env").write_text(
-            "MODEL_API_KEY=not-for-agent\n", encoding="utf-8"
+            "NEBIUS_API_KEY=not-for-agent\n", encoding="utf-8"
         )
         (self.root / "binary.py").write_bytes(b"x\x00y")
         (self.root / "large.py").write_text(

@@ -1,4 +1,4 @@
-"""OpenAI Agents SDK adapter with a deliberately read-only tool surface."""
+"""Nebius-backed OpenAI Agents SDK adapter with a read-only tool surface."""
 
 from __future__ import annotations
 
@@ -35,8 +35,8 @@ tests, and risks_and_assumptions. Every operations item must include operation,
 path, and reason; create also needs content, and update also needs content and
 expected_old_text."""
 
-DEFAULT_MODEL_BASE_URL = "https://api.openai.com/v1"
-DEFAULT_MODEL_NAME = "gpt-4.1-mini"
+DEFAULT_MODEL_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
+DEFAULT_MODEL_NAME = "Qwen/Qwen3-30B-A3B"
 
 
 class ProposalProvider(Protocol):
@@ -60,7 +60,7 @@ class ModelConfig:
     @classmethod
     def from_environment(cls, environ: dict[str, str] | None = None) -> "ModelConfig":
         env = os.environ if environ is None else environ
-        api_key = env.get("MODEL_API_KEY", "").strip()
+        api_key = env.get("NEBIUS_API_KEY", "").strip()
         base_url = (
             env.get("MODEL_BASE_URL", DEFAULT_MODEL_BASE_URL).strip()
             or DEFAULT_MODEL_BASE_URL
@@ -71,7 +71,7 @@ class ModelConfig:
         if not api_key:
             # Deliberately name only variables; never include their values.
             raise ValueError(
-                "Missing model configuration: MODEL_API_KEY. "
+                "Missing model configuration: NEBIUS_API_KEY. "
                 "Set it in your environment or .env file."
             )
         return cls(api_key=api_key, base_url=base_url, model_name=model_name)

@@ -1,6 +1,6 @@
 # Coding Harness Starter
 
-A compact, terminal-based OpenAI Agents SDK example for learning a safe coding-agent loop: inspect a small workspace, plan a change, preview a structured patch, request approval, run fixed tests, and review a failure.
+A compact, terminal-based OpenAI Agents SDK example powered by Nebius Token Factory for learning a safe coding-agent loop: inspect a small workspace, plan a change, preview a structured patch, request approval, run fixed tests, and review a failure.
 
 It is intentionally a teaching project, not a general-purpose autonomous coding tool. The included `fixture_repo/` starts as a tiny todo application whose tests pass before the example task is implemented.
 
@@ -16,7 +16,7 @@ It is intentionally a teaching project, not a general-purpose autonomous coding 
 ## Requirements
 
 - Python 3.10 or later.
-- An OpenAI-compatible model endpoint and API key.
+- A [Nebius Token Factory](https://dub.sh/nebius) API key.
 - `uv` or `pip` for installation.
 
 The project uses the OpenAI Agents SDK and `python-dotenv`. It does not start a web server or require a browser.
@@ -37,7 +37,7 @@ python -m pip install -e .
 # or: uv sync
 ```
 
-Copy `.env.example` to `.env` and set your provider settings. On POSIX shells:
+Copy `.env.example` to `.env` and set your Nebius API key. On POSIX shells:
 
 ```bash
 cp .env.example .env
@@ -49,15 +49,15 @@ In PowerShell:
 Copy-Item .env.example .env
 ```
 
-Then edit `.env` with your provider settings:
+Then edit `.env` with your Nebius settings:
 
 ```env
-MODEL_API_KEY=your_api_key_here
-MODEL_BASE_URL=https://your-openai-compatible-endpoint/v1
-MODEL_NAME=your-model-name
+NEBIUS_API_KEY=your_nebius_api_key_here
+MODEL_BASE_URL=https://api.tokenfactory.nebius.com/v1
+MODEL_NAME=Qwen/Qwen3-30B-A3B
 ```
 
-`MODEL_API_KEY` is required. Never commit `.env`, API keys, certificates, or private workspace files. Configuration errors identify the missing setting without echoing its value.
+`NEBIUS_API_KEY` is required. `MODEL_BASE_URL` and `MODEL_NAME` are optional overrides; their defaults match the Nebius configuration used by other starter projects in this repository. Never commit `.env`, API keys, certificates, or private workspace files. Configuration errors identify the missing setting without echoing its value.
 
 ## Run it interactively
 

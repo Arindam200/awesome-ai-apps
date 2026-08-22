@@ -172,7 +172,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [AutoGen Tool-Calling Starter](starter_ai_agents/autogen_starter): Microsoft AutoGen `AssistantAgent` with a custom tool, powered by Nebius Token Factory
 - [AWS Strands Agent Starter](starter_ai_agents/aws_strands_starter): Weather report agent using AWS Strands SDK
 - [CAMEL AI Model Benchmark](starter_ai_agents/camel_ai_starter): Performance benchmarking tool comparing various AI models
-- [Coding Harness Starter](starter_ai_agents/coding_harness_starter): OpenAI Agents SDK coding loop with plan, approval-gated edits, fixed tests, and bounded review
+- [Coding Harness Starter](starter_ai_agents/coding_harness_starter): OpenAI Agents SDK coding loop with plan, approval-gated edits, fixed tests, and bounded review, powered by Nebius Token Factory
 - [CrewAI Research Crew](starter_ai_agents/crewai_starter): Multi-agent research team example
 - [Docker cagent Multi-Agent Starter](starter_ai_agents/cagent_starter): Open-source customizable multi-agent runtime by Docker
 - [DSPy Optimization Starter](starter_ai_agents/dspy_starter): DSPy framework for building and optimizing AI systems

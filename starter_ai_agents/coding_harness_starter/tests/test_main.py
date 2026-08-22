@@ -102,7 +102,7 @@ class MainTests(unittest.TestCase):
         with patch.object(
             cli.ModelConfig,
             "from_environment",
-            side_effect=ValueError("Missing model configuration: MODEL_API_KEY."),
+            side_effect=ValueError("Missing model configuration: NEBIUS_API_KEY."),
         ):
             exit_code = cli.main(
                 [], input_fn=task_must_not_be_requested, output_fn=output.append
@@ -111,7 +111,7 @@ class MainTests(unittest.TestCase):
         self.assertEqual(exit_code, 2)
         self.assertEqual(
             output[-1],
-            "Model configuration error: Missing model configuration: MODEL_API_KEY.",
+            "Model configuration error: Missing model configuration: NEBIUS_API_KEY.",
         )
 
     def test_failure_summary_reports_each_result_and_a_bounded_error_tail(self) -> None:

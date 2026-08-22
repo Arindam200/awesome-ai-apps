@@ -37,12 +37,12 @@ VALID_PROPOSAL_JSON = """{
 
 class ModelConfigTests(unittest.TestCase):
     def test_only_api_key_is_required_and_optional_values_have_defaults(self) -> None:
-        config = ModelConfig.from_environment({"MODEL_API_KEY": "not-a-real-key"})
+        config = ModelConfig.from_environment({"NEBIUS_API_KEY": "not-a-real-key"})
         self.assertEqual(config.base_url, DEFAULT_MODEL_BASE_URL)
         self.assertEqual(config.model_name, DEFAULT_MODEL_NAME)
 
     def test_missing_key_error_never_echoes_available_secret_like_value(self) -> None:
-        with self.assertRaisesRegex(ValueError, "MODEL_API_KEY") as captured:
+        with self.assertRaisesRegex(ValueError, "NEBIUS_API_KEY") as captured:
             ModelConfig.from_environment({"MODEL_NAME": "private-model"})
         self.assertNotIn("private-model", str(captured.exception))
 
