@@ -119,6 +119,19 @@ class WorkspaceTests(unittest.TestCase):
         listed = self.workspace.list_files()
         self.assertLessEqual(sum(len(path) for path in listed), MAX_TOOL_OUTPUT_CHARS)
 
+    def test_file_listing_stops_traversal_at_the_file_limit(self) -> None:
+        def walk_until_resumed(*_: object, **__: object):
+            yield str(self.root), ["later"], ["sample.py"]
+            self.fail("list_files traversed after reaching its file limit")
+
+        with (
+            patch(
+                "coding_harness.workspace.os.walk", return_value=walk_until_resumed()
+            ),
+            patch("coding_harness.workspace.MAX_LISTED_FILES", 1),
+        ):
+            self.assertEqual(self.workspace.list_files(), ["sample.py"])
+
 
 if __name__ == "__main__":
     unittest.main()

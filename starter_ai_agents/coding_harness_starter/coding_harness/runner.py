@@ -182,13 +182,15 @@ class HarnessRunner:
             except (KeyboardInterrupt, SystemExit):
                 raise
             except (PatchValidationError, ValidationError, ValueError) as error:
-                message = f"Could not prepare a patch: {type(error).__name__}: {error}."
+                error_text = _bounded_preparation_feedback(error)
+                message = f"Could not prepare a patch: {error_text}."
                 if preparation_attempt + 1 == MAX_PREPARATION_ATTEMPTS:
                     return None, None, f"{message} No files were applied."
                 self.output(f"{message} Requesting one corrected proposal.")
-                feedback = _bounded_preparation_feedback(error)
+                feedback = error_text
             except Exception as error:
-                message = f"Could not prepare a patch: {type(error).__name__}: {error}."
+                error_text = _bounded_preparation_feedback(error)
+                message = f"Could not prepare a patch: {error_text}."
                 return None, None, f"{message} No files were applied."
 
         raise AssertionError("preparation loop must return or raise")

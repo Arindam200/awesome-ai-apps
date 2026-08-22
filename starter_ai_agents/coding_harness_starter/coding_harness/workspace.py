@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path, PurePath
 
 
@@ -153,23 +154,33 @@ class Workspace:
 
         files: list[str] = []
         used_chars = 0
-        for path in sorted(self.root.rglob("*")):
-            relative = path.relative_to(self.root)
-            if any(_is_ignored_directory(part) for part in relative.parts):
-                continue
-            if path.is_symlink() or not path.is_file():
-                continue
-            try:
-                self.read_text_path(relative)
-            except WorkspaceError:
-                continue
-            relative_text = relative.as_posix()
-            if used_chars + len(relative_text) > MAX_TOOL_OUTPUT_CHARS:
-                break
-            files.append(relative_text)
-            used_chars += len(relative_text)
-            if len(files) >= MAX_LISTED_FILES:
-                break
+        for directory, directory_names, file_names in os.walk(
+            self.root, topdown=True, followlinks=False
+        ):
+            current = Path(directory)
+            # Sort one directory at a time for stable output while pruning paths
+            # that the workspace policy would reject before they are traversed.
+            directory_names[:] = [
+                name
+                for name in sorted(directory_names)
+                if not _is_ignored_directory(name) and not (current / name).is_symlink()
+            ]
+            for name in sorted(file_names):
+                path = current / name
+                relative = path.relative_to(self.root)
+                if path.is_symlink():
+                    continue
+                try:
+                    self.read_text_path(relative)
+                except WorkspaceError:
+                    continue
+                relative_text = relative.as_posix()
+                if used_chars + len(relative_text) > MAX_TOOL_OUTPUT_CHARS:
+                    return files
+                files.append(relative_text)
+                used_chars += len(relative_text)
+                if len(files) >= MAX_LISTED_FILES:
+                    return files
         return files
 
     def read_file(self, relative_path: str | Path) -> str:

@@ -60,6 +60,64 @@ class AcceptAll:
 
 
 class RunnerTests(unittest.TestCase):
+    def test_preparation_errors_are_bounded_in_output_feedback_and_summary(
+        self,
+    ) -> None:
+        long_detail = "x" * 5_000
+
+        class RetryThenSucceed:
+            def __init__(self) -> None:
+                self.calls = 0
+                self.feedback: list[str | None] = []
+
+            def propose(
+                self,
+                task: str,
+                workspace: Workspace,
+                previous: TestResult | None,
+                preparation_feedback: str | None = None,
+            ) -> PatchProposal:
+                self.calls += 1
+                self.feedback.append(preparation_feedback)
+                if self.calls == 1:
+                    raise ValueError(long_detail)
+                return proposal("value = 1", "value = 2")
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "sample.py").write_text("value = 1\n", encoding="utf-8")
+            provider = RetryThenSucceed()
+            output: list[str] = []
+
+            summary = HarnessRunner(
+                Workspace(root),
+                provider,
+                AcceptAll(),
+                test_executor=lambda _: TestResult(TEST_ARGUMENTS, 0, "ok", ""),
+                output_fn=output.append,
+            ).run("bound retry errors")
+
+            self.assertEqual(summary.status, "success")
+            self.assertLessEqual(len(output[0]), 1_300)
+            self.assertLessEqual(len(provider.feedback[1] or ""), 1_200)
+            self.assertNotIn(long_detail, output[0])
+
+        class TerminalFailure:
+            def propose(self, *_: object, **__: object) -> PatchProposal:
+                raise RuntimeError(long_detail)
+
+        with tempfile.TemporaryDirectory() as directory:
+            summary = HarnessRunner(
+                Workspace(directory),
+                TerminalFailure(),
+                AcceptAll(),
+                output_fn=lambda _: None,
+            ).run("bound terminal errors")
+
+        self.assertEqual(summary.status, "no_patch")
+        self.assertLessEqual(len(summary.message), 1_300)
+        self.assertNotIn(long_detail, summary.message)
+
     def test_invalid_proposal_gets_one_zero_write_correction(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
