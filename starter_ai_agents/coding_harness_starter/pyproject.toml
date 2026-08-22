@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coding-harness-starter"
+version = "0.1.0"
+description = "A minimal, approval-gated coding harness built with the OpenAI Agents SDK."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openai-agents",
+    "pydantic>=2,<3",
+    "python-dotenv",
+]
+
+[tool.setuptools]
+packages = ["coding_harness"]
+
+[tool.unittest]
+start-directory = "tests"
