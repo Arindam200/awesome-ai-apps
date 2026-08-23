@@ -65,9 +65,12 @@ def ask(agent: Agent, messages: list[dict[str, str]]) -> str:
             temperature=0.8,
             timeout=90,
         )
+        # Reading the answer belongs inside the boundary too: a provider that
+        # replies 200 with an empty "choices" list would otherwise raise
+        # IndexError and take the whole debate down, after the call was paid for.
+        return (response.choices[0].message.content or "").strip()
     except Exception as error:  # noqa: BLE001 - any provider error is just a lost turn
         return f"(no answer: {type(error).__name__}: {error})"
-    return (response.choices[0].message.content or "").strip()
 
 
 def moderator_note() -> str | None:

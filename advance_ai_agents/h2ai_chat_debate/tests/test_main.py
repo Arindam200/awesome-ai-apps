@@ -16,6 +16,18 @@ import pytest
 from rich.console import Console
 
 import main
+from debate import Agent
+
+
+def make_agent():
+    return Agent(
+        name="Ada",
+        role="the optimist",
+        model="a-model",
+        base_url="http://localhost:1234/v1",
+        api_key_env="LOCAL_API_KEY",
+    )
+
 
 ROSTER = [
     {
@@ -162,3 +174,55 @@ def test_a_debate_with_negative_rounds_is_rejected(monkeypatch):
 def test_a_normal_number_of_rounds_still_works(monkeypatch):
     monkeypatch.setattr(sys, "argv", ["main.py", "--topic", "a topic", "--rounds", "5"])
     assert main.parse_args().rounds == 5
+
+
+class RespuestaSinNada:
+    """Lo que devuelve un proveedor que contesta 200 pero no dice nada."""
+
+    choices: list = []
+
+
+class MensajeVacio:
+    content = None
+
+
+class EleccionVacia:
+    message = MensajeVacio()
+
+
+class RespuestaConHueco:
+    """Lo que devuelve un proveedor que contesta con el texto a nulo."""
+
+    choices = [EleccionVacia()]
+
+
+def cliente_que_devuelve(respuesta):
+    class Completions:
+        @staticmethod
+        def create(**kwargs):
+            return respuesta
+
+    class Chat:
+        completions = Completions()
+
+    class Cliente:
+        chat = Chat()
+
+    return Cliente()
+
+
+def test_a_provider_answering_with_no_choices_costs_a_turn_not_the_debate(monkeypatch):
+    """An empty completion used to raise IndexError and end the whole debate."""
+    monkeypatch.setattr(
+        main, "client_for", lambda agent: cliente_que_devuelve(RespuestaSinNada())
+    )
+    salida = main.ask(make_agent(), [{"role": "user", "content": "your turn"}])
+    assert salida.startswith("(no answer")
+
+
+def test_a_provider_answering_with_empty_content_gives_an_empty_turn(monkeypatch):
+    """Content of None is a silent turn, not a crash."""
+    monkeypatch.setattr(
+        main, "client_for", lambda agent: cliente_que_devuelve(RespuestaConHueco())
+    )
+    assert main.ask(make_agent(), [{"role": "user", "content": "your turn"}]) == ""
