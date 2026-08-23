@@ -190,6 +190,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Sayna Realtime Voice Agent](starter_ai_agents/sayna_starter): Real-time voice infrastructure with multi-provider STT/TTS (Deepgram, ElevenLabs, Azure, Google) and WebSocket streaming
 - [Semantic Kernel Starter](starter_ai_agents/semantic_kernel_starter): Microsoft Semantic Kernel `ChatCompletionAgent` with plugin-based tool calling
 
+- [Persona](https://github.com/jayamitkatariya/personacli) - Local-first personal workspace: notes, tasks, and AI chat over plain Markdown files. Connects to Ollama for free private AI.
 ### 🪶 Simple Agents
 
 **Straightforward, practical use-cases for everyday AI applications.** _18 projects_
