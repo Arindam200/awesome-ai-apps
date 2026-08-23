@@ -190,6 +190,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Sayna Realtime Voice Agent](starter_ai_agents/sayna_starter): Real-time voice infrastructure with multi-provider STT/TTS (Deepgram, ElevenLabs, Azure, Google) and WebSocket streaming
 - [Semantic Kernel Starter](starter_ai_agents/semantic_kernel_starter): Microsoft Semantic Kernel `ChatCompletionAgent` with plugin-based tool calling
 
+- [Clickyy](https://github.com/jayamitkatariya/clickyyy) - Open-source macOS menu bar AI agent: shake cursor to summon an overlay that sees your screen and can click, type, and act.
 ### 🪶 Simple Agents
 
 **Straightforward, practical use-cases for everyday AI applications.** _18 projects_
