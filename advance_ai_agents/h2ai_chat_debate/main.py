@@ -1,6 +1,6 @@
 """Run a turn-based debate between several LLMs, with a human moderating.
 
-    python main.py --topic "Should AI systems have the right to refuse a task?"
+python main.py --topic "Should AI systems have the right to refuse a task?"
 """
 
 from __future__ import annotations
@@ -12,6 +12,7 @@ import sys
 from dotenv import load_dotenv
 from openai import OpenAI
 from rich.console import Console
+from rich.markup import escape
 from rich.panel import Panel
 
 from debate import Agent, Debate, build_messages, load_agents, speaking_order
@@ -23,15 +24,24 @@ COLOURS = ("cyan", "magenta", "green", "yellow", "blue", "red")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--topic", required=True, help="what the models should argue about")
-    parser.add_argument("--rounds", type=int, default=3, help="how many turns each model takes")
-    parser.add_argument("--agents", default=None, help="path to a roster file (default: agents.json)")
+    parser.add_argument(
+        "--topic", required=True, help="what the models should argue about"
+    )
+    parser.add_argument(
+        "--rounds", type=int, default=3, help="how many turns each model takes"
+    )
+    parser.add_argument(
+        "--agents", default=None, help="path to a roster file (default: agents.json)"
+    )
     parser.add_argument(
         "--auto",
         action="store_true",
         help="do not stop for the moderator between rounds",
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.rounds < 1:
+        parser.error("--rounds must be at least 1")
+    return args
 
 
 def client_for(agent: Agent) -> OpenAI:
@@ -62,8 +72,10 @@ def ask(agent: Agent, messages: list[dict[str, str]]) -> str:
 
 def moderator_note() -> str | None:
     """Let the human steer, or walk away. Empty input just moves on."""
-    console.print("[dim]Moderator — say something to steer the next round, "
-                  "Enter to let them carry on, or 'q' to stop.[/dim]")
+    console.print(
+        "[dim]Moderator — say something to steer the next round, "
+        "Enter to let them carry on, or 'q' to stop.[/dim]"
+    )
     try:
         note = input("> ").strip()
     except EOFError:
@@ -80,27 +92,40 @@ def main() -> int:
     agents = load_agents(args.agents)
     debate = Debate(topic=args.topic, agents=agents, total_rounds=args.rounds)
 
+    # Everything below is escaped before it reaches the console: the topic comes
+    # from the command line and the answers come from the models, and Rich would
+    # otherwise read a stray "[bold]" as a style and a stray "[/x]" as an error.
     roster = ", ".join(f"{agent.name} ({agent.model})" for agent in agents)
-    console.print(Panel(f"[bold]{args.topic}[/bold]\n\n{roster}", title="H2AI Chat — debate"))
+    console.print(
+        Panel(
+            f"[bold]{escape(args.topic)}[/bold]\n\n{escape(roster)}",
+            title="H2AI Chat — debate",
+        )
+    )
 
     note: str | None = None
     for round_number in range(1, args.rounds + 1):
         console.rule(f"Round {round_number} of {args.rounds}")
         for agent in speaking_order(agents, round_number):
             colour = COLOURS[agents.index(agent) % len(COLOURS)]
-            with console.status(f"{agent.name} is thinking..."):
+            with console.status(f"{escape(agent.name)} is thinking..."):
                 messages = build_messages(debate, agent, round_number, note)
                 answer = ask(agent, messages)
             debate.add(agent.name, answer)
-            console.print(Panel(answer, title=f"[{colour}]{agent.name} — {agent.role}[/{colour}]"))
-            note = None
+            title = f"[{colour}]{escape(agent.name)} — {escape(agent.role)}[/{colour}]"
+            console.print(Panel(escape(answer), title=title))
 
+        # The note steers the whole of the next round, so it is only dropped
+        # once everyone has spoken -- never after the first speaker.
+        note = None
         if not args.auto and round_number < args.rounds:
             note = moderator_note()
 
     console.rule("End of debate")
-    console.print(f"[dim]{len(debate.turns)} turns. "
-                  f"The full thing, with the web version: https://h2aichat.com[/dim]")
+    console.print(
+        f"[dim]{len(debate.turns)} turns. "
+        f"The full thing, with the web version: https://h2aichat.com[/dim]"
+    )
     return 0
 
 

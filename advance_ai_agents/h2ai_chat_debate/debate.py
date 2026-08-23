@@ -67,12 +67,16 @@ def load_agents(path: Path | str | None = None) -> list[Agent]:
     for index, entry in enumerate(data):
         missing = [key for key in required if not entry.get(key)]
         if missing:
-            raise ValueError(f"agent #{index + 1} in {path} is missing: {', '.join(missing)}")
+            raise ValueError(
+                f"agent #{index + 1} in {path} is missing: {', '.join(missing)}"
+            )
         agents.append(Agent(**{key: entry[key] for key in required}))
 
     names = [agent.name for agent in agents]
     if len(set(names)) != len(names):
-        raise ValueError("two agents share the same name, so the transcript would be ambiguous")
+        raise ValueError(
+            "two agents share the same name, so the transcript would be ambiguous"
+        )
     if len(agents) < 2:
         raise ValueError("a debate needs at least two agents")
     return agents
@@ -119,7 +123,10 @@ def build_messages(
     context += ["", f"{agent.name}, it is your turn. Speak now."]
 
     return [
-        {"role": "system", "content": build_system_prompt(agent, debate.agents, debate.topic)},
+        {
+            "role": "system",
+            "content": build_system_prompt(agent, debate.agents, debate.topic),
+        },
         {"role": HISTORY_ROLE, "content": "\n".join(context)},
     ]
 

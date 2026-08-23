@@ -44,7 +44,9 @@ def test_the_shipped_roster_loads():
 
 def test_a_roster_with_a_missing_field_is_rejected(tmp_path):
     path = tmp_path / "agents.json"
-    path.write_text(json.dumps([{"name": "Ada", "role": "r", "model": "m"}]), encoding="utf-8")
+    path.write_text(
+        json.dumps([{"name": "Ada", "role": "r", "model": "m"}]), encoding="utf-8"
+    )
     with pytest.raises(ValueError, match="base_url"):
         load_agents(path)
 
@@ -66,7 +68,17 @@ def test_two_agents_with_the_same_name_are_rejected(tmp_path):
 def test_one_agent_is_not_a_debate(tmp_path):
     path = tmp_path / "agents.json"
     path.write_text(
-        json.dumps([{"name": "Ada", "role": "r", "model": "m", "base_url": "u", "api_key_env": "K"}]),
+        json.dumps(
+            [
+                {
+                    "name": "Ada",
+                    "role": "r",
+                    "model": "m",
+                    "base_url": "u",
+                    "api_key_env": "K",
+                }
+            ]
+        ),
         encoding="utf-8",
     )
     with pytest.raises(ValueError, match="at least two"):
@@ -104,7 +116,9 @@ def test_the_speaker_knows_which_round_it_is(debate):
 
 
 def test_the_moderator_note_reaches_the_next_speaker(debate):
-    body = build_messages(debate, debate.agents[0], 1, moderator_note="stick to costs")[1]["content"]
+    body = build_messages(debate, debate.agents[0], 1, moderator_note="stick to costs")[
+        1
+    ]["content"]
     assert "stick to costs" in body
 
 

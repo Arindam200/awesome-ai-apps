@@ -9,7 +9,7 @@
   {
     "name": "Kant",
     "role": "the skeptic: hunts for the weak step in an argument and names it",
-    "model": "anthropic/claude-3.5-haiku",
+    "model": "anthropic/claude-haiku-4.5",
     "base_url": "https://openrouter.ai/api/v1",
     "api_key_env": "OPENROUTER_API_KEY"
   },
