@@ -13,12 +13,26 @@ This app uses:
 
 import base64
 import os
+from urllib.parse import urlparse
 
 import streamlit as st
 from dotenv import load_dotenv
 from openai import OpenAI
 
 from core import fetch_exa_trends, ingest_channel_into_memori
+
+DEFAULT_NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
+
+
+def _valid_nebius_base_url(value: str) -> bool:
+    parsed = urlparse(value.strip())
+    return (
+        parsed.scheme == "https"
+        and parsed.hostname == "api.tokenfactory.nebius.com"
+        and parsed.path.rstrip("/") == "/v1"
+        and not parsed.query
+        and not parsed.fragment
+    )
 
 
 def _load_inline_image(path: str, height_px: int) -> str:
@@ -62,6 +76,10 @@ def main():
     # Initialize session state
     if "messages" not in st.session_state:
         st.session_state.messages = []
+    st.session_state.setdefault("nebius_api_key", os.getenv("NEBIUS_API_KEY", ""))
+    st.session_state.setdefault(
+        "nebius_base_url", os.getenv("NEBIUS_BASE_URL", DEFAULT_NEBIUS_BASE_URL)
+    )
     # Memori/OpenAI client will be initialized lazily when needed.
 
     # Sidebar
@@ -70,16 +88,14 @@ def main():
 
         nebius_api_key_input = st.text_input(
             "Nebius API Key",
-            value=os.getenv("NEBIUS_API_KEY", ""),
+            value=st.session_state.nebius_api_key,
             type="password",
             help="Your Nebius Token Factory API key.",
         )
 
         nebius_base_url_input = st.text_input(
             "Nebius Base URL",
-            value=os.getenv(
-                "NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1"
-            ),
+            value=st.session_state.nebius_base_url,
             help="OpenAI-compatible endpoint for Nebius Token Factory.",
         )
 
@@ -103,10 +119,18 @@ def main():
         )
 
         if st.button("Save Settings"):
-            if nebius_api_key_input:
-                os.environ["NEBIUS_API_KEY"] = nebius_api_key_input
-            if nebius_base_url_input:
-                os.environ["NEBIUS_BASE_URL"] = nebius_base_url_input
+            if not _valid_nebius_base_url(nebius_base_url_input):
+                st.error("Nebius Base URL must be https://api.tokenfactory.nebius.com/v1")
+                st.stop()
+            changed = (
+                nebius_api_key_input != st.session_state.nebius_api_key
+                or nebius_base_url_input != st.session_state.nebius_base_url
+            )
+            st.session_state.nebius_api_key = nebius_api_key_input
+            st.session_state.nebius_base_url = nebius_base_url_input
+            if changed:
+                for key in ("openai_client", "memori", "nebius_client"):
+                    st.session_state.pop(key, None)
             if exa_api_key_input:
                 os.environ["EXA_API_KEY"] = exa_api_key_input
             if memori_api_key_input:
@@ -117,7 +141,7 @@ def main():
         st.markdown("---")
 
         if st.button("Ingest channel into Memori"):
-            if not os.getenv("NEBIUS_API_KEY"):
+            if not st.session_state.nebius_api_key:
                 st.warning("NEBIUS_API_KEY is required before ingestion.")
             elif not channel_url_input.strip():
                 st.warning("Please enter a YouTube channel or playlist URL.")
@@ -141,8 +165,11 @@ def main():
         )
 
     # Get keys for main app logic
-    api_key = os.getenv("NEBIUS_API_KEY", "")
-    base_url = os.getenv("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1")
+    api_key = st.session_state.nebius_api_key
+    base_url = st.session_state.nebius_base_url
+    if not _valid_nebius_base_url(base_url):
+        st.error("Nebius Base URL must be https://api.tokenfactory.nebius.com/v1")
+        st.stop()
     if not api_key:
         st.warning(
             "⚠️ Please enter your Nebius API key in the sidebar to start chatting!"

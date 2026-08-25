@@ -48,10 +48,13 @@ def init_memori_with_nebius() -> Memori | None:
     NOTE:
     - To use MiniMax through Nebius Token Factory, set:
         NEBIUS_API_KEY = "<your-nebius-api-key>"
+        # Set the Nebius Token Factory endpoint (the value below is the default):
         NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
     """
-    base_url = os.getenv("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1")
-    api_key = os.getenv("NEBIUS_API_KEY", "")
+    base_url = st.session_state.get(
+        "nebius_base_url", os.getenv("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1")
+    )
+    api_key = st.session_state.get("nebius_api_key", os.getenv("NEBIUS_API_KEY", ""))
 
     if not api_key:
         st.warning(
