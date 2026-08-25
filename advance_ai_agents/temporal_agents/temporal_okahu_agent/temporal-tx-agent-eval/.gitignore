@@ -1,0 +1,44 @@
+# --- Secrets ---
+# .env holds OPENAI_API_KEY / OKAHU_API_KEY / OPENAI_BASE_URL etc.
+# Only .env.example (template with blank values) is committed.
+.env
+temporal-tx-agent/.env
+
+# The Okahu VS Code extension writes OKAHU_API_KEY into this file
+# automatically when you Add Cloud → Okahu Cloud. Never commit.
+.env.monocle
+
+# --- Generated trace output ---
+# Recorder (record_from_scenarios.py) writes to root .monocle/,
+# then merges into evals/traces/<scenario>.json fixtures.
+# Both are reproducible via `make record` — do not commit either.
+# Keep evals/traces/README.md so the folder documents itself.
+.monocle/
+temporal-tx-agent/.monocle/
+evals/traces/*.json
+!evals/traces/README.md
+
+# --- Regression demo backup ---
+# `make regress` creates <file>.bak via `sed -i.bak`. Not for commit.
+*.bak
+
+# --- Fix-loop prompt file ---
+# `./fix.sh` writes .fix-prompt.md with the pytest failure block for a
+# coding agent to consume. Regenerated each run, not for commit.
+.fix-prompt.md
+
+# --- Python ---
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# --- Editors / OS cruft ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store

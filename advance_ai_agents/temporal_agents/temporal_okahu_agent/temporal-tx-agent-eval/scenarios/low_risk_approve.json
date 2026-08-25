@@ -1,0 +1,23 @@
+{
+ "id": "low_risk_approve",
+ "description": "Small domestic wire between individuals — should be auto-approved with high confidence.",
+ "transaction": {
+  "transaction_id": "TX-LOW-0001",
+  "transaction_type": "wire_transfer",
+  "amount": 250,
+  "currency": "USD",
+  "sender": {
+   "account_number": "ACC-11001",
+   "country": "US",
+   "name": "Sam Eagleton"
+  },
+  "recipient": {
+   "account_number": "ACC-11002",
+   "country": "US",
+   "name": "Priya Menon"
+  },
+  "description": "Rent split",
+  "risk_flags": [],
+  "reference_number": "REF-LOW-0001"
+ }
+}

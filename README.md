@@ -8,7 +8,7 @@
 
 </div>
 
-This repository is a comprehensive collection of **129 practical projects, tutorials, and recipes** for building powerful LLM-powered applications, including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
+This repository is a comprehensive collection of **131 committed projects**, tutorials, and recipes for building powerful LLM-powered applications, including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
 
 ## 📋 Table of Contents
 
@@ -39,7 +39,7 @@ This repository is a comprehensive collection of **129 practical projects, tutor
   <tr align="center">
     <td width="300" valign="middle" align="center">
       <a href="https://dub.sh/brightdata" target="_blank" title="Visit Bright Data">
-        <img src="https://mintlify.s3.us-west-1.amazonaws.com/brightdata/logo/light.svg" height="35" style="max-width:180px;" alt="Bright Data - Web Data Platform">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Bright_Data.svg" height="35" style="max-width:180px;" alt="Bright Data - Web Data Platform">
       </a>
       <br>
       <sub>
@@ -154,10 +154,7 @@ This repository is a comprehensive collection of **129 practical projects, tutor
 <p align="center">
 Interested in sponsoring this project? Feel free to reach out!
 <br/>
-<a href="https://dub.sh/arindam-linkedin" target="_blank">
-    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn">
-</a>
-<a href="mailto:arindammajumder2020@gmail.com">
+<a href="mailto:contact@studio1hq.com">
     <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
 </a>
 </p>
@@ -292,7 +289,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _31 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _33 projects_
 
 - [AI Hedge Fund Research Team](advance_ai_agents/ai-hedgefund): Agentic workflow for comprehensive financial analysis
 - [AI Trend Research Agent](advance_ai_agents/trend_analyzer_agent): AI trend mining and analysis with Google ADK
@@ -315,6 +312,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent): Automated meeting notes and task creation from conversations
 - [Multi-Agent Coding Harness](advance_ai_agents/coding_agent_harness): Deep LangGraph coding crew with planning, repository exploration, human-gated file edits, and E2B-sandboxed test loops
 - [Nebius Autonomous Pipeline Optimizer](advance_ai_agents/nebius-autoresearch-autoresearch-mar30): NYC taxi analytics pipeline optimizer with iterative code search using real-time or batch Nebius Token Factory inference
+- [Pre-Meeting Intel Agent (Briefing Room)](advance_ai_agents/meeting_briefing_agent): LangGraph plan-research-reflect loop with Tavily web search that turns a company name into a cited one-page meeting brief
 - [Price Monitoring Agent](advance_ai_agents/price_monitoring_agent): Price monitoring and alerting agent powered by CrewAI, Twilio, and Nebius
 - [Prompt Format Benchmark](advance_ai_agents/context_engineering_pipeline): Benchmark harness for comparing XML, JSON, and Markdown prompt formats across accuracy, latency, and token usage
 - [Sandboxed Browser Game Generator](advance_ai_agents/pydantic_game_agent): FastAPI multi-agent studio that generates sandboxed browser games from one prompt using Pydantic AI and GLM-5.2 on Nebius
@@ -323,6 +321,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Startup Go-to-Market Strategy Agent](advance_ai_agents/smart_gtm_agent): Go-to-market strategy and competitive analysis agent
 - [Startup Idea Validator Agent](advance_ai_agents/startup_idea_validator_agent): Agentic workflow to validate and analyze startup ideas
 - [Temporal Agents](advance_ai_agents/temporal_agents/): Examples of Temporal-based AI agents
+- [Temporal Transaction Agent Evaluation (Okahu + Monocle)](advance_ai_agents/temporal_agents/temporal_okahu_agent/temporal-tx-agent-eval): Evaluation and regression loop for a Temporal fraud-processing agent, using OpenTelemetry traces, deterministic checks, and LLM-graded Okahu evaluations
 - [Web Intelligence Agent](advance_ai_agents/web_intelligence_agent): Mastra multi-agent pipeline that turns Olostep web evidence into Nemotron-verified case studies with SQLite persistence and a Velt audit trail
 - [Workflow Audit Trail (FlowSentinel)](advance_ai_agents/flowsentinal_audittrail): Next.js workflow command center with Nebius Nemotron reasoning, n8n orchestration, Velt activity logs, and optional Tailscale Funnel exposure
 
@@ -341,7 +340,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🎓 Course Playlists
 
-- [**AWS Strands Course**](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lrc43ZtUXAwYu9DhnqxzRKZ): Complete 8-lesson course on building AI agents with AWS Strands SDK
+- [**AWS Strands Course**](course/aws_strands): Complete 8-lesson course on building AI agents with AWS Strands SDK ([watch the playlist](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lrc43ZtUXAwYu9DhnqxzRKZ))
 
 ### 🔧 Framework Tutorials
 
@@ -468,4 +467,4 @@ For any questions, suggestions, or contributions, feel free to reach out to the 
 
 ## Thank You for the Support! 🙏
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Arindam200/awesome-ai-apps&type=Date)](https://www.star-history.com/#Arindam200/awesome-ai-apps&Date)
+[![Star History Chart](https://star-history.dera.page/svg?repos=Arindam200/awesome-ai-apps&type=Date)](https://star-history.dera.page/#Arindam200/awesome-ai-apps&Date)

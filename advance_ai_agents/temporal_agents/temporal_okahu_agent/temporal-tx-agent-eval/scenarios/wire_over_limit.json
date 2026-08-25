@@ -1,0 +1,23 @@
+{
+ "id": "wire_over_limit",
+ "description": "Wire transfer just over $50K wire-specific limit — expected to be flagged wire_transfer_over_limit and escalated.",
+ "transaction": {
+  "transaction_id": "TX-WOL-0001",
+  "transaction_type": "wire_transfer",
+  "amount": 55000,
+  "currency": "USD",
+  "sender": {
+   "account_number": "ACC-44001",
+   "country": "US",
+   "name": "Delta Manufacturing Inc"
+  },
+  "recipient": {
+   "account_number": "ACC-44002",
+   "country": "DE",
+   "name": "Bauer Fertigung GmbH"
+  },
+  "description": "Machinery import — invoice #4471",
+  "risk_flags": [],
+  "reference_number": "REF-WOL-0001"
+ }
+}

@@ -1,0 +1,19 @@
+{
+ "template": {
+  "name": "fraud_reasoning_grounded",
+  "eval_prompt": "You are auditing the reasoning produced by a fraud-detection AI for a single financial transaction. You will be shown the model's output (its decision, confidence, reasoning, and risk factors) alongside the raw transaction that was analyzed.\n\nClassify the reasoning as one of:\n  - 'grounded': every claim in the reasoning is supported by the transaction facts. The model does not invent counterparties, dates, prior history, amounts, jurisdictions, or regulations that were not present in the input. If it refers to a rule (e.g. structuring, wire limit, sanctions), that rule is a plausible, real-world compliance concept applied to the actual amount / country / type in the transaction.\n  - 'partially_grounded': most claims are supported but there is at least one minor unsupported detail (e.g. a hedged reference to 'past behavior' with no data, an imprecise regulatory citation) that does not change the decision.\n  - 'hallucinated': the reasoning invents material facts — a fake past transaction, a nonexistent regulation, a counterparty attribute not present in the input — or attributes decisions to information the model did not have.\n\nBe strict. Prefer 'hallucinated' over 'partially_grounded' when any invented fact directly supports the decision.",
+  "structure_output": {
+   "label": {
+    "description": "Grounding classification of the fraud reasoning.",
+    "enums": [
+     "grounded",
+     "partially_grounded",
+     "hallucinated"
+    ]
+   },
+   "explanation": {
+    "description": "Which specific claims in the reasoning are grounded vs. unsupported, cited from the transaction facts."
+   }
+  }
+ }
+}

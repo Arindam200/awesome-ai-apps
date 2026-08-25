@@ -1,0 +1,23 @@
+{
+ "id": "ambiguous_medium_risk",
+ "description": "Ambiguous $9,999 cross-border wire with a vague description — used to grade AI reasoning quality, hallucination, and PII handling.",
+ "transaction": {
+  "transaction_id": "TX-AMB-0001",
+  "transaction_type": "wire_transfer",
+  "amount": 9999,
+  "currency": "USD",
+  "sender": {
+   "account_number": "ACC-55001",
+   "country": "US",
+   "name": "J. Nakamura"
+  },
+  "recipient": {
+   "account_number": "ACC-55002",
+   "country": "SG",
+   "name": "Marina Bay Consultants"
+  },
+  "description": "misc services",
+  "risk_flags": [],
+  "reference_number": "REF-AMB-0001"
+ }
+}

@@ -1,0 +1,4 @@
+# Installing monocle_test_tools pulls in everything this suite needs
+# (pytest, pytest-asyncio, and monocle_apptrace come transitively).
+monocle_test_tools
+python-dotenv

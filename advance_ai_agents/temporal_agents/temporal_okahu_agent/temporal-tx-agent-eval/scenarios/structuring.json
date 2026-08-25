@@ -1,0 +1,23 @@
+{
+ "id": "structuring",
+ "description": "$4,999 wire — just under the $5,000 reporting threshold. Should raise potential_structuring flag.",
+ "transaction": {
+  "transaction_id": "TX-STR-0001",
+  "transaction_type": "wire_transfer",
+  "amount": 4999,
+  "currency": "USD",
+  "sender": {
+   "account_number": "ACC-33001",
+   "country": "US",
+   "name": "K. Doe"
+  },
+  "recipient": {
+   "account_number": "ACC-33002",
+   "country": "US",
+   "name": "M. Roe"
+  },
+  "description": "Consulting fee",
+  "risk_flags": [],
+  "reference_number": "REF-STR-0001"
+ }
+}

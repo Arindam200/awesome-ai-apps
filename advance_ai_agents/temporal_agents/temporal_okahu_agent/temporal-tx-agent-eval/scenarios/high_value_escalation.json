@@ -1,0 +1,23 @@
+{
+ "id": "high_value_escalation",
+ "description": "$75,000 wire above AUTO_APPROVAL_LIMIT — should trigger high_value_transaction flag and escalate to manager.",
+ "transaction": {
+  "transaction_id": "TX-HV-0001",
+  "transaction_type": "wire_transfer",
+  "amount": 75000,
+  "currency": "USD",
+  "sender": {
+   "account_number": "ACC-22001",
+   "country": "US",
+   "name": "Northwind Trading LLC"
+  },
+  "recipient": {
+   "account_number": "ACC-22002",
+   "country": "UK",
+   "name": "Wadsworth Holdings Ltd"
+  },
+  "description": "Q3 supplier settlement",
+  "risk_flags": [],
+  "reference_number": "REF-HV-0001"
+ }
+}

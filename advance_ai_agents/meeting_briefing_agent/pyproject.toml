@@ -1,0 +1,20 @@
+[project]
+name = "meeting-briefing-agent"
+version = "0.1.0"
+description = "Pre-meeting intel agent — LangGraph + Tavily + Nebius Token Factory"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "langgraph>=1.0.0",
+    "langchain-core>=0.3.0",
+    "langchain-openai>=0.2.0",
+    "langchain-tavily>=0.2.0",
+    "streamlit>=1.40.0",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/Arindam200/awesome-ai-apps"
+Repository = "https://github.com/Arindam200/awesome-ai-apps"
+Issues = "https://github.com/Arindam200/awesome-ai-apps/issues"
