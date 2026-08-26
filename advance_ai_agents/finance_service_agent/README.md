@@ -73,6 +73,16 @@ The following environment variables are required to run the server:
 NEWS_API_KEY: Your News API key for fetching news articles.
 REDIS_URL: The URL of the Redis server for caching.
 NEBIUS_API_KEY: Your Nebius model API key for AI predictions.
+CORS_ALLOWED_ORIGINS: Comma-separated browser origins allowed to call the API with credentials. Defaults to `http://localhost:3000,http://127.0.0.1:3000`; wildcard origins are not supported.
+```
+
+Set `CORS_ALLOWED_ORIGINS` to the exact frontend origins used by each production deployment.
+
+### Tests
+
+```bash
+pip install -e ".[test]"
+pytest tests
 ```
 
 ---
