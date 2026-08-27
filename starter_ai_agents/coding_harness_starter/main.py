@@ -99,6 +99,14 @@ def _print_summary(summary: object, output_fn: Callable[[str], object]) -> None:
             f"({_test_result_label(test_run)}; {outcome})"
         )
     output_fn("Final tests: " + _final_test_status(summary.test_runs))
+    if summary.token_usage is not None:
+        usage = summary.token_usage
+        output_fn(
+            "Token usage: "
+            f"prompt={usage.prompt_tokens}, "
+            f"completion={usage.completion_tokens}, "
+            f"total={usage.total_tokens}"
+        )
     if summary.status == "test_failed" and summary.test_runs:
         diagnostic = _test_error_summary(summary.test_runs[-1])
         if diagnostic:

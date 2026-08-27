@@ -252,8 +252,8 @@ class HarnessRunner:
             if item.relative_path not in destination:
                 destination.append(item.relative_path)
 
-    @staticmethod
     def _summary(
+        self,
         task: str,
         status: str,
         attempts: int,
@@ -269,6 +269,7 @@ class HarnessRunner:
             created_files=created,
             updated_files=updated,
             test_runs=test_runs,
+            token_usage=getattr(self.proposal_provider, "token_usage", None),
             message=message,
         )
 

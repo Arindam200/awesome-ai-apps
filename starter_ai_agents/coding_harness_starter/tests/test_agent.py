@@ -94,7 +94,16 @@ class ModelConfigTests(unittest.TestCase):
         class FakeRunner:
             @staticmethod
             async def run(agent: object, prompt: str) -> SimpleNamespace:
-                return SimpleNamespace(final_output=VALID_PROPOSAL_JSON)
+                return SimpleNamespace(
+                    final_output=VALID_PROPOSAL_JSON,
+                    context_wrapper=SimpleNamespace(
+                        usage=SimpleNamespace(
+                            input_tokens=120,
+                            output_tokens=30,
+                            total_tokens=150,
+                        )
+                    ),
+                )
 
         class FakeAsyncOpenAI:
             instances: list["FakeAsyncOpenAI"] = []
@@ -130,18 +139,20 @@ class ModelConfigTests(unittest.TestCase):
             model_name="test-model",
         )
 
+        coding_agent = CodingAgent(config)
         with patch(
             "coding_harness.agent._load_agents_dependencies",
             return_value=dependencies,
         ):
-            proposal = asyncio.run(
-                CodingAgent(config).propose("change it", FakeWorkspace())
-            )
+            proposal = asyncio.run(coding_agent.propose("change it", FakeWorkspace()))
 
         self.assertIsInstance(proposal, PatchProposal)
         self.assertEqual(len(captured_agent_kwargs["tools"]), 3)
         self.assertNotIn("output_type", captured_agent_kwargs)
         self.assertTrue(FakeAsyncOpenAI.instances[0].closed)
+        self.assertEqual(coding_agent.token_usage.prompt_tokens, 120)
+        self.assertEqual(coding_agent.token_usage.completion_tokens, 30)
+        self.assertEqual(coding_agent.token_usage.total_tokens, 150)
 
 
 if __name__ == "__main__":

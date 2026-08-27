@@ -77,6 +77,23 @@ class TestRunRecord(BaseModel):
     stderr: str = ""
 
 
+class TokenUsage(BaseModel):
+    """Nebius token totals accumulated across one harness run."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    prompt_tokens: int = Field(default=0, ge=0)
+    completion_tokens: int = Field(default=0, ge=0)
+    total_tokens: int = Field(default=0, ge=0)
+
+    def plus(self, other: "TokenUsage") -> "TokenUsage":
+        return TokenUsage(
+            prompt_tokens=self.prompt_tokens + other.prompt_tokens,
+            completion_tokens=self.completion_tokens + other.completion_tokens,
+            total_tokens=self.total_tokens + other.total_tokens,
+        )
+
+
 class RunSummary(BaseModel):
     """Stable end-of-run data for the CLI, rather than presentation text."""
 
@@ -88,4 +105,5 @@ class RunSummary(BaseModel):
     created_files: list[str] = Field(default_factory=list)
     updated_files: list[str] = Field(default_factory=list)
     test_runs: list[TestRunRecord] = Field(default_factory=list)
+    token_usage: TokenUsage | None = None
     message: str = ""

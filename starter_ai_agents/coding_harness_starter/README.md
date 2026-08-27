@@ -11,6 +11,7 @@ It is intentionally a teaching project, not a general-purpose autonomous coding 
 - Structured `create` and `update` proposals, locally validated before use.
 - A complete unified-diff preview and explicit `y/N` approval before every write.
 - A single fixed `unittest` command and at most three approved edit attempts.
+- End-of-run Nebius prompt, completion, and total token usage across all proposal calls.
 - A small, resettable todo fixture for experimenting without risking a real project.
 
 ## Requirements
@@ -91,6 +92,7 @@ The custom workspace must have standard-library `unittest` tests discoverable fr
 6. Type `y` to approve; anything else (including Enter) declines.
 7. The harness applies the validated operations, then runs the fixed test command.
 8. A failed test result may be reviewed for a new proposal, with a fresh preview and approval each time. There are at most three edit attempts in one run; approved changes remain if the final test run fails.
+9. The final summary reports the accumulated Nebius prompt, completion, and total tokens used by every proposal and correction call in the run.
 
 ## Approval, workspace, and command boundaries
 

@@ -8,7 +8,7 @@ import re
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from .models import PatchProposal
+from .models import PatchProposal, TokenUsage
 from .testing import TestResult
 
 
@@ -82,6 +82,13 @@ class CodingAgent:
 
     def __init__(self, config: ModelConfig | None = None) -> None:
         self._config = config
+        self._token_usage = TokenUsage()
+
+    @property
+    def token_usage(self) -> TokenUsage:
+        """Token totals from every model request made by this agent instance."""
+
+        return self._token_usage.model_copy()
 
     async def propose(
         self,
@@ -135,6 +142,7 @@ class CodingAgent:
                 tools=[list_files, read_file, search_text],
             )
             result = await Runner.run(agent, prompt)
+            self._token_usage = self._token_usage.plus(_result_token_usage(result))
             return _coerce_proposal(result.final_output)
         finally:
             await client.close()
@@ -173,6 +181,26 @@ def _coerce_proposal(value: Any) -> PatchProposal:
     if hasattr(PatchProposal, "model_validate"):
         return PatchProposal.model_validate(value)
     return PatchProposal.parse_obj(value)
+
+
+def _result_token_usage(result: object) -> TokenUsage:
+    """Map the Agents SDK's run-level usage to Nebius response terminology."""
+
+    context_wrapper = getattr(result, "context_wrapper", None)
+    usage = getattr(context_wrapper, "usage", None)
+    if usage is None:
+        return TokenUsage()
+    prompt_tokens = int(getattr(usage, "input_tokens", 0) or 0)
+    completion_tokens = int(getattr(usage, "output_tokens", 0) or 0)
+    total_tokens = int(
+        getattr(usage, "total_tokens", prompt_tokens + completion_tokens)
+        or prompt_tokens + completion_tokens
+    )
+    return TokenUsage(
+        prompt_tokens=prompt_tokens,
+        completion_tokens=completion_tokens,
+        total_tokens=total_tokens,
+    )
 
 
 def _extract_json_object(output: str) -> str:

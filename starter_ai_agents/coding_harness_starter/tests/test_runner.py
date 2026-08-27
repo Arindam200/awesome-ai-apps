@@ -5,7 +5,12 @@ import tempfile
 import unittest
 
 from coding_harness.approval import ApprovalGate
-from coding_harness.models import FileOperation, ImplementationPlan, PatchProposal
+from coding_harness.models import (
+    FileOperation,
+    ImplementationPlan,
+    PatchProposal,
+    TokenUsage,
+)
 from coding_harness.runner import HarnessRunner
 from coding_harness.testing import TEST_ARGUMENTS, TestResult
 from coding_harness.workspace import Workspace
@@ -194,10 +199,34 @@ class RunnerTests(unittest.TestCase):
             )
 
     def test_stops_after_three_approved_failing_attempts_and_keeps_edits(self) -> None:
+        class UsageProvider(ScriptedProvider):
+            def __init__(self, proposals: list[object]) -> None:
+                super().__init__(proposals)
+                self.token_usage = TokenUsage()
+
+            def propose(
+                self,
+                task: str,
+                workspace: Workspace,
+                previous: TestResult | None,
+                preparation_feedback: str | None = None,
+            ) -> object:
+                result = super().propose(
+                    task, workspace, previous, preparation_feedback
+                )
+                self.token_usage = self.token_usage.plus(
+                    TokenUsage(
+                        prompt_tokens=100,
+                        completion_tokens=20,
+                        total_tokens=120,
+                    )
+                )
+                return result
+
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "sample.py").write_text("value = 1\n", encoding="utf-8")
-            provider = ScriptedProvider(
+            provider = UsageProvider(
                 [
                     proposal("value = 1", "value = 2"),
                     proposal("value = 2", "value = 3"),
@@ -222,6 +251,10 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(len(summary.test_runs), 3)
             self.assertEqual(approval.calls, 3)
             self.assertEqual(len(provider.calls), 3)
+            self.assertIsNotNone(summary.token_usage)
+            self.assertEqual(summary.token_usage.prompt_tokens, 300)
+            self.assertEqual(summary.token_usage.completion_tokens, 60)
+            self.assertEqual(summary.token_usage.total_tokens, 360)
             self.assertIsNone(provider.calls[0])
             self.assertIsNotNone(provider.calls[1])
             self.assertEqual(

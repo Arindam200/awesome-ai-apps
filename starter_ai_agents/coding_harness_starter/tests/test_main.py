@@ -12,6 +12,7 @@ from coding_harness.models import (
     PatchProposal,
     RunSummary,
     TestRunRecord,
+    TokenUsage,
 )
 from coding_harness.testing import TEST_ARGUMENTS, TestResult
 from coding_harness.workspace import Workspace
@@ -127,6 +128,11 @@ class MainTests(unittest.TestCase):
                     stderr="x" * 2_000 + "\nAssertionError: still failing\n",
                 )
             ],
+            token_usage=TokenUsage(
+                prompt_tokens=120,
+                completion_tokens=30,
+                total_tokens=150,
+            ),
             message="Tests still fail after 3 approved edit attempt(s); applied changes were kept.",
         )
         output: list[str] = []
@@ -136,6 +142,7 @@ class MainTests(unittest.TestCase):
         self.assertIn("Attempts: 3", output)
         self.assertTrue(any("failed; exit_code=1" in line for line in output))
         self.assertIn("Final tests: failed", output)
+        self.assertIn("Token usage: prompt=120, completion=30, total=150", output)
         diagnostic = next(
             line for line in output if line.startswith("Final test error summary:")
         )
