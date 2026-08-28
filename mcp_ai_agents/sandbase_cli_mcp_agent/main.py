@@ -13,6 +13,7 @@ SAND_BASE_PACKAGE = (
 
 
 async def main() -> None:
+    """Run one model-discovery and request flow through the SandBase MCP bridge."""
     load_dotenv()
     api_key = os.getenv("OPENAI_API_KEY")
     if not api_key:
