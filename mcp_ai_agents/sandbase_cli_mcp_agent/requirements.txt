@@ -1,2 +1,2 @@
-openai-agents
+openai-agents==0.22.0
 python-dotenv

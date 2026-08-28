@@ -31,15 +31,15 @@ pip install -r requirements.txt
 python main.py
 ```
 
-The script starts the immutable SandBase CLI release asset with `npx`, asks the agent to list compatible models, and sends one short prompt through the selected model. Review the tool calls and do not use production data for the first run.
+The script starts the immutable SandBase CLI release asset with `npx`, asks the agent to discover and inspect a compatible model, and sends one short prompt through the selected model. It requires the `sandbase_discover` → `sandbase_inspect` → `sandbase_run` tool sequence before printing a result. The agent defaults to `gpt-4o-mini`; set `OPENAI_MODEL` to override it. Review the tool calls and do not use production data for the first run.
 
 ## How it works
 
-`main.py` uses `MCPServerStdio` to launch `npx -y https://github.com/sandbaseai/cli/releases/download/v0.1.17/sandbaseai-cli-0.1.17.tgz connect`. SandBase handles provider/model discovery and OAuth; the OpenAI Agents SDK handles the example agent loop. No SandBase provider key is committed or placed in the project files.
+`main.py` uses `MCPServerStdio` to launch `npx -y https://github.com/sandbaseai/cli/releases/download/v0.1.17/sandbaseai-cli-0.1.17.tgz connect`. SandBase handles provider/model discovery and OAuth; the OpenAI Agents SDK handles the example agent loop. A five-minute MCP session timeout allows for first-run OAuth and provider requests. No SandBase provider key is committed or placed in the project files.
 
 ## Project structure
 
-```
+```text
 sandbase_cli_mcp_agent/
 ├── .env.example
 ├── main.py

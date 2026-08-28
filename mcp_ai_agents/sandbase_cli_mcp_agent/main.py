@@ -2,7 +2,7 @@ import asyncio
 import os
 
 from dotenv import load_dotenv
-from agents import Agent, Runner, set_tracing_disabled
+from agents import Agent, ModelSettings, Runner, set_tracing_disabled
 from agents.mcp import MCPServerStdio
 
 
@@ -21,6 +21,7 @@ async def main() -> None:
     set_tracing_disabled(disabled=True)
     async with MCPServerStdio(
         cache_tools_list=True,
+        client_session_timeout_seconds=300,
         params={"command": "npx", "args": ["-y", SAND_BASE_PACKAGE, "connect"]},
     ) as server:
         agent = Agent(
@@ -31,12 +32,24 @@ async def main() -> None:
                 "report the selected provider and model. Do not change configuration."
             ),
             model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            model_settings=ModelSettings(tool_choice="required"),
             mcp_servers=[server],
         )
         result = await Runner.run(
             starting_agent=agent,
             input="Say hello in one sentence and include the model you used.",
         )
+        called_tools = {
+            getattr(getattr(item, "raw_item", None), "name", None)
+            for item in result.new_items
+        }
+        required_tools = {"sandbase_discover", "sandbase_inspect", "sandbase_run"}
+        missing_tools = sorted(required_tools - called_tools)
+        if missing_tools:
+            raise RuntimeError(
+                "SandBase workflow incomplete; missing tool calls: "
+                + ", ".join(missing_tools)
+            )
         print(result.final_output)
 
 
