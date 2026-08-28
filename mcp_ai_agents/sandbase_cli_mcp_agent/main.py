@@ -39,16 +39,16 @@ async def main() -> None:
             starting_agent=agent,
             input="Say hello in one sentence and include the model you used.",
         )
-        called_tools = {
-            getattr(getattr(item, "raw_item", None), "name", None)
+        called_tools = [
+            tool_name
             for item in result.new_items
-        }
-        required_tools = {"sandbase_discover", "sandbase_inspect", "sandbase_run"}
-        missing_tools = sorted(required_tools - called_tools)
-        if missing_tools:
+            if (tool_name := getattr(getattr(item, "raw_item", None), "name", None))
+        ]
+        required_tools = ["sandbase_discover", "sandbase_inspect", "sandbase_run"]
+        if called_tools != required_tools:
             raise RuntimeError(
-                "SandBase workflow incomplete; missing tool calls: "
-                + ", ".join(missing_tools)
+                "SandBase workflow incomplete; expected tool calls in order "
+                f"{required_tools}, got {called_tools}"
             )
         print(result.final_output)
 
