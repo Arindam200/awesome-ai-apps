@@ -167,11 +167,12 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🧩 Starter Agents
 
-**Quick-start agents for learning and extending different AI frameworks.** _20 projects_
+**Quick-start agents for learning and extending different AI frameworks.** _21 projects_
 
 - [AutoGen Tool-Calling Starter](starter_ai_agents/autogen_starter): Microsoft AutoGen `AssistantAgent` with a custom tool, powered by Nebius Token Factory
 - [AWS Strands Agent Starter](starter_ai_agents/aws_strands_starter): Weather report agent using AWS Strands SDK
 - [CAMEL AI Model Benchmark](starter_ai_agents/camel_ai_starter): Performance benchmarking tool comparing various AI models
+- [Coding Harness Starter](starter_ai_agents/coding_harness_starter): PydanticAI coding loop with structured patch proposals, human-gated file writes, and allowlisted pytest execution
 - [CrewAI Research Crew](starter_ai_agents/crewai_starter): Multi-agent research team example
 - [Docker cagent Multi-Agent Starter](starter_ai_agents/cagent_starter): Open-source customizable multi-agent runtime by Docker
 - [DSPy Optimization Starter](starter_ai_agents/dspy_starter): DSPy framework for building and optimizing AI systems
