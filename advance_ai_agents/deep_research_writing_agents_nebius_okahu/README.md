@@ -305,6 +305,10 @@ What's the most complex system you've encountered recently?
 | Gemini API Key | — | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) (required — image generation) |
 | Okahu account | — | [okahu.ai](https://www.okahu.ai/) (optional, for observability and eval traces) |
 
+To use the MiniMax image backend, set `IMAGE_PROVIDER=minimax` and provide
+`MINIMAX_API_KEY`. `MINIMAX_API_REGION` selects `global_en` or `cn_zh`, and
+`MINIMAX_IMAGE_MODEL` accepts `image-01` or `image-01-live`.
+
 ### Installation
 
 1. **Open this workshop and configure:**

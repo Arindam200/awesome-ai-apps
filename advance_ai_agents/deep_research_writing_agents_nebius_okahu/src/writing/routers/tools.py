@@ -87,7 +87,7 @@ def register_mcp_tools(mcp: FastMCP) -> None:
 
     @mcp.tool()
     async def generate_image(working_dir: str) -> dict[str, Any]:
-        """Generate a LinkedIn post image using Gemini image generation.
+        """Generate a LinkedIn post image using the configured image backend.
 
         Reads the existing post.md and generates a professional image
         following the branding and character profiles. Saved as post_image.png.

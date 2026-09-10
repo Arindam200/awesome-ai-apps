@@ -1,11 +1,11 @@
-"""Image generation logic using Gemini image generation."""
+"""Image generation logic for the configured image backend."""
 
 import logging
 from pathlib import Path
 
 from writing.config.prompts import PROMPT_GENERATE_IMAGE, PROMPT_IMAGE_SCENE
 from writing.models.schemas import Profiles
-from writing.utils.llm import call_gemini_image, call_llm
+from writing.utils.llm import call_image, call_llm
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ async def generate_post_image(
     output_path: Path,
     reference_images: list[Path] | None = None,
 ) -> Path:
-    """Generate a LinkedIn post image using Gemini image generation.
+    """Generate a LinkedIn post image using the configured image backend.
 
     First extracts a text-free visual scene description from the post,
     then generates an image anchored to the branding profiles, with
@@ -55,4 +55,4 @@ async def generate_post_image(
         scene=scene,
     )
 
-    return await call_gemini_image(prompt, output_path, reference_images)
+    return await call_image(prompt, output_path, reference_images)

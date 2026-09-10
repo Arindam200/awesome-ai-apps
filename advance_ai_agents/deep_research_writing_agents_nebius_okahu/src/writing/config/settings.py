@@ -39,7 +39,27 @@ class Settings(BaseSettings):
     image_model: str = Field(
         default="gemini-2.5-flash-image",
         alias="IMAGE_MODEL",
-        description="Gemini image generation model",
+        description="Image generation model used by the selected backend",
+    )
+    image_provider: str = Field(
+        default="gemini",
+        alias="IMAGE_PROVIDER",
+        description="Image generation backend (gemini or minimax)",
+    )
+    minimax_image_model: str = Field(
+        default="image-01",
+        alias="MINIMAX_IMAGE_MODEL",
+        description="MiniMax image generation model",
+    )
+    minimax_api_region: str = Field(
+        default="global_en",
+        alias="MINIMAX_API_REGION",
+        description="MiniMax API region (global_en or cn_zh)",
+    )
+    minimax_image_endpoint: str | None = Field(
+        default=None,
+        alias="MINIMAX_IMAGE_ENDPOINT",
+        description="Optional MiniMax image-generation endpoint override",
     )
     nebius_base_url: str = Field(
         default="https://api.studio.nebius.com/v1/",
@@ -56,8 +76,14 @@ class Settings(BaseSettings):
     nebius_api_key: SecretStr = Field(
         alias="NEBIUS_API_KEY", description="The API key for Nebius AI Studio"
     )
-    gemini_api_key: SecretStr = Field(
+    gemini_api_key: SecretStr | None = Field(
+        default=None,
         alias="GEMINI_API_KEY", description="The API key for Gemini image generation"
+    )
+    minimax_api_key: SecretStr | None = Field(
+        default=None,
+        alias="MINIMAX_API_KEY",
+        description="The API key for MiniMax image generation",
     )
 
     # Okahu / Monocle Observability Configuration
