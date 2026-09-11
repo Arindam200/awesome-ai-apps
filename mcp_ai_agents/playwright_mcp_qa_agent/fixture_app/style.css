@@ -1,0 +1,47 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 40px;
+}
+
+.container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.card {
+    background: white;
+    padding: 24px;
+    margin-bottom: 24px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 6px;
+}
+
+input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px;
+    margin-bottom: 12px;
+}
+
+button {
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+.error {
+    color: #c62828;
+    min-height: 20px;
+}
+
+#search-results {
+    margin-top: 16px;
+    font-weight: bold;
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Demo Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="container">
+        <h1>QA Demo Store</h1>
+
+        <section class="card">
+            <h2>Sign in</h2>
+
+            <form id="login-form">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email">
+
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password">
+
+                <button type="submit">Sign in</button>
+
+                <p id="login-error" class="error" role="alert"></p>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>Product Search</h2>
+
+            <form id="search-form">
+                <label for="search">Search products</label>
+                <input id="search" name="search" type="text">
+
+                <button type="submit">Search</button>
+            </form>
+
+            <div id="search-results" aria-live="polite"></div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
