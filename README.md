@@ -326,6 +326,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Web Intelligence Agent](advance_ai_agents/web_intelligence_agent): Mastra multi-agent pipeline that turns Olostep web evidence into Nemotron-verified case studies with SQLite persistence and a Velt audit trail
 - [Workflow Audit Trail (FlowSentinel)](advance_ai_agents/flowsentinal_audittrail): Next.js workflow command center with Nebius Nemotron reasoning, n8n orchestration, Velt activity logs, and optional Tailscale Funnel exposure
 
+- **[Ivy Tendril](https://github.com/Ivy-Interactive/Ivy-Tendril)** - Open-source agentic software factory with an amazing UI that handles parallel Git worktrees for you, complete with programmatic verifications and fast review loops
 ### 🧬 Fine-Tuning
 
 **End-to-end examples of fine-tuning open-source LLMs, from data prep to deployment.** _6 projects_
