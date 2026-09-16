@@ -73,6 +73,10 @@ The following environment variables are required to run the server:
 NEWS_API_KEY: Your News API key for fetching news articles.
 REDIS_URL: The URL of the Redis server for caching.
 NEBIUS_API_KEY: Your Nebius model API key for AI predictions.
+CORS_ALLOWED_ORIGINS: Comma-separated list of origins allowed to make credentialed
+  requests (e.g. "https://app.example.com,http://localhost:3000"). Defaults to
+  http://localhost:3000 and http://127.0.0.1:3000 when unset. "*" is not accepted
+  since the API enables allow_credentials.
 ```
 
 ---
