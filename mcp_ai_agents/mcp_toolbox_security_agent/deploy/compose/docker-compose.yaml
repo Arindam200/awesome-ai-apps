@@ -116,6 +116,9 @@ services:
       NEBIUS_API_KEY: ${NEBIUS_API_KEY}
       NEBIUS_BASE_URL: ${NEBIUS_BASE_URL}
       GOOGLE_API_KEY: ${GOOGLE_API_KEY}
+      DEMO_ALICE_PASSWORD: ${DEMO_ALICE_PASSWORD}
+      DEMO_BOB_PASSWORD: ${DEMO_BOB_PASSWORD}
+      DEMO_CAROL_PASSWORD: ${DEMO_CAROL_PASSWORD}
     ports: ["8080:8080"]
     depends_on:
       toolbox: { condition: service_started }

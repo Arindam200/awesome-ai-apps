@@ -471,19 +471,52 @@ def list_documents(project_id: int, user: User = Depends(current_user), db: Sess
     ]
 
 
+_UPLOAD_SIGNATURES: dict[str, tuple[bytes, ...]] = {
+    ".pdf": (b"%PDF-",),
+    ".png": (b"\x89PNG",),
+    ".jpg": (b"\xff\xd8\xff",),
+    ".jpeg": (b"\xff\xd8\xff",),
+    ".docx": (b"PK\x03\x04",),
+    ".pptx": (b"PK\x03\x04",),
+    ".xlsx": (b"PK\x03\x04",),
+    ".doc": (b"\xd0\xcf\x11\xe0",),
+    ".ppt": (b"\xd0\xcf\x11\xe0",),
+    ".xls": (b"\xd0\xcf\x11\xe0",),
+    ".tiff": (b"II*\x00", b"MM\x00*"),
+}
+
+_UPLOAD_RATE_LIMIT = 100
+
+
 @router.post("/documents/upload")
 async def upload_document(
     project_id: int, file: UploadFile,
     user: User = Depends(current_user), db: Session = Depends(get_db),
 ):
     project = _owned_project(db, project_id, user)
+    from datetime import datetime, timedelta, timezone
     from pathlib import Path
 
-    if Path(file.filename or "").suffix.lower() not in ALLOWED_SUFFIXES:
+    suffix = Path(file.filename or "").suffix.lower()
+    if suffix not in ALLOWED_SUFFIXES:
         raise HTTPException(422, f"unsupported file type; allowed: {sorted(ALLOWED_SUFFIXES)}")
     content = await file.read()
     if len(content) > 100 * 1024 * 1024:
         raise HTTPException(413, "file exceeds 100MB Unsiloed limit")
+
+    signatures = _UPLOAD_SIGNATURES.get(suffix)
+    if signatures and not any(content.startswith(sig) for sig in signatures):
+        raise HTTPException(422, "file content does not match its extension")
+
+    since = datetime.now(timezone.utc) - timedelta(hours=24)
+    recent_uploads = db.scalar(
+        select(func.count(Document.id))
+        .join(Project, Document.project_id == Project.id)
+        .where(Project.owner_id == user.id, Document.created_at >= since)
+    )
+    if recent_uploads is not None and recent_uploads >= _UPLOAD_RATE_LIMIT:
+        raise HTTPException(429, "upload rate limit exceeded; try again later")
+
     doc = register_document(db, project, content=content, filename=file.filename or "upload.pdf")
     if doc is None:
         return {"status": "duplicate", "detail": "this exact file was already ingested"}

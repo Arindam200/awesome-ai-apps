@@ -174,9 +174,9 @@
 const $ = s => document.querySelector(s);
 const el = (t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
 const USERS = {
-  alice:{pw:'alice123', color:'#5b9dff', label:'Customer'},
-  bob:  {pw:'bob123',   color:'#a78bfa', label:'Customer'},
-  carol:{pw:'carol123', color:'#fbbf24', label:'Administrator'},
+  alice:{color:'#5b9dff', label:'Customer'},
+  bob:  {color:'#a78bfa', label:'Customer'},
+  carol:{color:'#fbbf24', label:'Administrator'},
 };
 let me = null, view = 'shop';
 
@@ -209,7 +209,7 @@ function md(src){
 
 /* ---------- auth ---------- */
 async function login(u){
-  const {status,body}=await jpost('/api/login',{username:u,password:USERS[u].pw});
+  const {status,body}=await jpost('/api/demo/login',{username:u});
   if(status!==200){toast(body.error||'login failed');return;}
   me=body;render();toast('Signed in as '+u);
 }
