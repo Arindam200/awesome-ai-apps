@@ -16,7 +16,9 @@ def get_allowed_origins() -> list[str]:
     credentialed access) rather than defaulting to a permissive origin list,
     so a forgotten env var in production can't silently open this up. Set
     ENABLE_DEV_CORS_ORIGINS=1 to opt into the default frontend dev server
-    origins for local development.
+    origins for local development; that fallback only applies when
+    CORS_ALLOWED_ORIGINS is unset or blank, not when it's explicitly set to
+    "*" or any other value.
     """
     raw = os.getenv("CORS_ALLOWED_ORIGINS", "")
     origins = [
@@ -28,7 +30,11 @@ def get_allowed_origins() -> list[str]:
     if origins:
         return origins
 
-    if os.getenv("ENABLE_DEV_CORS_ORIGINS", "").strip().lower() in ("1", "true", "yes"):
+    if not raw.strip() and os.getenv("ENABLE_DEV_CORS_ORIGINS", "").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+    ):
         return DEV_ORIGINS
 
     return []

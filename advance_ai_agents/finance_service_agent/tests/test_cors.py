@@ -41,6 +41,13 @@ def test_rejects_wildcard_only_origin(monkeypatch):
     assert get_allowed_origins() == []
 
 
+def test_explicit_wildcard_stays_empty_even_with_dev_flag(monkeypatch):
+    monkeypatch.setenv("CORS_ALLOWED_ORIGINS", "*")
+    monkeypatch.setenv("ENABLE_DEV_CORS_ORIGINS", "1")
+
+    assert get_allowed_origins() == []
+
+
 def test_drops_wildcard_but_keeps_explicit_origins(monkeypatch):
     monkeypatch.setenv("CORS_ALLOWED_ORIGINS", "https://app.example.com,*")
 
