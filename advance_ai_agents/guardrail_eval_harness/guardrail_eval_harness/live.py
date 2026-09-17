@@ -52,7 +52,10 @@ class LiveBackend:
     async def run_case(self, scenario: Scenario) -> RunTrace:
         model = self.build_model()
         return await run_scenario(
-            scenario, model=model, timeout_seconds=self.per_case_timeout_seconds
+            scenario,
+            model=model,
+            timeout_seconds=self.per_case_timeout_seconds,
+            max_turns=self.max_turns,
         )
 
 

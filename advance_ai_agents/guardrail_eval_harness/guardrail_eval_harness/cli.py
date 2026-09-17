@@ -54,13 +54,21 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.mode == "live":
         from guardrail_eval_harness.live import LiveBackend, live_report
 
+        live_scenarios = [s for s in scenarios if s.live_suitable]
+        if not live_scenarios:
+            print(
+                "configuration error: no live_suitable scenarios selected; "
+                "live mode has nothing to run",
+                file=sys.stderr,
+            )
+            return EXIT_CONFIG_ERROR
         try:
             backend = LiveBackend(model_name=args.live_model)
         except ValueError as exc:
             print(f"configuration error: {exc}", file=sys.stderr)
             return EXIT_CONFIG_ERROR
         try:
-            cases, totals, aggregate = live_report(backend, scenarios)
+            cases, totals, aggregate = live_report(backend, live_scenarios)
         except (OSError, RuntimeError, ValueError) as exc:
             print(f"runner error: {type(exc).__name__}: {exc}", file=sys.stderr)
             return EXIT_CONFIG_ERROR
@@ -74,7 +82,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         cases, totals, aggregate = evaluate_scenarios(scenarios, mode=args.mode)
 
     report = reporting.build_report(
-        cases, totals, aggregate, mode=args.mode, suite=args.suite
+        cases,
+        totals,
+        aggregate,
+        mode=args.mode,
+        suite=args.suite,
+        provider="nebius" if args.mode == "live" else None,
+        model=args.live_model if args.mode == "live" else None,
     )
     print(reporting.render_console(cases, totals, aggregate, mode=args.mode))
     if args.report is not None:
