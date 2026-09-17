@@ -267,7 +267,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _36 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _37 projects_
 
 - [AI Hedge Fund Research Team](advance_ai_agents/ai-hedgefund): Agentic workflow for comprehensive financial analysis
 - [AI Trend Research Agent](advance_ai_agents/trend_analyzer_agent): AI trend mining and analysis with Google ADK
@@ -286,6 +286,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Financial Market Data Service](advance_ai_agents/finance_service_agent): FastAPI server for stock data and predictions with Agno
 - [Financial Research Agent (AgentField)](advance_ai_agents/agentfield_finance_research_agent): Financial research agent with AgentField
 - [GitHub and LinkedIn Job Finder](advance_ai_agents/job_finder_agent): LinkedIn job search automation with Bright Data integration
+- [Guardrail Evaluation Harness](advance_ai_agents/guardrail_eval_harness): Self-contained evaluation harness for measuring guardrail behavior with the OpenAI Agents SDK and DeepEval
 - [Jev Social Research Agent](advance_ai_agents/jev_social_research_agent): Typed Jev routing, local socai CLI evidence, and evidence-linked Nebius synthesis for Instagram, TikTok, and LinkedIn research
 - [Local File-Editing Agent Prototype](advance_ai_agents/coding_harness_agent): Local coding-agent prototype with file discovery, reading, and editing tools
 - [Maintainer Intelligence Brief](advance_ai_agents/maintainer_brief): Weekly open-source intelligence briefs from community, security, and document signals with source citations
