@@ -10,10 +10,25 @@ from typing import Any
 from guardrail_eval_harness.agent import MAX_TURNS, run_scenario
 from guardrail_eval_harness.schemas import CaseResult, ReportTotals, RunTrace, Scenario
 
+LIVE_MODEL_ENV_VAR = "EXAMPLE_MODEL_NAME"
+
 NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
 
 DEFAULT_CASE_TIMEOUT_SECONDS = 60.0
 DEFAULT_RESPONSE_SIZE_LIMIT = 20000
+
+
+def resolve_live_model(explicit: str | None) -> str:
+    """Resolve the live model from --live-model or EXAMPLE_MODEL_NAME."""
+    flag_model = (explicit or "").strip()
+    env_model = (os.getenv(LIVE_MODEL_ENV_VAR) or "").strip()
+    model = flag_model or env_model
+    if not model:
+        raise ValueError(
+            "--live-model is required for --mode live; pass --live-model or "
+            f"set {LIVE_MODEL_ENV_VAR} in the environment (see .env.example)"
+        )
+    return model
 
 
 @dataclass
@@ -25,7 +40,10 @@ class LiveBackend:
 
     def __post_init__(self) -> None:
         if not self.model_name:
-            raise ValueError("--live-model is required for --mode live")
+            raise ValueError(
+                "--live-model is required for --mode live; pass --live-model "
+                f"or set {LIVE_MODEL_ENV_VAR} in the environment"
+            )
         self._api_key = os.getenv("NEBIUS_API_KEY")
         if not self._api_key:
             raise ValueError("NEBIUS_API_KEY must be set for --mode live")

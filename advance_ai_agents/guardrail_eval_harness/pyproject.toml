@@ -5,13 +5,14 @@ build-backend = "hatchling.build"
 [project]
 name = "guardrail-eval-harness"
 version = "0.1.0"
-description = "Offline-first, deterministic guardrail evaluation with DeepEval and OpenAI Agents SDK"
+description = "Offline-first, deterministic guardrail evaluation with DeepEval, OpenAI Agents SDK, and Nebius Token Factory"
 requires-python = ">=3.11"
 dependencies = [
     "deepeval==4.2.3",
     "openai-agents==0.22.2",
     "openai==3.14.1",
     "pydantic==2.13.5",
+    "python-dotenv>=1.0.0",
 ]
 
 [project.optional-dependencies]
