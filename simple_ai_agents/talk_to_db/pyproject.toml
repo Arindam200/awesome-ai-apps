@@ -12,5 +12,6 @@ dependencies = [
     "pandas>=2.3.1",
     "pymysql>=1.1.1",
     "python-dotenv>=1.1.1",
+    "sqlglot>=25.0.0",
     "streamlit>=1.48.0",
 ]
