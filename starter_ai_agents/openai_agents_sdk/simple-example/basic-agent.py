@@ -1,30 +1,44 @@
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel
-import asyncio
 import os
+
+from agents import Agent, AsyncOpenAI, OpenAIChatCompletionsModel, Runner
 from dotenv import load_dotenv
 
-load_dotenv()
+DEFAULT_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
+DEFAULT_MODEL_NAME = "meta-llama/Meta-Llama-3.1-8B-Instruct"
+DEFAULT_PROMPT = "Give me a diet plan for an 18-year-old boy."
 
 
-api_key = os.getenv("NEBIUS_API_KEY")
-if not api_key:
-    raise ValueError("NEBIUS_API_KEY is not set in the environment variables")
+def create_agent() -> Agent:
+    """Create the example agent from environment-based configuration."""
+    load_dotenv()
 
-# Get model name and base URL from environment variables with defaults
-model_name = os.getenv("EXAMPLE_MODEL_NAME", "openai/meta-llama/Meta-Llama-3.1-8B-Instruct")
-base_url = os.getenv("EXAMPLE_BASE_URL", "https://api.tokenfactory.nebius.com/v1")
+    api_key = os.getenv("NEBIUS_API_KEY")
+    if not api_key:
+        raise ValueError("NEBIUS_API_KEY is not set in the environment variables")
 
-model = OpenAIChatCompletionsModel(
-    model=model_name,
-    openai_client=AsyncOpenAI(base_url=base_url, api_key=api_key)
-)
+    client = AsyncOpenAI(
+        base_url=os.getenv("EXAMPLE_BASE_URL", DEFAULT_BASE_URL),
+        api_key=api_key,
+    )
+    model = OpenAIChatCompletionsModel(
+        model=os.getenv("EXAMPLE_MODEL_NAME", DEFAULT_MODEL_NAME),
+        openai_client=client,
+    )
+    return Agent(
+        name="Assistant",
+        instructions=(
+            "You're an expert doctor specializing in nutrition and preventive care. "
+            "Provide evidence-based medical advice and include appropriate disclaimers."
+        ),
+        model=model,
+    )
 
-agent = Agent(
-    name="Assistant",
-    instruction="You're an Expert Doctor specializing in nutrition and preventive care. Provide evidence-based medical advice and always include disclaimers when appropriate.",
-    model=model
-)
 
-result = Runner.run(agent,"Give me a diet plan as a 18 y/o boy")
+def main() -> None:
+    """Run the basic example synchronously and print its final response."""
+    result = Runner.run_sync(create_agent(), DEFAULT_PROMPT)
+    print(result.final_output)
 
-print(result)
+
+if __name__ == "__main__":
+    main()

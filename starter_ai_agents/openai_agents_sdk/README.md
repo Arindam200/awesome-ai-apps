@@ -55,6 +55,28 @@ The script will:
 2. Send a test email using the Resend API
 3. Output the result
 
+### Basic example
+
+For a minimal agent without tools, run:
+
+```bash
+python simple-example/basic-agent.py
+```
+
+The basic example creates a nutrition assistant, runs it synchronously, and prints
+only the agent's final response. It uses
+`meta-llama/Meta-Llama-3.1-8B-Instruct` by default; set
+`EXAMPLE_MODEL_NAME` to use another Nebius-hosted model.
+
+## Tests
+
+The basic example has offline unit tests that mock the Agents SDK and do not make
+API requests:
+
+```bash
+python -m unittest discover -s simple-example/tests -v
+```
+
 ## Customization
 
 Modify the `main.py` file to:

@@ -40,7 +40,7 @@ def parse_github_url(url: str) -> Tuple[str, str]:
         if match:
             owner, repo = match.groups()
             # Clean up repo name (remove .git suffix if present)
-            repo = repo.rstrip(".git")
+            repo = repo.removesuffix(".git")
             return owner, repo
 
     raise GitHubError(f"Invalid GitHub URL format: {url}")
