@@ -1,24 +1,38 @@
 """
-YouTube Trend Analysis Agent with Memori, MiniMax (OpenAI-compatible), and YouTube scraping.
+YouTube Trend Analysis Agent with Memori, Nebius Token Factory, and YouTube scraping.
 
 Streamlit app:
 - Sidebar: API keys + YouTube channel URL + "Ingest channel into Memori" button.
 - Main: Chat interface to ask about trends and get new video ideas.
 
 This app uses:
-- MiniMax (via the OpenAI SDK) for LLM reasoning.
+- MiniMax through Nebius Token Factory (via the OpenAI SDK) for LLM reasoning.
 - yt-dlp to scrape YouTube channel/playlist videos.
 - Memori to store and search your channel's video history.
 """
 
 import base64
 import os
+from urllib.parse import urlparse
 
 import streamlit as st
 from dotenv import load_dotenv
 from openai import OpenAI
 
 from core import fetch_exa_trends, ingest_channel_into_memori
+
+DEFAULT_NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
+
+
+def _valid_nebius_base_url(value: str) -> bool:
+    parsed = urlparse(value.strip())
+    return (
+        parsed.scheme == "https"
+        and parsed.hostname == "api.tokenfactory.nebius.com"
+        and parsed.path.rstrip("/") == "/v1"
+        and not parsed.query
+        and not parsed.fragment
+    )
 
 
 def _load_inline_image(path: str, height_px: int) -> str:
@@ -62,23 +76,27 @@ def main():
     # Initialize session state
     if "messages" not in st.session_state:
         st.session_state.messages = []
+    st.session_state.setdefault("nebius_api_key", os.getenv("NEBIUS_API_KEY", ""))
+    st.session_state.setdefault(
+        "nebius_base_url", os.getenv("NEBIUS_BASE_URL", DEFAULT_NEBIUS_BASE_URL)
+    )
     # Memori/OpenAI client will be initialized lazily when needed.
 
     # Sidebar
     with st.sidebar:
         st.subheader("🔑 API Keys & Channel")
 
-        minimax_api_key_input = st.text_input(
-            "MiniMax API Key",
-            value=os.getenv("OPENAI_API_KEY", ""),
+        nebius_api_key_input = st.text_input(
+            "Nebius API Key",
+            value=st.session_state.nebius_api_key,
             type="password",
-            help="Your MiniMax API key (used via the OpenAI-compatible SDK).",
+            help="Your Nebius Token Factory API key.",
         )
 
-        minimax_base_url_input = st.text_input(
-            "MiniMax Base URL",
-            value=os.getenv("OPENAI_BASE_URL", "https://api.minimax.io/v1"),
-            help="Base URL for MiniMax's OpenAI-compatible API.",
+        nebius_base_url_input = st.text_input(
+            "Nebius Base URL",
+            value=st.session_state.nebius_base_url,
+            help="OpenAI-compatible endpoint for Nebius Token Factory.",
         )
 
         exa_api_key_input = st.text_input(
@@ -101,10 +119,18 @@ def main():
         )
 
         if st.button("Save Settings"):
-            if minimax_api_key_input:
-                os.environ["OPENAI_API_KEY"] = minimax_api_key_input
-            if minimax_base_url_input:
-                os.environ["OPENAI_BASE_URL"] = minimax_base_url_input
+            if not _valid_nebius_base_url(nebius_base_url_input):
+                st.error("Nebius Base URL must be https://api.tokenfactory.nebius.com/v1")
+                st.stop()
+            changed = (
+                nebius_api_key_input != st.session_state.nebius_api_key
+                or nebius_base_url_input != st.session_state.nebius_base_url
+            )
+            st.session_state.nebius_api_key = nebius_api_key_input
+            st.session_state.nebius_base_url = nebius_base_url_input
+            if changed:
+                for key in ("openai_client", "memori", "nebius_client"):
+                    st.session_state.pop(key, None)
             if exa_api_key_input:
                 os.environ["EXA_API_KEY"] = exa_api_key_input
             if memori_api_key_input:
@@ -115,8 +141,8 @@ def main():
         st.markdown("---")
 
         if st.button("Ingest channel into Memori"):
-            if not os.getenv("OPENAI_API_KEY"):
-                st.warning("OPENAI_API_KEY (MiniMax) is required before ingestion.")
+            if not st.session_state.nebius_api_key:
+                st.warning("NEBIUS_API_KEY is required before ingestion.")
             elif not channel_url_input.strip():
                 st.warning("Please enter a YouTube channel or playlist URL.")
             else:
@@ -139,15 +165,18 @@ def main():
         )
 
     # Get keys for main app logic
-    api_key = os.getenv("OPENAI_API_KEY", "")
-    base_url = os.getenv("OPENAI_BASE_URL", "https://api.minimax.io/v1")
+    api_key = st.session_state.nebius_api_key
+    base_url = st.session_state.nebius_base_url
+    if not _valid_nebius_base_url(base_url):
+        st.error("Nebius Base URL must be https://api.tokenfactory.nebius.com/v1")
+        st.stop()
     if not api_key:
         st.warning(
-            "⚠️ Please enter your MiniMax API key in the sidebar to start chatting!"
+            "⚠️ Please enter your Nebius API key in the sidebar to start chatting!"
         )
         st.stop()
 
-    # Initialize MiniMax/OpenAI client for the advisor (once)
+    # Initialize the Nebius Token Factory OpenAI-compatible client for the advisor.
     if "openai_client" not in st.session_state:
         try:
             st.session_state.openai_client = OpenAI(
@@ -155,7 +184,7 @@ def main():
                 api_key=api_key,
             )
         except Exception as e:
-            st.error(f"Failed to initialize MiniMax client: {e}")
+            st.error(f"Failed to initialize Nebius client: {e}")
             st.stop()
 
     # Display chat history
@@ -254,7 +283,7 @@ External web trends for this niche (may be partial):
                     completion = client.chat.completions.create(
                         model=os.getenv(
                             "YOUTUBE_TREND_MODEL",
-                            "MiniMax-M2.1",
+                            "MiniMaxAI/MiniMax-M3",
                         ),
                         messages=[
                             {
