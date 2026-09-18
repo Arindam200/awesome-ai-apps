@@ -307,7 +307,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Financial Market Data Service](advance_ai_agents/finance_service_agent): FastAPI server for stock data and predictions with Agno
 - [Financial Research Agent (AgentField)](advance_ai_agents/agentfield_finance_research_agent): Financial research agent with AgentField
 - [GitHub and LinkedIn Job Finder](advance_ai_agents/job_finder_agent): LinkedIn job search automation with Bright Data integration
-- [Guardrail Evaluation Harness](advance_ai_agents/guardrail_eval_harness): Self-contained evaluation harness for measuring guardrail behavior with the OpenAI Agents SDK and DeepEval
+- [Guardrail Evaluation Harness](advance_ai_agents/guardrail_eval_harness): Offline-first harness that scores guardrail behavior of an OpenAI Agents SDK agent with deterministic DeepEval metrics, with live evaluation on Nebius Token Factory models
 - [Local File-Editing Agent Prototype](advance_ai_agents/coding_harness_agent): Local coding-agent prototype with file discovery, reading, and editing tools
 - [Maintainer Intelligence Brief](advance_ai_agents/maintainer_brief): Weekly open-source intelligence briefs from community, security, and document signals with source citations
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent): Automated meeting notes and task creation from conversations

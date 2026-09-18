@@ -7,6 +7,8 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 from guardrail_eval_harness import reporting
 from guardrail_eval_harness.evaluation import evaluate_scenarios
 from guardrail_eval_harness.scenarios import load_scenarios
@@ -37,12 +39,16 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--live-model",
         default=None,
-        help="Explicit model name required for --mode live",
+        help="Live model for --mode live; falls back to EXAMPLE_MODEL_NAME",
     )
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
+    # Loads NEBIUS_API_KEY / EXAMPLE_MODEL_NAME from .env when present.
+    # Already-set environment variables always win (override=False default),
+    # so the offline telemetry defaults applied at import are never clobbered.
+    load_dotenv()
     parser = build_parser()
     args = parser.parse_args(argv)
     try:
@@ -51,8 +57,14 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"configuration error: {exc}", file=sys.stderr)
         return EXIT_CONFIG_ERROR
 
+    provider: str | None = None
+    model: str | None = None
     if args.mode == "live":
-        from guardrail_eval_harness.live import LiveBackend, live_report
+        from guardrail_eval_harness.live import (
+            LiveBackend,
+            live_report,
+            resolve_live_model,
+        )
 
         live_scenarios = [s for s in scenarios if s.live_suitable]
         if not live_scenarios:
@@ -63,10 +75,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             )
             return EXIT_CONFIG_ERROR
         try:
-            backend = LiveBackend(model_name=args.live_model)
+            backend = LiveBackend(model_name=resolve_live_model(args.live_model))
         except ValueError as exc:
             print(f"configuration error: {exc}", file=sys.stderr)
             return EXIT_CONFIG_ERROR
+        provider = "nebius"
+        model = backend.model_name
         try:
             cases, totals, aggregate = live_report(backend, live_scenarios)
         except (OSError, RuntimeError, ValueError) as exc:
@@ -87,8 +101,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         aggregate,
         mode=args.mode,
         suite=args.suite,
-        provider="nebius" if args.mode == "live" else None,
-        model=args.live_model if args.mode == "live" else None,
+        provider=provider,
+        model=model,
     )
     print(reporting.render_console(cases, totals, aggregate, mode=args.mode))
     if args.report is not None:
