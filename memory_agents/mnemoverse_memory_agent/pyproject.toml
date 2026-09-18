@@ -1,0 +1,14 @@
+[project]
+name = "mnemoverse-memory-agent"
+version = "0.1.0"
+description = "A project assistant demonstrating persistent memory with outcome feedback using Mnemoverse."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "mnemoverse>=0.3.0",
+    "python-dotenv>=1.1.0",
+    "openai>=1.0.0",
+]
+
+[project.scripts]
+mnemoverse-memory-agent = "main:main"
