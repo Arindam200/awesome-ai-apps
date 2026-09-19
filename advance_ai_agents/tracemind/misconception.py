@@ -30,7 +30,7 @@ KNOWN_MISCONCEPTIONS = [
             "instead of repeating for each item."
         ),
         keywords=[
-            "runs once",
+            "runs only once",
             "only runs once",
             "first item only",
             "only the first item",
