@@ -6,6 +6,7 @@ from tracker import PersistenceTracker
 
 
 def test_parse_trace():
+    """Parse a reasoning trace into individual steps."""
     trace = """
     First reasoning step.
     Second reasoning step.
@@ -18,6 +19,7 @@ def test_parse_trace():
 
 
 def test_find_misconception():
+    """Detect a known loop-variable misconception."""
     step = "Changing the loop variable changes the original list."
 
     matches = find_misconceptions(step)
@@ -27,6 +29,7 @@ def test_find_misconception():
 
 
 def test_persistence_tracker(tmp_path: Path):
+    """Persist and increment misconception history."""
     history_file = tmp_path / "learning_history.json"
     tracker = PersistenceTracker(str(history_file))
 
@@ -39,3 +42,13 @@ def test_persistence_tracker(tmp_path: Path):
 
     assert first_history["Loop variable changes the original collection"] == 1
     assert second_history["Loop variable changes the original collection"] == 2
+
+
+def test_find_misconception_with_empty_input():
+    """Return no misconceptions for empty input."""
+    assert find_misconceptions("") == []
+
+
+def test_find_misconception_with_no_match():
+    """Return no misconceptions when no known pattern is present."""
+    assert find_misconceptions("This is a normal reasoning step.") == []
