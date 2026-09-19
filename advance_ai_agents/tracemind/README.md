@@ -48,6 +48,7 @@ Persistence tracker — stores the diagnostic history so recurring misconception
 ### Prerequisites
 Python 3.10+
 uv (recommended) or pip
+No API keys or environment variables are required for the current MVP.
 
 ### Installation
 git clone https://github.com/Arindam200/awesome-ai-apps.git
