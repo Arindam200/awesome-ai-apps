@@ -14,7 +14,17 @@ class PersistenceTracker:
             return {}
 
         try:
-            return json.loads(self.history_file.read_text())
+            history = json.loads(self.history_file.read_text())
+
+            if not isinstance(history, dict) or not all(
+                isinstance(name, str)
+                and type(count) is int
+                and count >= 0
+                for name, count in history.items()
+            ):
+                return {}
+
+            return history
         except (json.JSONDecodeError, OSError):
             return {}
 
