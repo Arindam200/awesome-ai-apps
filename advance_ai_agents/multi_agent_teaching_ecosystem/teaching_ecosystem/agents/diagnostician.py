@@ -29,13 +29,31 @@ def _checked_tag(topic: Topic, tag: str, confidence: float) -> tuple[str, float]
 def diagnose_mcq(question: dict, answer: str) -> dict:
     chosen = next((o for o in question["options"] if normalize(o["text"]) == normalize(answer)), None)
     if chosen is None:
-        return {"correct": False, "misconception_tag": "unclassified", "error_step": None,
-                "confidence": 0.0, "feedback": "That option is not on this question.", "source": "key"}
+        return {
+            "correct": False,
+            "misconception_tag": "unclassified",
+            "error_step": None,
+            "confidence": 0.0,
+            "feedback": "That option is not on this question.",
+            "source": "key",
+        }
     if chosen.get("correct"):
-        return {"correct": True, "misconception_tag": None, "error_step": None,
-                "confidence": 1.0, "feedback": "Correct.", "source": "key"}
-    return {"correct": False, "misconception_tag": chosen["tag"], "error_step": None,
-            "confidence": 1.0, "feedback": "", "source": "key"}
+        return {
+            "correct": True,
+            "misconception_tag": None,
+            "error_step": None,
+            "confidence": 1.0,
+            "feedback": "Correct.",
+            "source": "key",
+        }
+    return {
+        "correct": False,
+        "misconception_tag": chosen["tag"],
+        "error_step": None,
+        "confidence": 1.0,
+        "feedback": "",
+        "source": "key",
+    }
 
 
 def answer_key(question: dict) -> str:
@@ -58,45 +76,102 @@ def diagnose_text(topic: Topic, question: dict, answer: str, llm: LLM | None, us
     value, expected = parse_answer(answer), parse_answer(key)
     if use_rules:
         same_value = value is not None and value == expected
-        if (same_value or normalize(answer) == normalize(key)) and (not question.get("simplest") or is_simplest(answer)):
-            return {"correct": True, "misconception_tag": None, "error_step": None,
-                    "confidence": 1.0, "feedback": "Correct.", "source": "rule"}
+        if (same_value or normalize(answer) == normalize(key)) and (
+            not question.get("simplest") or is_simplest(answer)
+        ):
+            return {
+                "correct": True,
+                "misconception_tag": None,
+                "error_step": None,
+                "confidence": 1.0,
+                "feedback": "Correct.",
+                "source": "rule",
+            }
         known = known_wrong_answers(question)
         if normalize(answer) in known:
-            return {"correct": False, "misconception_tag": known[normalize(answer)], "error_step": None,
-                    "confidence": 0.95, "feedback": "", "source": "rule"}
+            return {
+                "correct": False,
+                "misconception_tag": known[normalize(answer)],
+                "error_step": None,
+                "confidence": 0.95,
+                "feedback": "",
+                "source": "rule",
+            }
     if llm is None:
-        return {"correct": False, "misconception_tag": "unclassified", "error_step": None,
-                "confidence": 0.0, "feedback": "", "source": "none"}
-    prompt = (f"Question: {question['stem']}\nCorrect answer: {key}\n"
-              f"Correct method: {question.get('method', 'not given')}\n"
-              f"Simplest form required: {'yes' if question.get('simplest') else 'no'}\n"
-              f"Allowed tags:\n{_tag_list(topic)}\n\nStudent's typed answer: {answer}")
+        return {
+            "correct": False,
+            "misconception_tag": "unclassified",
+            "error_step": None,
+            "confidence": 0.0,
+            "feedback": "",
+            "source": "none",
+        }
+    prompt = (
+        f"Question: {question['stem']}\nCorrect answer: {key}\n"
+        f"Correct method: {question.get('method', 'not given')}\n"
+        f"Simplest form required: {'yes' if question.get('simplest') else 'no'}\n"
+        f"Allowed tags:\n{_tag_list(topic)}\n\nStudent's typed answer: {answer}"
+    )
     try:
-        out = llm.generate(system=prompts.DIAGNOSE_TEXT, prompt=prompt, schema=schemas.TextDiagnosis,
-                           context={"question": question, "answer": answer})
+        out = llm.generate(
+            system=prompts.DIAGNOSE_TEXT,
+            prompt=prompt,
+            schema=schemas.TextDiagnosis,
+            context={"question": question, "answer": answer},
+        )
     except LLMError:
-        return {"correct": False, "misconception_tag": "unclassified", "error_step": None,
-                "confidence": 0.0, "feedback": "", "source": "fallback"}
-    tag, confidence = (None, out.confidence) if out.correct else _checked_tag(topic, out.misconception_tag, out.confidence)
-    return {"correct": out.correct, "misconception_tag": tag, "error_step": out.error_step,
-            "confidence": round(confidence, 2), "feedback": out.feedback_student, "source": source_of(llm)}
+        return {
+            "correct": False,
+            "misconception_tag": "unclassified",
+            "error_step": None,
+            "confidence": 0.0,
+            "feedback": "",
+            "source": "fallback",
+        }
+    tag, confidence = (
+        (None, out.confidence) if out.correct else _checked_tag(topic, out.misconception_tag, out.confidence)
+    )
+    return {
+        "correct": out.correct,
+        "misconception_tag": tag,
+        "error_step": out.error_step,
+        "confidence": round(confidence, 2),
+        "feedback": out.feedback_student,
+        "source": source_of(llm),
+    }
 
 
 def diagnose_photo(topic: Topic, question: dict, image: bytes, llm: LLM, image_mime: str = "image/jpeg") -> dict:
     """Returns the diagnosis, or {"needs_typed_answer": True, ...} when the image cannot be read."""
-    prompt = (f"Question: {question['stem']}\nCorrect answer: {question['answer']}\n"
-              f"Correct method: {question['method']}\nAllowed tags:\n{_tag_list(topic)}\n\n"
-              "The photograph of the student's working is attached.")
+    prompt = (
+        f"Question: {question['stem']}\nCorrect answer: {question['answer']}\n"
+        f"Correct method: {question['method']}\nAllowed tags:\n{_tag_list(topic)}\n\n"
+        "The photograph of the student's working is attached."
+    )
     try:
-        out = llm.generate(system=prompts.DIAGNOSE_PHOTO, prompt=prompt, schema=schemas.PhotoDiagnosis,
-                           context={"question": question}, image=image, image_mime=image_mime)
+        out = llm.generate(
+            system=prompts.DIAGNOSE_PHOTO,
+            prompt=prompt,
+            schema=schemas.PhotoDiagnosis,
+            context={"question": question},
+            image=image,
+            image_mime=image_mime,
+        )
     except LLMError as exc:
         return {"needs_typed_answer": True, "reason": str(exc), "source": "vision"}
-    tag, confidence = (None, out.confidence) if out.correct else _checked_tag(topic, out.misconception_tag, out.confidence)
-    return {"correct": out.correct, "misconception_tag": tag, "error_step": out.error_step, "steps": out.steps,
-            "final_answer_read": out.final_answer_read, "confidence": round(confidence, 2),
-            "feedback": out.feedback_student, "source": "vision"}
+    tag, confidence = (
+        (None, out.confidence) if out.correct else _checked_tag(topic, out.misconception_tag, out.confidence)
+    )
+    return {
+        "correct": out.correct,
+        "misconception_tag": tag,
+        "error_step": out.error_step,
+        "steps": out.steps,
+        "final_answer_read": out.final_answer_read,
+        "confidence": round(confidence, 2),
+        "feedback": out.feedback_student,
+        "source": "vision",
+    }
 
 
 def diagnose(topic: Topic, question: dict, answer: str, llm: LLM | None) -> dict:

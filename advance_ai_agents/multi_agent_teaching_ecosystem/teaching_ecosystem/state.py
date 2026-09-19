@@ -10,11 +10,11 @@ import operator
 from dataclasses import dataclass, field
 from typing import Annotated, Any, TypedDict
 
-PRIOR = 0.5            # mastery before any evidence
-CORRECT_DELTA = 0.15   # mastery gained for a correct answer
-WRONG_DELTA = -0.20    # mastery lost for a wrong answer
-GAP_BELOW = 0.4        # a concept below this after a tagged mistake is an open gap
-READY_AT = 0.6         # prerequisites must reach this before a concept is examined
+PRIOR = 0.5  # mastery before any evidence
+CORRECT_DELTA = 0.15  # mastery gained for a correct answer
+WRONG_DELTA = -0.20  # mastery lost for a wrong answer
+GAP_BELOW = 0.4  # a concept below this after a tagged mistake is an open gap
+READY_AT = 0.6  # prerequisites must reach this before a concept is examined
 MASTERED_AT = 0.7
 
 
@@ -25,8 +25,8 @@ class StudentRecord:
     language: str
     mastery: dict[str, float]
     misconceptions: dict[str, dict[str, int]] = field(default_factory=dict)
-    gaps: dict[str, str] = field(default_factory=dict)          # concept -> "open" | "closed"
-    seen: list[str] = field(default_factory=list)               # question ids
+    gaps: dict[str, str] = field(default_factory=dict)  # concept -> "open" | "closed"
+    seen: list[str] = field(default_factory=list)  # question ids
     responses: list[dict] = field(default_factory=list)
 
     def answered(self, concept_id: str) -> int:
@@ -44,8 +44,7 @@ class StudentRecord:
 
 
 def new_student(student_id: str, nickname: str, language: str, concept_ids: list[str]) -> StudentRecord:
-    return StudentRecord(id=student_id, nickname=nickname, language=language,
-                         mastery={c: PRIOR for c in concept_ids})
+    return StudentRecord(id=student_id, nickname=nickname, language=language, mastery={c: PRIOR for c in concept_ids})
 
 
 def apply_diagnosis(student: StudentRecord, question: dict, answer: str, diagnosis: dict) -> float:
@@ -88,6 +87,7 @@ class ClassroomState(TypedDict, total=False):
     events: Annotated[list[dict], operator.add]
     analysis: dict
     proposal: dict
+    revisions: int
     critiques: list[dict]
     recommendations: list[dict]
     lessons: list[dict]

@@ -4,7 +4,7 @@
 
 > Five LangGraph agents share one Knowledge-Gap Graph to find each student's misconceptions, write a micro-lesson in their language, and hand the teacher a 5-minute plan for tomorrow's class.
 
-A classroom of 40 to 60 students usually discovers its misconceptions at exam time. This example shows how a small team of agents can find them within one quiz. A **Diagnostician** names the exact misconception behind a wrong answer, including from a photo of handwritten working. An **Examiner** adapts the next question to the student's gaps. A **Curator** writes a short lesson in English, Hindi or Kannada. An **Analyst** turns the class into numbers and groups. A **Coach** proposes what the teacher should do. The Analyst then **challenges the Coach with the data**, and the Coach revises before anything reaches the teacher.
+A classroom of 40 to 60 students usually discovers its misconceptions at exam time. This example shows how a small team of agents can find them within one quiz. A **Diagnostician** names the exact misconception behind a wrong answer, including from a photo of handwritten working. An **Examiner** adapts the next question to the student's gaps. A **Curator** writes a short lesson in English, Hindi or Kannada. An **Analyst** turns the class into numbers and groups. A **Coach** proposes what the teacher should do. The Analyst then **challenges the Coach with the data**, and the Coach revises until the plan passes, before anything reaches the teacher.
 
 Built with LangGraph and Gemini. It runs fully offline with a deterministic stand-in model, so you can read the whole workflow and run the tests without an API key.
 
@@ -30,14 +30,15 @@ Built with LangGraph and Gemini. It runs fully offline with a deterministic stan
 ## Workflow
 
 ```
-assess_class -> analyze -> coach_propose -> analyst_critique --revise--> coach_revise -> curate -> END
-                                                            \--accept---------------> curate
+assess_class -> analyze -> coach_propose -> analyst_critique --accept--> curate -> END
+                                                  ^               |
+                                                  +- coach_revise <- revise (at most 2 rounds)
 ```
 
 1. **assess_class**: for each student the Examiner picks the lowest-mastery concept whose prerequisites are ready, and the Diagnostician diagnoses the answer. Mastery and open gaps update the shared graph.
 2. **analyze**: the Analyst finds the concept with the most open gaps, its top misconceptions (slips are counted separately) and three learner groups.
 3. **coach_propose**: the Coach drafts at most two teacher recommendations with a 5-minute plan.
-4. **analyst_critique**: rule checks test each draft against the data (for example, a whole-class re-teach when fewer than half the class shows the misconception). A challenged draft routes to **coach_revise**.
+4. **analyst_critique**: rule checks test each draft against the data (for example, a whole-class re-teach when fewer than half the class shows the misconception). A challenged draft routes to **coach_revise**, and every revision is checked again. A plan that still breaks a rule after two revisions reaches the teacher flagged, with the Analyst's reason, instead of passing silently.
 5. **curate**: the Curator writes cached micro-lessons for the students with the largest gaps, picks two verified retry items, and the Coach drafts a message for each family.
 
 ## 📦 Getting Started
@@ -92,7 +93,7 @@ python main.py --language kn                    # real LLM, lessons in Kannada
 python main.py --photo my_working.jpg --question Q22   # diagnose a photo of handwritten working
 python main.py --eval                           # score the Diagnostician on 50 labelled typed answers
 python main.py --eval-photos data/eval_photo    # score photo diagnosis on your labelled photos
-pytest                                          # 18 offline tests
+pytest                                          # 22 offline tests
 ```
 
 A shortened offline run:
@@ -106,6 +107,8 @@ A shortened offline run:
   Analyst        revise (offline)    Only 5 of 30 students show larger_denominator_larger on C5; re-teaching everyone wastes the period. Split the class.
 -- coach_revise
   Coach          revise (offline)    Group A, 3 students: Re-teach comparing fractions to Group A only
+-- analyst_critique
+  Analyst        accept (offline)    Matches the data: 5 of 30 students show this on C5.
 ```
 
 To use your own topic, replace `data/fractions.json` with a pack in the same format: concepts with prerequisites, a misconception taxonomy, and questions whose wrong options carry a tag.

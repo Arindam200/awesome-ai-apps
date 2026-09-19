@@ -17,8 +17,9 @@ def eligible_concepts(topic: Topic, student: StudentRecord) -> list[str]:
     return [c for c in topic.order if all(student.mastery[p] >= READY_AT for p in topic.prereqs(c))]
 
 
-def next_question(topic: Topic, student: StudentRecord,
-                  kinds: tuple[str, ...] = ("mcq", "text")) -> tuple[dict, str] | None:
+def next_question(
+    topic: Topic, student: StudentRecord, kinds: tuple[str, ...] = ("mcq", "text")
+) -> tuple[dict, str] | None:
     """Return (question, reason) or None when nothing suitable is left."""
     candidates = [c for c in eligible_concepts(topic, student) if student.answered(c) < MAX_PER_CONCEPT]
     candidates.sort(key=lambda c: (student.mastery[c], topic.order.index(c)))
@@ -28,7 +29,6 @@ def next_question(topic: Topic, student: StudentRecord,
             question = unseen[0]
             prereqs = topic.prereqs(concept)
             gate = ", ".join(f"{p} {student.mastery[p]:.2f}" for p in prereqs) or "none"
-            reason = (f"{concept} has the lowest ready mastery ({student.mastery[concept]:.2f}); "
-                      f"prerequisites: {gate}")
+            reason = f"{concept} has the lowest ready mastery ({student.mastery[concept]:.2f}); prerequisites: {gate}"
             return question, reason
     return None

@@ -14,8 +14,7 @@ from ..llm import LLM, LLMError, source_of
 from ..state import GAP_BELOW, MASTERED_AT, PRIOR, StudentRecord
 from ..topic import Topic
 
-WHOLE_CLASS_MIN_SHARE = 0.5   # re-teach everyone only if at least half the class shows the misconception
-TARGETED_MIN_SHARE = 0.2      # below this, recommend individual practice instead of any re-teach
+WHOLE_CLASS_MIN_SHARE = 0.5  # re-teach everyone only if at least half the class shows the misconception
 MAX_PLAN_STEPS = 5
 META_TAGS = {"careless_arithmetic", "unclassified"}
 
@@ -90,36 +89,55 @@ def rule_critiques(analysis: dict, proposal: dict) -> list[dict]:
             share = affected / n if n else 0
             whole_class = "whole" in rec["group_label"].lower()
             if whole_class and share < WHOLE_CLASS_MIN_SHARE:
-                problems.append(f"Only {affected} of {n} students show {rec['misconception_tag']} on "
-                                f"{rec['concept_id']}; re-teaching everyone wastes the period. Split the class.")
-            elif share < TARGETED_MIN_SHARE:
-                problems.append(f"Only {affected} of {n} students show this; assign individual practice instead.")
+                problems.append(
+                    f"Only {affected} of {n} students show {rec['misconception_tag']} on "
+                    f"{rec['concept_id']}; re-teaching everyone wastes the period. Split the class."
+                )
+            elif affected == 0:
+                problems.append(f"No student shows {rec['misconception_tag']} on {rec['concept_id']}.")
             top = [t for t, _ in concept["top_misconceptions"]]
             if top and rec["misconception_tag"] not in top:
-                problems.append(f"{rec['misconception_tag']} is not among the top misconceptions on "
-                                f"{rec['concept_id']} ({', '.join(top)}).")
+                problems.append(
+                    f"{rec['misconception_tag']} is not among the top misconceptions on "
+                    f"{rec['concept_id']} ({', '.join(top)})."
+                )
         if len(rec["plan_5min"]) > MAX_PLAN_STEPS or not rec["worked_example"].strip():
             problems.append("The plan needs at most 5 steps and one worked example.")
         worst = analysis.get("most_open_gaps_concept")
         if i == 0 and worst and worst not in targeted:
             problems.append(f"{worst} has the most open gaps but no recommendation targets it.")
-        out.append({"recommendation_index": i, "verdict": "revise" if problems else "accept",
-                    "reason": " ".join(problems) if problems else
-                    f"Matches the data: {concept['affected_by_tag'].get(rec['misconception_tag'], 0)} of {n} "
-                    f"students show this on {rec['concept_id']}."})
+        out.append(
+            {
+                "recommendation_index": i,
+                "verdict": "revise" if problems else "accept",
+                "reason": " ".join(problems)
+                if problems
+                else f"Matches the data: {concept['affected_by_tag'].get(rec['misconception_tag'], 0)} of {n} "
+                f"students show this on {rec['concept_id']}.",
+            }
+        )
     return out
 
 
 def critique(analysis: dict, proposal: dict, llm: LLM) -> tuple[list[dict], str]:
     """Rule-backed critique, phrased by the LLM when available. Returns (critiques, source)."""
     rules = rule_critiques(analysis, proposal)
-    compact = {"n_students": analysis["n_students"], "focus_concept": analysis["focus_concept"],
-               "concepts": {c: {k: v for k, v in d.items() if k != "name"} for c, d in analysis["concepts"].items()}}
-    prompt = (f"Class numbers:\n{json.dumps(compact)}\n\nCoach proposals:\n{json.dumps(proposal['recommendations'])}\n\n"
-              f"Rule checks (binding):\n{json.dumps(rules)}")
+    compact = {
+        "n_students": analysis["n_students"],
+        "focus_concept": analysis["focus_concept"],
+        "concepts": {c: {k: v for k, v in d.items() if k != "name"} for c, d in analysis["concepts"].items()},
+    }
+    prompt = (
+        f"Class numbers:\n{json.dumps(compact)}\n\nCoach proposals:\n{json.dumps(proposal['recommendations'])}\n\n"
+        f"Rule checks (binding):\n{json.dumps(rules)}"
+    )
     try:
-        out = llm.generate(system=prompts.ANALYST_CRITIQUE, prompt=prompt, schema=schemas.CritiqueSet,
-                           context={"rule_critiques": rules})
+        out = llm.generate(
+            system=prompts.ANALYST_CRITIQUE,
+            prompt=prompt,
+            schema=schemas.CritiqueSet,
+            context={"rule_critiques": rules},
+        )
         phrased = [c.model_dump() for c in out.critiques]
         # the rules are binding: the LLM may only rephrase, never flip a verdict
         by_index = {c["recommendation_index"]: c for c in phrased}

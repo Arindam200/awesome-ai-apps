@@ -1,11 +1,11 @@
 """Run the multi-agent teaching ecosystem from the command line.
 
-    python main.py                              # simulate a class of 30 and watch the agents work
-    python main.py --language kn                # write the micro-lessons in Kannada (needs GEMINI_API_KEY)
-    python main.py --photo working.jpg --question Q22   # diagnose a photo of handwritten working
-    python main.py --eval                       # measure the Diagnostician on the labelled set
-    python main.py --eval-photos data/eval_photo   # measure photo diagnosis on your labelled photos
-    python main.py --offline                    # no API key, no network: deterministic stand-in model
+python main.py                              # simulate a class of 30 and watch the agents work
+python main.py --language kn                # write the micro-lessons in Kannada (needs GEMINI_API_KEY)
+python main.py --photo working.jpg --question Q22   # diagnose a photo of handwritten working
+python main.py --eval                       # measure the Diagnostician on the labelled set
+python main.py --eval-photos data/eval_photo   # measure photo diagnosis on your labelled photos
+python main.py --offline                    # no API key, no network: deterministic stand-in model
 """
 
 from __future__ import annotations
@@ -37,8 +37,9 @@ def run_class(args) -> None:
     print(f"GuruGraph | topic: {topic.name} | students: {len(personas)} | model: {llm.name}")
     graph = build_workflow(llm)
     final = {}
-    state = initial_state(topic, personas, questions_per_student=args.questions, seed=args.seed,
-                          lesson_language=args.language)
+    state = initial_state(
+        topic, personas, questions_per_student=args.questions, seed=args.seed, lesson_language=args.language
+    )
     for update in graph.stream(state, stream_mode="updates"):
         for node, delta in update.items():
             rule(node)
@@ -56,7 +57,8 @@ def run_class(args) -> None:
 
     rule("recommendations the teacher approves")
     for r in final["recommendations"]:
-        print(f"  [{r['group_label']}] {r['headline']}")
+        flag = "  FLAGGED: " + r["analyst_note"] if r.get("flagged") else ""
+        print(f"  [{r['group_label']}] {r['headline']}{flag}")
         for i, step in enumerate(r["plan_5min"], 1):
             print(f"      {i}. {step}")
         print(f"      Why: {r['why']}")
@@ -98,10 +100,14 @@ def run_eval(args) -> None:
                 wrong_items += 1
                 tag_ok += d["misconception_tag"] == item["label_tag"]
         mode = "rules first, then LLM" if use_rules else f"LLM only ({llm.name})"
-        print(f"{mode:<32} right/wrong accuracy {correct_ok}/{len(items)} = {correct_ok / len(items):.0%} | "
-              f"misconception accuracy {tag_ok}/{wrong_items} = {tag_ok / wrong_items:.0%}")
-    print("Note: the rule tables were written from this same set, so the first row shows coverage, not a fair "
-          "estimate. Quote the LLM-only row as the Diagnostician's accuracy.")
+        print(
+            f"{mode:<32} right/wrong accuracy {correct_ok}/{len(items)} = {correct_ok / len(items):.0%} | "
+            f"misconception accuracy {tag_ok}/{wrong_items} = {tag_ok / wrong_items:.0%}"
+        )
+    print(
+        "Note: the rule tables were written from this same set, so the first row shows coverage, not a fair "
+        "estimate. Quote the LLM-only row as the Diagnostician's accuracy."
+    )
     if llm.name == "offline":
         print("Offline mode: the LLM-only row measures the stand-in model, not a real LLM. Set GEMINI_API_KEY.")
 
@@ -115,8 +121,13 @@ def run_eval_photos(args) -> None:
     right = tag_ok = step_ok = wrong_items = unreadable = 0
     for item in labels:
         path = folder / item["file"]
-        result = diagnostician.diagnose_photo(topic, topic.questions[item["question_id"]], path.read_bytes(), llm,
-                                              image_mime=mimetypes.guess_type(path.name)[0] or "image/jpeg")
+        result = diagnostician.diagnose_photo(
+            topic,
+            topic.questions[item["question_id"]],
+            path.read_bytes(),
+            llm,
+            image_mime=mimetypes.guess_type(path.name)[0] or "image/jpeg",
+        )
         if result.get("needs_typed_answer"):
             unreadable += 1
             print(f"  {item['file']:<24} unreadable: {result['reason'][:80]}")
@@ -126,11 +137,15 @@ def run_eval_photos(args) -> None:
             wrong_items += 1
             tag_ok += result["misconception_tag"] == item["label_tag"]
             step_ok += result["error_step"] == item["label_error_step"]
-        print(f"  {item['file']:<24} correct={result['correct']!s:<5} tag={result['misconception_tag']} "
-              f"step={result['error_step']} confidence={result['confidence']}")
+        print(
+            f"  {item['file']:<24} correct={result['correct']!s:<5} tag={result['misconception_tag']} "
+            f"step={result['error_step']} confidence={result['confidence']}"
+        )
     n = len(labels)
-    print(f"Photos: right/wrong {right}/{n} | misconception {tag_ok}/{wrong_items} | wrong step {step_ok}/{wrong_items} "
-          f"| unreadable {unreadable}")
+    print(
+        f"Photos: right/wrong {right}/{n} | misconception {tag_ok}/{wrong_items} | wrong step {step_ok}/{wrong_items} "
+        f"| unreadable {unreadable}"
+    )
 
 
 def main(argv=None) -> int:

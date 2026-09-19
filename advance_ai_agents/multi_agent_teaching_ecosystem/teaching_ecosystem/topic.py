@@ -79,17 +79,21 @@ def parse_answer(text: str) -> Fraction | None:
     token = match.group(0).replace(" ", "")
     try:
         if "/" in token:
-            num, den = token.split("/")
-            return Fraction(int(float(num)), int(den)) if int(den) else None
+            num, den = (Fraction(part) for part in token.split("/"))  # exact: '0.6/2' is 3/10
+            return num / den if den else None
         return Fraction(token)
     except (ValueError, ZeroDivisionError):
         return None
 
 
 def is_simplest(text: str) -> bool:
-    """True when a typed fraction is in lowest terms (decimals and whole numbers count as simplest)."""
+    """True when a typed fraction is in lowest terms. Decimals and whole numbers count as simplest;
+    a fraction with a decimal part (for example 0.6/2) does not."""
     match = _NUMBER.search(text or "")
     if not match or "/" not in match.group(0):
         return True
-    num, den = (int(float(x)) for x in match.group(0).replace(" ", "").split("/"))
+    num_text, den_text = match.group(0).replace(" ", "").split("/")
+    if "." in num_text:
+        return False
+    num, den = int(num_text), int(den_text)
     return den == 1 or gcd(abs(num), den) == 1

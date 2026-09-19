@@ -28,8 +28,16 @@ class LLMError(RuntimeError):
 class LLM(Protocol):
     name: str
 
-    def generate(self, *, system: str, prompt: str, schema: type[T], context: dict,
-                 image: bytes | None = None, image_mime: str = "image/jpeg") -> T: ...
+    def generate(
+        self,
+        *,
+        system: str,
+        prompt: str,
+        schema: type[T],
+        context: dict,
+        image: bytes | None = None,
+        image_mime: str = "image/jpeg",
+    ) -> T: ...
 
 
 class GeminiClient:
@@ -74,8 +82,9 @@ class OpenAICompatibleClient:
     def __init__(self, base_url: str, api_key: str, model: str, timeout_s: float = 20.0):
         import httpx
 
-        self._http = httpx.Client(base_url=base_url.rstrip("/"), timeout=timeout_s,
-                                  headers={"Authorization": f"Bearer {api_key}"})
+        self._http = httpx.Client(
+            base_url=base_url.rstrip("/"), timeout=timeout_s, headers={"Authorization": f"Bearer {api_key}"}
+        )
         self.model = model
         self.name = f"openai-compatible:{model}"
 
@@ -88,8 +97,11 @@ class OpenAICompatibleClient:
             "response_format": {"type": "json_object"},
             "messages": [
                 {"role": "system", "content": system},
-                {"role": "user", "content": f"{prompt}\n\nReturn JSON that matches this JSON schema:\n"
-                                            f"{json.dumps(schema.model_json_schema())}"},
+                {
+                    "role": "user",
+                    "content": f"{prompt}\n\nReturn JSON that matches this JSON schema:\n"
+                    f"{json.dumps(schema.model_json_schema())}",
+                },
             ],
         }
         try:
@@ -118,8 +130,13 @@ class OfflineLLM:
 
     @staticmethod
     def _TextDiagnosis(ctx):
-        return schemas.TextDiagnosis(correct=False, misconception_tag="unclassified", error_step=None,
-                                     confidence=0.2, feedback_student="Check each step against the worked example.")
+        return schemas.TextDiagnosis(
+            correct=False,
+            misconception_tag="unclassified",
+            error_step=None,
+            confidence=0.2,
+            feedback_student="Check each step against the worked example.",
+        )
 
     @staticmethod
     def _PhotoDiagnosis(ctx):
@@ -127,48 +144,81 @@ class OfflineLLM:
 
     @staticmethod
     def _Lesson(ctx):
-        note = "" if ctx["language"] == "en" else "(Offline mode shows English. Set GEMINI_API_KEY for Hindi or Kannada.)\n\n"
-        body = (f"{note}**Watch out:** {ctx['definition']}\n\n"
-                f"**Do it this way:** {ctx['method']}\n\n"
-                "**Tip:** check the denominators before you add, compare, multiply or divide.")
+        note = (
+            ""
+            if ctx["language"] == "en"
+            else "(Offline mode shows English. Set GEMINI_API_KEY for Hindi or Kannada.)\n\n"
+        )
+        body = (
+            f"{note}**Watch out:** {ctx['definition']}\n\n"
+            f"**Do it this way:** {ctx['method']}\n\n"
+            "**Tip:** check the denominators before you add, compare, multiply or divide."
+        )
         practice = [schemas.PracticeItem(stem=q["stem"], answer=q["answer"]) for q in ctx["practice_seed"]][:3]
-        return schemas.Lesson(language=ctx["language"], lesson_md=body, practice=practice)
+        return schemas.Lesson(language="en", lesson_md=body, practice=practice)  # offline text is always English
 
     @staticmethod
     def _CoachProposal(ctx):
         a = ctx["analysis"]
         revising = bool(ctx.get("critiques"))
         focus = a["focus_concept"]
-        tag = a["concepts"][focus]["top_misconceptions"][0][0] if a["concepts"][focus]["top_misconceptions"] else "unclassified"
+        tag = (
+            a["concepts"][focus]["top_misconceptions"][0][0]
+            if a["concepts"][focus]["top_misconceptions"]
+            else "unclassified"
+        )
         affected = a["concepts"][focus]["affected_by_tag"].get(tag, 0)
         n = a["n_students"]
         example = ctx["worked_example"]
         if not revising:
-            recs = [schemas.TeacherRecommendation(
-                group_label="Whole class", concept_id=focus, misconception_tag=tag,
-                headline=f"Re-teach {ctx['concept_names'][focus].lower()} to the whole class tomorrow",
-                plan_5min=["Show one wrong answer from today on the board", "Ask the class what went wrong",
-                           "Work the correct method together", "Give 2 quick check questions"],
-                worked_example=example,
-                why=f"{affected} of {n} students show {tag} on {focus}; class average is {a['concepts'][focus]['avg']:.2f}.")]
+            recs = [
+                schemas.TeacherRecommendation(
+                    group_label="Whole class",
+                    concept_id=focus,
+                    misconception_tag=tag,
+                    headline=f"Re-teach {ctx['concept_names'][focus].lower()} to the whole class tomorrow",
+                    plan_5min=[
+                        "Show one wrong answer from today on the board",
+                        "Ask the class what went wrong",
+                        "Work the correct method together",
+                        "Give 2 quick check questions",
+                    ],
+                    worked_example=example,
+                    why=f"{affected} of {n} students show {tag} on {focus}; class average is {a['concepts'][focus]['avg']:.2f}.",
+                )
+            ]
         else:
             reteach = a["groups"]["reteach"]
             practice = a["groups"]["practice"]
             recs = [
                 schemas.TeacherRecommendation(
-                    group_label=f"Group A, {len(reteach)} students", concept_id=focus, misconception_tag=tag,
+                    group_label=f"Group A, {len(reteach)} students",
+                    concept_id=focus,
+                    misconception_tag=tag,
                     headline=f"Re-teach {ctx['concept_names'][focus].lower()} to Group A only",
-                    plan_5min=["Seat Group A together", "Show today's most common wrong answer",
-                               "Work the correct method step by step", "Each student solves one item on paper",
-                               "Check answers and close with the one-line rule"],
+                    plan_5min=[
+                        "Seat Group A together",
+                        "Show today's most common wrong answer",
+                        "Work the correct method step by step",
+                        "Each student solves one item on paper",
+                        "Check answers and close with the one-line rule",
+                    ],
                     worked_example=example,
-                    why=f"Only {len(reteach)} of {n} are below 0.4 on {focus}; the rest do not need a re-teach."),
+                    why=f"Only {len(reteach)} of {n} are below 0.4 on {focus}; the rest do not need a re-teach.",
+                ),
                 schemas.TeacherRecommendation(
-                    group_label=f"Group B, {len(practice)} students", concept_id=focus, misconception_tag=tag,
+                    group_label=f"Group B, {len(practice)} students",
+                    concept_id=focus,
+                    misconception_tag=tag,
                     headline="Group B practises 3 targeted items while Group A is re-taught",
-                    plan_5min=["Hand out 3 practice items", "Pairs check each other's answers", "Teacher checks one pair"],
+                    plan_5min=[
+                        "Hand out 3 practice items",
+                        "Pairs check each other's answers",
+                        "Teacher checks one pair",
+                    ],
                     worked_example=example,
-                    why=f"{len(practice)} students are partly there (0.4 to 0.7) and need practice, not a lecture."),
+                    why=f"{len(practice)} students are partly there (0.4 to 0.7) and need practice, not a lecture.",
+                ),
             ]
         steps = [schemas.StudentNextSteps(student_id=s["student_id"], items=s["items"]) for s in ctx["next_steps_seed"]]
         return schemas.CoachProposal(recommendations=recs, student_next_steps=steps)
@@ -196,6 +246,9 @@ def get_llm(offline: bool = False) -> LLM:
     if os.getenv("GEMINI_API_KEY"):
         return GeminiClient(os.environ["GEMINI_API_KEY"], model=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"))
     if os.getenv("OPENAI_COMPAT_API_KEY") and os.getenv("OPENAI_COMPAT_BASE_URL"):
-        return OpenAICompatibleClient(os.environ["OPENAI_COMPAT_BASE_URL"], os.environ["OPENAI_COMPAT_API_KEY"],
-                                      os.getenv("OPENAI_COMPAT_MODEL", "meta-llama/Llama-3.3-70B-Instruct"))
+        return OpenAICompatibleClient(
+            os.environ["OPENAI_COMPAT_BASE_URL"],
+            os.environ["OPENAI_COMPAT_API_KEY"],
+            os.getenv("OPENAI_COMPAT_MODEL", "meta-llama/Llama-3.3-70B-Instruct"),
+        )
     return OfflineLLM()
