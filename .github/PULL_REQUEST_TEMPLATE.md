@@ -39,7 +39,7 @@ For new projects, a high-quality README is essential. Please confirm the followi
 Please confirm that you have followed these guidelines.
 -->
 
-- [ ] I have read the [**CONTRIBUTING.md**](https://github.com/Arindam200/awesome-llm-apps/blob/main/CONTRIBUTING.md) document.
+- [ ] I have read the [**CONTRIBUTING.md**](https://github.com/Arindam200/awesome-ai-apps/blob/main/CONTRIBUTING.md) document.
 - [ ] My code follows the project's coding standards.
 - [ ] I have placed my project in the correct directory (e.g., `advance_ai_agents`, `rag_apps`).
 - [ ] I have included a `requirements.txt` or `pyproject.toml` for dependencies.
