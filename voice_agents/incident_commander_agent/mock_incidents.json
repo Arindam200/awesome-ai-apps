@@ -1,0 +1,46 @@
+{
+  "incidents": [
+    {
+      "id": "INC-1042",
+      "title": "Checkout API latency spike",
+      "severity": "SEV-2",
+      "status": "investigating",
+      "service": "checkout-api",
+      "started_at": "2026-09-19T01:52:00Z",
+      "impact": "About 18% of checkout requests are timing out (p99 latency above 8s). Customers see 'payment failed' errors.",
+      "on_call": "Priya (primary), Marcus (secondary)",
+      "timeline": [
+        {"time": "01:52", "event": "Alert fired: checkout-api p99 latency above 5s"},
+        {"time": "01:55", "event": "On-call engineer acknowledged the page"},
+        {"time": "02:03", "event": "Recent deploy v2.14.1 identified as a possible cause"}
+      ],
+      "runbook": [
+        "Check the dashboard for error rate and p99 latency on checkout-api",
+        "Compare the start of the spike with the latest deploy (v2.14.1)",
+        "If the deploy correlates, roll back to v2.14.0",
+        "Check database connection pool saturation on payments-db",
+        "Post a status page update for customers"
+      ]
+    },
+    {
+      "id": "INC-1043",
+      "title": "Search results returning stale data",
+      "severity": "SEV-3",
+      "status": "identified",
+      "service": "search-indexer",
+      "started_at": "2026-09-18T22:10:00Z",
+      "impact": "New products take up to 3 hours to appear in search. No errors, only delayed indexing.",
+      "on_call": "Marcus (primary), Ananya (secondary)",
+      "timeline": [
+        {"time": "22:10", "event": "Support reported missing new products in search"},
+        {"time": "22:40", "event": "Indexer queue backlog found, consumers running at half capacity"}
+      ],
+      "runbook": [
+        "Check the indexer queue depth",
+        "Scale indexer consumers from 2 to 6",
+        "Watch the queue drain and confirm new products appear",
+        "Open a follow-up ticket to fix consumer autoscaling"
+      ]
+    }
+  ]
+}
