@@ -1,0 +1,911 @@
+{
+  "topic": {
+    "id": "fractions_c7",
+    "name": "Fractions (Class 7)"
+  },
+  "concepts": [
+    {
+      "id": "C1",
+      "name": "Equivalent fractions",
+      "prereqs": []
+    },
+    {
+      "id": "C2",
+      "name": "Simplifying fractions",
+      "prereqs": [
+        "C1"
+      ]
+    },
+    {
+      "id": "C3",
+      "name": "Common denominators",
+      "prereqs": [
+        "C1"
+      ]
+    },
+    {
+      "id": "C4",
+      "name": "Adding and subtracting fractions",
+      "prereqs": [
+        "C3"
+      ]
+    },
+    {
+      "id": "C5",
+      "name": "Comparing fractions",
+      "prereqs": [
+        "C3"
+      ]
+    },
+    {
+      "id": "C6",
+      "name": "Multiplying fractions",
+      "prereqs": [
+        "C2"
+      ]
+    },
+    {
+      "id": "C7",
+      "name": "Dividing fractions",
+      "prereqs": [
+        "C6"
+      ]
+    },
+    {
+      "id": "C8",
+      "name": "Fraction word problems",
+      "prereqs": [
+        "C4",
+        "C7"
+      ]
+    }
+  ],
+  "taxonomy": [
+    {
+      "tag": "add_denominators",
+      "definition": "Adds (or subtracts) the numerators and also the denominators, e.g. 3/4 + 1/4 = 4/8."
+    },
+    {
+      "tag": "unlike_denominators_direct",
+      "definition": "Combines numerators across unlike denominators without first making a common denominator, e.g. 1/2 + 1/3 = 2/6."
+    },
+    {
+      "tag": "larger_denominator_larger",
+      "definition": "Believes a larger denominator means a larger fraction, e.g. 1/8 > 1/4."
+    },
+    {
+      "tag": "numerator_only_compare",
+      "definition": "Compares fractions by their numerators alone, e.g. 3/8 > 2/3 because 3 > 2."
+    },
+    {
+      "tag": "equivalence_additive",
+      "definition": "Adds or subtracts the same number on top and bottom to make an 'equivalent' fraction, e.g. 2/3 = 3/4."
+    },
+    {
+      "tag": "simplify_partial",
+      "definition": "Scales only the numerator or only the denominator when simplifying or making equivalents, e.g. 6/8 = 3/8."
+    },
+    {
+      "tag": "multiply_cross_add",
+      "definition": "Mixes up the multiplication rule: cross-multiplies, or adds when it should multiply, e.g. 2/3 x 3/4 = 8/9."
+    },
+    {
+      "tag": "multiply_common_denominator",
+      "definition": "Makes a common denominator before multiplying, then multiplies only the numerators, e.g. 1/2 x 1/3 = 3/6 x 2/6 = 6/6."
+    },
+    {
+      "tag": "divide_direct",
+      "definition": "Divides without inverting the divisor, usually multiplying straight across, e.g. 3/4 / 1/4 = 3/16."
+    },
+    {
+      "tag": "divide_flip_first",
+      "definition": "Inverts the first fraction instead of the divisor, e.g. 3/4 / 1/4 = 4/3 x 1/4 = 1/3."
+    },
+    {
+      "tag": "whole_number_bias",
+      "definition": "Treats the numerator and denominator as unrelated whole numbers instead of one quantity."
+    },
+    {
+      "tag": "word_problem_operation",
+      "definition": "Chooses the wrong operation for a word problem, e.g. multiplies when the situation needs division."
+    },
+    {
+      "tag": "careless_arithmetic",
+      "definition": "Uses the right method but slips in arithmetic, or leaves the answer unsimplified when asked to simplify."
+    },
+    {
+      "tag": "unclassified",
+      "definition": "Cannot be classified with confidence of at least 0.5."
+    }
+  ],
+  "questions": [
+    {
+      "id": "Q01",
+      "concept_id": "C1",
+      "kind": "mcq",
+      "stem": "Which fraction is equivalent to 2/3?",
+      "options": [
+        {
+          "text": "4/6",
+          "correct": true
+        },
+        {
+          "text": "3/4",
+          "tag": "equivalence_additive"
+        },
+        {
+          "text": "2/6",
+          "tag": "simplify_partial"
+        },
+        {
+          "text": "4/9",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q02",
+      "concept_id": "C1",
+      "kind": "mcq",
+      "stem": "Fill in the blank: 3/5 = ?/20",
+      "options": [
+        {
+          "text": "12",
+          "correct": true
+        },
+        {
+          "text": "18",
+          "tag": "equivalence_additive"
+        },
+        {
+          "text": "3",
+          "tag": "simplify_partial"
+        },
+        {
+          "text": "15",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q03",
+      "concept_id": "C1",
+      "kind": "mcq",
+      "stem": "Which pair shows equivalent fractions?",
+      "options": [
+        {
+          "text": "1/2 and 3/6",
+          "correct": true
+        },
+        {
+          "text": "1/2 and 2/3",
+          "tag": "equivalence_additive"
+        },
+        {
+          "text": "1/2 and 1/4",
+          "tag": "simplify_partial"
+        },
+        {
+          "text": "1/3 and 3/1",
+          "tag": "whole_number_bias"
+        }
+      ]
+    },
+    {
+      "id": "Q04",
+      "concept_id": "C1",
+      "kind": "text",
+      "stem": "Write a fraction equal to 3/4 that has denominator 12.",
+      "answer": "9/12",
+      "method": "3/4 = (3 x 3)/(4 x 3) = 9/12",
+      "wrong_answers": {
+        "3/12": "simplify_partial",
+        "11/12": "equivalence_additive",
+        "6/12": "careless_arithmetic"
+      },
+      "simplest": false
+    },
+    {
+      "id": "Q05",
+      "concept_id": "C1",
+      "kind": "mcq",
+      "stem": "Fill in the blank: 5/8 = 15/?",
+      "options": [
+        {
+          "text": "24",
+          "correct": true
+        },
+        {
+          "text": "18",
+          "tag": "equivalence_additive"
+        },
+        {
+          "text": "8",
+          "tag": "simplify_partial"
+        },
+        {
+          "text": "40",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q06",
+      "concept_id": "C2",
+      "kind": "mcq",
+      "stem": "Simplify 6/8.",
+      "options": [
+        {
+          "text": "3/4",
+          "correct": true
+        },
+        {
+          "text": "3/8",
+          "tag": "simplify_partial"
+        },
+        {
+          "text": "2/4",
+          "tag": "equivalence_additive"
+        },
+        {
+          "text": "2/3",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q07",
+      "concept_id": "C2",
+      "kind": "mcq",
+      "stem": "Write 12/18 in its lowest terms.",
+      "options": [
+        {
+          "text": "2/3",
+          "correct": true
+        },
+        {
+          "text": "3/4",
+          "tag": "careless_arithmetic"
+        },
+        {
+          "text": "4/18",
+          "tag": "simplify_partial"
+        },
+        {
+          "text": "1/7",
+          "tag": "equivalence_additive"
+        }
+      ]
+    },
+    {
+      "id": "Q08",
+      "concept_id": "C2",
+      "kind": "text",
+      "stem": "Write 15/25 in its simplest form.",
+      "answer": "3/5",
+      "method": "Divide top and bottom by 5: 15/25 = 3/5",
+      "wrong_answers": {
+        "3/25": "simplify_partial",
+        "10/20": "equivalence_additive",
+        "6/10": "careless_arithmetic"
+      },
+      "simplest": true
+    },
+    {
+      "id": "Q09",
+      "concept_id": "C2",
+      "kind": "mcq",
+      "stem": "Simplify 9/12.",
+      "options": [
+        {
+          "text": "3/4",
+          "correct": true
+        },
+        {
+          "text": "3/12",
+          "tag": "simplify_partial"
+        },
+        {
+          "text": "1/4",
+          "tag": "equivalence_additive"
+        },
+        {
+          "text": "2/3",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q10",
+      "concept_id": "C2",
+      "kind": "mcq",
+      "stem": "Simplify 20/30.",
+      "options": [
+        {
+          "text": "2/3",
+          "correct": true
+        },
+        {
+          "text": "2/30",
+          "tag": "simplify_partial"
+        },
+        {
+          "text": "10/20",
+          "tag": "equivalence_additive"
+        },
+        {
+          "text": "3/4",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q11",
+      "concept_id": "C3",
+      "kind": "mcq",
+      "stem": "What is the lowest common denominator of 1/4 and 1/6?",
+      "options": [
+        {
+          "text": "12",
+          "correct": true
+        },
+        {
+          "text": "10",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "24",
+          "tag": "careless_arithmetic"
+        },
+        {
+          "text": "2",
+          "tag": "whole_number_bias"
+        }
+      ]
+    },
+    {
+      "id": "Q12",
+      "concept_id": "C3",
+      "kind": "mcq",
+      "stem": "Rewrite 2/3 and 1/4 with a common denominator.",
+      "options": [
+        {
+          "text": "8/12 and 3/12",
+          "correct": true
+        },
+        {
+          "text": "2/12 and 1/12",
+          "tag": "simplify_partial"
+        },
+        {
+          "text": "2/7 and 1/7",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "8/12 and 4/12",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q13",
+      "concept_id": "C3",
+      "kind": "text",
+      "stem": "Find the lowest common multiple of 6 and 8.",
+      "answer": "24",
+      "method": "Multiples of 8: 8, 16, 24; 24 is also a multiple of 6",
+      "wrong_answers": {
+        "48": "careless_arithmetic",
+        "14": "add_denominators"
+      },
+      "simplest": false
+    },
+    {
+      "id": "Q14",
+      "concept_id": "C3",
+      "kind": "mcq",
+      "stem": "To add 1/3 + 1/5, what should the two fractions become?",
+      "options": [
+        {
+          "text": "5/15 and 3/15",
+          "correct": true
+        },
+        {
+          "text": "1/15 and 1/15",
+          "tag": "simplify_partial"
+        },
+        {
+          "text": "1/8 and 1/8",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "3/15 and 5/15",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q15",
+      "concept_id": "C3",
+      "kind": "mcq",
+      "stem": "What is the lowest common denominator of 3/10 and 1/4?",
+      "options": [
+        {
+          "text": "20",
+          "correct": true
+        },
+        {
+          "text": "14",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "40",
+          "tag": "careless_arithmetic"
+        },
+        {
+          "text": "10",
+          "tag": "whole_number_bias"
+        }
+      ]
+    },
+    {
+      "id": "Q16",
+      "concept_id": "C4",
+      "kind": "mcq",
+      "stem": "3/4 + 1/4 = ?",
+      "options": [
+        {
+          "text": "1",
+          "correct": true
+        },
+        {
+          "text": "4/8",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "1/2",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "4/16",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q17",
+      "concept_id": "C4",
+      "kind": "mcq",
+      "stem": "1/2 + 1/3 = ?",
+      "options": [
+        {
+          "text": "5/6",
+          "correct": true
+        },
+        {
+          "text": "2/5",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "2/6",
+          "tag": "unlike_denominators_direct"
+        },
+        {
+          "text": "1/5",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q18",
+      "concept_id": "C4",
+      "kind": "mcq",
+      "stem": "5/6 - 1/3 = ?",
+      "options": [
+        {
+          "text": "1/2",
+          "correct": true
+        },
+        {
+          "text": "4/3",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "4/6",
+          "tag": "unlike_denominators_direct"
+        },
+        {
+          "text": "2/6",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q19",
+      "concept_id": "C4",
+      "kind": "text",
+      "stem": "Work out 2/5 + 1/10. Give your answer in simplest form.",
+      "answer": "1/2",
+      "method": "2/5 = 4/10; 4/10 + 1/10 = 5/10 = 1/2",
+      "wrong_answers": {
+        "5/10": "careless_arithmetic",
+        "3/15": "add_denominators",
+        "3/10": "unlike_denominators_direct"
+      },
+      "simplest": true
+    },
+    {
+      "id": "Q20",
+      "concept_id": "C4",
+      "kind": "text",
+      "stem": "Work out 3/4 - 1/6.",
+      "answer": "7/12",
+      "method": "LCM 12; 9/12 - 2/12 = 7/12",
+      "wrong_answers": {
+        "2/4": "unlike_denominators_direct",
+        "11/12": "careless_arithmetic"
+      },
+      "simplest": false
+    },
+    {
+      "id": "Q21",
+      "concept_id": "C4",
+      "kind": "photo",
+      "stem": "On paper, work out 2/3 + 1/6 showing every step, then photograph your working.",
+      "answer": "5/6",
+      "method": "LCM of 3 and 6 is 6; 2/3 = 4/6; 4/6 + 1/6 = 5/6"
+    },
+    {
+      "id": "Q22",
+      "concept_id": "C4",
+      "kind": "photo",
+      "stem": "On paper, work out 3/4 + 1/4 showing every step, then photograph your working.",
+      "answer": "1",
+      "method": "Same denominators: add numerators only; 3/4 + 1/4 = 4/4 = 1"
+    },
+    {
+      "id": "Q23",
+      "concept_id": "C5",
+      "kind": "mcq",
+      "stem": "Which is larger: 1/4 or 1/8?",
+      "options": [
+        {
+          "text": "1/4",
+          "correct": true
+        },
+        {
+          "text": "1/8",
+          "tag": "larger_denominator_larger"
+        },
+        {
+          "text": "They are equal",
+          "tag": "whole_number_bias"
+        }
+      ]
+    },
+    {
+      "id": "Q24",
+      "concept_id": "C5",
+      "kind": "mcq",
+      "stem": "Which is larger: 3/8 or 2/3?",
+      "options": [
+        {
+          "text": "2/3",
+          "correct": true
+        },
+        {
+          "text": "3/8",
+          "tag": "numerator_only_compare"
+        },
+        {
+          "text": "They are equal",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q25",
+      "concept_id": "C5",
+      "kind": "mcq",
+      "stem": "Arrange from smallest to largest: 1/2, 1/3, 1/6",
+      "options": [
+        {
+          "text": "1/6, 1/3, 1/2",
+          "correct": true
+        },
+        {
+          "text": "1/2, 1/3, 1/6",
+          "tag": "larger_denominator_larger"
+        },
+        {
+          "text": "1/3, 1/6, 1/2",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q26",
+      "concept_id": "C5",
+      "kind": "text",
+      "stem": "Which is greater, 5/6 or 7/9? Write the greater fraction.",
+      "answer": "5/6",
+      "method": "5/6 = 15/18 and 7/9 = 14/18, so 5/6 is greater",
+      "wrong_answers": {
+        "7/9": "numerator_only_compare"
+      },
+      "simplest": false
+    },
+    {
+      "id": "Q28",
+      "concept_id": "C6",
+      "kind": "mcq",
+      "stem": "2/3 x 3/4 = ?",
+      "options": [
+        {
+          "text": "1/2",
+          "correct": true
+        },
+        {
+          "text": "17/12",
+          "tag": "multiply_cross_add"
+        },
+        {
+          "text": "8/9",
+          "tag": "multiply_cross_add"
+        },
+        {
+          "text": "5/7",
+          "tag": "add_denominators"
+        }
+      ]
+    },
+    {
+      "id": "Q29",
+      "concept_id": "C6",
+      "kind": "mcq",
+      "stem": "1/2 x 1/3 = ?",
+      "options": [
+        {
+          "text": "1/6",
+          "correct": true
+        },
+        {
+          "text": "2/5",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "6/6",
+          "tag": "multiply_common_denominator"
+        },
+        {
+          "text": "1/5",
+          "tag": "multiply_cross_add"
+        }
+      ]
+    },
+    {
+      "id": "Q30",
+      "concept_id": "C6",
+      "kind": "text",
+      "stem": "Work out 3/5 x 10/9. Simplify your answer.",
+      "answer": "2/3",
+      "method": "3/5 x 10/9 = 30/45 = 2/3",
+      "wrong_answers": {
+        "30/45": "careless_arithmetic",
+        "13/14": "add_denominators",
+        "27/50": "multiply_cross_add"
+      },
+      "simplest": true
+    },
+    {
+      "id": "Q31",
+      "concept_id": "C6",
+      "kind": "mcq",
+      "stem": "What is 3/4 of 8?",
+      "options": [
+        {
+          "text": "6",
+          "correct": true
+        },
+        {
+          "text": "96",
+          "tag": "whole_number_bias"
+        },
+        {
+          "text": "24",
+          "tag": "careless_arithmetic"
+        },
+        {
+          "text": "3/32",
+          "tag": "word_problem_operation"
+        }
+      ]
+    },
+    {
+      "id": "Q32",
+      "concept_id": "C6",
+      "kind": "mcq",
+      "stem": "4/5 x 5/8 = ?",
+      "options": [
+        {
+          "text": "1/2",
+          "correct": true
+        },
+        {
+          "text": "9/13",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "32/25",
+          "tag": "multiply_cross_add"
+        },
+        {
+          "text": "20/8",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q33",
+      "concept_id": "C7",
+      "kind": "mcq",
+      "stem": "3/4 / 1/4 = ?  (3/4 divided by 1/4)",
+      "options": [
+        {
+          "text": "3",
+          "correct": true
+        },
+        {
+          "text": "3/16",
+          "tag": "divide_direct"
+        },
+        {
+          "text": "1/3",
+          "tag": "divide_flip_first"
+        },
+        {
+          "text": "3/4",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q34",
+      "concept_id": "C7",
+      "kind": "mcq",
+      "stem": "2/3 divided by 4/5 = ?",
+      "options": [
+        {
+          "text": "5/6",
+          "correct": true
+        },
+        {
+          "text": "8/15",
+          "tag": "divide_direct"
+        },
+        {
+          "text": "6/5",
+          "tag": "divide_flip_first"
+        },
+        {
+          "text": "2/5",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q35",
+      "concept_id": "C7",
+      "kind": "text",
+      "stem": "Work out 5/6 divided by 5/12.",
+      "answer": "2",
+      "method": "5/6 x 12/5 = 60/30 = 2",
+      "wrong_answers": {
+        "25/72": "divide_direct",
+        "1/2": "divide_flip_first"
+      },
+      "simplest": false
+    },
+    {
+      "id": "Q36",
+      "concept_id": "C7",
+      "kind": "mcq",
+      "stem": "How many 1/4-cup scoops are there in 3 cups?",
+      "options": [
+        {
+          "text": "12",
+          "correct": true
+        },
+        {
+          "text": "3/4",
+          "tag": "word_problem_operation"
+        },
+        {
+          "text": "7",
+          "tag": "whole_number_bias"
+        },
+        {
+          "text": "4",
+          "tag": "careless_arithmetic"
+        }
+      ]
+    },
+    {
+      "id": "Q37",
+      "concept_id": "C7",
+      "kind": "photo",
+      "stem": "On paper, work out 3/5 divided by 3/10 showing every step, then photograph your working.",
+      "answer": "2",
+      "method": "3/5 x 10/3 = 30/15 = 2"
+    },
+    {
+      "id": "Q38",
+      "concept_id": "C8",
+      "kind": "mcq",
+      "stem": "Ravi ate 1/3 of a pizza and Meena ate 1/4 of it. What fraction did they eat together?",
+      "options": [
+        {
+          "text": "7/12",
+          "correct": true
+        },
+        {
+          "text": "2/7",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "1/12",
+          "tag": "word_problem_operation"
+        },
+        {
+          "text": "2/12",
+          "tag": "unlike_denominators_direct"
+        }
+      ]
+    },
+    {
+      "id": "Q39",
+      "concept_id": "C8",
+      "kind": "text",
+      "stem": "A ribbon is 3/4 m long. It is cut into pieces 1/8 m long. How many pieces?",
+      "answer": "6",
+      "method": "3/4 divided by 1/8 = 3/4 x 8/1 = 6",
+      "wrong_answers": {
+        "3/32": "word_problem_operation",
+        "1/6": "divide_flip_first"
+      },
+      "simplest": false
+    },
+    {
+      "id": "Q40",
+      "concept_id": "C8",
+      "kind": "mcq",
+      "stem": "A water tank is 2/3 full. Then 1/6 of the tank is used. What fraction of the tank is still full?",
+      "options": [
+        {
+          "text": "1/2",
+          "correct": true
+        },
+        {
+          "text": "1/3",
+          "tag": "add_denominators"
+        },
+        {
+          "text": "5/6",
+          "tag": "word_problem_operation"
+        },
+        {
+          "text": "1/9",
+          "tag": "word_problem_operation"
+        }
+      ]
+    },
+    {
+      "id": "Q41",
+      "concept_id": "C8",
+      "kind": "photo",
+      "stem": "On paper: one cake needs 3/4 cup of sugar. How much sugar do 2 cakes need? Show your steps and photograph them.",
+      "answer": "3/2",
+      "method": "2 x 3/4 = 6/4 = 3/2 = 1 1/2 cups"
+    }
+  ]
+}
