@@ -84,6 +84,11 @@ def lesson(
         f"Target language: {LANGUAGES.get(language, 'English')}\nConcept: {topic.concept_name(concept_id)}\n"
         f"Misconception: {tag}: {topic.definition(tag)}\nCorrect worked method: {method}"
     )
+    template = {
+        "language": "en",
+        "lesson_md": f"Watch out: {topic.definition(tag)}\n\nDo it this way: {method}",
+        "practice": practice_seed[:3],
+    }
     source = "llm"
     try:
         out = llm.generate(system=prompts.CURATOR, prompt=prompt, schema=schemas.Lesson, context=ctx)
@@ -94,16 +99,14 @@ def lesson(
                 schema=schemas.Lesson,
                 context=ctx,
             )
+            if script_share(out.lesson_md, language) < MIN_SCRIPT_SHARE:
+                # still not in the requested script: never present it as a Hindi or Kannada lesson
+                raise LLMError(f"lesson not in the {language} script after one retry")
         result = out.model_dump()
         if llm.name == "offline":
             source = "offline"
     except LLMError:
-        result = {
-            "language": "en",
-            "lesson_md": f"Watch out: {topic.definition(tag)}\n\nDo it this way: {method}",
-            "practice": practice_seed[:3],
-        }
-        source = "template"
+        result, source = dict(template), "template"
     result["script_share"] = round(script_share(result["lesson_md"], language), 2)
     if cache is not None and source in ("llm", "offline"):
         cache[key] = result

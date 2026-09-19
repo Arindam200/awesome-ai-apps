@@ -6,7 +6,7 @@ from fractions import Fraction
 import pytest
 
 from teaching_ecosystem.agents import analyst, coach, curator, diagnostician, examiner
-from teaching_ecosystem.llm import LLMError, OfflineLLM
+from teaching_ecosystem.llm import LLMError, OfflineLLM, OpenAICompatibleClient
 from teaching_ecosystem.simulator import simulate_answer
 from teaching_ecosystem.state import (
     GAP_BELOW,
@@ -217,3 +217,23 @@ def test_revised_plans_are_checked_again(topic):
     assert stubborn["revisions"] == 2
     assert all(r["flagged"] and r["analyst_note"] for r in stubborn["recommendations"])
     assert any(e["action"] == "flag_for_teacher" for e in stubborn["events"])
+
+
+class EnglishOnlyLLM(OfflineLLM):
+    """A real-looking provider that ignores the target language."""
+
+    name = "english-only"
+
+
+def test_localized_lesson_is_not_faked(topic):
+    cache = {}
+    result, source = curator.lesson(topic, "C4", "add_denominators", "kn", EnglishOnlyLLM(), cache)
+    assert source == "template" and result["language"] == "en"
+    assert not cache  # an unverified lesson is never cached
+
+
+def test_openai_compatible_requires_https():
+    with pytest.raises(ValueError):
+        OpenAICompatibleClient("http://api.example.com/v1", "key", "model")
+    assert OpenAICompatibleClient("https://api.example.com/v1", "key", "model").name.startswith("openai-compatible")
+    assert OpenAICompatibleClient("http://localhost:8000/v1", "key", "model")

@@ -79,9 +79,18 @@ class GeminiClient:
 class OpenAICompatibleClient:
     """For OpenAI-compatible providers such as Nebius Token Factory or Groq. Text only."""
 
+    LOOPBACK_HOSTS = frozenset({"localhost", "127.0.0.1", "::1"})
+
     def __init__(self, base_url: str, api_key: str, model: str, timeout_s: float = 20.0):
+        from urllib.parse import urlsplit
+
         import httpx
 
+        url = urlsplit(base_url)
+        if url.scheme != "https" and not (url.scheme == "http" and url.hostname in self.LOOPBACK_HOSTS):
+            raise ValueError(
+                f"OPENAI_COMPAT_BASE_URL must use https (plain http is allowed only for localhost): {base_url}"
+            )
         self._http = httpx.Client(
             base_url=base_url.rstrip("/"), timeout=timeout_s, headers={"Authorization": f"Bearer {api_key}"}
         )

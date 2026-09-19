@@ -93,7 +93,7 @@ python main.py --language kn                    # real LLM, lessons in Kannada
 python main.py --photo my_working.jpg --question Q22   # diagnose a photo of handwritten working
 python main.py --eval                           # score the Diagnostician on 50 labelled typed answers
 python main.py --eval-photos data/eval_photo    # score photo diagnosis on your labelled photos
-pytest                                          # 22 offline tests
+pytest                                          # 24 offline tests
 ```
 
 A shortened offline run:
