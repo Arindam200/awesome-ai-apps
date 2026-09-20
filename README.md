@@ -8,7 +8,7 @@
 
 </div>
 
-This repository is a comprehensive collection of **132 projects**, tutorials, and recipes for building powerful LLM-powered applications, including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
+This repository is a comprehensive collection of **133 projects**, tutorials, and recipes for building powerful LLM-powered applications, including text agents, voice assistants, RAG apps, and MCP-backed tools.
 
 ## 📋 Table of Contents
 
