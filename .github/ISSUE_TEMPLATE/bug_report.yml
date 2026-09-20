@@ -35,8 +35,13 @@ body:
       options:
         - advance_ai_agents
         - mcp_ai_agents
+        - memory_agents
         - rag_apps
+        - simple_ai_agents
         - starter_ai_agents
+        - voice_agents
+        - fine_tuning
+        - course
     validations:
       required: true
 
