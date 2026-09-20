@@ -1,126 +1,317 @@
 <!-- Optional: Add a banner or GIF at the top -->
+
 ![Demo GIF](./assets/demo.gif)
 
-# Project Name
+# OmniSage – Intelligent Multi-Agent Teaching and Learning Ecosystem
 
-> A brief, one-sentence description of what this project does and who it's for.
+> An AI-powered multi-agent learning platform that analyzes student learning needs, generates personalized learning resources, creates assessments, and supports adaptive learning.
 
-An advanced AI-powered agent that does [X, Y, and Z]. Built with [mention key technologies like CrewAI, Langchain, etc.].
+OmniSage is an AI-powered teaching and learning ecosystem designed to provide personalized academic support to students. Instead of working as a simple chatbot, OmniSage uses specialized AI agents that collaborate to analyze learner needs, generate appropriate learning resources, assess understanding, and provide personalized learning support.
+
+Built with **React, TypeScript, Python, FastAPI, Vite, and Google Gemini**, OmniSage demonstrates how multi-agent AI can be used to create a more adaptive and personalized learning experience.
 
 ## 🚀 Features
 
-- **Feature 1**: Description of the feature.
-- **Feature 2**: Description of the feature.
-- **Feature 3**: Description of the feature.
-- **User-Friendly Dashboard**: Built with Streamlit for easy interaction.
+* **Learning Analyst Agent**: Analyzes the student's question to identify the learning requirement and approximate difficulty level.
+
+* **Resource Agent**: Generates clear, personalized, and beginner-friendly explanations based on the student's learning needs.
+
+* **Assessment Agent**: Generates questions based on the learning content to check the student's understanding.
+
+* **Multi-Agent Collaboration**: Multiple specialized AI agents work together instead of relying on a single chatbot response.
+
+* **Personalized Learning**: The system adapts educational content according to the identified learning requirement and difficulty.
+
+* **Assessment-Based Learning**: Connects generated learning resources with assessments to create a continuous learning process.
+
+* **User-Friendly Interface**: A React and TypeScript-based web interface allows students to ask questions and receive learning resources and assessments.
 
 ## 🛠️ Tech Stack
 
-- **Python**: Core programming language
-- **[Framework e.g., Streamlit, FastAPI]**: For the web interface/API
-- **[AI Library e.g., ScrapeGraph AI, CrewAI]**: For AI-powered workflows
-- **[LLM Provider e.g., Nebius AI, OpenAI]**: For language model access
-- **[Other tools e.g., Twilio, APScheduler]**: For notifications, scheduling, etc.
-- **[Database e.g., JSON, Vector DB]**: For data storage
+* **Python 3.10+**: Core backend programming language
+* **FastAPI**: Backend API framework for handling requests and connecting the frontend with AI services
+* **React + TypeScript**: Frontend framework for building the learning interface
+* **Vite**: Frontend development and build tool
+* **Google GenAI SDK**: Integration with Google's generative AI services
+* **Google Gemini**: Large language model used for AI-powered learning content and assessment generation
+* **Pydantic**: Request validation and data modelling
+* **python-dotenv**: Environment variable and API key management
+* **React Markdown**: Rendering AI-generated learning content in the frontend
+* **Uvicorn**: ASGI server used to run the FastAPI backend
+* **Git & GitHub**: Version control and project collaboration
 
-## Workflow
+## 🔄 Workflow
 
 <!-- Optional: Add a workflow diagram or GIF -->
+
 ![Workflow Diagram](./assets/workflow.gif)
 
-A brief explanation of how the project works, from input to output.
+The OmniSage workflow consists of multiple specialized AI agents working together to support the student's learning process.
+
+```text
+Student Question
+       │
+       ▼
+┌─────────────────────┐
+│ Learning Assistant  │
+│    Web Interface    │
+└──────────┬──────────┘
+           │
+           ▼
+┌─────────────────────┐
+│  Learning Analyst   │
+│       Agent         │
+└──────────┬──────────┘
+           │
+           ▼
+   Learning Analysis
+   ├── Learning Need
+   └── Difficulty
+           │
+           ▼
+┌─────────────────────┐
+│   Resource Agent    │
+└──────────┬──────────┘
+           │
+           ▼
+ Personalized Learning
+      Explanation
+           │
+           ▼
+┌─────────────────────┐
+│  Assessment Agent   │
+└──────────┬──────────┘
+           │
+           ▼
+     Knowledge Check
+           │
+           ▼
+        Student
+```
+
+### Main Processing Steps
+
+1. **Student Input**: The student enters a question or learning requirement through the OmniSage interface.
+
+2. **Learning Analysis**: The Learning Analyst Agent identifies the type of learning support required and estimates the difficulty level.
+
+3. **Resource Generation**: The Resource Agent uses the learning analysis to generate a personalized explanation.
+
+4. **Assessment Generation**: The Assessment Agent uses the student's question and generated explanation to create assessment questions.
+
+5. **Learning Feedback**: The student receives the generated learning material and assessment through the web interface.
+
+6. **Adaptive Learning Extension**: Assessment results can be used in future versions to identify knowledge gaps and recommend the student's next learning activity.
 
 ## 📦 Getting Started
 
 ### Prerequisites
 
-- Python 3.9+
-- [uv](https://github.com/astral-sh/uv) or pip for package management
-- API keys for the following services:
-  - [Service 1 (e.g., Nebius AI)](https://example.com)
-  - [Service 2 (e.g., Bright Data)](https://example.com)
+* **Python 3.10+**
+* **Node.js 18+**
+* **npm**
+* **Git**
+* **pip**
+* Google Gemini API key
+* A code editor such as Visual Studio Code
 
 ### Environment Variables
 
-Create a `.env` or `api.env` file in the project root and add the following variables. Refer to the specific project's documentation for the exact file name and variables required.
+Create the environment file required by the backend.
 
-```env
-SERVICE1_API_KEY="your_service1_api_key"
-SERVICE2_API_KEY="your_service2_api_key"
+Create:
+
+```text
+backend/.env
 ```
 
-**Note:** Ensure that any phone numbers or client IDs are correctly formatted and registered with their respective services.
+Add:
+
+```env
+GEMINI_API_KEY="your_gemini_api_key"
+```
+
+Replace the example value with your actual Gemini API key.
+
+**Note:** Never commit API keys, passwords, or other sensitive information to the repository.
+
+Make sure `.env` is included in `.gitignore`.
 
 ### Installation
 
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/Arindam200/awesome-llm-apps.git
-   cd awesome-llm-apps/[project_directory]
+   git clone https://github.com/Archanaa-Thannirmalai/omnisage-platform.git
+   cd omnisage-platform
    ```
 
 2. **Create and activate a virtual environment:**
 
-   - **Using `venv`:**
-     ```bash
-     python -m venv .venv
-     source .venv/bin/activate  # On Windows, use: .venv\Scripts\activate
-     ```
+   **Using `venv`:**
 
-3. **Install dependencies:**
+   ```bash
+   python -m venv .venv
+   ```
 
-   - **Using `uv` (recommended):**
-     ```bash
-     uv sync
-     ```
-   - **Using `pip`:**
-     ```bash
-     pip install -r requirements.txt
-     ```
+   **Windows:**
+
+   ```bash
+   .venv\Scripts\activate
+   ```
+
+   **Linux/macOS:**
+
+   ```bash
+   source .venv/bin/activate
+   ```
+
+3. **Install backend dependencies:**
+
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   ```
+
+4. **Install frontend dependencies:**
+
+   Open another terminal and navigate to the frontend directory:
+
+   ```bash
+   cd frontend
+   npm install
+   ```
 
 ## ⚙️ Usage
 
-1. **Run the application:**
+1. **Start the FastAPI backend:**
+
+   From the `backend` directory:
 
    ```bash
-   streamlit run app.py
+   python -m uvicorn main:app --reload
    ```
-   or for background services:
+
+   The backend will run at:
+
+   ```text
+   http://127.0.0.1:8000
+   ```
+
+2. **Open the FastAPI documentation:**
+
+   ```text
+   http://127.0.0.1:8000/docs
+   ```
+
+3. **Start the React frontend:**
+
+   From the `frontend` directory:
+
    ```bash
-   python main.py
+   npm run dev
    ```
 
-2. **Open your browser** to `http://localhost:8501` (or as indicated by the application).
+4. Open the frontend URL displayed by Vite, normally:
 
-3. Follow the on-screen instructions, such as providing an API key or input URL.
+   ```text
+   http://localhost:5173
+   ```
+
+5. Enter a question into the OmniSage Learning Assistant.
+
+   Example:
+
+   ```text
+   What is inertia?
+   ```
+
+6. OmniSage analyzes the question, generates an explanation, and creates an assessment based on the topic.
 
 ## 📂 Project Structure
 
-A standardized project structure is recommended for clarity and maintainability.
-
-```
-project_name/
-├── agents/               # AI agent definitions
-├── assets/               # Static assets (images, GIFs)
-├── tools/                # Custom tools for agents
-├── .venv/                # Virtual environment
-├── .env                  # Environment variables
-├── app.py                # Main application file (e.g., Streamlit UI)
-├── main.py               # Core logic or service entry point
-├── requirements.txt      # Python dependencies
-└── README.md             # Project-specific README
+```text
+omnisage-platform/
+│
+├── assets/
+│   ├── demo.gif
+│   └── workflow.gif
+│
+├── backend/
+│   ├── app/
+│   │   ├── agents/
+│   │   │
+│   │   ├── api/
+│   │   │   ├── routes/
+│   │   │   │   ├── agents.py
+│   │   │   │   ├── analytics.py
+│   │   │   │   ├── auth.py
+│   │   │   │   ├── content.py
+│   │   │   │   ├── learners.py
+│   │   │   │   └── websocket.py
+│   │   │   │
+│   │   │   └── deps.py
+│   │   │
+│   │   ├── core/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   └── utils/
+│   │
+│   ├── tests/
+│   ├── .env
+│   ├── alembic.ini
+│   ├── main.py
+│   └── requirements.txt
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── common/
+│   │   │   ├── dashboard/
+│   │   │   ├── educator/
+│   │   │   └── learner/
+│   │   │
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   │   └── LearningAssistant.tsx
+│   │   ├── services/
+│   │   ├── store/
+│   │   ├── styles/
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   │
+│   ├── package.json
+│   └── vite.config.ts
+│
+├── frontend-old/
+│
+├── .gitignore
+├── README.md
+└── LICENSE
 ```
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. See the [CONTRIBUTING.md](https://github.com/Arindam200/awesome-llm-apps/blob/main/CONTRIBUTING.md) for more details.
+Contributions are welcome! Contributors can help improve OmniSage by:
+
+* Adding new educational AI agents
+* Improving learner analysis
+* Improving personalized resource generation
+* Adding new assessment capabilities
+* Developing learning analytics
+* Improving the frontend interface
+* Adding educator-focused features
+* Implementing adaptive learning recommendations
+
+Please follow the repository's contribution guidelines before submitting changes.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Arindam200/awesome-llm-apps/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
 
 ## 🙏 Acknowledgments
 
-- Shoutout to [Library/Framework](https://example.com) for their amazing work.
-- Inspired by [Project/Article](https://example.com).
+* Thanks to the developers and maintainers of **FastAPI, React, TypeScript, Vite, Pydantic, and Google GenAI**.
+* Thanks to the open-source community for providing the libraries and tools used in this project.
+* Special thanks to the developers and researchers working on AI-powered personalized education and multi-agent systems.
