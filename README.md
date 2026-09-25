@@ -296,6 +296,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [AI Trend Research Agent](advance_ai_agents/trend_analyzer_agent): AI trend mining and analysis with Google ADK
 - [Candidate Profile Analyzer (Candilyzer)](advance_ai_agents/candidate_analyser): Candidate analysis tool for GitHub and LinkedIn profiles
 - [Car Finder Agent](advance_ai_agents/car_finder_agent): AI-powered used car recommendation system with CrewAI and MongoDB
+- [Clinical Early-Warning Agent](advance_ai_agents/clinical_early_warning_agent): Gemini tool-calling agent that spots patient deterioration with NEWS2, qSOFA, personal baselines and trends
 - [Conference Proposal Generator](advance_ai_agents/conference_agnositc_cfp_generator): Automated conference proposal generation system
 - [Conference Talk Abstract Generator](advance_ai_agents/conference_talk_abstract_generator): Automated talk abstract generation with Google ADK and Couchbase
 - [Contract Review Crew (Paralegal)](advance_ai_agents/paralegal_crew): CrewAI contract review workflow for clause extraction, risk analysis, and recommended redlines
