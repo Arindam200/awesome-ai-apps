@@ -131,12 +131,14 @@ class SynthesisTests(unittest.TestCase):
 
         class FakeSocket:
             def settimeout(self, timeout):
+                """Record the timeout applied to the fake socket."""
                 seen["socket_timeout"] = timeout
 
         class FakeResponse:
             status = 200
 
             def __init__(self):
+                """Create one complete OpenAI-compatible response body."""
                 self.body = json.dumps(
                     {
                         "model": "Qwen/Qwen3-30B-A3B",
@@ -162,6 +164,7 @@ class SynthesisTests(unittest.TestCase):
                 ).encode()
 
             def read1(self, _limit: int) -> bytes:
+                """Return the response body once, then signal EOF."""
                 body, self.body = self.body, b""
                 return body
 
@@ -169,21 +172,25 @@ class SynthesisTests(unittest.TestCase):
 
         class FakeConnection:
             def __init__(self, host, port, timeout):
+                """Record connection arguments and expose the fake socket."""
                 seen["host"] = host
                 seen["port"] = port
                 seen["timeout"] = timeout
                 self.sock = FakeSocket()
 
             def request(self, method, path, body, headers):
+                """Record the outgoing request without sending it."""
                 seen["method"] = method
                 seen["path"] = path
                 seen["payload"] = json.loads(body)
                 seen["authorization"] = headers["Authorization"]
 
             def getresponse(self):
+                """Return the prepared successful response."""
                 return FakeResponse()
 
             def close(self):
+                """Record that the connection was closed."""
                 seen["closed"] = True
 
         with patch.object(
@@ -214,16 +221,17 @@ class SynthesisTests(unittest.TestCase):
             sock = None
 
             def __init__(self, *_args, **_kwargs):
-                pass
+                """Accept the production connection signature."""
 
             def request(self, *_args, **_kwargs):
-                pass
+                """Accept the request without network activity."""
 
             def getresponse(self):
+                """Return a rate-limited response."""
                 return FakeResponse()
 
             def close(self):
-                pass
+                """Close the no-op connection."""
 
         with patch.object(
             MODULE.http.client, "HTTPSConnection", FakeConnection
@@ -247,16 +255,19 @@ class SynthesisTests(unittest.TestCase):
             sock = None
 
             def __init__(self, host, port, timeout):
+                """Keep the requested host for the redirect assertion."""
                 self.host = host
 
             def request(self, method, path, body, headers):
+                """Record the single request and its credential header."""
                 requests.append((self.host, method, path, body, headers))
 
             def getresponse(self):
+                """Return a redirect response without a destination request."""
                 return FakeResponse()
 
             def close(self):
-                pass
+                """Close the no-op connection."""
 
         with patch.object(
             MODULE.http.client, "HTTPSConnection", FakeConnection
@@ -302,12 +313,13 @@ class SynthesisTests(unittest.TestCase):
 
         class FakeSocket:
             def settimeout(self, _timeout):
-                pass
+                """Accept deadline updates from the production client."""
 
         class SlowResponse:
             status = 200
 
             def read1(self, _limit):
+                """Return an endless slow stream to exercise the deadline."""
                 time.sleep(0.01)
                 return b"x"
 
@@ -315,6 +327,7 @@ class SynthesisTests(unittest.TestCase):
             status = 200
 
             def read1(self, _limit):
+                """Raise the standard incomplete-body error."""
                 raise MODULE.http.client.IncompleteRead(b"{")
 
         class PrematureEofResponse:
@@ -322,22 +335,25 @@ class SynthesisTests(unittest.TestCase):
             length = 10
 
             def read1(self, _limit):
+                """Signal EOF while bytes are still expected."""
                 return b""
 
         class FakeConnection:
             response_type = SlowResponse
 
             def __init__(self, *_args, **_kwargs):
+                """Expose a socket and the selected response type."""
                 self.sock = FakeSocket()
 
             def request(self, *_args, **_kwargs):
-                pass
+                """Accept the request without network activity."""
 
             def getresponse(self):
+                """Instantiate the response selected by the test case."""
                 return self.response_type()
 
             def close(self):
-                pass
+                """Close the no-op connection."""
 
         with patch.object(
             MODULE.http.client, "HTTPSConnection", FakeConnection
@@ -383,19 +399,21 @@ class SynthesisTests(unittest.TestCase):
             sock = None
 
             def __init__(self, *_args, **_kwargs):
-                pass
+                """Accept the production connection signature."""
 
             def request(self, *_args, **_kwargs):
+                """Delay request transmission when selected by the test."""
                 if self.slow_stage == "request":
                     time.sleep(0.02)
 
             def getresponse(self):
+                """Delay response headers when selected by the test."""
                 if self.slow_stage == "headers":
                     time.sleep(0.02)
                 return type("Response", (), {"status": 500})()
 
             def close(self):
-                pass
+                """Close the no-op connection."""
 
         for slow_stage in ("request", "headers"):
             SlowConnection.slow_stage = slow_stage

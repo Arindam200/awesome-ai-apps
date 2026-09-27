@@ -354,6 +354,7 @@ def run_http_stage(
     done = threading.Event()
 
     def invoke() -> None:
+        """Capture the blocking operation's result or transport error."""
         try:
             results.append(operation())
         except (http.client.HTTPException, OSError, TimeoutError) as error:
@@ -510,6 +511,7 @@ def collect_bounded(
     """Capture both streams without waiting on pipe handles inherited by grandchildren."""
 
     def terminate_tree(process: subprocess.Popen[Any]) -> None:
+        """Terminate the child process and any descendants it created."""
         try:
             if os.name == "nt":
                 result = subprocess.run(
@@ -777,6 +779,7 @@ def outcome_note(payload: Any) -> str:
 
 
 def first(item: dict[str, str], keys: tuple[str, ...], default: str = "—") -> str:
+    """Return the first non-empty value for the ordered candidate keys."""
     for key in keys:
         if item.get(key):
             return item[key]
@@ -1005,6 +1008,7 @@ def limit_fixture_synthesis(
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    """Parse command-line options for one bounded research run."""
     parser = argparse.ArgumentParser(
         description="Build a source-linked social research brief with Jev and socai."
     )
@@ -1033,6 +1037,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Run the research workflow and return a process exit status."""
     args = parse_args(argv)
     goal = args.goal.strip()
     if not goal:
