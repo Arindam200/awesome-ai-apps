@@ -1,0 +1,24 @@
+# Generated evaluation artifacts
+reports/
+*.report.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.deepeval/
+.temp_test_run_data.json
+deepeval*.json
+
+# Environment files
+.env
+.env.*
+!.env.example
