@@ -145,6 +145,19 @@ This repository is a comprehensive collection of **132 projects**, tutorials, an
         </a>
       </sub>
     </td>
+    <td width="200" valign="middle" align="center">
+      <a href="https://dub.sh/byteful" target="_blank" title="Visit Byteful">
+      <img src="https://byteful.com/favicon.ico" height="40" style="max-width:180px;" alt="Byteful">
+      </a>
+      <br>
+      <sub>
+        <span style="white-space:nowrap;">Byteful</span>
+        <br>
+        <a href="https://dub.sh/byteful" target="_blank">
+          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Byteful website">
+        </a>
+      </sub>
+    </td>
   </tr>
 
 </table>
