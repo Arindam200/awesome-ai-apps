@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Jev and socai social research workflow</title>
+  <desc id="desc">A natural language goal is routed by Jev, executed by the local socai CLI, projected to public evidence, and synthesized by Nebius Token Factory.</desc>
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dff6ff"/>
+      <stop offset="0.55" stop-color="#fffdf8"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <pattern id="scan" width="8" height="8" patternUnits="userSpaceOnUse">
+      <path d="M0 1h8" stroke="#f0008b" stroke-opacity=".13"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#paper)"/>
+  <rect width="1200" height="170" fill="url(#scan)"/>
+  <rect x="42" y="38" width="1116" height="554" rx="20" fill="none" stroke="#101114" stroke-width="3"/>
+  <text x="82" y="115" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="26" font-weight="700" fill="#101114">JEV <tspan fill="#f0008b">×</tspan> socai</text>
+  <text x="82" y="202" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="800" letter-spacing="-3" fill="#101114">Social research</text>
+  <text x="82" y="270" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="400" letter-spacing="-2" fill="none" stroke="#101114" stroke-width="2">with source-level receipts.</text>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" fill="#101114">
+    <rect x="82" y="350" width="220" height="112" fill="#ffffff" stroke="#101114" stroke-width="2"/>
+    <text x="102" y="395" font-size="16" font-weight="700">01 · RESEARCH GOAL</text>
+    <text x="102" y="428" font-size="14" fill="#525760">plain language</text>
+    <path d="M302 406h24" stroke="#f0008b" stroke-width="6"/>
+    <path d="m320 397 14 9-14 9" fill="none" stroke="#f0008b" stroke-width="5"/>
+    <rect x="334" y="350" width="220" height="112" fill="#fff" stroke="#101114" stroke-width="2"/>
+    <text x="354" y="395" font-size="16" font-weight="700">02 · JEV ROUTE</text>
+    <text x="354" y="428" font-size="14" fill="#525760">typed + bounded</text>
+    <path d="M554 406h24" stroke="#f0008b" stroke-width="6"/>
+    <path d="m572 397 14 9-14 9" fill="none" stroke="#f0008b" stroke-width="5"/>
+    <rect x="586" y="350" width="220" height="112" fill="#fff" stroke="#101114" stroke-width="2"/>
+    <text x="606" y="395" font-size="16" font-weight="700">03 · socai CLI</text>
+    <text x="606" y="428" font-size="14" fill="#525760">local browser evidence</text>
+    <path d="M806 406h24" stroke="#f0008b" stroke-width="6"/>
+    <path d="m824 397 14 9-14 9" fill="none" stroke="#f0008b" stroke-width="5"/>
+    <rect x="838" y="350" width="280" height="112" fill="#fff" stroke="#101114" stroke-width="2"/>
+    <text x="858" y="395" font-size="16" font-weight="700">04 · NEBIUS SYNTHESIS</text>
+    <text x="858" y="428" font-size="14" fill="#525760">evidence-linked · verify</text>
+  </g>
+  <rect x="92" y="486" width="1016" height="72" fill="#101114"/>
+  <text x="600" y="531" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="17" font-weight="700" fill="#fff">4 SOURCE-LINKED RECORDS  ·  VERIFY MODEL OUTPUT  ·  NO RAW BROWSER DATA</text>
+  <rect x="1040" y="96" width="65" height="65" fill="#fff" stroke="#101114" stroke-width="2" transform="rotate(10 1072 128)"/>
+  <rect x="1052" y="108" width="65" height="65" fill="#f0008b" opacity=".72" transform="rotate(10 1084 140)"/>
+</svg>

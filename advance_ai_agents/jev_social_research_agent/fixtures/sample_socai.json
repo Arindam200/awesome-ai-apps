@@ -1,0 +1,89 @@
+{
+  "decision": {
+    "model": "~typesafe/jev-latest",
+    "answers": {
+      "route": {
+        "type": "choice",
+        "choice": "instagram_search",
+        "confidence": 0.91,
+        "probabilities": {
+          "instagram_search": 0.91,
+          "tiktok_search": 0.06,
+          "linkedin_search": 0.02,
+          "unsupported": 0.01
+        }
+      }
+    }
+  },
+  "socai": {
+    "ok": true,
+    "status": "completed",
+    "results": [
+      {
+        "username": "studio_signal",
+        "caption": "A compact workflow demo showing how a creator moves from sketch to published visual.",
+        "media_type": "reel",
+        "likes": 1840,
+        "comments": 73,
+        "views": 22100,
+        "url": "https://www.instagram.com/reel/example-a/",
+        "local_path": "/private/tmp/browser-artifact-a"
+      },
+      {
+        "username": "maker_notes",
+        "caption": "Behind-the-scenes breakdowns are drawing more discussion than polished reveal posts.",
+        "media_type": "carousel",
+        "likes": 930,
+        "comments": 118,
+        "url": "https://www.instagram.com/p/example-b/",
+        "raw_debug": "not part of the evidence contract"
+      },
+      {
+        "author": {
+          "name": "future_craft"
+        },
+        "description": "A short comparison of three AI-assisted editing techniques, with limitations shown on screen.",
+        "type": "reel",
+        "like_count": 1270,
+        "comment_count": 46,
+        "view_count": 15700,
+        "share_url": "https://www.instagram.com/reel/example-c/"
+      },
+      {
+        "nickname": "open_process",
+        "text": "The post invites followers to choose the next experiment and explains what changed after feedback.",
+        "type": "post",
+        "likes": 760,
+        "comments": 95,
+        "post_url": "https://www.instagram.com/p/example-d/"
+      },
+      {
+        "caption": "This record is excluded because it has no public source URL.",
+        "token": "never-project-unknown-fields"
+      }
+    ]
+  },
+  "synthesis": {
+    "model": "Qwen/Qwen3-30B-A3B",
+    "summary": "The four records favor compact, process-led formats over unsupported platform-wide conclusions. Workflow demonstrations, behind-the-scenes explanations, and audience participation recur in the captured evidence.",
+    "findings": [
+      {
+        "claim": "Process and workflow explanations appear across three captured formats.",
+        "evidence_ids": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "claim": "One captured post turns audience feedback into the next experiment.",
+        "evidence_ids": [
+          4
+        ]
+      }
+    ],
+    "caveats": [
+      "Four selected records cannot establish a platform-wide trend."
+    ]
+  }
+}
