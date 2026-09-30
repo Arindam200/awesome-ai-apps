@@ -25,7 +25,7 @@ def render(result: AgentResult, patient_label: str) -> str:
         f"Level: {a['level']}   Score: {a['score']}/100   Suggested review: {a['urgency']}",
         f"NEWS2: {n2['total']} ({n2['band']})   qSOFA: {q['score']}/3{'  SEPSIS FLAG' if q['sepsis_flag'] else ''}",
         "",
-        "Summary" + (f" (Gemini · {result.model})" if result.source == "gemini" else " (offline)"),
+        "Summary" + (f" (Nebius · {result.model})" if result.source == "nebius" else " (offline)"),
         wrap(e["clinician_summary"]),
     ]
     if e.get("key_findings"):

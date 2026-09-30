@@ -62,6 +62,8 @@ def _parse_time(text: str) -> datetime:
 
 def patient_from_dict(data: dict) -> Patient:
     """Build a Patient from JSON like {"patient": {...}, "readings": [{"ts": "...", "hr": 72, ...}]}."""
+    if not isinstance(data, dict):
+        raise ValueError("Patient JSON must be an object with 'patient' and 'readings'")
     meta = data.get("patient", {})
     readings = [
         Reading(

@@ -1,4 +1,4 @@
-"""Clinical early-warning agent: NEWS2, qSOFA, personal baselines and trends, explained by Gemini."""
+"""Clinical early-warning agent: NEWS2, qSOFA, personal baselines and trends, explained by a Nebius Token Factory model."""
 
 from .agent import AgentResult, run_agent
 from .assess import assess

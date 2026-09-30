@@ -1,12 +1,12 @@
 [project]
 name = "clinical-early-warning-agent"
 version = "0.1.0"
-description = "A Gemini tool-calling agent that spots patient deterioration with NEWS2, qSOFA, personal baselines and trends"
+description = "A Nebius Token Factory tool-calling agent that spots patient deterioration with NEWS2, qSOFA, personal baselines and trends"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 dependencies = [
-    "google-genai>=1.20",
+    "openai>=1.40",
     "python-dotenv>=1.0",
     "streamlit>=1.40",
     "pandas>=2.0",

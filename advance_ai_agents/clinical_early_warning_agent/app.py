@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 from datetime import timedelta
@@ -15,8 +16,8 @@ import streamlit as st
 from dotenv import load_dotenv
 
 from early_warning import SAMPLES, generate, run_agent
-from early_warning.agent import DISCLAIMER
-from early_warning.models import VITAL_INFO, VITALS, patient_from_dict
+from early_warning.agent import DEFAULT_MODEL, DISCLAIMER
+from early_warning.models import VITAL_INFO, VITALS, patient_from_dict, patient_to_dict
 from early_warning.signals import baseline
 
 load_dotenv()
@@ -37,18 +38,20 @@ with st.sidebar:
         if upload is not None:
             try:
                 patient = patient_from_dict(json.load(upload))
-            except (KeyError, ValueError, TypeError, json.JSONDecodeError) as e:
+            except (AttributeError, KeyError, ValueError, TypeError, json.JSONDecodeError) as e:
                 st.error(f"Could not read that file: {e}")
 
     st.header("Agent")
-    api_key = st.text_input("Gemini API key", value=os.getenv("GEMINI_API_KEY", ""), type="password",
+    api_key = st.text_input("Nebius API key", value=os.getenv("NEBIUS_API_KEY", ""), type="password",
                             help="Leave empty to run offline: same tools, template explanation.")
-    model = st.text_input("Model", value=os.getenv("GEMINI_MODEL", "gemini-2.5-flash"))
+    model = st.text_input("Model", value=os.getenv("NEBIUS_MODEL", DEFAULT_MODEL),
+                          help="Any tool-calling model on Nebius Token Factory.")
     offline = st.toggle("Offline (no LLM)", value=not api_key)
     run = st.button("Assess patient", type="primary", disabled=patient is None, use_container_width=True)
 
 st.title("Clinical Early-Warning Agent")
-st.caption("NEWS2 · qSOFA · personal baseline · trend — every number from a tested tool, explained by Gemini.")
+st.caption("NEWS2 · qSOFA · personal baseline · trend — every number from a tested tool, "
+           "explained by an open model on Nebius Token Factory.")
 
 if patient is None:
     st.info("Choose a sample patient or upload one in the sidebar.")
@@ -58,13 +61,16 @@ st.subheader(patient.label)
 st.write(f"Conditions: {', '.join(patient.conditions) or '—'} · {len(patient.readings)} readings · "
          f"NEWS2 SpO2 scale {patient.spo2_scale}")
 
+# Key a stored result by the patient's full content, not its id: two uploads can share an id.
+patient_key = hashlib.sha256(json.dumps(patient_to_dict(patient), sort_keys=True).encode()).hexdigest()
+
 if run:
     with st.spinner("The agent is calling its tools…"):
-        st.session_state["result"] = (patient.id, run_agent(patient, api_key=api_key, model=model, offline=offline))
+        st.session_state["result"] = (patient_key, run_agent(patient, api_key=api_key, model=model, offline=offline))
 
 stored = st.session_state.get("result")
 # Until the agent is run, show the tools' own assessment right away (instant, no API call).
-result = stored[1] if stored and stored[0] == patient.id else run_agent(patient, offline=True)
+result = stored[1] if stored and stored[0] == patient_key else run_agent(patient, offline=True)
 
 if result:
     a, e = result.assessment, result.explanation
@@ -81,7 +87,8 @@ if result:
     c3.metric("Off personal baseline", ", ".join(a["flagged_baselines"]) or "none")
     c4.metric("Drifting", ", ".join(a["flagged_trends"]) or "none")
 
-    heading = f" · Gemini ({result.model})" if result.source == "gemini" else " · tools only (press Assess patient for the agent)"
+    heading = (f" · Nebius Token Factory ({result.model})" if result.source == "nebius"
+               else " · tools only (press Assess patient for the agent)")
     st.markdown("#### Assessment" + heading)
     st.write(e["clinician_summary"])
     for finding in e.get("key_findings", []):

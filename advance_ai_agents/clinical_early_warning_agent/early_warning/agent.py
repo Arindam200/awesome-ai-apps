@@ -1,10 +1,11 @@
-"""The early-warning agent: Gemini reasons and explains, the tools supply every number.
+"""The early-warning agent: an open model on Nebius Token Factory reasons and explains,
+the tools supply every number.
 
-The model calls the tools (automatic function calling in the google-genai SDK), then
-writes a short assessment. The risk level always comes from `get_risk_assessment`: if
-the model's text claims a different level, the tool's level wins and the report says so.
-Without an API key, or if Gemini fails, the same tools run and a template explanation
-is used instead (`source = "offline"`).
+The model calls the tools through Token Factory's OpenAI-compatible chat completions API
+(standard function calling), then writes a short assessment. The risk level always comes
+from `get_risk_assessment`: if the model's text claims a different level, the tool's level
+wins and the report says so. Without an API key, or if the model fails, the same tools run
+and a template explanation is used instead (`source = "offline"`).
 """
 
 from __future__ import annotations
@@ -18,7 +19,9 @@ from .assess import assess
 from .models import Patient
 from .tools import ToolSession
 
-DEFAULT_MODEL = "gemini-2.5-flash"
+DEFAULT_MODEL = "Qwen/Qwen3-30B-A3B-Instruct-2507"
+DEFAULT_BASE_URL = "https://api.tokenfactory.nebius.com/v1/"
+MAX_TOOL_ROUNDS = 15  # model turns that may call tools before it must answer
 DISCLAIMER = "Educational example on synthetic data. Decision support, not diagnosis; clinical judgment rests with a clinician."
 
 SYSTEM_PROMPT = """You are a clinical early-warning assistant reviewing one patient's vital signs for a ward clinician.
@@ -45,7 +48,7 @@ How to answer:
 class AgentResult:
     assessment: dict
     explanation: dict
-    source: str  # "gemini" | "offline"
+    source: str  # "nebius" | "offline"
     model: str | None = None
     trace: list[dict] = field(default_factory=list)
     note: str | None = None
@@ -53,6 +56,7 @@ class AgentResult:
 
 
 def offline_explanation(a: dict) -> dict:
+    """A template explanation built from the assessment alone, used when no model answers."""
     causes = [f for f in a["factors"] if f["factor"] != "escalation_floor"] or a["factors"]
     if causes:
         summary = f"{a['level']} (score {a['score']}/100). " + " ".join(f["detail"] for f in causes[:2])
@@ -73,8 +77,9 @@ def offline_explanation(a: dict) -> dict:
     }
 
 
-def parse_reply(text: str) -> dict | None:
-    text = (text or "").strip()
+def parse_reply(text: str | None) -> dict | None:
+    """The JSON answer from the model's reply, or None if it has none. Any <think> block is ignored."""
+    text = re.sub(r"<think>.*?</think>", "", text or "", flags=re.DOTALL).strip()
     match = re.search(r"\{.*\}", text, re.DOTALL)
     if not match:
         return None
@@ -94,6 +99,32 @@ def parse_reply(text: str) -> dict | None:
     }
 
 
+def _tool_loop(client, model: str, patient: Patient, session: ToolSession) -> str | None:
+    """Let the model call tools until it answers in text. None if it is still calling tools after
+    MAX_TOOL_ROUNDS turns."""
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": f"Assess patient {patient.id} and explain the result for the ward clinician."},
+    ]
+    tools = session.specs()
+    for _ in range(MAX_TOOL_ROUNDS):
+        response = client.chat.completions.create(model=model, messages=messages, tools=tools, temperature=0.2)
+        message = response.choices[0].message
+        if not message.tool_calls:
+            return message.content
+        messages.append({
+            "role": "assistant",
+            "content": message.content,
+            "tool_calls": [{"id": c.id, "type": "function",
+                            "function": {"name": c.function.name, "arguments": c.function.arguments}}
+                           for c in message.tool_calls],
+        })
+        for c in message.tool_calls:
+            result = session.call(c.function.name, c.function.arguments)
+            messages.append({"role": "tool", "tool_call_id": c.id, "content": json.dumps(result, default=str)})
+    return None
+
+
 def run_agent(
     patient: Patient,
     api_key: str | None = None,
@@ -101,40 +132,36 @@ def run_agent(
     offline: bool = False,
     client=None,
 ) -> AgentResult:
-    """Assess a patient. Pass `client` to inject a google-genai client (tests use a fake one)."""
-    api_key = api_key if api_key is not None else os.getenv("GEMINI_API_KEY", "")
-    model = model or os.getenv("GEMINI_MODEL", DEFAULT_MODEL)
+    """Assess a patient. Pass `client` to inject an OpenAI-compatible client (tests use a fake one)."""
+    api_key = api_key if api_key is not None else os.getenv("NEBIUS_API_KEY", "")
+    model = model or os.getenv("NEBIUS_MODEL", DEFAULT_MODEL)
     assessment = assess(patient)
     if offline or (not api_key and client is None):
-        note = None if offline else "GEMINI_API_KEY is not set, so the explanation below is the offline template."
+        note = None if offline else "NEBIUS_API_KEY is not set, so the explanation below is the offline template."
         return AgentResult(assessment, offline_explanation(assessment), "offline", note=note)
 
     session = ToolSession(patient)
     try:
-        from google import genai
-        from google.genai import types
+        if client is None:
+            from openai import OpenAI
 
-        client = client or genai.Client(api_key=api_key)
-        response = client.models.generate_content(
-            model=model,
-            contents=f"Assess patient {patient.id} and explain the result for the ward clinician.",
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                tools=session.tools(),
-                temperature=0.2,
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(maximum_remote_calls=15),
-            ),
-        )
-        explanation = parse_reply(response.text)
-    except Exception as e:  # noqa: BLE001 — any Gemini failure (network, quota, bad model) falls back offline
+            client = OpenAI(api_key=api_key, base_url=os.getenv("NEBIUS_BASE_URL", DEFAULT_BASE_URL))
+        text = _tool_loop(client, model, patient, session)
+    except Exception as e:  # noqa: BLE001 — any API failure (network, quota, bad model) falls back offline
         return AgentResult(assessment, offline_explanation(assessment), "offline", trace=session.trace,
-                           note=f"Gemini was unavailable ({type(e).__name__}); showing the offline explanation.")
+                           note=f"Nebius Token Factory was unavailable ({type(e).__name__}); "
+                                "showing the offline explanation.")
 
+    if text is None:
+        return AgentResult(assessment, offline_explanation(assessment), "offline", model=model, trace=session.trace,
+                           note=f"The model did not answer within {MAX_TOOL_ROUNDS} tool rounds; "
+                                "showing the offline explanation.")
+    explanation = parse_reply(text)
     if explanation is None:
         return AgentResult(assessment, offline_explanation(assessment), "offline", model=model, trace=session.trace,
-                           note="Gemini's reply could not be parsed; showing the offline explanation.")
+                           note="The model's reply could not be parsed; showing the offline explanation.")
     note = None
     if explanation["level"] != assessment["level"]:
         note = f"The model said '{explanation['level'] or 'nothing'}'; the tool-computed level {assessment['level']} is used."
         explanation["level"] = assessment["level"]
-    return AgentResult(assessment, explanation, "gemini", model=model, trace=session.trace, note=note)
+    return AgentResult(assessment, explanation, "nebius", model=model, trace=session.trace, note=note)

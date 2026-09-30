@@ -2,12 +2,16 @@
 deterministic code in this package, so every number the agent reports can be traced.
 
 The patient's readings (a week at 5-minute intervals) are far too long to pass as tool
-arguments, so the tools work on the patient loaded into a `ToolSession`.
+arguments, so the tools work on the patient loaded into a `ToolSession`. `specs()` gives
+the tools in the OpenAI function-calling format that Nebius Token Factory accepts, and
+`call()` runs one tool call from the model.
 """
 
 from __future__ import annotations
 
 import functools
+import inspect
+import json
 from collections.abc import Callable
 
 from .assess import assess
@@ -15,11 +19,26 @@ from .models import VITAL_INFO, VITALS, Patient
 from .scoring import news2, qsofa
 from .signals import deviation, trend
 
+_VITAL = {"type": "string", "enum": list(VITALS), "description": "The vital sign to check."}
+_NO_ARGS = {"type": "object", "properties": {}}
+PARAMETERS = {
+    "check_personal_baseline": {"type": "object", "properties": {"vital": _VITAL}, "required": ["vital"]},
+    "check_trend": {
+        "type": "object",
+        "properties": {"vital": _VITAL,
+                       "hours": {"type": "number", "description": "Window in hours, between 1 and 12 (default 3)."}},
+        "required": ["vital"],
+    },
+}
+
 
 class ToolSession:
+    """The tools bound to one patient, with a trace of every call the agent makes."""
+
     def __init__(self, patient: Patient) -> None:
         self.patient = patient
         self.trace: list[dict] = []
+        self._tools = {f.__name__: f for f in self._build()}
 
     def _record(self, fn: Callable) -> Callable:
         @functools.wraps(fn)
@@ -31,6 +50,34 @@ class ToolSession:
         return wrapper
 
     def tools(self) -> list[Callable]:
+        """The tool functions, each recording its calls in `trace`."""
+        return list(self._tools.values())
+
+    def specs(self) -> list[dict]:
+        """The tools as OpenAI-style function definitions (name, description, JSON schema)."""
+        return [
+            {"type": "function", "function": {"name": name, "description": inspect.cleandoc(fn.__doc__ or ""),
+                                              "parameters": PARAMETERS.get(name, _NO_ARGS)}}
+            for name, fn in self._tools.items()
+        ]
+
+    def call(self, name: str, arguments: str | None) -> dict:
+        """Run one tool call from the model. Bad calls return an error the model can read, never raise."""
+        fn = self._tools.get(name)
+        if fn is None:
+            return {"error": f"Unknown tool '{name}'. Use one of {list(self._tools)}."}
+        try:
+            args = json.loads(arguments or "{}")
+        except json.JSONDecodeError:
+            args = None
+        if not isinstance(args, dict):
+            return {"error": f"The arguments for {name} must be a JSON object."}
+        try:
+            return fn(**args)
+        except (TypeError, ValueError) as e:
+            return {"error": f"Bad arguments for {name}: {e}"}
+
+    def _build(self) -> list[Callable]:
         p = self.patient
 
         def get_patient_overview() -> dict:
