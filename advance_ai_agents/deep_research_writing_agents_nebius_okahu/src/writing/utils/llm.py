@@ -1,6 +1,7 @@
 """Nebius, LangChain, and Gemini helpers for writing interactions."""
 
 import asyncio
+import base64
 import io
 import json
 import logging
@@ -8,6 +9,7 @@ import re
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
+from urllib.request import Request, urlopen
 
 from google import genai
 from google.genai import types
@@ -105,6 +107,8 @@ async def call_gemini_image(
     """Generate an image with Gemini and save it to disk."""
 
     settings = get_settings()
+    if settings.gemini_api_key is None:
+        raise RuntimeError("GEMINI_API_KEY is required for the selected image backend.")
 
     def _generate() -> bytes:
         client = genai.Client(api_key=settings.gemini_api_key.get_secret_value())
@@ -148,12 +152,109 @@ async def call_gemini_image(
         raise RuntimeError(msg)
 
     image_bytes = await asyncio.to_thread(_generate)
+    return _save_image_bytes(image_bytes, output_path)
+
+
+MINIMAX_IMAGE_ENDPOINTS = {
+    "global_en": "https://api.minimax.io/v1/image_generation",
+    "cn_zh": "https://api.minimaxi.com/v1/image_generation",
+}
+MINIMAX_IMAGE_MODELS = ("image-01", "image-01-live")
+
+
+def _minimax_image_bytes(image_value: str) -> bytes:
+    """Resolve a MiniMax image URL or base64 value into bytes."""
+
+    if image_value.startswith(("http://", "https://")):
+        with urlopen(image_value, timeout=60) as response:
+            return response.read()
+
+    encoded = image_value.split(",", 1)[1] if image_value.startswith("data:") else image_value
+    try:
+        return base64.b64decode(encoded, validate=True)
+    except (ValueError, base64.binascii.Error) as exc:
+        raise RuntimeError("MiniMax image response contained an invalid image value.") from exc
+
+
+async def call_minimax_image(
+    prompt: str,
+    output_path: Path,
+    reference_images: list[Path] | None = None,
+) -> Path:
+    """Generate an image with MiniMax and save it to disk."""
+
+    del reference_images  # The text-to-image operation only requires a prompt.
+    settings = get_settings()
+    if settings.minimax_api_key is None:
+        raise RuntimeError("MINIMAX_API_KEY is required for the selected image backend.")
+
+    endpoint = settings.minimax_image_endpoint or MINIMAX_IMAGE_ENDPOINTS.get(
+        settings.minimax_api_region
+    )
+    if endpoint is None:
+        choices = ", ".join(sorted(MINIMAX_IMAGE_ENDPOINTS))
+        raise ValueError(
+            f"Unsupported MiniMax API region {settings.minimax_api_region!r}; choose one of: {choices}"
+        )
+    if settings.minimax_image_model not in MINIMAX_IMAGE_MODELS:
+        choices = ", ".join(MINIMAX_IMAGE_MODELS)
+        raise ValueError(
+            f"Unsupported MiniMax image model {settings.minimax_image_model!r}; choose one of: {choices}"
+        )
+
+    def _generate() -> bytes:
+        payload = json.dumps({"model": settings.minimax_image_model, "prompt": prompt}).encode()
+        request = Request(
+            endpoint,
+            data=payload,
+            headers={
+                "Authorization": f"Bearer {settings.minimax_api_key.get_secret_value()}",
+                "Content-Type": "application/json",
+            },
+            method="POST",
+        )
+        with urlopen(request, timeout=60) as response:
+            result = json.loads(response.read())
+
+        status_code = result.get("base_resp", {}).get("status_code")
+        if status_code not in (None, 0, "0"):
+            raise RuntimeError("MiniMax image generation returned an unsuccessful status.")
+
+        image_urls = result.get("data", {}).get("image_urls")
+        if isinstance(image_urls, str):
+            image_urls = [image_urls]
+        if not isinstance(image_urls, list) or not image_urls:
+            raise RuntimeError("MiniMax image response did not include image_urls.")
+        return _minimax_image_bytes(str(image_urls[0]))
+
+    image_bytes = await asyncio.to_thread(_generate)
+    return _save_image_bytes(image_bytes, output_path)
+
+
+def _save_image_bytes(image_bytes: bytes, output_path: Path) -> Path:
+    """Persist generated image bytes as an image file."""
+
     output_path.parent.mkdir(parents=True, exist_ok=True)
     pil_image = Image.open(io.BytesIO(image_bytes))
     pil_image.save(str(output_path))
     logger.info(f"Image saved to {output_path}")
 
     return output_path
+
+
+async def call_image(
+    prompt: str,
+    output_path: Path,
+    reference_images: list[Path] | None = None,
+) -> Path:
+    """Generate an image with the configured image backend."""
+
+    provider = get_settings().image_provider.strip().lower()
+    if provider == "minimax":
+        return await call_minimax_image(prompt, output_path, reference_images)
+    if provider == "gemini":
+        return await call_gemini_image(prompt, output_path, reference_images)
+    raise ValueError(f"Unsupported image provider: {provider!r}")
 
 
 # Backward-compatible names used by existing handlers.
