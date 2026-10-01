@@ -37,6 +37,11 @@ body:
         - mcp_ai_agents
         - rag_apps
         - starter_ai_agents
+        - simple_ai_agents
+        - memory_agents
+        - voice_agents
+        - fine_tuning
+        - course
     validations:
       required: true
 

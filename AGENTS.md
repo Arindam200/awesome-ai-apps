@@ -4,7 +4,7 @@ This file provides guidance to Codex (Codex.ai/code) when working with code in t
 
 ## Repository Overview
 
-This is a comprehensive collection of practical LLM-powered application examples, tutorials, and recipes organized by complexity and use case. The repository contains 70+ example projects demonstrating various AI frameworks and patterns.
+This is a comprehensive collection of practical LLM-powered application examples, tutorials, and recipes organized by complexity and use case. The repository contains 130+ example projects demonstrating various AI frameworks and patterns.
 
 ## Project Categories
 
