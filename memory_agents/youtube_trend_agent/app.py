@@ -18,7 +18,12 @@ import streamlit as st
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from core import fetch_exa_trends, ingest_channel_into_memori
+from core import (
+    DEFAULT_MINIMAX_MODEL,
+    MINIMAX_MODEL_IDS,
+    fetch_exa_trends,
+    ingest_channel_into_memori,
+)
 
 
 def _load_inline_image(path: str, height_px: int) -> str:
@@ -78,7 +83,10 @@ def main():
         minimax_base_url_input = st.text_input(
             "MiniMax Base URL",
             value=os.getenv("OPENAI_BASE_URL", "https://api.minimax.io/v1"),
-            help="Base URL for MiniMax's OpenAI-compatible API.",
+            help=(
+                "Base URL for MiniMax's OpenAI-compatible API. "
+                f"Supported text models: {', '.join(MINIMAX_MODEL_IDS)}."
+            ),
         )
 
         exa_api_key_input = st.text_input(
@@ -254,7 +262,7 @@ External web trends for this niche (may be partial):
                     completion = client.chat.completions.create(
                         model=os.getenv(
                             "YOUTUBE_TREND_MODEL",
-                            "MiniMax-M2.1",
+                            DEFAULT_MINIMAX_MODEL,
                         ),
                         messages=[
                             {
