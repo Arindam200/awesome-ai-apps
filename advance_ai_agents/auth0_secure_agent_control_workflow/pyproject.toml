@@ -1,0 +1,12 @@
+[project]
+name = "auth0-secure-agent-control-workflow"
+version = "0.1.0"
+description = "Auth0-based authorization and secure tool control for AI agents"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "python-dotenv>=1.0.0",
+    "openai>=1.0.0",
+    "PyJWT[crypto]>=2.8.0",
+    "pytest>=8.0.0",
+]
