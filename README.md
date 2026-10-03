@@ -206,11 +206,12 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🪶 Simple Agents
 
-**Straightforward, practical use-cases for everyday AI applications.** _18 projects_
+**Straightforward, practical use-cases for everyday AI applications.** _19 projects_
 
 - [Agno Agent Examples](simple_ai_agents/agno_ai_examples): Simple to multi-agent examples with web search and a knowledge base
 - [Agno Agent UI](simple_ai_agents/agno_ui_agent): Interactive UI for web and finance agents
 - [AI Agent Registry Explorer](simple_ai_agents/agent_discovery_agent): Find and compare AI agents across NANDA, MCP, Virtuals, A2A, and ERC-8004 registries
+- [AI Expense Tracker](simple_ai_agents/ai_expense_tracker): Chat-based expense tracking with Nebius Token Factory and a Postgres backend that agents provision on first run
 - [Calendar Assistant](simple_ai_agents/cal_scheduling_agent): Calendar scheduling integration with Cal.com
 - [Cost-Aware Model Router (RouteLLM)](simple_ai_agents/llm_router): Intelligent model routing with RouteLLM (GPT-4o-mini vs Nebius Llama) for cost optimization
 - [Email-to-Calendar Assistant](simple_ai_agents/email_to_calendar_scheduler): AI-powered Gmail reader and Google Calendar manager
