@@ -1,0 +1,633 @@
+[
+  {
+    "id": "P01",
+    "nickname": "Aarav",
+    "language": "kn",
+    "archetype": "denominator_adder",
+    "p_correct": {
+      "C1": 0.8,
+      "C2": 0.72,
+      "C3": 0.36,
+      "C4": 0.26,
+      "C5": 0.48,
+      "C6": 0.58,
+      "C7": 0.46,
+      "C8": 0.32
+    },
+    "preferred_tags": {
+      "C3": "add_denominators",
+      "C4": "add_denominators",
+      "C5": "larger_denominator_larger",
+      "C8": "add_denominators"
+    }
+  },
+  {
+    "id": "P02",
+    "nickname": "Ananya",
+    "language": "kn",
+    "archetype": "procedure_mixer",
+    "p_correct": {
+      "C1": 0.73,
+      "C2": 0.66,
+      "C3": 0.59,
+      "C4": 0.56,
+      "C5": 0.62,
+      "C6": 0.28,
+      "C7": 0.18,
+      "C8": 0.3
+    },
+    "preferred_tags": {
+      "C6": "multiply_cross_add",
+      "C7": "divide_flip_first",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P03",
+    "nickname": "Bhavya",
+    "language": "en",
+    "archetype": "denominator_adder",
+    "p_correct": {
+      "C1": 0.71,
+      "C2": 0.77,
+      "C3": 0.32,
+      "C4": 0.27,
+      "C5": 0.4,
+      "C6": 0.69,
+      "C7": 0.45,
+      "C8": 0.33
+    },
+    "preferred_tags": {
+      "C3": "add_denominators",
+      "C4": "add_denominators",
+      "C5": "larger_denominator_larger",
+      "C8": "add_denominators"
+    }
+  },
+  {
+    "id": "P04",
+    "nickname": "Chirag",
+    "language": "hi",
+    "archetype": "denominator_adder",
+    "p_correct": {
+      "C1": 0.83,
+      "C2": 0.72,
+      "C3": 0.31,
+      "C4": 0.28,
+      "C5": 0.5,
+      "C6": 0.69,
+      "C7": 0.46,
+      "C8": 0.28
+    },
+    "preferred_tags": {
+      "C3": "add_denominators",
+      "C4": "add_denominators",
+      "C5": "larger_denominator_larger",
+      "C8": "add_denominators"
+    }
+  },
+  {
+    "id": "P05",
+    "nickname": "Diya",
+    "language": "hi",
+    "archetype": "denominator_adder",
+    "p_correct": {
+      "C1": 0.72,
+      "C2": 0.66,
+      "C3": 0.25,
+      "C4": 0.32,
+      "C5": 0.51,
+      "C6": 0.62,
+      "C7": 0.52,
+      "C8": 0.33
+    },
+    "preferred_tags": {
+      "C3": "add_denominators",
+      "C4": "add_denominators",
+      "C5": "larger_denominator_larger",
+      "C8": "add_denominators"
+    }
+  },
+  {
+    "id": "P06",
+    "nickname": "Farhan",
+    "language": "en",
+    "archetype": "denominator_adder",
+    "p_correct": {
+      "C1": 0.82,
+      "C2": 0.69,
+      "C3": 0.26,
+      "C4": 0.21,
+      "C5": 0.46,
+      "C6": 0.61,
+      "C7": 0.51,
+      "C8": 0.41
+    },
+    "preferred_tags": {
+      "C3": "add_denominators",
+      "C4": "add_denominators",
+      "C5": "larger_denominator_larger",
+      "C8": "add_denominators"
+    }
+  },
+  {
+    "id": "P07",
+    "nickname": "Gauri",
+    "language": "en",
+    "archetype": "denominator_adder",
+    "p_correct": {
+      "C1": 0.73,
+      "C2": 0.66,
+      "C3": 0.38,
+      "C4": 0.25,
+      "C5": 0.38,
+      "C6": 0.58,
+      "C7": 0.44,
+      "C8": 0.37
+    },
+    "preferred_tags": {
+      "C3": "add_denominators",
+      "C4": "add_denominators",
+      "C5": "larger_denominator_larger",
+      "C8": "add_denominators"
+    }
+  },
+  {
+    "id": "P08",
+    "nickname": "Harsha",
+    "language": "kn",
+    "archetype": "solid",
+    "p_correct": {
+      "C1": 0.95,
+      "C2": 0.84,
+      "C3": 0.73,
+      "C4": 0.78,
+      "C5": 0.93,
+      "C6": 0.8,
+      "C7": 0.68,
+      "C8": 0.66
+    },
+    "preferred_tags": {
+      "C7": "divide_direct",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P09",
+    "nickname": "Ishita",
+    "language": "en",
+    "archetype": "procedure_mixer",
+    "p_correct": {
+      "C1": 0.72,
+      "C2": 0.74,
+      "C3": 0.68,
+      "C4": 0.61,
+      "C5": 0.56,
+      "C6": 0.32,
+      "C7": 0.14,
+      "C8": 0.34
+    },
+    "preferred_tags": {
+      "C6": "multiply_cross_add",
+      "C7": "divide_flip_first",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P10",
+    "nickname": "Jayanth",
+    "language": "kn",
+    "archetype": "denominator_adder",
+    "p_correct": {
+      "C1": 0.74,
+      "C2": 0.77,
+      "C3": 0.36,
+      "C4": 0.21,
+      "C5": 0.45,
+      "C6": 0.6,
+      "C7": 0.57,
+      "C8": 0.41
+    },
+    "preferred_tags": {
+      "C3": "add_denominators",
+      "C4": "add_denominators",
+      "C5": "larger_denominator_larger",
+      "C8": "add_denominators"
+    }
+  },
+  {
+    "id": "P11",
+    "nickname": "Kavya",
+    "language": "en",
+    "archetype": "solid",
+    "p_correct": {
+      "C1": 0.87,
+      "C2": 0.87,
+      "C3": 0.82,
+      "C4": 0.74,
+      "C5": 0.89,
+      "C6": 0.81,
+      "C7": 0.64,
+      "C8": 0.6
+    },
+    "preferred_tags": {
+      "C7": "divide_direct",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P12",
+    "nickname": "Lakshmi",
+    "language": "hi",
+    "archetype": "denominator_adder",
+    "p_correct": {
+      "C1": 0.67,
+      "C2": 0.67,
+      "C3": 0.22,
+      "C4": 0.32,
+      "C5": 0.51,
+      "C6": 0.7,
+      "C7": 0.47,
+      "C8": 0.28
+    },
+    "preferred_tags": {
+      "C3": "add_denominators",
+      "C4": "add_denominators",
+      "C5": "larger_denominator_larger",
+      "C8": "add_denominators"
+    }
+  },
+  {
+    "id": "P13",
+    "nickname": "Mohan",
+    "language": "hi",
+    "archetype": "procedure_mixer",
+    "p_correct": {
+      "C1": 0.86,
+      "C2": 0.77,
+      "C3": 0.58,
+      "C4": 0.6,
+      "C5": 0.53,
+      "C6": 0.34,
+      "C7": 0.24,
+      "C8": 0.29
+    },
+    "preferred_tags": {
+      "C6": "multiply_cross_add",
+      "C7": "divide_flip_first",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P14",
+    "nickname": "Nandini",
+    "language": "kn",
+    "archetype": "solid",
+    "p_correct": {
+      "C1": 0.9,
+      "C2": 0.86,
+      "C3": 0.76,
+      "C4": 0.86,
+      "C5": 0.84,
+      "C6": 0.75,
+      "C7": 0.61,
+      "C8": 0.64
+    },
+    "preferred_tags": {
+      "C7": "divide_direct",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P15",
+    "nickname": "Omkar",
+    "language": "kn",
+    "archetype": "procedure_mixer",
+    "p_correct": {
+      "C1": 0.75,
+      "C2": 0.67,
+      "C3": 0.73,
+      "C4": 0.62,
+      "C5": 0.59,
+      "C6": 0.3,
+      "C7": 0.14,
+      "C8": 0.31
+    },
+    "preferred_tags": {
+      "C6": "multiply_cross_add",
+      "C7": "divide_flip_first",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P16",
+    "nickname": "Pooja",
+    "language": "hi",
+    "archetype": "solid",
+    "p_correct": {
+      "C1": 0.87,
+      "C2": 0.86,
+      "C3": 0.76,
+      "C4": 0.76,
+      "C5": 0.78,
+      "C6": 0.82,
+      "C7": 0.56,
+      "C8": 0.66
+    },
+    "preferred_tags": {
+      "C7": "divide_direct",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P17",
+    "nickname": "Rahul",
+    "language": "en",
+    "archetype": "solid",
+    "p_correct": {
+      "C1": 0.96,
+      "C2": 0.78,
+      "C3": 0.76,
+      "C4": 0.83,
+      "C5": 0.8,
+      "C6": 0.74,
+      "C7": 0.67,
+      "C8": 0.61
+    },
+    "preferred_tags": {
+      "C7": "divide_direct",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P18",
+    "nickname": "Sana",
+    "language": "kn",
+    "archetype": "procedure_mixer",
+    "p_correct": {
+      "C1": 0.8,
+      "C2": 0.75,
+      "C3": 0.7,
+      "C4": 0.55,
+      "C5": 0.54,
+      "C6": 0.29,
+      "C7": 0.19,
+      "C8": 0.34
+    },
+    "preferred_tags": {
+      "C6": "multiply_cross_add",
+      "C7": "divide_flip_first",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P19",
+    "nickname": "Tanvi",
+    "language": "kn",
+    "archetype": "solid",
+    "p_correct": {
+      "C1": 0.94,
+      "C2": 0.88,
+      "C3": 0.88,
+      "C4": 0.74,
+      "C5": 0.83,
+      "C6": 0.77,
+      "C7": 0.66,
+      "C8": 0.56
+    },
+    "preferred_tags": {
+      "C7": "divide_direct",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P20",
+    "nickname": "Uday",
+    "language": "en",
+    "archetype": "solid",
+    "p_correct": {
+      "C1": 0.85,
+      "C2": 0.84,
+      "C3": 0.79,
+      "C4": 0.76,
+      "C5": 0.81,
+      "C6": 0.87,
+      "C7": 0.59,
+      "C8": 0.66
+    },
+    "preferred_tags": {
+      "C7": "divide_direct",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P21",
+    "nickname": "Varsha",
+    "language": "kn",
+    "archetype": "procedure_mixer",
+    "p_correct": {
+      "C1": 0.81,
+      "C2": 0.63,
+      "C3": 0.73,
+      "C4": 0.65,
+      "C5": 0.68,
+      "C6": 0.37,
+      "C7": 0.26,
+      "C8": 0.3
+    },
+    "preferred_tags": {
+      "C6": "multiply_cross_add",
+      "C7": "divide_flip_first",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P22",
+    "nickname": "Yash",
+    "language": "hi",
+    "archetype": "denominator_adder",
+    "p_correct": {
+      "C1": 0.75,
+      "C2": 0.65,
+      "C3": 0.28,
+      "C4": 0.18,
+      "C5": 0.43,
+      "C6": 0.73,
+      "C7": 0.46,
+      "C8": 0.4
+    },
+    "preferred_tags": {
+      "C3": "add_denominators",
+      "C4": "add_denominators",
+      "C5": "larger_denominator_larger",
+      "C8": "add_denominators"
+    }
+  },
+  {
+    "id": "P23",
+    "nickname": "Zoya",
+    "language": "en",
+    "archetype": "denominator_adder",
+    "p_correct": {
+      "C1": 0.74,
+      "C2": 0.69,
+      "C3": 0.37,
+      "C4": 0.33,
+      "C5": 0.46,
+      "C6": 0.68,
+      "C7": 0.44,
+      "C8": 0.32
+    },
+    "preferred_tags": {
+      "C3": "add_denominators",
+      "C4": "add_denominators",
+      "C5": "larger_denominator_larger",
+      "C8": "add_denominators"
+    }
+  },
+  {
+    "id": "P24",
+    "nickname": "Akshay",
+    "language": "hi",
+    "archetype": "procedure_mixer",
+    "p_correct": {
+      "C1": 0.87,
+      "C2": 0.71,
+      "C3": 0.66,
+      "C4": 0.64,
+      "C5": 0.53,
+      "C6": 0.31,
+      "C7": 0.2,
+      "C8": 0.41
+    },
+    "preferred_tags": {
+      "C6": "multiply_cross_add",
+      "C7": "divide_flip_first",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P25",
+    "nickname": "Bindu",
+    "language": "en",
+    "archetype": "solid",
+    "p_correct": {
+      "C1": 0.85,
+      "C2": 0.92,
+      "C3": 0.73,
+      "C4": 0.75,
+      "C5": 0.87,
+      "C6": 0.83,
+      "C7": 0.56,
+      "C8": 0.54
+    },
+    "preferred_tags": {
+      "C7": "divide_direct",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P26",
+    "nickname": "Charan",
+    "language": "en",
+    "archetype": "procedure_mixer",
+    "p_correct": {
+      "C1": 0.86,
+      "C2": 0.66,
+      "C3": 0.67,
+      "C4": 0.62,
+      "C5": 0.59,
+      "C6": 0.31,
+      "C7": 0.2,
+      "C8": 0.42
+    },
+    "preferred_tags": {
+      "C6": "multiply_cross_add",
+      "C7": "divide_flip_first",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P27",
+    "nickname": "Deepa",
+    "language": "hi",
+    "archetype": "solid",
+    "p_correct": {
+      "C1": 0.85,
+      "C2": 0.88,
+      "C3": 0.76,
+      "C4": 0.78,
+      "C5": 0.88,
+      "C6": 0.77,
+      "C7": 0.57,
+      "C8": 0.64
+    },
+    "preferred_tags": {
+      "C7": "divide_direct",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P28",
+    "nickname": "Eshwar",
+    "language": "en",
+    "archetype": "procedure_mixer",
+    "p_correct": {
+      "C1": 0.73,
+      "C2": 0.69,
+      "C3": 0.73,
+      "C4": 0.68,
+      "C5": 0.53,
+      "C6": 0.25,
+      "C7": 0.16,
+      "C8": 0.42
+    },
+    "preferred_tags": {
+      "C6": "multiply_cross_add",
+      "C7": "divide_flip_first",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P29",
+    "nickname": "Fathima",
+    "language": "en",
+    "archetype": "solid",
+    "p_correct": {
+      "C1": 0.96,
+      "C2": 0.91,
+      "C3": 0.78,
+      "C4": 0.75,
+      "C5": 0.9,
+      "C6": 0.83,
+      "C7": 0.62,
+      "C8": 0.68
+    },
+    "preferred_tags": {
+      "C7": "divide_direct",
+      "C8": "word_problem_operation"
+    }
+  },
+  {
+    "id": "P30",
+    "nickname": "Girish",
+    "language": "kn",
+    "archetype": "denominator_adder",
+    "p_correct": {
+      "C1": 0.77,
+      "C2": 0.62,
+      "C3": 0.35,
+      "C4": 0.22,
+      "C5": 0.48,
+      "C6": 0.72,
+      "C7": 0.44,
+      "C8": 0.29
+    },
+    "preferred_tags": {
+      "C3": "add_denominators",
+      "C4": "add_denominators",
+      "C5": "larger_denominator_larger",
+      "C8": "add_denominators"
+    }
+  }
+]
