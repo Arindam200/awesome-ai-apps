@@ -359,7 +359,9 @@ async def main() -> bool:
     server = StdioServerParameters(
         command=npx_path(),
         args=["-y", MEMORY_SERVER],
-        env=dict(os.environ),
+        # The model key stays in this process for answer_from; the MCP server
+        # never needs it, so it is not passed to the child.
+        env={k: v for k, v in os.environ.items() if k != "NEBIUS_API_KEY"},
     )
     try:
         async with (
