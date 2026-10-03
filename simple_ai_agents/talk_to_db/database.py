@@ -1,6 +1,11 @@
+import logging
 import streamlit as st
 import pymysql
 from urllib.parse import urlparse
+
+from sql_validator import SQLValidationError, validate_sql
+
+logger = logging.getLogger(__name__)
 
 
 def parse_connection_string(connection_string):
@@ -48,18 +53,32 @@ def get_database_connection():
 
 
 def execute_query(sql_query):
-    """Execute SQL query and return results"""
+    """Validate, then execute a read-only SQL query and return results"""
+    try:
+        safe_sql = validate_sql(sql_query)
+    except SQLValidationError as e:
+        logger.warning("SQL query rejected by validator: %s", e)
+        return None, f"Query rejected: {e}"
+
+    connection = None
     try:
         connection = get_database_connection()
         if not connection:
             return None, "Database connection failed"
 
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
-            cursor.execute(sql_query)
+            # Bound execution time so a runaway/expensive generated query
+            # can't tie up the database connection.
+            cursor.execute("SET SESSION MAX_EXECUTION_TIME=5000")
+            cursor.execute(safe_sql)
             results = cursor.fetchall()
 
-        connection.close()
+        logger.info("SQL query executed successfully (%d rows)", len(results))
         return results, None
 
     except Exception as e:
+        logger.error("SQL query execution failed: %s", e)
         return None, f"Query execution error: {str(e)}"
+    finally:
+        if connection:
+            connection.close()

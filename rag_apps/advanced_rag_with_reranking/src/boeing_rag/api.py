@@ -9,6 +9,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func
 from sqlalchemy.orm import Session
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from boeing_rag.config import get_settings
 from boeing_rag.db import SessionLocal, init_db
@@ -38,6 +39,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+class SecurityHeadersMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        response = await call_next(request)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Frame-Options"] = "DENY"
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        return response
+
+
+app.add_middleware(SecurityHeadersMiddleware)
 
 
 def get_session():
@@ -129,11 +142,14 @@ def chunk_page_image(
 
 def _asset_cors_headers(request: Request) -> dict[str, str]:
     origin = request.headers.get("origin")
-    allowed_origin = origin if origin and _is_local_origin(origin) else "*"
+    if not origin or not _is_local_origin(origin):
+        # No CORS grant for non-local origins — omit the header entirely rather
+        # than falling back to "*", since these endpoints serve raw PDF/image bytes.
+        return {}
     return {
-        "Access-Control-Allow-Origin": allowed_origin,
+        "Access-Control-Allow-Origin": origin,
         "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
-        "Access-Control-Allow-Headers": "*",
+        "Access-Control-Allow-Headers": "Range, If-None-Match, If-Modified-Since",
         "Access-Control-Expose-Headers": "Accept-Ranges, Content-Length, Content-Range",
         "Vary": "Origin",
     }
