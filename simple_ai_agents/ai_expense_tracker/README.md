@@ -1,6 +1,8 @@
 # AI Expense Tracker
 
-A chat-based expense tracker that provisions its own database on first run. Tell it what you spent, ask it questions about your spending — the backend sets itself up.
+A chat-based expense tracker that provisions its own database on first run. Tell it what you spent, ask it questions about your spending.
+
+![demo](./assets/demo.png)
 
 ## 🚀 Features
 
