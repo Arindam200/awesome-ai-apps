@@ -8,7 +8,7 @@ A chat-based expense tracker that provisions its own database on first run. Tell
 
 - **Natural-language input**: "Spent $45 on dinner with friends" → parsed, categorized, stored.
 - **Spending queries**: "How much did I spend on food this month?" → answered with live data.
-- **Self-provisioning backend**: The database is created automatically on first run — no account required.
+- **Self-provisioning backend**: The database is created automatically on first run, no account required. The project starts as a 72-hour ephemeral instance. Claim it to keep your data longer.
 
 ## 🛠️ Tech Stack
 
