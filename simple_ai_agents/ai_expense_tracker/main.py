@@ -49,7 +49,10 @@ def _bootstrap() -> dict:
 
     log.info("No .cohesivity found, bootstrapping Cohesivity project...")
     try:
-        subprocess.run(["npx", "@cohesivity/init", "--yes"], check=True, timeout=60)
+        subprocess.run(
+            ["npx", "@cohesivity/init", "--yes", "--attribution", "gh-awesome-ai-apps"],
+            check=True, timeout=60,
+        )
     except FileNotFoundError:
         subprocess.run(
             ["bash", "-c", "curl -fsSL https://cohesivity.ai/quickstart.sh | bash"],
