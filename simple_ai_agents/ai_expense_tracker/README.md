@@ -43,6 +43,8 @@ NEBIUS_API_KEY=your_nebius_api_key_here
 
 That's the only key you need. The database backend provisions itself.
 
+> `.cohesivity` contains project credentials. It is gitignored and should not be committed.
+
 ### Installation
 
 1. **Clone the repository:**

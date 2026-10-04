@@ -48,6 +48,8 @@ def _bootstrap() -> dict:
         return _read_cohesivity()
 
     log.info("No .cohesivity found, bootstrapping Cohesivity project...")
+    print("No .cohesivity found. This will run `npx @cohesivity/init` to create a Cohesivity project.")
+    print("To skip, run the command yourself first: npx @cohesivity/init")
     try:
         subprocess.run(
             ["npx", "@cohesivity/init", "--yes", "--attribution", "gh-awesome-ai-apps"],
