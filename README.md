@@ -230,6 +230,7 @@ Interested in sponsoring this project? Feel free to reach out!
 ### 🎙️ Voice Agents
 
 **Real-time voice assistants and streaming speech pipelines** — including LiveKit, Pipecat, Gradium, and [VoxCode](voice_agents/Cursor_code_editor) (Deepgram + Cursor SDK). _9 projects_
+- [AI Group Call](https://aigroupcall.app) - You set a goal and two to eight AI voices run a round-table call with you: drop-ins, barge-in, and a written recap.
 
 - [AI Pitch Coach (Gradium + Nebius)](voice_agents/voice-agent-gradium-nebius-langchain): Conversational pitch coach using Gradium STT/TTS, LangChain orchestration, and Nebius reasoning
 - [Customer Support Voice Agent (LiveKit)](voice_agents/customer_support_agent): Nebius-powered voice support agent with context-preserving AI manager handoff, noise cancellation, and inactivity handling
