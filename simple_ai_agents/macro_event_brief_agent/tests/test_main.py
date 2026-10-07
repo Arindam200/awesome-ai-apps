@@ -7,7 +7,7 @@ import unittest
 import urllib.error
 import urllib.parse
 import urllib.request
-from datetime import date
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -15,7 +15,7 @@ sys.path.insert(0, str(ROOT))
 import main
 
 FIXTURES = json.loads((ROOT / "fixtures" / "sample_responses.json").read_text(encoding="utf-8"))
-TODAY = date(2026, 10, 7)
+NOW = datetime(2026, 10, 7, 9, 0, tzinfo=timezone.utc)
 FXMD_KEY = "fxmd-test-key-0123456789"
 NEBIUS_KEY = "nebius-test-key-0123456789"
 
@@ -76,7 +76,7 @@ def model_reply(payload):
 
 def run(argv, opener, env=None):
     out = []
-    code = main.main(argv, environ=env or {}, opener=opener, today=TODAY, out=out.append)
+    code = main.main(argv, environ=env or {}, opener=opener, now=NOW, out=out.append)
     return code, "".join(out)
 
 
@@ -123,6 +123,25 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(opener.requests[0].get_header("X-api-key"), FXMD_KEY)
         self.assertNotIn(FXMD_KEY, opener.requests[0].full_url)
         self.assertNotIn(FXMD_KEY, text)
+
+
+    def test_past_releases_and_bad_fields_are_skipped(self):
+        rows = [
+            {"release": "inflation", "market_tier": 1, "announcement_datetime": int(NOW.timestamp()) - 60},
+            {"release": "gdp", "market_tier": True, "announcement_datetime": int(NOW.timestamp()) + 60},
+            {"release": "jobs", "market_tier": 1, "announcement_datetime": True},
+            {"release": "policy_rate", "market_tier": 1, "announcement_datetime": int(NOW.timestamp()) + 60},
+        ]
+        events = main.upcoming_events(rows, 2, int(NOW.timestamp()))
+        self.assertEqual([e["release"] for e in events], ["policy_rate"])
+
+    def test_release_earlier_today_is_not_listed(self):
+        later = datetime(2026, 10, 7, 16, 0, tzinfo=timezone.utc)  # after the 15:00 UTC consumer confidence release
+        out = []
+        code = main.main(["--no-synthesis", "--json"], environ={}, opener=FakeOpener(), now=later, out=out.append)
+        self.assertEqual(code, 0)
+        releases = [item["release"] for item in json.loads("".join(out))["evidence"]]
+        self.assertNotIn("consumer_confidence", releases)
 
 
 class ErrorTests(unittest.TestCase):

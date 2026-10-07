@@ -149,14 +149,19 @@ class FxMacroData:
         return rows[0] if rows and isinstance(rows[0], dict) else None
 
 
-def upcoming_events(rows: list[Any], max_tier: int) -> list[dict[str, Any]]:
-    """Scheduled releases at or above the requested tier, soonest first."""
+def strict_int(value: Any) -> bool:
+    """True for real integers only; bool is a subclass of int in Python."""
+    return isinstance(value, int) and not isinstance(value, bool)
+
+
+def upcoming_events(rows: list[Any], max_tier: int, now_ts: int) -> list[dict[str, Any]]:
+    """Releases still to come at or above the requested tier, soonest first."""
     events = []
     for row in rows:
         if not isinstance(row, dict) or not SLUG_RE.match(str(row.get("release", ""))):
             continue
-        tier = row.get("market_tier")
-        if isinstance(tier, int) and tier <= max_tier and isinstance(row.get("announcement_datetime"), int):
+        tier, when = row.get("market_tier"), row.get("announcement_datetime")
+        if strict_int(tier) and tier <= max_tier and strict_int(when) and when > now_ts:
             events.append(row)
     events.sort(key=lambda row: row["announcement_datetime"])
     return events[:MAX_EVENTS]
@@ -301,7 +306,7 @@ def parse_args(argv: list[str] | None) -> argparse.Namespace:
     return parser.parse_args(argv)
 
 
-def run(args: argparse.Namespace, environ: dict[str, str], opener: Opener, today: date) -> tuple[dict[str, Any], tuple]:
+def run(args: argparse.Namespace, environ: dict[str, str], opener: Opener, now: datetime) -> tuple[dict[str, Any], tuple]:
     if not CURRENCY_RE.match(args.currency.strip()):
         raise BriefError("--currency must be a 3-letter code such as usd.")
     if not 1 <= args.days <= 31:
@@ -310,7 +315,9 @@ def run(args: argparse.Namespace, environ: dict[str, str], opener: Opener, today
     fxmd_key = read_key("FXMACRODATA_API_KEY", environ)
     nebius_key = None if args.no_synthesis else read_key("NEBIUS_API_KEY", environ)
     client = FxMacroData(fxmd_key, opener)
-    events = upcoming_events(client.calendar(currency, today, today + timedelta(days=args.days)), args.max_tier)
+    today = now.date()
+    rows = client.calendar(currency, today, today + timedelta(days=args.days))
+    events = upcoming_events(rows, args.max_tier, int(now.timestamp()))
     evidence = build_evidence(client, currency, events)
     brief = None
     if not args.no_synthesis and evidence:
@@ -323,7 +330,7 @@ def main(
     argv: list[str] | None = None,
     environ: dict[str, str] | None = None,
     opener: Opener | None = None,
-    today: date | None = None,
+    now: datetime | None = None,
     out: Callable[[str], Any] | None = None,
 ) -> int:
     args = parse_args(argv)
@@ -331,7 +338,7 @@ def main(
     try:
         result, keys = run(args, dict(os.environ if environ is None else environ),
                      opener or urllib.request.build_opener(NoRedirect),
-                     today or datetime.now(timezone.utc).date())
+                     now or datetime.now(timezone.utc))
         if args.json:
             text = json.dumps(result, indent=2, ensure_ascii=False) + "\n"
         else:
