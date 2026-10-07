@@ -217,6 +217,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Financial Reasoning Agent](simple_ai_agents/reasoning_agent): Step-by-step financial reasoning demonstration
 - [Human-in-the-Loop Agent](simple_ai_agents/human_in_the_loop_agent): HITL actions for safe AI task execution
 - [LangChain Operations Agent Collection](simple_ai_agents/langchain_simple_agents): Nebius-powered incident response, support, vendor risk, and data quality agents with typed outputs and guarded tools
+- [Macro Event Brief Agent](simple_ai_agents/macro_event_brief_agent): Scheduled macro releases with last prints, publication times and sources, plus an optional Nebius brief that cites each record
 - [Mastra Weather Bot](simple_ai_agents/mastra_ai_weather_agent): Weather updates using Mastra AI framework
 - [Natural-Language Database Assistant](simple_ai_agents/talk_to_db): Natural language database queries with GibsonAI and LangChain
 - [Natural-Language SQL Agent (LangChain)](simple_ai_agents/langchain_data_agent_poc): Natural-language-to-SQL data agent with LangGraph, Nebius, read-only SQL safety, and Streamlit charts
