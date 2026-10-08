@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="290" viewBox="0 0 960 290" role="img" aria-labelledby="title desc">
+<title id="title">Transcript research workflow</title><desc id="desc">A research question goes to a model with one search tool. Fixed code calls Arcmira's search reference and indexed search. The report separates model interpretation from returned passages and timestamp links.</desc>
+<rect width="960" height="290" rx="18" fill="#101722"/>
+<g fill="#1e3045" stroke="#65bbdd" stroke-width="2"><rect x="30" y="75" width="190" height="120" rx="12"/><rect x="255" y="75" width="190" height="120" rx="12"/><rect x="480" y="75" width="190" height="120" rx="12"/><rect x="705" y="75" width="225" height="120" rx="12"/></g>
+<g fill="#e7eff8" font-family="sans-serif" font-size="17" text-anchor="middle"><text x="125" y="115">Research question</text><text x="125" y="145">OpenAI agent</text><text x="350" y="115">One search tool</text><text x="350" y="145">Fixed MCP program</text><text x="575" y="115">Arcmira MCP</text><text x="575" y="145">Indexed passages</text><text x="817" y="105">Source-linked report</text><text x="817" y="136">Model interpretation</text><text x="817" y="164">Verbatim passages</text></g>
+<g fill="#65bbdd" font-family="sans-serif" font-size="30"><text x="225" y="145">→</text><text x="450" y="145">→</text><text x="675" y="145">→</text></g>
+<text x="480" y="245" text-anchor="middle" fill="#a4b7ca" font-family="sans-serif" font-size="16">Up to three searches. Partial index coverage. No Premium or monitor operations.</text>
+</svg>
