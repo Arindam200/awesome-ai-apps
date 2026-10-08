@@ -18,6 +18,10 @@ MCP_URL = "https://mcp.arcmira.com/mcp"
 COVERAGE = "Results cover Arcmira's indexed videos, not all of YouTube."
 
 
+class SearchResultError(ValueError):
+    """The MCP payload does not match the documented search response."""
+
+
 class Finding(BaseModel):
     interpretation: str
     source_ids: list[str]
@@ -62,8 +66,27 @@ class TranscriptSearch:
                 {"code": f"return await arcmira.search({parameters});"},
             )
             text = "".join(item.text for item in result.content if item.type == "text")
-            envelope = json.loads(text)
-            if result.is_error or not envelope.get("ok"):
+            if result.is_error:
+                try:
+                    error = json.loads(text)
+                except json.JSONDecodeError:
+                    error = text
+                detail = error.get("error", error) if isinstance(error, dict) else error
+                raise RuntimeError(
+                    "Arcmira search failed: "
+                    + (detail if isinstance(detail, str) else json.dumps(detail))
+                )
+            try:
+                envelope = json.loads(text)
+            except json.JSONDecodeError as error:
+                raise SearchResultError(
+                    "Malformed Arcmira search result: invalid JSON."
+                ) from error
+            if not isinstance(envelope, dict):
+                raise SearchResultError(
+                    "Malformed Arcmira search result: expected an object."
+                )
+            if not envelope.get("ok"):
                 raise RuntimeError(
                     "Arcmira search failed: " + json.dumps(envelope.get("error"))
                 )
@@ -71,12 +94,24 @@ class TranscriptSearch:
                 raise RuntimeError(
                     "Search output was incomplete; no quotes were saved."
                 )
-            payload = envelope["value"]
+            payload = envelope.get("value")
+            if not isinstance(payload, dict) or not isinstance(
+                payload.get("chunks"), list
+            ):
+                raise SearchResultError(
+                    "Malformed Arcmira search result: expected a chunks list."
+                )
             batch = []
             for chunk in payload["chunks"]:
-                video_id = chunk["video_id"]
+                if not isinstance(chunk, dict):
+                    raise SearchResultError(
+                        "Malformed Arcmira search result: expected a passage object."
+                    )
+                video_id = chunk.get("video_id")
                 seconds = chunk.get("start_seconds")
-                if not re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id):
+                if not isinstance(video_id, str) or not re.fullmatch(
+                    r"[A-Za-z0-9_-]{11}", video_id
+                ):
                     raise ValueError("Search returned an invalid video ID.")
                 if seconds is not None and (
                     isinstance(seconds, bool)
@@ -85,8 +120,15 @@ class TranscriptSearch:
                     or seconds < 0
                 ):
                     raise ValueError("Search returned an invalid timestamp.")
-                if not isinstance(chunk["text"], str) or not chunk["text"].strip():
+                if not isinstance(chunk.get("text"), str) or not chunk["text"].strip():
                     raise ValueError("Search returned an empty passage.")
+                for field in ("video_title", "channel_name", "published_at", "source"):
+                    if chunk.get(field) is not None and not isinstance(
+                        chunk[field], str
+                    ):
+                        raise SearchResultError(
+                            f"Malformed Arcmira search result: invalid {field}."
+                        )
                 source_id = f"S{len(self.sources) + len(batch) + 1}"
                 batch.append(
                     {

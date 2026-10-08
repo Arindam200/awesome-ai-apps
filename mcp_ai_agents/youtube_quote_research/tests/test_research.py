@@ -276,6 +276,50 @@ class ResearchTests(unittest.IsolatedAsyncioTestCase):
         self.assertNotIn("[click](https://evil.example)", output)
         self.assertNotIn("<script>", output)
 
+    async def test_plain_text_mcp_error_is_reported_before_json_parsing(self):
+        response = CallToolResult(
+            is_error=True,
+            content=[TextContent(type="text", text="Service temporarily unavailable")],
+        )
+        with self.assertRaisesRegex(
+            RuntimeError, "Arcmira search failed: Service temporarily unavailable"
+        ):
+            await TranscriptSearch(fake_server(response)).search("test")
+
+    async def test_malformed_envelopes_fail_with_clear_errors(self):
+        for text in (
+            "not json",
+            "[]",
+            "null",
+            '{"ok": true, "value": {}}',
+            '{"ok": true, "value": {"chunks": null}}',
+        ):
+            with self.subTest(text=text):
+                response = CallToolResult(content=[TextContent(type="text", text=text)])
+                search = TranscriptSearch(fake_server(response))
+                with self.assertRaisesRegex(
+                    ValueError, "Malformed Arcmira search result"
+                ):
+                    await search.search("test")
+                self.assertEqual(search.sources, {})
+
+    async def test_malformed_chunks_fail_before_saving_any_sources(self):
+        for chunk in (
+            None,
+            [],
+            {},
+            {"video_id": None, "text": "test"},
+            {"video_id": "fixture1234"},
+            passage(video_title=7),
+        ):
+            with self.subTest(chunk=chunk):
+                search = TranscriptSearch(
+                    fake_server(tool_result({"chunks": [passage(), chunk]}))
+                )
+                with self.assertRaises(ValueError):
+                    await search.search("test")
+                self.assertEqual(search.sources, {})
+
     async def test_mcp_error_stops_before_search(self):
         server = AsyncMock()
         server.call_tool.return_value = CallToolResult(is_error=True, content=[])
