@@ -226,6 +226,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Stock Portfolio Analyst](simple_ai_agents/stock_portfolio_analyst): Live portfolio valuation, concentration analysis, risk flags, and rebalancing ideas with Agno
 - [VoyageCompass Travel Planner](simple_ai_agents/nebius_travel_planner): LangChain and Nebius travel planner with weather, research, currency conversion, budgets, and packing tools
 - [Web Automation Agent](simple_ai_agents/browser_agent): Browser automation agent using Nebius and browser-use
+- [MIDDLE](https://middle-production.up.railway.app): AI that reads your message before you send it — shows how your words will land and offers a damage-free rewrite.
 
 ### 🎙️ Voice Agents
 
