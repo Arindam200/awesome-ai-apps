@@ -1,0 +1,11 @@
+[project]
+name = "incident-commander-agent"
+version = "0.1.0"
+description = "Voice incident commander for on-call workflows, built with LiveKit and Gemini Realtime"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "livekit-agents[google]~=1.4",
+    "google-genai>=1.16.0",
+    "python-dotenv>=1.0.0",
+]
