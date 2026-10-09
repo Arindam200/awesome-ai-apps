@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="200" viewBox="0 0 880 200" font-family="Helvetica, Arial, sans-serif" font-size="14">
+  <rect width="880" height="200" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <path d="M0,0 L9,3 L0,6 Z" fill="#475569"/>
+    </marker>
+  </defs>
+  <g stroke="#475569" stroke-width="1.5" fill="#f1f5f9">
+    <rect x="20" y="60" width="170" height="80" rx="8"/>
+    <rect x="240" y="60" width="170" height="80" rx="8"/>
+    <rect x="460" y="60" width="170" height="80" rx="8"/>
+    <rect x="680" y="60" width="180" height="80" rx="8"/>
+  </g>
+  <g stroke="#475569" stroke-width="1.5" marker-end="url(#arrow)">
+    <line x1="190" y1="100" x2="236" y2="100"/>
+    <line x1="410" y1="100" x2="456" y2="100"/>
+    <line x1="630" y1="100" x2="676" y2="100"/>
+  </g>
+  <g fill="#0f172a" text-anchor="middle">
+    <text x="105" y="92" font-weight="bold">Release calendar</text>
+    <text x="105" y="114">next 1-31 days</text>
+    <text x="325" y="92" font-weight="bold">Last print</text>
+    <text x="325" y="114">value, time, source</text>
+    <text x="545" y="92" font-weight="bold">Evidence E1..En</text>
+    <text x="545" y="114">numbered records</text>
+    <text x="770" y="92" font-weight="bold">Nebius brief</text>
+    <text x="770" y="114">citations checked</text>
+  </g>
+  <text x="440" y="175" fill="#475569" text-anchor="middle" font-size="12">FXMacroData REST API  ·  optional model step (--no-synthesis skips it)</text>
+</svg>
