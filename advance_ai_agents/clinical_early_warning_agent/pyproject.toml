@@ -1,0 +1,27 @@
+[project]
+name = "clinical-early-warning-agent"
+version = "0.1.0"
+description = "A Nebius Token Factory tool-calling agent that spots patient deterioration with NEWS2, qSOFA, personal baselines and trends"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "openai>=1.40",
+    "python-dotenv>=1.0",
+    "streamlit>=1.40",
+    "pandas>=2.0",
+    "altair>=5.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.uv]
+package = false  # an example app, not a library: `uv sync` installs the dependencies only
+
+[tool.ruff]
+target-version = "py310"  # matches requires-python; keeps timezone.utc rather than the 3.11+ datetime.UTC
