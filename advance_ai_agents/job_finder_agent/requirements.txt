@@ -3,4 +3,4 @@ python-dotenv
 openai
 openai-agents
 pydantic
-asyncio
+nest_asyncio
