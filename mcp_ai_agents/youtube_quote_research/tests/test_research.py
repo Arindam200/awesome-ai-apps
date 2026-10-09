@@ -5,8 +5,10 @@ import unittest
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
+import httpx2 as httpx
 from agents import Model, ModelResponse, RunConfig, Runner, Usage
 from mcp.types import CallToolResult, TextContent
+from openai import AsyncOpenAI
 from openai.types.responses import (
     ResponseFunctionToolCall,
     ResponseOutputMessage,
@@ -114,6 +116,109 @@ class ResearchTests(unittest.IsolatedAsyncioTestCase):
             server.call_tool.call_args_list[0].args,
             ("arcmira_describe", {"topic": "search"}),
         )
+
+    async def test_nebius_run_uses_chat_completions_and_closes_client(self):
+        requests = []
+
+        def respond(request):
+            requests.append(request)
+            message = (
+                {
+                    "role": "assistant",
+                    "content": None,
+                    "tool_calls": [
+                        {
+                            "id": "call_fixture",
+                            "type": "function",
+                            "function": {
+                                "name": "search_transcripts",
+                                "arguments": '{"query":"fixture"}',
+                            },
+                        }
+                    ],
+                }
+                if len(requests) == 1
+                else {
+                    "role": "assistant",
+                    "content": '{"findings":[{"interpretation":"Fixture finding","source_ids":["S1"]}]}',
+                }
+            )
+            return httpx.Response(
+                200,
+                json={
+                    "id": "chat_fixture",
+                    "object": "chat.completion",
+                    "created": 0,
+                    "model": "fixture-model",
+                    "choices": [
+                        {
+                            "index": 0,
+                            "message": message,
+                            "finish_reason": "tool_calls"
+                            if len(requests) == 1
+                            else "stop",
+                        }
+                    ],
+                },
+            )
+
+        http_client = httpx.AsyncClient(transport=httpx.MockTransport(respond))
+        server = fake_server(tool_result({"chunks": [passage()]}))
+        connection = AsyncMock()
+        connection.__aenter__.return_value = server
+        with (
+            patch.dict(
+                os.environ,
+                {
+                    "MODEL_PROVIDER": "nebius",
+                    "NEBIUS_API_KEY": "fixture-key",
+                    "NEBIUS_MODEL": "fixture-model",
+                    "ARCMIRA_API_KEY": "fixture-arcmira",
+                },
+                clear=True,
+            ),
+            patch(
+                "main.AsyncOpenAI",
+                side_effect=lambda **kwargs: AsyncOpenAI(
+                    http_client=http_client, **kwargs
+                ),
+            ),
+            patch("main.MCPServerStreamableHttp", return_value=connection),
+        ):
+            report = await run("fixture question")
+        self.assertIn("Fixture finding", report)
+        self.assertIn("A fixture quote", report)
+        self.assertEqual(len(requests), 2)
+        for request in requests:
+            self.assertEqual(
+                str(request.url),
+                "https://api.tokenfactory.nebius.com/v1/chat/completions",
+            )
+            self.assertEqual(request.headers["authorization"], "Bearer fixture-key")
+            body = json.loads(request.content)
+            self.assertEqual(body["model"], "fixture-model")
+            self.assertEqual(body["response_format"]["type"], "json_schema")
+            self.assertEqual(body["tools"][0]["function"]["name"], "search_transcripts")
+        self.assertTrue(http_client.is_closed)
+        connection.__aexit__.assert_awaited_once()
+
+    async def test_invalid_provider_and_missing_nebius_credentials_stop_before_connection(
+        self,
+    ):
+        for env, message in [
+            ({"MODEL_PROVIDER": "invalid"}, "MODEL_PROVIDER must be openai or nebius"),
+            (
+                {"MODEL_PROVIDER": "nebius", "ARCMIRA_API_KEY": "fixture"},
+                "NEBIUS_API_KEY, NEBIUS_MODEL",
+            ),
+        ]:
+            with (
+                patch.dict(os.environ, env, clear=True),
+                patch("main.MCPServerStreamableHttp") as connect,
+            ):
+                with self.assertRaisesRegex(ValueError, message):
+                    await run("test")
+                connect.assert_not_called()
 
     async def test_query_cannot_inject_javascript_or_other_methods(self):
         server = fake_server(tool_result())

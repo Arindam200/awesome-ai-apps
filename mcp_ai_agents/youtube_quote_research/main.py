@@ -7,11 +7,20 @@ import json
 import math
 import os
 import re
+from contextlib import AsyncExitStack
 from pathlib import Path
 
-from agents import Agent, Runner, function_tool, set_tracing_disabled
+from agents import (
+    Agent,
+    Model,
+    OpenAIChatCompletionsModel,
+    Runner,
+    function_tool,
+    set_tracing_disabled,
+)
 from agents.mcp import MCPServerStreamableHttp
 from dotenv import load_dotenv
+from openai import AsyncOpenAI
 from pydantic import BaseModel, Field
 
 MCP_URL = "https://mcp.arcmira.com/mcp"
@@ -221,7 +230,7 @@ def render_report(question: str, report: Report, search: TranscriptSearch) -> st
     return "\n".join(lines)
 
 
-def make_agent(search: TranscriptSearch, model: str) -> Agent:
+def make_agent(search: TranscriptSearch, model: str | Model) -> Agent:
     @function_tool(failure_error_function=None)
     async def search_transcripts(query: str) -> dict:
         """Find up to three indexed spoken passages for a short topic or phrase."""
@@ -246,23 +255,39 @@ def make_agent(search: TranscriptSearch, model: str) -> Agent:
 
 
 async def run(question: str) -> str:
-    required = ("ARCMIRA_API_KEY", "OPENAI_API_KEY", "OPENAI_MODEL")
-    missing = [name for name in required if not os.getenv(name)]
+    provider = os.getenv("MODEL_PROVIDER", "openai").strip().lower()
+    if provider not in ("openai", "nebius"):
+        raise ValueError("MODEL_PROVIDER must be openai or nebius.")
+    prefix = provider.upper()
+    required = ("ARCMIRA_API_KEY", f"{prefix}_API_KEY", f"{prefix}_MODEL")
+    missing = [name for name in required if not os.getenv(name, "").strip()]
     if missing:
         raise ValueError("Set " + ", ".join(missing) + " in .env or the environment.")
     set_tracing_disabled(True)
-    async with MCPServerStreamableHttp(
-        name="Arcmira",
-        params={
-            "url": MCP_URL,
-            "headers": {"Authorization": "Bearer " + os.environ["ARCMIRA_API_KEY"]},
-        },
-        client_session_timeout_seconds=60,
-    ) as server:
-        search = TranscriptSearch(server)
-        result = await Runner.run(
-            make_agent(search, os.environ["OPENAI_MODEL"]), question, max_turns=6
+    async with AsyncExitStack() as stack:
+        model: str | Model = os.environ[f"{prefix}_MODEL"]
+        if provider == "nebius":
+            client = await stack.enter_async_context(
+                AsyncOpenAI(
+                    api_key=os.environ["NEBIUS_API_KEY"],
+                    base_url="https://api.tokenfactory.nebius.com/v1/",
+                )
+            )
+            model = OpenAIChatCompletionsModel(model=model, openai_client=client)
+        server = await stack.enter_async_context(
+            MCPServerStreamableHttp(
+                name="Arcmira",
+                params={
+                    "url": MCP_URL,
+                    "headers": {
+                        "Authorization": "Bearer " + os.environ["ARCMIRA_API_KEY"]
+                    },
+                },
+                client_session_timeout_seconds=60,
+            )
         )
+        search = TranscriptSearch(server)
+        result = await Runner.run(make_agent(search, model), question, max_turns=6)
         return render_report(question, result.final_output, search)
 
 
