@@ -3,6 +3,7 @@
 Routes:
   GET  /                     single-page UI
   POST /api/login            Keycloak password grant -> server session (alice/bob/carol)
+  POST /api/demo/login       one-click persona login (username only; password looked up server-side)
   POST /api/logout
   GET  /api/me               who is signed in (from token claims)
   POST /api/chat             talk to the ADK + Gemini agent (uses the Toolbox SDK)
@@ -28,6 +29,15 @@ app = FastAPI(title="Online Groceries — MCP Toolbox security demo")
 # Tiny in-memory session store: sid -> {token, username, is_admin}. Demo-only.
 _SESSIONS: dict[str, dict] = {}
 
+# Demo persona passwords, kept server-side only (never shipped to the browser,
+# never hardcoded in source — must match whatever was used to seed
+# auth/keycloak/realm-grocery.json, set via .env).
+_DEMO_PASSWORDS: dict[str, str] = {
+    "alice": os.environ.get("DEMO_ALICE_PASSWORD", ""),
+    "bob": os.environ.get("DEMO_BOB_PASSWORD", ""),
+    "carol": os.environ.get("DEMO_CAROL_PASSWORD", ""),
+}
+
 
 def _session(request: Request) -> dict | None:
     return _SESSIONS.get(request.cookies.get("sid", ""))
@@ -43,10 +53,7 @@ def _require(request: Request):
 # --------------------------------------------------------------------------- #
 # Auth
 # --------------------------------------------------------------------------- #
-@app.post("/api/login")
-async def login(request: Request, response: Response):
-    body = await request.json()
-    username, password = body.get("username", ""), body.get("password", "")
+def _login_with_password(username: str, password: str, response: Response):
     try:
         token = tb.login(username, password)
     except ValueError as e:
@@ -62,6 +69,26 @@ async def login(request: Request, response: Response):
     }
     response.set_cookie("sid", sid, httponly=True, samesite="lax")
     return {"username": _SESSIONS[sid]["username"], "is_admin": is_admin}
+
+
+@app.post("/api/login")
+async def login(request: Request, response: Response):
+    body = await request.json()
+    username, password = body.get("username", ""), body.get("password", "")
+    return _login_with_password(username, password, response)
+
+
+@app.post("/api/demo/login")
+async def demo_login(request: Request, response: Response):
+    """One-click persona login for the demo UI: takes only a username, looks up
+    the matching demo password server-side, and logs in via the same Keycloak
+    flow as /api/login. No password ever reaches the browser."""
+    body = await request.json()
+    username = body.get("username", "")
+    password = _DEMO_PASSWORDS.get(username)
+    if not password:
+        return JSONResponse({"error": "unknown demo user"}, status_code=401)
+    return _login_with_password(username, password, response)
 
 
 @app.post("/api/logout")

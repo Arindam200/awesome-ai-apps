@@ -62,24 +62,25 @@ def main():
         st.markdown("---")
         st.markdown("### Database Connection")
 
-        # Database connection string input
-        connection_string = st.text_input(
-            "Database Connection String",
-            placeholder="mysql://username:password@host/database",
-            help="Enter your MySQL connection string (format: mysql://username:password@host/database)",
-            type="password",
-        )
-
-        if connection_string:
-            # Parse connection string and store in session state
-            db_config = parse_connection_string(connection_string)
+        # Database credentials are loaded only from the server-side
+        # environment (.env), never typed into the UI. A connection string
+        # entered in a browser text_input still lands in Streamlit's
+        # session state and browser form history in plaintext, so it is
+        # not an acceptable place for a password even with type="password".
+        env_connection_string = os.getenv("DATABASE_CONNECTION_STRING")
+        if env_connection_string:
+            db_config = parse_connection_string(env_connection_string)
             if db_config:
                 st.session_state.db_config = db_config
-                st.success("✅ Database connection configured!")
+                st.success(f"✅ Connected via .env ({db_config['host']}/{db_config['database']})")
             else:
-                st.error("❌ Invalid connection string format")
+                st.error("❌ DATABASE_CONNECTION_STRING in .env is not a valid connection string")
         else:
-            st.warning("Please enter your database connection string")
+            st.error("⚠️ DATABASE_CONNECTION_STRING not set")
+            st.info(
+                "Add it to a local `.env` file (never commit this file):\n\n"
+                "`DATABASE_CONNECTION_STRING=mysql://username:password@host:3306/database`"
+            )
 
         st.markdown("---")
         st.markdown("### Example Questions")

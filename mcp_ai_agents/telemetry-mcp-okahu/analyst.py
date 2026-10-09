@@ -9,6 +9,8 @@ from dotenv import load_dotenv
 from monocle_apptrace import setup_monocle_telemetry
 from openai import OpenAI
 
+from sql_validator import SQLValidationError, validate_sql
+
 load_dotenv()
 
 logging.getLogger("monocle_apptrace").setLevel(logging.CRITICAL)
@@ -113,11 +115,18 @@ def generate_sql(natural_language_query: str) -> str:
 
 
 def execute_query(sql_query: str):
+    try:
+        safe_sql = validate_sql(sql_query)
+    except SQLValidationError as e:
+        logging.getLogger(__name__).warning("SQL query rejected by validator: %s", e)
+        raise
+
     conn = sqlite3.connect("sales.db")
+    conn.execute("PRAGMA busy_timeout = 5000")
     cursor = conn.cursor()
 
     try:
-        cursor.execute(sql_query)
+        cursor.execute(safe_sql)
         results = cursor.fetchall()
         return results
     finally:
