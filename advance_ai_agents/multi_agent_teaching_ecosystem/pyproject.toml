@@ -1,0 +1,31 @@
+[project]
+name = "multi-agent-teaching-ecosystem"
+version = "0.1.0"
+description = "Five LangGraph agents share a Knowledge-Gap Graph to diagnose misconceptions, write multilingual micro-lessons and plan the teacher's next class."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+    "langgraph>=1.0",
+    "google-genai>=1.20",
+    "pydantic>=2.7",
+    "httpx>=0.27",
+    "python-dotenv>=1.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["teaching_ecosystem", "teaching_ecosystem.agents"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
