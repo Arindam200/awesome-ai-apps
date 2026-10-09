@@ -1,0 +1,4 @@
+streamlit==1.38.0
+openai==1.51.0
+requests==2.32.3
+python-dotenv==1.0.1
