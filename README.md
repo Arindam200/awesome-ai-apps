@@ -8,7 +8,7 @@
 
 </div>
 
-This repository is a comprehensive collection of **132 projects**, tutorials, and recipes for building powerful LLM-powered applications, including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
+This repository is a comprehensive collection of **133 projects**, tutorials, and recipes for building powerful LLM-powered applications, including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
 
 ## 📋 Table of Contents
 
@@ -245,7 +245,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🗂️ MCP Agents
 
-**Examples using Model Context Protocol for external tool integration.** _14 projects_
+**Examples using Model Context Protocol for external tool integration.** _15 projects_
 
 - [Couchbase LangGraph MCP Agent](mcp_ai_agents/langchain_langgraph_mcp_agent): LangChain ReAct agent with Couchbase integration
 - [Couchbase MCP Server](mcp_ai_agents/couchbase_mcp_server): Couchbase database integration with MCP protocol
@@ -261,6 +261,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Secure MCP Access Agent (ScaleKit + Exa)](mcp_ai_agents/scalekit-exa-mcp-security): Security-focused MCP integration with Exa search
 - [Self-Healing Text-to-SQL Agent (Okahu)](mcp_ai_agents/telemetry-mcp-okahu): Self-healing Text-to-SQL demo using Okahu Cloud traces via hosted MCP
 - [Taskade MCP Agent](mcp_ai_agents/taskade_mcp_agent): AI-powered workspace agent for managing projects, tasks, and workflows via Taskade MCP
+- [YouTube Quote Research](mcp_ai_agents/youtube_quote_research): Arcmira transcript search with source timestamps and interpretations separate from retrieved passages
 
 ### 🧠 Memory Agents
 
