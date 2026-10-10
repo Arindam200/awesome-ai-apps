@@ -26,6 +26,11 @@ An AI-powered **YouTube Trend Coach** that uses **Memori v3** as long‑term mem
   - Sidebar for API keys, MiniMax base URL, and channel URL.
   - Main area provides a chat interface for asking about trends and ideas.
 
+- **MiniMax model roster**
+  - Supports `MiniMax-M3` and `MiniMax-M2.7` through the OpenAI-compatible API.
+  - Chat uses `MiniMax-M3` by default; set `YOUTUBE_TREND_MODEL` to choose another listed model.
+  - Ingestion uses `MiniMax-M3` by default; set `YOUTUBE_TREND_INGEST_MODEL` to choose another listed model.
+
 ---
 
 ### Prerequisites
@@ -93,6 +98,6 @@ Then, in the main chat:
 The agent will:
 
 - Pull context from **Memori** (your stored video history),
-- Use **MiniMax** (`MiniMax-M2.1` by default, configurable),
+- Use **MiniMax** (`MiniMax-M3` by default; `MiniMax-M2.7` is also supported),
 - Optionally incorporate **Exa** web trends,
 - And respond with specific, actionable ideas and analysis.

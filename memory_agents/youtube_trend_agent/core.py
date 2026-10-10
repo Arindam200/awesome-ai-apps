@@ -24,6 +24,10 @@ from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
+# Current MiniMax text models available through the OpenAI-compatible API.
+MINIMAX_MODEL_IDS = ("MiniMax-M3", "MiniMax-M2.7")
+DEFAULT_MINIMAX_MODEL = MINIMAX_MODEL_IDS[0]
+
 
 class _SilentLogger:
     """Minimal logger for yt-dlp that suppresses debug/warning output."""
@@ -304,7 +308,7 @@ Description:
             _ = client.chat.completions.create(
                 model=os.getenv(
                     "YOUTUBE_TREND_INGEST_MODEL",
-                    "MiniMax-M2.1",
+                    DEFAULT_MINIMAX_MODEL,
                 ),
                 messages=[
                     {
