@@ -37,7 +37,7 @@ Retrieved passages receive local IDs. The model returns interpretations that ref
 - An [Arcmira account](https://arcmira.com) and API key with research access. See the [API docs](https://arcmira.com/docs) and [MCP setup](https://arcmira.com/docs/mcp-server).
 - An OpenAI or Nebius Token Factory API key and a model available to your account that supports function tools and JSON-schema structured output.
 
-Arcmira offers free and paid plans. Indexed searches use your account's metered allowance; usage can draw from plan credits, then top-up credits, then an enabled on-demand budget. Model calls have separate provider costs. Running this example authorizes those normal account usage flows; the three-search and six-turn limits are not a currency budget. No Premium processing or monitor writes are implemented.
+Arcmira offers free and paid plans. Indexed searches use your account's metered allowance; paid reads use plan credits, then your enabled on-demand budget. See [plans and usage](https://arcmira.com/docs/usage-and-billing) for current billing details. Model calls have separate provider costs. Running this example authorizes those normal account usage flows; the three-search and six-turn limits are not a currency budget. No Premium processing or monitor writes are implemented.
 
 ### Installation
 
