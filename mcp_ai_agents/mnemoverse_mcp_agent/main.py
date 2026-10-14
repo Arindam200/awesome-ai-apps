@@ -4,7 +4,7 @@ The agent never imports a memory SDK. It starts the Mnemoverse memory server as
 a subprocess, speaks MCP to it over stdio, and does four things through the
 protocol:
 
-    1. discovery  - list_tools(), so you see the ten tools and their arguments
+    1. discovery  - list_tools(), so you see the server's tools and their arguments
     2. write      - memory_write, to record decisions
     3. read       - memory_read, to recall them in a later session
     4. feedback   - memory_feedback, to report how a recalled memory worked out
@@ -45,7 +45,7 @@ logging.getLogger("mcp").setLevel(logging.CRITICAL)
 
 # Pin the server version. An unpinned `npx -y <pkg>` can run an older copy that
 # is already installed on the machine instead of the one on the registry.
-MEMORY_SERVER = "@mnemoverse/mcp-memory-server@0.10.2"
+MEMORY_SERVER = "@mnemoverse/mcp-memory-server@0.15.1"
 
 # The example writes into its own namespace, so its notes stay separate from
 # other notes on the key. Change it to start the story from scratch.
@@ -310,7 +310,7 @@ async def walk(session) -> bool:
     console.rule("Reporting the outcome")
     console.print('Marking as helpful: [bold]"' + helpful[1] + '"[/bold]')
     rating = await session.call_tool(
-        "memory_feedback", {"atom_ids": [helpful[2]], "outcome": 1.0}
+        "memory_feedback", {"memory_ids": [helpful[2]], "outcome": 1.0}
     )
     if failed(rating):
         console.print("[red]memory_feedback failed:[/red] " + error_line(rating))

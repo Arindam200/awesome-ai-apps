@@ -43,7 +43,7 @@ is what changes the ranking.
 ```text
 npx -> memory server          subprocess speaking MCP over stdio
         |
-   list_tools()               ten tools and their required arguments
+   list_tools()               every tool and its required arguments
         |
    memory_write               decisions recorded, once per namespace
         |
@@ -141,14 +141,14 @@ mnemoverse_mcp_agent/
 
 Mnemoverse is a hosted memory service for AI agents. Its MCP server and its Python
 SDK are MIT licensed; the memory engine they talk to is a hosted service with a free
-tier, and Enterprise customers can self-host it by agreement. The server exposes ten
-tools, which the discovery step in this example prints in full.
+tier, and Enterprise customers can self-host it by agreement. The discovery step in
+this example prints every tool the server exposes.
 
 Disclosure: I work on Mnemoverse.
 
 ## Notes
 
-- The screenshot above is a first run on a fresh namespace and without a Nebius key, so it shows the protocol walkthrough with the answering step skipped.
+- The screenshot above is a first run on a fresh namespace with a Nebius key, so it shows all four parts, including the answer from the model.
 - The ranking positions shown depend on your own data. What the example demonstrates is that an outcome report changes the order, not any particular set of positions.
 - The MCP Python SDK exposes some fields under different names than the wire format, for instance `input_schema` against `inputSchema`, and the 1.x and 2.x lines differ from each other too. The example reads whichever the installed version has, and `pyproject.toml` declares the 2.x floor.
 
