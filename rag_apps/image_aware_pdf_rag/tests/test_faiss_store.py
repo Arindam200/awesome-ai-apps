@@ -130,6 +130,13 @@ def test_save_and_reload(tmp_path):
         ]
     )
 
+    version = (tmp_path / FAISSVectorStore.CURRENT_FILENAME).read_text(
+        encoding="ascii"
+    )
+    version_dir = tmp_path / FAISSVectorStore.VERSIONS_DIRNAME / version
+    assert (version_dir / FAISSVectorStore.INDEX_FILENAME).exists()
+    assert (version_dir / FAISSVectorStore.METADATA_FILENAME).exists()
+
     loaded = FAISSVectorStore.load(tmp_path)
     results = loaded.search([1, 0, 0], top_k=1)
 
@@ -138,6 +145,33 @@ def test_save_and_reload(tmp_path):
     assert results[0].metadata["source_id"] == "report"
     assert results[0].metadata["page_number"] == 2
     assert results[0].text == "Revenue was 20% higher."
+
+
+def test_failed_save_keeps_previous_version_active(tmp_path, monkeypatch):
+    store = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+    store.add_documents(
+        [make_document("a:1", "a", 1, [1, 0, 0], "Original")]
+    )
+    current_version = (tmp_path / FAISSVectorStore.CURRENT_FILENAME).read_text(
+        encoding="ascii"
+    )
+
+    def fail_write_index(index, path):
+        raise OSError("simulated index write failure")
+
+    monkeypatch.setattr("vectorstores.faiss_store.faiss.write_index", fail_write_index)
+
+    with pytest.raises(OSError, match="simulated index write failure"):
+        store.add_documents(
+            [make_document("a:2", "a", 2, [0, 1, 0], "Uncommitted")]
+        )
+
+    assert (tmp_path / FAISSVectorStore.CURRENT_FILENAME).read_text(
+        encoding="ascii"
+    ) == current_version
+    loaded = FAISSVectorStore.load(tmp_path)
+    results = loaded.search([1, 0, 0], top_k=5)
+    assert [result.text for result in results] == ["Original"]
 
 
 def test_rejects_wrong_embedding_dimension():

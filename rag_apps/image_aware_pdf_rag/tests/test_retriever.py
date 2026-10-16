@@ -109,6 +109,30 @@ def test_retriever_preserves_visual_description_type():
     assert evidence[0].content_type == "visual_description"
 
 
+@pytest.mark.parametrize("invalid_value", [None, 42, "  "])
+def test_retriever_defaults_invalid_source_metadata(invalid_value):
+    result = make_result("a:1", "a", 1, "Evidence")
+    result.metadata["source_name"] = invalid_value
+    store = FakeVectorStore([result])
+
+    evidence = PDFRetriever(FakeEmbeddings(), store).retrieve("Question")
+
+    assert len(evidence) == 1
+    assert evidence[0].source == "uploaded PDF"
+
+
+@pytest.mark.parametrize("invalid_value", [None, 42, "  "])
+def test_retriever_defaults_invalid_content_type_metadata(invalid_value):
+    result = make_result("a:1", "a", 1, "Evidence")
+    result.metadata["content_type"] = invalid_value
+    store = FakeVectorStore([result])
+
+    evidence = PDFRetriever(FakeEmbeddings(), store).retrieve("Question")
+
+    assert len(evidence) == 1
+    assert evidence[0].content_type == "text"
+
+
 def test_retriever_can_limit_search_to_one_pdf():
     store = FakeVectorStore(
         [

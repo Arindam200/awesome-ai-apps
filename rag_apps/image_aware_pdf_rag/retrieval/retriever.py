@@ -92,13 +92,19 @@ class PDFRetriever:
                 "source_name",
                 metadata.get("source", "uploaded PDF"),
             )
+            if not isinstance(source, str) or not source.strip():
+                source = "uploaded PDF"
+
+            content_type = metadata.get("content_type", "text")
+            if not isinstance(content_type, str) or not content_type.strip():
+                content_type = "text"
 
             evidence.append(
                 RetrievedEvidence(
                     page_number=page_number,
                     text=result.text,
                     source=source,
-                    content_type=metadata.get("content_type", "text"),
+                    content_type=content_type,
                 )
             )
 

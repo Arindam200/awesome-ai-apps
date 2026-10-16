@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 from typing import Any, Iterable
+from uuid import uuid4
 
 import faiss
 import numpy as np
@@ -22,6 +23,8 @@ class FAISSVectorStore:
 
     INDEX_FILENAME = "index.faiss"
     METADATA_FILENAME = "metadata.json"
+    VERSIONS_DIRNAME = "versions"
+    CURRENT_FILENAME = "CURRENT"
 
     def __init__(
         self,
@@ -272,12 +275,6 @@ class FAISSVectorStore:
 
         self.persist_dir.mkdir(parents=True, exist_ok=True)
 
-        if self.index is not None:
-            faiss.write_index(
-                self.index,
-                str(self.persist_dir / self.INDEX_FILENAME),
-            )
-
         payload = {
             "dimension": self.dimension,
             "next_faiss_id": self._next_faiss_id,
@@ -287,22 +284,52 @@ class FAISSVectorStore:
             },
         }
 
-        metadata_path = self.persist_dir / self.METADATA_FILENAME
-        temporary_path = metadata_path.with_suffix(".tmp")
+        version = uuid4().hex
+        versions_dir = self.persist_dir / self.VERSIONS_DIRNAME
+        versions_dir.mkdir(parents=True, exist_ok=True)
+        staging_dir = versions_dir / f".tmp-{version}"
+        version_dir = versions_dir / version
+        staging_dir.mkdir()
 
-        temporary_path.write_text(
+        if self.index is not None:
+            faiss.write_index(
+                self.index,
+                str(staging_dir / self.INDEX_FILENAME),
+            )
+
+        (staging_dir / self.METADATA_FILENAME).write_text(
             json.dumps(payload, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
-        temporary_path.replace(metadata_path)
+        staging_dir.replace(version_dir)
+
+        current_path = self.persist_dir / self.CURRENT_FILENAME
+        temporary_current = (
+            self.persist_dir / f".{self.CURRENT_FILENAME}.{version}.tmp"
+        )
+        temporary_current.write_text(version, encoding="ascii")
+        temporary_current.replace(current_path)
 
     @classmethod
     def load(cls, persist_dir: str | Path) -> "FAISSVectorStore":
         """Load a previously saved store."""
 
         directory = Path(persist_dir)
-        metadata_path = directory / cls.METADATA_FILENAME
-        index_path = directory / cls.INDEX_FILENAME
+        current_path = directory / cls.CURRENT_FILENAME
+        if current_path.exists():
+            version = current_path.read_text(encoding="ascii").strip()
+            if len(version) != 32 or any(
+                character not in "0123456789abcdef" for character in version
+            ):
+                raise ValueError("Saved FAISS version pointer is invalid")
+
+            version_dir = directory / cls.VERSIONS_DIRNAME / version
+            metadata_path = version_dir / cls.METADATA_FILENAME
+            index_path = version_dir / cls.INDEX_FILENAME
+        else:
+            # Support stores written before versioned persistence was introduced.
+            metadata_path = directory / cls.METADATA_FILENAME
+            index_path = directory / cls.INDEX_FILENAME
 
         if not metadata_path.exists():
             raise FileNotFoundError(f"Metadata file not found: {metadata_path}")
