@@ -3,15 +3,56 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager
+import errno
 import json
+import os
 from pathlib import Path
-from typing import Any, Iterable
+import shutil
+import time
+from typing import Any, Iterable, Iterator
 from uuid import uuid4
 
 import faiss
 import numpy as np
 
 from interfaces.vector_store import SearchResult, VectorDocument
+
+
+@contextmanager
+def _persistence_lock(directory: Path) -> Iterator[None]:
+    """Serialize version activation, cleanup, and snapshot loading."""
+    lock_path = directory / ".persistence.lock"
+    with lock_path.open("a+b") as lock_file:
+        if os.name == "nt":
+            import msvcrt
+
+            lock_file.seek(0, os.SEEK_END)
+            if lock_file.tell() == 0:
+                lock_file.write(b"\0")
+                lock_file.flush()
+            while True:
+                lock_file.seek(0)
+                try:
+                    msvcrt.locking(lock_file.fileno(), msvcrt.LK_NBLCK, 1)
+                    break
+                except OSError as exc:
+                    if exc.errno not in (errno.EACCES, errno.EDEADLK):
+                        raise
+                    time.sleep(0.05)
+            try:
+                yield
+            finally:
+                lock_file.seek(0)
+                msvcrt.locking(lock_file.fileno(), msvcrt.LK_UNLCK, 1)
+        else:
+            import fcntl
+
+            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+            try:
+                yield
+            finally:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_UN)
 
 
 class FAISSVectorStore:
@@ -25,6 +66,7 @@ class FAISSVectorStore:
     METADATA_FILENAME = "metadata.json"
     VERSIONS_DIRNAME = "versions"
     CURRENT_FILENAME = "CURRENT"
+    RETAINED_VERSIONS = 2
 
     def __init__(
         self,
@@ -275,90 +317,141 @@ class FAISSVectorStore:
 
         self.persist_dir.mkdir(parents=True, exist_ok=True)
 
-        payload = {
-            "dimension": self.dimension,
-            "next_faiss_id": self._next_faiss_id,
-            "documents": {
-                str(faiss_id): record
-                for faiss_id, record in self._documents.items()
-            },
-        }
+        with _persistence_lock(self.persist_dir):
+            payload = {
+                "dimension": self.dimension,
+                "next_faiss_id": self._next_faiss_id,
+                "documents": {
+                    str(faiss_id): record
+                    for faiss_id, record in self._documents.items()
+                },
+            }
 
-        version = uuid4().hex
-        versions_dir = self.persist_dir / self.VERSIONS_DIRNAME
-        versions_dir.mkdir(parents=True, exist_ok=True)
-        staging_dir = versions_dir / f".tmp-{version}"
-        version_dir = versions_dir / version
-        staging_dir.mkdir()
+            version = uuid4().hex
+            versions_dir = self.persist_dir / self.VERSIONS_DIRNAME
+            versions_dir.mkdir(parents=True, exist_ok=True)
+            for stale_staging in versions_dir.glob(".tmp-*"):
+                if stale_staging.is_dir():
+                    shutil.rmtree(stale_staging)
+            for stale_pointer in self.persist_dir.glob(
+                f".{self.CURRENT_FILENAME}.*.tmp"
+            ):
+                if stale_pointer.is_file():
+                    stale_pointer.unlink()
 
-        if self.index is not None:
-            faiss.write_index(
-                self.index,
-                str(staging_dir / self.INDEX_FILENAME),
+            staging_dir = versions_dir / f".tmp-{version}"
+            version_dir = versions_dir / version
+            current_path = self.persist_dir / self.CURRENT_FILENAME
+            temporary_current = (
+                self.persist_dir / f".{self.CURRENT_FILENAME}.{version}.tmp"
             )
+            activated = False
+            staging_dir.mkdir()
 
-        (staging_dir / self.METADATA_FILENAME).write_text(
-            json.dumps(payload, ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
-        staging_dir.replace(version_dir)
+            try:
+                if self.index is not None:
+                    faiss.write_index(
+                        self.index,
+                        str(staging_dir / self.INDEX_FILENAME),
+                    )
 
-        current_path = self.persist_dir / self.CURRENT_FILENAME
-        temporary_current = (
-            self.persist_dir / f".{self.CURRENT_FILENAME}.{version}.tmp"
-        )
-        temporary_current.write_text(version, encoding="ascii")
-        temporary_current.replace(current_path)
+                (staging_dir / self.METADATA_FILENAME).write_text(
+                    json.dumps(payload, ensure_ascii=False, indent=2),
+                    encoding="utf-8",
+                )
+                staging_dir.replace(version_dir)
+
+                temporary_current.write_text(version, encoding="ascii")
+                temporary_current.replace(current_path)
+                activated = True
+
+                committed_versions = sorted(
+                    (
+                        path
+                        for path in versions_dir.iterdir()
+                        if path.is_dir()
+                        and len(path.name) == 32
+                        and all(
+                            character in "0123456789abcdef"
+                            for character in path.name
+                        )
+                    ),
+                    key=lambda path: path.stat().st_mtime_ns,
+                    reverse=True,
+                )
+                retained = {version}
+                for path in committed_versions:
+                    if len(retained) >= self.RETAINED_VERSIONS:
+                        break
+                    retained.add(path.name)
+
+                for path in committed_versions:
+                    if path.name not in retained:
+                        shutil.rmtree(path)
+            except BaseException:
+                if staging_dir.exists():
+                    shutil.rmtree(staging_dir)
+                if temporary_current.exists():
+                    temporary_current.unlink()
+                if not activated and version_dir.exists():
+                    shutil.rmtree(version_dir)
+                raise
 
     @classmethod
     def load(cls, persist_dir: str | Path) -> "FAISSVectorStore":
         """Load a previously saved store."""
 
         directory = Path(persist_dir)
-        current_path = directory / cls.CURRENT_FILENAME
-        if current_path.exists():
-            version = current_path.read_text(encoding="ascii").strip()
-            if len(version) != 32 or any(
-                character not in "0123456789abcdef" for character in version
-            ):
-                raise ValueError("Saved FAISS version pointer is invalid")
+        if not directory.exists():
+            raise FileNotFoundError(
+                f"Metadata file not found: {directory / cls.METADATA_FILENAME}"
+            )
 
-            version_dir = directory / cls.VERSIONS_DIRNAME / version
-            metadata_path = version_dir / cls.METADATA_FILENAME
-            index_path = version_dir / cls.INDEX_FILENAME
-        else:
-            # Support stores written before versioned persistence was introduced.
-            metadata_path = directory / cls.METADATA_FILENAME
-            index_path = directory / cls.INDEX_FILENAME
+        with _persistence_lock(directory):
+            current_path = directory / cls.CURRENT_FILENAME
+            if current_path.exists():
+                version = current_path.read_text(encoding="ascii").strip()
+                if len(version) != 32 or any(
+                    character not in "0123456789abcdef" for character in version
+                ):
+                    raise ValueError("Saved FAISS version pointer is invalid")
 
-        if not metadata_path.exists():
-            raise FileNotFoundError(f"Metadata file not found: {metadata_path}")
+                version_dir = directory / cls.VERSIONS_DIRNAME / version
+                metadata_path = version_dir / cls.METADATA_FILENAME
+                index_path = version_dir / cls.INDEX_FILENAME
+            else:
+                # Support stores written before versioned persistence was introduced.
+                metadata_path = directory / cls.METADATA_FILENAME
+                index_path = directory / cls.INDEX_FILENAME
 
-        payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+            if not metadata_path.exists():
+                raise FileNotFoundError(f"Metadata file not found: {metadata_path}")
 
-        store = cls(
-            dimension=payload.get("dimension"),
-            persist_dir=directory,
-        )
+            payload = json.loads(metadata_path.read_text(encoding="utf-8"))
 
-        if index_path.exists():
-            store.index = faiss.read_index(str(index_path))
+            store = cls(
+                dimension=payload.get("dimension"),
+                persist_dir=directory,
+            )
 
-            if store.dimension != store.index.d:
-                raise ValueError("Saved index and metadata dimensions do not match")
+            if index_path.exists():
+                store.index = faiss.read_index(str(index_path))
 
-        store._next_faiss_id = int(payload.get("next_faiss_id", 1))
-        store._documents = {
-            int(faiss_id): record
-            for faiss_id, record in payload.get("documents", {}).items()
-        }
-        store._chunk_to_faiss = {
-            record["id"]: faiss_id
-            for faiss_id, record in store._documents.items()
-        }
+                if store.dimension != store.index.d:
+                    raise ValueError("Saved index and metadata dimensions do not match")
 
-        indexed_count = store.index.ntotal if store.index is not None else 0
-        if indexed_count != len(store._documents):
-            raise ValueError("Saved FAISS index and metadata are inconsistent")
+            store._next_faiss_id = int(payload.get("next_faiss_id", 1))
+            store._documents = {
+                int(faiss_id): record
+                for faiss_id, record in payload.get("documents", {}).items()
+            }
+            store._chunk_to_faiss = {
+                record["id"]: faiss_id
+                for faiss_id, record in store._documents.items()
+            }
 
-        return store
+            indexed_count = store.index.ntotal if store.index is not None else 0
+            if indexed_count != len(store._documents):
+                raise ValueError("Saved FAISS index and metadata are inconsistent")
+
+            return store

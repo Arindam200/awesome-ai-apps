@@ -169,9 +169,37 @@ def test_failed_save_keeps_previous_version_active(tmp_path, monkeypatch):
     assert (tmp_path / FAISSVectorStore.CURRENT_FILENAME).read_text(
         encoding="ascii"
     ) == current_version
+    versions_dir = tmp_path / FAISSVectorStore.VERSIONS_DIRNAME
+    assert not list(versions_dir.glob(".tmp-*"))
     loaded = FAISSVectorStore.load(tmp_path)
     results = loaded.search([1, 0, 0], top_k=5)
     assert [result.text for result in results] == ["Original"]
+
+
+def test_save_retains_only_current_and_previous_versions(tmp_path):
+    store = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+
+    for index in range(4):
+        store.add_documents(
+            [
+                make_document(
+                    f"a:{index}",
+                    "a",
+                    index + 1,
+                    [1, index, 0],
+                )
+            ]
+        )
+
+    versions_dir = tmp_path / FAISSVectorStore.VERSIONS_DIRNAME
+    versions = [path for path in versions_dir.iterdir() if path.is_dir()]
+    current_version = (tmp_path / FAISSVectorStore.CURRENT_FILENAME).read_text(
+        encoding="ascii"
+    )
+
+    assert len(versions) == FAISSVectorStore.RETAINED_VERSIONS
+    assert any(path.name == current_version for path in versions)
+    assert FAISSVectorStore.load(tmp_path).index.ntotal == 4
 
 
 def test_rejects_wrong_embedding_dimension():
