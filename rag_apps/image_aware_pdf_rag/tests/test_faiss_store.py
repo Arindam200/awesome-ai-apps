@@ -1,6 +1,11 @@
 
 """Tests for the local FAISS vector store."""
 
+import errno
+import os
+from pathlib import Path
+import shutil
+
 import numpy as np
 import pytest
 
@@ -200,6 +205,101 @@ def test_save_retains_only_current_and_previous_versions(tmp_path):
     assert len(versions) == FAISSVectorStore.RETAINED_VERSIONS
     assert any(path.name == current_version for path in versions)
     assert FAISSVectorStore.load(tmp_path).index.ntotal == 4
+
+
+def test_cleanup_failure_does_not_fail_save_and_is_retried(tmp_path, monkeypatch):
+    store = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+    store.add_documents([make_document("a:1", "a", 1, [1, 0, 0])])
+
+    versions_dir = tmp_path / FAISSVectorStore.VERSIONS_DIRNAME
+    original_version = (tmp_path / FAISSVectorStore.CURRENT_FILENAME).read_text(
+        encoding="ascii"
+    )
+    stale_version = "0" * 32
+    stale_dir = versions_dir / stale_version
+    stale_dir.mkdir()
+    original_dir = versions_dir / original_version
+    for filename in (
+        FAISSVectorStore.INDEX_FILENAME,
+        FAISSVectorStore.METADATA_FILENAME,
+    ):
+        (stale_dir / filename).write_bytes((original_dir / filename).read_bytes())
+    os.utime(stale_dir, (1, 1))
+
+    original_rmtree = shutil.rmtree
+
+    def fail_stale_cleanup(path, *args, **kwargs):
+        if Path(path) == stale_dir:
+            raise PermissionError("simulated cleanup failure")
+        return original_rmtree(path, *args, **kwargs)
+
+    monkeypatch.setattr(
+        "vectorstores.faiss_store.shutil.rmtree", fail_stale_cleanup
+    )
+    store.add_documents([make_document("a:2", "a", 2, [0, 1, 0])])
+
+    active_version = (tmp_path / FAISSVectorStore.CURRENT_FILENAME).read_text(
+        encoding="ascii"
+    )
+    assert active_version != original_version
+    assert stale_dir.exists()
+    loaded = FAISSVectorStore.load(tmp_path)
+    assert loaded.index.ntotal == 2
+
+    monkeypatch.undo()
+    store.save()
+    assert not stale_dir.exists()
+
+
+def test_load_falls_back_when_lock_access_is_denied(tmp_path, monkeypatch):
+    store = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+    store.add_documents([make_document("a:1", "a", 1, [1, 0, 0])])
+    original_open = Path.open
+
+    def deny_lock_access(path, *args, **kwargs):
+        if path.name == ".persistence.lock":
+            raise PermissionError(errno.EACCES, "Access denied", str(path))
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", deny_lock_access)
+
+    loaded = FAISSVectorStore.load(tmp_path)
+
+    assert loaded.search([1, 0, 0], top_k=1)[0].id == "a:1"
+
+
+def test_save_propagates_lock_access_errors(tmp_path, monkeypatch):
+    store = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+    store.add_documents([make_document("a:1", "a", 1, [1, 0, 0])])
+    original_open = Path.open
+
+    def deny_lock_access(path, *args, **kwargs):
+        if path.name == ".persistence.lock":
+            raise PermissionError(errno.EACCES, "Access denied", str(path))
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", deny_lock_access)
+
+    with pytest.raises(PermissionError):
+        store.save()
+
+
+def test_load_propagates_non_access_lock_errors(tmp_path, monkeypatch):
+    store = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+    store.add_documents([make_document("a:1", "a", 1, [1, 0, 0])])
+    original_open = Path.open
+
+    def fail_lock_open(path, *args, **kwargs):
+        if path.name == ".persistence.lock":
+            raise OSError(errno.EIO, "I/O failure", str(path))
+        return original_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(Path, "open", fail_lock_open)
+
+    with pytest.raises(OSError) as exc_info:
+        FAISSVectorStore.load(tmp_path)
+
+    assert exc_info.value.errno == errno.EIO
 
 
 def test_rejects_wrong_embedding_dimension():

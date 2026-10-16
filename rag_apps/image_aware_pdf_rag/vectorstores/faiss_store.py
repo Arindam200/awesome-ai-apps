@@ -19,11 +19,24 @@ import numpy as np
 from interfaces.vector_store import SearchResult, VectorDocument
 
 
+class _PersistenceLockUnavailable(PermissionError):
+    """The persistence lock cannot be acquired due to filesystem access."""
+
+
 @contextmanager
 def _persistence_lock(directory: Path) -> Iterator[None]:
     """Serialize version activation, cleanup, and snapshot loading."""
     lock_path = directory / ".persistence.lock"
-    with lock_path.open("a+b") as lock_file:
+    try:
+        lock_file = lock_path.open("a+b")
+    except OSError as exc:
+        if exc.errno in (errno.EACCES, errno.EPERM, errno.EROFS):
+            raise _PersistenceLockUnavailable(
+                exc.errno, exc.strerror, exc.filename
+            ) from exc
+        raise
+
+    with lock_file:
         if os.name == "nt":
             import msvcrt
 
@@ -37,7 +50,15 @@ def _persistence_lock(directory: Path) -> Iterator[None]:
                     msvcrt.locking(lock_file.fileno(), msvcrt.LK_NBLCK, 1)
                     break
                 except OSError as exc:
+                    if getattr(exc, "winerror", None) == 5:
+                        raise _PersistenceLockUnavailable(
+                            exc.errno, exc.strerror, exc.filename
+                        ) from exc
                     if exc.errno not in (errno.EACCES, errno.EDEADLK):
+                        if exc.errno in (errno.EPERM, errno.EROFS):
+                            raise _PersistenceLockUnavailable(
+                                exc.errno, exc.strerror, exc.filename
+                            ) from exc
                         raise
                     time.sleep(0.05)
             try:
@@ -48,7 +69,14 @@ def _persistence_lock(directory: Path) -> Iterator[None]:
         else:
             import fcntl
 
-            fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+            try:
+                fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+            except OSError as exc:
+                if exc.errno in (errno.EACCES, errno.EPERM, errno.EROFS):
+                    raise _PersistenceLockUnavailable(
+                        exc.errno, exc.strerror, exc.filename
+                    ) from exc
+                raise
             try:
                 yield
             finally:
@@ -387,7 +415,10 @@ class FAISSVectorStore:
 
                 for path in committed_versions:
                     if path.name not in retained:
-                        shutil.rmtree(path)
+                        try:
+                            shutil.rmtree(path)
+                        except OSError:
+                            pass
             except BaseException:
                 if staging_dir.exists():
                     shutil.rmtree(staging_dir)
@@ -407,51 +438,58 @@ class FAISSVectorStore:
                 f"Metadata file not found: {directory / cls.METADATA_FILENAME}"
             )
 
-        with _persistence_lock(directory):
-            current_path = directory / cls.CURRENT_FILENAME
-            if current_path.exists():
-                version = current_path.read_text(encoding="ascii").strip()
-                if len(version) != 32 or any(
-                    character not in "0123456789abcdef" for character in version
-                ):
-                    raise ValueError("Saved FAISS version pointer is invalid")
+        try:
+            with _persistence_lock(directory):
+                return cls._load_unlocked(directory)
+        except _PersistenceLockUnavailable:
+            return cls._load_unlocked(directory)
 
-                version_dir = directory / cls.VERSIONS_DIRNAME / version
-                metadata_path = version_dir / cls.METADATA_FILENAME
-                index_path = version_dir / cls.INDEX_FILENAME
-            else:
-                # Support stores written before versioned persistence was introduced.
-                metadata_path = directory / cls.METADATA_FILENAME
-                index_path = directory / cls.INDEX_FILENAME
+    @classmethod
+    def _load_unlocked(cls, directory: Path) -> "FAISSVectorStore":
+        current_path = directory / cls.CURRENT_FILENAME
+        if current_path.exists():
+            version = current_path.read_text(encoding="ascii").strip()
+            if len(version) != 32 or any(
+                character not in "0123456789abcdef" for character in version
+            ):
+                raise ValueError("Saved FAISS version pointer is invalid")
 
-            if not metadata_path.exists():
-                raise FileNotFoundError(f"Metadata file not found: {metadata_path}")
+            version_dir = directory / cls.VERSIONS_DIRNAME / version
+            metadata_path = version_dir / cls.METADATA_FILENAME
+            index_path = version_dir / cls.INDEX_FILENAME
+        else:
+            # Support stores written before versioned persistence was introduced.
+            metadata_path = directory / cls.METADATA_FILENAME
+            index_path = directory / cls.INDEX_FILENAME
 
-            payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+        if not metadata_path.exists():
+            raise FileNotFoundError(f"Metadata file not found: {metadata_path}")
 
-            store = cls(
-                dimension=payload.get("dimension"),
-                persist_dir=directory,
-            )
+        payload = json.loads(metadata_path.read_text(encoding="utf-8"))
 
-            if index_path.exists():
-                store.index = faiss.read_index(str(index_path))
+        store = cls(
+            dimension=payload.get("dimension"),
+            persist_dir=directory,
+        )
 
-                if store.dimension != store.index.d:
-                    raise ValueError("Saved index and metadata dimensions do not match")
+        if index_path.exists():
+            store.index = faiss.read_index(str(index_path))
 
-            store._next_faiss_id = int(payload.get("next_faiss_id", 1))
-            store._documents = {
-                int(faiss_id): record
-                for faiss_id, record in payload.get("documents", {}).items()
-            }
-            store._chunk_to_faiss = {
-                record["id"]: faiss_id
-                for faiss_id, record in store._documents.items()
-            }
+            if store.dimension != store.index.d:
+                raise ValueError("Saved index and metadata dimensions do not match")
 
-            indexed_count = store.index.ntotal if store.index is not None else 0
-            if indexed_count != len(store._documents):
-                raise ValueError("Saved FAISS index and metadata are inconsistent")
+        store._next_faiss_id = int(payload.get("next_faiss_id", 1))
+        store._documents = {
+            int(faiss_id): record
+            for faiss_id, record in payload.get("documents", {}).items()
+        }
+        store._chunk_to_faiss = {
+            record["id"]: faiss_id
+            for faiss_id, record in store._documents.items()
+        }
 
-            return store
+        indexed_count = store.index.ntotal if store.index is not None else 0
+        if indexed_count != len(store._documents):
+            raise ValueError("Saved FAISS index and metadata are inconsistent")
+
+        return store
