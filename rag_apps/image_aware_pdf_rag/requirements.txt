@@ -1,3 +1,7 @@
 PyMuPDF
 pytest
 Pillow
+faiss-cpu
+sentence-transformers
+numpy
+pytest

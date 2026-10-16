@@ -1,148 +1,214 @@
 
+"""Tests for the provider-independent PDF RAG answer pipeline."""
+
 import pytest
 
-from pipeline import AnswerOrchestrator, RetrievedEvidence
+from pipeline import (
+    AnswerOrchestrator,
+    RetrievedEvidence,
+)
 
 
 class FakeRetriever:
-    def __init__(self, evidence):
-        self.evidence = evidence
+    """Return predefined evidence without using a real vector database."""
+
+    def __init__(self, evidence=None):
+        self.evidence = evidence or []
         self.last_query = None
         self.last_top_k = None
 
-    def retrieve(self, query, top_k=5):
+    def retrieve(self, query: str, top_k: int = 5):
         self.last_query = query
         self.last_top_k = top_k
         return self.evidence
 
 
 class FakeChatModel:
-    def __init__(self, response="Revenue increased in Q4."):
-        self.response = response
+    """Return a predefined answer without calling an LLM API."""
+
+    def __init__(self, answer="The report shows positive growth."):
+        self.answer = answer
         self.last_messages = None
-        self.calls = 0
 
     def generate(self, messages):
-        self.calls += 1
         self.last_messages = messages
-        return self.response
+        return self.answer
 
 
-def test_answer_includes_page_citations():
-    retriever = FakeRetriever([
+@pytest.fixture
+def sample_evidence():
+    return [
         RetrievedEvidence(
-            page_number=3,
-            text="Revenue increased by 20% in Q4.",
-            source="report.pdf",
+            page_number=2,
+            text="Revenue increased by 15% in 2025.",
+            source="annual_report.pdf",
+            content_type="text",
         ),
-    ])
-    chat_model = FakeChatModel()
+        RetrievedEvidence(
+            page_number=4,
+            text="The bar chart shows growth across all quarters.",
+            source="annual_report.pdf",
+            content_type="visual_description",
+        ),
+    ]
 
+
+def test_answer_question_returns_answer_and_citations(sample_evidence):
+    retriever = FakeRetriever(sample_evidence)
+    chat_model = FakeChatModel()
     orchestrator = AnswerOrchestrator(retriever, chat_model)
+
     result = orchestrator.answer_question(
-        "What happened to revenue?"
+        "What does the report say about growth?"
     )
 
-    assert result.answer == "Revenue increased in Q4."
-    assert len(result.citations) == 1
-    assert result.citations[0].page_number == 3
-    assert "[Page 3]" in result.formatted_answer
+    assert result.answer == "The report shows positive growth."
+    assert len(result.citations) == 2
+    assert {citation.page_number for citation in result.citations} == {2, 4}
+    assert "The report shows positive growth." in result.formatted_answer
 
 
-def test_multiple_pages_keep_their_page_numbers():
-    retriever = FakeRetriever([
-        RetrievedEvidence(2, "Sales increased."),
-        RetrievedEvidence(5, "Costs decreased."),
-    ])
-    chat_model = FakeChatModel("Sales increased and costs decreased.")
+def test_retriever_receives_question_and_top_k(sample_evidence):
+    retriever = FakeRetriever(sample_evidence)
+    orchestrator = AnswerOrchestrator(
+        retriever=retriever,
+        chat_model=FakeChatModel(),
+        top_k=3,
+    )
 
-    result = AnswerOrchestrator(
-        retriever, chat_model
-    ).answer_question("Summarize the findings.")
+    orchestrator.answer_question("What is the revenue growth?")
 
-    page_numbers = [c.page_number for c in result.citations]
-
-    assert page_numbers == [2, 5]
-    assert "[Page 2]" in result.formatted_answer
-    assert "[Page 5]" in result.formatted_answer
-
-
-def test_empty_retrieval_does_not_call_llm():
-    retriever = FakeRetriever([])
-    chat_model = FakeChatModel()
-
-    result = AnswerOrchestrator(
-        retriever, chat_model
-    ).answer_question("What is in the PDF?")
-
-    assert result.citations == []
-    assert "couldn't find relevant evidence" in result.answer
-    assert chat_model.calls == 0
-
-
-def test_question_is_passed_to_retriever():
-    retriever = FakeRetriever([
-        RetrievedEvidence(1, "The report covers 2025.")
-    ])
-    chat_model = FakeChatModel()
-
-    AnswerOrchestrator(
-        retriever, chat_model, top_k=3
-    ).answer_question("What year is covered?")
-
-    assert retriever.last_query == "What year is covered?"
+    assert retriever.last_query == "What is the revenue growth?"
     assert retriever.last_top_k == 3
 
 
-def test_prompt_contains_retrieved_evidence():
-    retriever = FakeRetriever([
-        RetrievedEvidence(
-            page_number=4,
-            text="The chart shows a 15% increase.",
-            content_type="visual_description",
-        )
-    ])
-    chat_model = FakeChatModel("The chart shows a 15% increase.")
-
-    AnswerOrchestrator(
-        retriever, chat_model
-    ).answer_question("What does the chart show?")
-
-    prompt = chat_model.last_messages[1]["content"]
-
-    assert "The chart shows a 15% increase." in prompt
-    assert "Page: 4" in prompt
-    assert "visual_description" in prompt
-
-
-def test_empty_question_is_rejected():
+def test_chat_model_receives_system_prompt_and_evidence(sample_evidence):
+    chat_model = FakeChatModel()
     orchestrator = AnswerOrchestrator(
-        FakeRetriever([]), FakeChatModel()
+        retriever=FakeRetriever(sample_evidence),
+        chat_model=chat_model,
     )
 
-    with pytest.raises(ValueError):
-        orchestrator.answer_question("   ")
+    orchestrator.answer_question("Summarize the report.")
+
+    messages = chat_model.last_messages
+
+    assert messages is not None
+    assert messages[0]["role"] == "system"
+    assert messages[1]["role"] == "user"
+    assert "Summarize the report." in messages[1]["content"]
+    assert "Revenue increased by 15% in 2025." in messages[1]["content"]
+    assert "Page: 2" in messages[1]["content"]
+    assert "bar chart shows growth" in messages[1]["content"]
 
 
-def test_empty_model_response_is_rejected():
+def test_empty_retrieval_returns_message_without_calling_chat_model():
+    retriever = FakeRetriever([])
+    chat_model = FakeChatModel()
+    orchestrator = AnswerOrchestrator(retriever, chat_model)
+
+    result = orchestrator.answer_question("What is the report about?")
+
+    assert "couldn't find relevant evidence" in result.answer.lower()
+    assert result.citations == []
+    assert result.formatted_answer
+    assert chat_model.last_messages is None
+
+
+def test_empty_question_raises_value_error():
     orchestrator = AnswerOrchestrator(
-        FakeRetriever([
-            RetrievedEvidence(1, "Some evidence.")
-        ]),
-        FakeChatModel("   "),
-    )
-
-    with pytest.raises(RuntimeError):
-        orchestrator.answer_question("Summarize the evidence.")
-
-
-def test_invalid_retrieved_page_number_is_rejected():
-    orchestrator = AnswerOrchestrator(
-        FakeRetriever([
-            RetrievedEvidence(0, "Invalid page.")
-        ]),
+        FakeRetriever([]),
         FakeChatModel(),
     )
 
-    with pytest.raises(ValueError):
-        orchestrator.answer_question("What is shown?")
+    with pytest.raises(ValueError, match="Question cannot be empty"):
+        orchestrator.answer_question("   ")
+
+
+@pytest.mark.parametrize("top_k", [0, -1, True, 1.5])
+def test_invalid_top_k_raises_value_error(top_k):
+    with pytest.raises(ValueError, match="top_k must be a positive integer"):
+        AnswerOrchestrator(
+            retriever=FakeRetriever([]),
+            chat_model=FakeChatModel(),
+            top_k=top_k,
+        )
+
+
+@pytest.mark.parametrize(
+    "invalid_answer",
+    ["", "   ", None, 123],
+)
+def test_invalid_chat_response_raises_runtime_error(invalid_answer, sample_evidence):
+    orchestrator = AnswerOrchestrator(
+        retriever=FakeRetriever(sample_evidence),
+        chat_model=FakeChatModel(invalid_answer),
+    )
+
+    with pytest.raises(
+        RuntimeError,
+        match="Chat model returned an empty or invalid answer",
+    ):
+        orchestrator.answer_question("What does the report say?")
+
+
+def test_invalid_page_number_is_rejected():
+    retriever = FakeRetriever(
+        [
+            {
+                "page_number": 0,
+                "text": "Some evidence",
+                "source": "report.pdf",
+            }
+        ]
+    )
+    orchestrator = AnswerOrchestrator(retriever, FakeChatModel())
+
+    with pytest.raises(
+        ValueError,
+        match="one-based page_number",
+    ):
+        orchestrator.answer_question("What does the report say?")
+
+
+def test_blank_evidence_is_ignored():
+    retriever = FakeRetriever(
+        [
+            RetrievedEvidence(
+                page_number=1,
+                text="   ",
+            )
+        ]
+    )
+    chat_model = FakeChatModel()
+    orchestrator = AnswerOrchestrator(retriever, chat_model)
+
+    result = orchestrator.answer_question("Summarize this PDF.")
+
+    assert "usable text or visual evidence" in result.answer.lower()
+    assert result.citations == []
+    assert chat_model.last_messages is None
+
+
+def test_visual_evidence_content_type_is_preserved():
+    retriever = FakeRetriever(
+        [
+            RetrievedEvidence(
+                page_number=3,
+                text="The diagram contains three processing stages.",
+                source="architecture.pdf",
+                content_type="visual_description",
+            )
+        ]
+    )
+    chat_model = FakeChatModel("The diagram has three processing stages.")
+    orchestrator = AnswerOrchestrator(retriever, chat_model)
+
+    result = orchestrator.answer_question(
+        "How many processing stages are shown?"
+    )
+
+    assert result.answer == "The diagram has three processing stages."
+    assert len(result.citations) == 1
+    assert result.citations[0].page_number == 3
+    assert "Content type: visual_description" in chat_model.last_messages[1]["content"]

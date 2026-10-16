@@ -1,0 +1,337 @@
+
+"""Local FAISS vector store with chunk metadata and persistence."""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import Any, Iterable
+
+import faiss
+import numpy as np
+
+from interfaces.vector_store import SearchResult, VectorDocument
+
+
+class FAISSVectorStore:
+    """FAISS-backed implementation of the VectorStore contract.
+
+    Vectors use inner-product similarity. For cosine similarity,
+    supply L2-normalized document and query embeddings.
+    """
+
+    INDEX_FILENAME = "index.faiss"
+    METADATA_FILENAME = "metadata.json"
+
+    def __init__(
+        self,
+        dimension: int | None = None,
+        persist_dir: str | Path | None = None,
+    ) -> None:
+        if dimension is not None and (
+            isinstance(dimension, bool)
+            or not isinstance(dimension, int)
+            or dimension < 1
+        ):
+            raise ValueError("dimension must be a positive integer")
+
+        self.persist_dir = Path(persist_dir) if persist_dir else None
+        self.dimension = dimension
+
+        self.index: Any = None
+        self._next_faiss_id = 1
+
+        # Stable application chunk ID -> FAISS integer ID.
+        self._chunk_to_faiss: dict[str, int] = {}
+
+        # FAISS integer ID -> stored document fields.
+        self._documents: dict[int, dict[str, Any]] = {}
+
+        if self.persist_dir:
+            self.persist_dir.mkdir(parents=True, exist_ok=True)
+
+    def _create_index(self, dimension: int) -> None:
+        """Create an index that supports explicit integer IDs."""
+
+        self.dimension = dimension
+        base_index = faiss.IndexFlatIP(dimension)
+        self.index = faiss.IndexIDMap2(base_index)
+
+    @staticmethod
+    def _validate_embedding(
+        embedding: Iterable[float],
+        expected_dimension: int | None = None,
+    ) -> np.ndarray:
+        try:
+            vector = np.asarray(list(embedding), dtype=np.float32)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("Embedding must contain numeric values") from exc
+
+        if vector.ndim != 1 or vector.size == 0:
+            raise ValueError("Embedding must be a non-empty one-dimensional vector")
+
+        if not np.isfinite(vector).all():
+            raise ValueError("Embedding must contain only finite values")
+
+        if expected_dimension is not None and vector.size != expected_dimension:
+            raise ValueError(
+                f"Embedding dimension is {vector.size}; "
+                f"expected {expected_dimension}"
+            )
+
+        return vector
+
+    def add_documents(self, documents: list[VectorDocument]) -> None:
+        """Add documents, replacing any existing documents with the same IDs."""
+
+        if not documents:
+            return
+
+        prepared: list[tuple[VectorDocument, np.ndarray]] = []
+        seen_ids: set[str] = set()
+
+        expected_dimension = self.dimension
+
+        for document in documents:
+            if not isinstance(document.id, str) or not document.id.strip():
+                raise ValueError("Document ID must be a non-empty string")
+
+            if document.id in seen_ids:
+                raise ValueError(f"Duplicate document ID: {document.id}")
+
+            seen_ids.add(document.id)
+
+            if not isinstance(document.text, str) or not document.text.strip():
+                raise ValueError(f"Document {document.id} has empty text")
+
+            if not isinstance(document.metadata, dict):
+                raise ValueError("Document metadata must be a dictionary")
+
+            vector = self._validate_embedding(
+                document.embedding,
+                expected_dimension,
+            )
+
+            if expected_dimension is None:
+                expected_dimension = int(vector.size)
+
+            prepared.append((document, vector))
+
+        # Validate the entire batch before modifying the existing index.
+        if self.dimension is None:
+            self._create_index(expected_dimension)
+        elif self.index is None:
+            self._create_index(self.dimension)
+
+        # Replacing an existing stable ID must not leave stale vectors.
+        existing_ids = [
+            document.id
+            for document, _ in prepared
+            if document.id in self._chunk_to_faiss
+        ]
+        self.delete(existing_ids, save=False)
+
+        vectors = np.vstack([vector for _, vector in prepared]).astype(
+            np.float32,
+            copy=False,
+        )
+
+        faiss_ids = np.arange(
+            self._next_faiss_id,
+            self._next_faiss_id + len(prepared),
+            dtype=np.int64,
+        )
+
+        self.index.add_with_ids(vectors, faiss_ids)
+
+        for (document, _), faiss_id in zip(prepared, faiss_ids):
+            integer_id = int(faiss_id)
+
+            self._chunk_to_faiss[document.id] = integer_id
+            self._documents[integer_id] = {
+                "id": document.id,
+                "text": document.text,
+                "metadata": dict(document.metadata),
+            }
+
+        self._next_faiss_id += len(prepared)
+        self.save()
+
+    def search(
+        self,
+        query_embedding: list[float],
+        top_k: int = 5,
+        filters: dict[str, Any] | None = None,
+    ) -> list[SearchResult]:
+        """Return the most similar matching documents."""
+
+        if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k < 1:
+            raise ValueError("top_k must be a positive integer")
+
+        if filters is not None and not isinstance(filters, dict):
+            raise ValueError("filters must be a dictionary or None")
+
+        if self.index is None or self.index.ntotal == 0:
+            return []
+
+        query = self._validate_embedding(
+            query_embedding,
+            self.dimension,
+        ).reshape(1, -1)
+
+        # Apply metadata filters in the application layer. Fetch all current
+        # candidates so filtering does not unnecessarily hide valid matches.
+        candidate_count = int(self.index.ntotal)
+        scores, ids = self.index.search(query, candidate_count)
+
+        results: list[SearchResult] = []
+
+        for score, faiss_id in zip(scores[0], ids[0]):
+            integer_id = int(faiss_id)
+
+            if integer_id == -1:
+                continue
+
+            record = self._documents.get(integer_id)
+            if record is None:
+                continue
+
+            metadata = record["metadata"]
+
+            if filters and any(
+                metadata.get(key) != value
+                for key, value in filters.items()
+            ):
+                continue
+
+            results.append(
+                SearchResult(
+                    id=record["id"],
+                    text=record["text"],
+                    metadata=dict(metadata),
+                    score=float(score),
+                )
+            )
+
+            if len(results) >= top_k:
+                break
+
+        return results
+
+    def delete(
+        self,
+        ids: list[str],
+        *,
+        save: bool = True,
+    ) -> None:
+        """Delete chunks by their stable application IDs."""
+
+        if not ids:
+            return
+
+        integer_ids = [
+            self._chunk_to_faiss[chunk_id]
+            for chunk_id in set(ids)
+            if chunk_id in self._chunk_to_faiss
+        ]
+
+        if not integer_ids:
+            return
+
+        self.index.remove_ids(np.asarray(integer_ids, dtype=np.int64))
+
+        for integer_id in integer_ids:
+            record = self._documents.pop(integer_id, None)
+
+            if record:
+                self._chunk_to_faiss.pop(record["id"], None)
+
+        if save:
+            self.save()
+
+    def delete_source(self, source_id: str) -> int:
+        """Delete every chunk belonging to one PDF; return count removed."""
+
+        if not isinstance(source_id, str) or not source_id.strip():
+            raise ValueError("source_id must be a non-empty string")
+
+        chunk_ids = [
+            record["id"]
+            for record in self._documents.values()
+            if record["metadata"].get("source_id") == source_id
+        ]
+
+        self.delete(chunk_ids)
+        return len(chunk_ids)
+
+    def save(self) -> None:
+        """Persist the FAISS index and its associated metadata."""
+
+        if self.persist_dir is None:
+            return
+
+        self.persist_dir.mkdir(parents=True, exist_ok=True)
+
+        if self.index is not None:
+            faiss.write_index(
+                self.index,
+                str(self.persist_dir / self.INDEX_FILENAME),
+            )
+
+        payload = {
+            "dimension": self.dimension,
+            "next_faiss_id": self._next_faiss_id,
+            "documents": {
+                str(faiss_id): record
+                for faiss_id, record in self._documents.items()
+            },
+        }
+
+        metadata_path = self.persist_dir / self.METADATA_FILENAME
+        temporary_path = metadata_path.with_suffix(".tmp")
+
+        temporary_path.write_text(
+            json.dumps(payload, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        temporary_path.replace(metadata_path)
+
+    @classmethod
+    def load(cls, persist_dir: str | Path) -> "FAISSVectorStore":
+        """Load a previously saved store."""
+
+        directory = Path(persist_dir)
+        metadata_path = directory / cls.METADATA_FILENAME
+        index_path = directory / cls.INDEX_FILENAME
+
+        if not metadata_path.exists():
+            raise FileNotFoundError(f"Metadata file not found: {metadata_path}")
+
+        payload = json.loads(metadata_path.read_text(encoding="utf-8"))
+
+        store = cls(
+            dimension=payload.get("dimension"),
+            persist_dir=directory,
+        )
+
+        if index_path.exists():
+            store.index = faiss.read_index(str(index_path))
+
+            if store.dimension != store.index.d:
+                raise ValueError("Saved index and metadata dimensions do not match")
+
+        store._next_faiss_id = int(payload.get("next_faiss_id", 1))
+        store._documents = {
+            int(faiss_id): record
+            for faiss_id, record in payload.get("documents", {}).items()
+        }
+        store._chunk_to_faiss = {
+            record["id"]: faiss_id
+            for faiss_id, record in store._documents.items()
+        }
+
+        indexed_count = store.index.ntotal if store.index is not None else 0
+        if indexed_count != len(store._documents):
+            raise ValueError("Saved FAISS index and metadata are inconsistent")
+
+        return store
