@@ -12,11 +12,22 @@ class Citation:
     source: str = "uploaded PDF"
 
     def __post_init__(self):
+        if not isinstance(self.page_number, int) or isinstance(
+            self.page_number, bool
+        ):
+            raise ValueError("page_number must be an integer")
+
         if self.page_number < 1:
             raise ValueError("page_number must be one-based (>= 1)")
 
+        if not isinstance(self.excerpt, str):
+            raise ValueError("Citation excerpt must be a non-empty string")
+
         if not self.excerpt.strip():
             raise ValueError("Citation excerpt cannot be empty")
+
+        if not isinstance(self.source, str):
+            raise ValueError("source must be a non-empty string")
 
         if not self.source.strip():
             raise ValueError("Citation source cannot be empty")

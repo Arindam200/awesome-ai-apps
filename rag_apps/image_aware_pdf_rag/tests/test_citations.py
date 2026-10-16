@@ -43,6 +43,24 @@ def test_rejects_non_integer_page_number():
         )
 
 
+@pytest.mark.parametrize("page_number", [True, False, 2.5, "2"])
+def test_direct_citation_rejects_non_integer_page_number(page_number):
+    with pytest.raises(ValueError):
+        Citation(page_number=page_number, excerpt="Evidence")
+
+
+@pytest.mark.parametrize("excerpt", [None, 123])
+def test_direct_citation_rejects_non_string_excerpt(excerpt):
+    with pytest.raises(ValueError):
+        Citation(page_number=1, excerpt=excerpt)
+
+
+@pytest.mark.parametrize("source", [None, 123])
+def test_direct_citation_rejects_non_string_source(source):
+    with pytest.raises(ValueError):
+        Citation(page_number=1, excerpt="Evidence", source=source)
+
+
 def test_deduplicates_identical_citations():
     evidence = [
         {"page_number": 2, "text": "Sales grew."},
