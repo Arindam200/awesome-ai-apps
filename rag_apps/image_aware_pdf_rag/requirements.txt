@@ -7,3 +7,5 @@ numpy
 pytest
 dotenv
 groq
+streamlit
+python-dotenv
