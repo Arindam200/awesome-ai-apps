@@ -5,3 +5,5 @@ faiss-cpu
 sentence-transformers
 numpy
 pytest
+dotenv
+groq
