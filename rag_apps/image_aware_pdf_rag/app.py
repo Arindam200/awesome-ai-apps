@@ -51,54 +51,339 @@ except Exception as exc:
 st.markdown(
     """
     <style>
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+      /* Base App Typography - apply specifically to textual elements to never corrupt icon ligatures */
+      html, body, p, h1, h2, h3, h4, h5, h6, input, textarea, select, label {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+      }
+
+      /* Streamlit icon preservation */
+      [data-testid*="stIcon"],
+      [data-testid*="Icon"],
+      [data-testid="stExpanderToggleIcon"],
+      span.material-symbols-rounded,
+      span.material-icons,
+      [data-testid="stExpander"] summary span:first-child {
+        font-family: 'Material Symbols Rounded', 'Material Icons', sans-serif !important;
+        font-weight: normal !important;
+        font-style: normal !important;
+        font-size: 20px !important;
+        line-height: 1 !important;
+        letter-spacing: normal !important;
+        text-transform: none !important;
+        display: inline-block !important;
+        white-space: nowrap !important;
+        word-wrap: normal !important;
+        direction: ltr !important;
+        -webkit-font-feature-settings: 'liga' 1 !important;
+        font-feature-settings: 'liga' 1 !important;
+        -webkit-font-smoothing: antialiased !important;
+      }
+      
       .stApp {
-        background: linear-gradient(135deg, #f6f8ff 0%, #fbfcff 48%, #f2f6ff 100%);
-        color: #101735;
+        background: radial-gradient(circle at 10% 20%, rgba(238, 242, 255, 0.8) 0%, rgba(248, 250, 252, 1) 50%, rgba(241, 245, 249, 0.9) 100%);
+        color: #0f172a;
       }
-      .block-container { padding-top: 1.25rem; padding-bottom: 1rem; max-width: 100%; }
-      h1, h2, h3 { color: #101735; letter-spacing: -0.025em; }
-      .hero {
-        padding: 8px 4px 18px 4px;
-        display: flex; align-items: center; justify-content: space-between; gap: 18px;
+
+      /* Make Streamlit top navbar transparent and integrate seamlessly */
+      header[data-testid="stHeader"] {
+        background: transparent !important;
+        pointer-events: none;
+        z-index: 100;
+        height: 2.75rem;
       }
-      .hero-title { font-size: 2.25rem; font-weight: 800; line-height: 1.05; }
-      .hero-subtitle { color: #5a6380; font-size: 1.05rem; margin-top: 8px; }
-      .feature-strip {
-        background: #edf3ff; border: 1px solid #e0e9ff; border-radius: 16px;
-        padding: 17px; color: #39496f; display: flex; gap: 18px;
-        justify-content: space-around; flex-wrap: wrap; font-size: .9rem;
+      
+      header[data-testid="stHeader"] > * {
+        pointer-events: auto;
       }
-      .panel {
-        background: rgba(255,255,255,.86); border: 1px solid #e3e9f5;
-        border-radius: 15px; padding: 15px; min-height: 180px;
+
+      /* Keep navbar controls (Stop, Deploy, Settings menu) crisp and visible */
+      header[data-testid="stHeader"] button, 
+      header[data-testid="stHeader"] [data-testid="stToolbarActions"],
+      header[data-testid="stHeader"] svg {
+        color: #f1f5f9 !important;
+        fill: #f1f5f9 !important;
       }
-      .metric {
-        border: 1px solid #e1e8f6; background: #f7f9ff; border-radius: 11px;
-        padding: 10px 12px; margin: 6px 0; font-size: .93rem;
+
+      .block-container {
+        padding-top: 0.5rem !important;
+        padding-bottom: 2rem;
+        padding-left: 2rem;
+        padding-right: 2rem;
+        max-width: 100%;
       }
-      .chat-user {
-        background: #ecebff; border: 1px solid #e1dfff; border-radius: 12px;
-        padding: 14px 16px; margin: 12px 0;
+
+      /* Hero Header */
+      .hero-container {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #31104b 100%);
+        border-radius: 20px;
+        padding: 24px 32px;
+        color: #ffffff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25), 0 8px 10px -6px rgba(15, 23, 42, 0.2);
+        margin-bottom: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
-      [class*="st-key-chat_assistant_"] {
-        background: #f8faff; border: 1px solid #e7ebf6; border-radius: 12px;
-        padding: 16px; margin: 10px 0;
+
+      .hero-title-area {
+        display: flex;
+        align-items: center;
+        gap: 16px;
       }
-      .citation {
-        border: 1px solid #dfe6f5; border-radius: 12px; background: #fff;
-        padding: 12px; margin: 8px 0;
+
+      .hero-badge-icon {
+        font-size: 2.2rem;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
+        width: 58px;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
       }
+
+      .hero-title {
+        font-size: 1.85rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.15;
+        margin: 0;
+        background: linear-gradient(to right, #ffffff, #c7d2fe);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero-subtitle {
+        color: #94a3b8;
+        font-size: 0.95rem;
+        margin-top: 4px;
+        font-weight: 400;
+      }
+
+      .hero-tags {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .hero-tag {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #e2e8f0;
+        padding: 6px 14px;
+        border-radius: 9999px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* Section Cards */
+      .ui-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 18px 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .ui-card:hover {
+        box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.06);
+      }
+
+      .ui-card-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        letter-spacing: -0.01em;
+      }
+
+      /* Status Metrics */
+      .metric-badge {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 8px 12px;
+        margin: 6px 0;
+        font-size: 0.88rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: #334155;
+      }
+
+      .metric-badge b {
+        color: #0f172a;
+        font-weight: 600;
+      }
+
+      /* Chat Bubbles */
+      .chat-user-msg {
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        color: #ffffff;
+        border-radius: 14px 14px 2px 14px;
+        padding: 12px 16px;
+        margin: 12px 0 12px auto;
+        max-width: 85%;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+
+      .chat-assistant-msg {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 14px 14px 14px 2px;
+        padding: 16px 18px;
+        margin: 12px auto 12px 0;
+        max-width: 95%;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+        color: #1e293b;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      /* Buttons & Inputs */
       div.stButton > button {
-        border-radius: 10px; border: 1px solid #dce3f4; font-weight: 600;
+        border-radius: 10px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 0.5rem 1rem;
+        border: 1px solid #cbd5e1;
       }
+
+      div.stButton > button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.08);
+      }
+
       div.stButton > button[kind="primary"] {
-        background: #625cf6; border-color: #625cf6; color: white;
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+        border: none;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
       }
+
+      div.stButton > button[kind="primary"]:hover {
+        background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.45);
+      }
+
+      /* Ensure columns maintain proper grid on wide layouts */
+      [data-testid="column"] {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 22px 20px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+      }
+
+      /* Clean, un-squished file uploader */
       [data-testid="stFileUploader"] {
-        background: rgba(255,255,255,.75); border: 1px dashed #b9c8e6;
-        border-radius: 12px; padding: 8px;
+        background: #f8fafc;
+        border: 2px dashed #cbd5e1;
+        border-radius: 16px;
+        padding: 10px 14px;
+        transition: all 0.2s ease;
       }
-      .small-muted { color: #6b7590; font-size: .82rem; }
+
+      [data-testid="stFileUploader"]:hover {
+        border-color: #6366f1;
+        background: #f5f7ff;
+      }
+
+      [data-testid="stFileUploaderDropzone"] {
+        padding: 16px !important;
+        border: none !important;
+        background: transparent !important;
+        text-align: center !important;
+      }
+
+      /* Hide broken icon font ligature text like raw 'upload' text */
+      [data-testid="stFileUploaderDropzone"] [data-testid="stIconMaterial"],
+      [data-testid="stFileUploaderDropzone"] svg + span:empty,
+      [data-testid="stFileUploaderDropzone"] span.material-symbols-rounded,
+      [data-testid="stFileUploaderDropzone"] span.material-icons {
+        font-family: 'Material Symbols Rounded', 'Material Icons', sans-serif !important;
+      }
+
+      [data-testid="stFileUploaderDropzone"] button {
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        padding: 8px 18px !important;
+        background: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+        margin: 6px auto !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      [data-testid="stFileUploaderDropzoneInstructions"] {
+        font-size: 0.82rem !important;
+        color: #64748b !important;
+        text-align: center !important;
+        margin-top: 6px !important;
+      }
+
+      /* Expander header styling */
+      [data-testid="stExpander"] {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        background: #ffffff !important;
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
+      }
+
+      [data-testid="stExpander"] summary {
+        padding: 10px 14px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        font-weight: 600 !important;
+        color: #334155 !important;
+      }
+
+      [data-testid="stExpander"] summary:hover {
+        color: #4f46e5 !important;
+      }
+
+      /* Citations Card */
+      .citation-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid #6366f1;
+        border-radius: 10px;
+        padding: 10px 14px;
+        margin: 8px 0;
+      }
+
+      /* Page viewer styling */
+      .viewer-box {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+      }
     </style>
     """,
     unsafe_allow_html=True,
@@ -118,15 +403,17 @@ def get_vector_store() -> FAISSVectorStore:
 
 
 @st.cache_resource
-def get_chat_model(model_name: str) -> GroqChatModel:
-    # The provider implementation should accept model=...; if yours uses a
-    # different constructor argument, adjust this line to match groq_chat.py.
-    return GroqChatModel(model=model_name)
+def get_chat_model(model_name: str, api_key: str | None = None) -> GroqChatModel:
+    load_dotenv(override=True)
+    key = api_key or os.getenv("GROQ_API_KEY")
+    return GroqChatModel(model=model_name, api_key=key)
 
 
 @st.cache_resource
-def get_vision_model(model_name: str) -> GroqVisionModel:
-    return GroqVisionModel(model=model_name)
+def get_vision_model(model_name: str, api_key: str | None = None) -> GroqVisionModel:
+    load_dotenv(override=True)
+    key = api_key or os.getenv("GROQ_API_KEY")
+    return GroqVisionModel(model=model_name, api_key=key)
 
 
 # ---------- Session state ----------
@@ -285,16 +572,19 @@ def set_cited_page(number: int) -> None:
 # ---------- Header ----------
 st.markdown(
     """
-    <div class="hero">
-      <div>
-        <div class="hero-title">📄 Multimodal PDF RAG</div>
-        <div class="hero-subtitle">Ask questions about text, charts, tables and diagrams in your PDF</div>
+    <div class="hero-container">
+      <div class="hero-title-area">
+        <div class="hero-badge-icon">📄</div>
+        <div>
+          <h1 class="hero-title">Multimodal PDF RAG</h1>
+          <div class="hero-subtitle">Intelligent document intelligence across text, charts, diagrams &amp; tables</div>
+        </div>
       </div>
-      <div class="feature-strip">
-        <span>▧ Understands text</span>
-        <span>▥ Reads charts &amp; tables</span>
-        <span>♧ Interprets diagrams</span>
-        <span>⌕ Cites pages with evidence</span>
+      <div class="hero-tags">
+        <div class="hero-tag"><span>📝</span> Rich Text Extraction</div>
+        <div class="hero-tag"><span>📊</span> Vision-Aware Charts</div>
+        <div class="hero-tag"><span>🔍</span> FAISS Dense Retrieval</div>
+        <div class="hero-tag"><span>🎯</span> Page-Level Citations</div>
       </div>
     </div>
     """,
@@ -303,12 +593,12 @@ st.markdown(
 
 
 # ---------- Three-column dashboard ----------
-left, center, right = st.columns([0.95, 2.1, 1.45], gap="medium")
+left, center, right = st.columns([1.0, 2.0, 1.4], gap="large")
 
 
 # LEFT: upload, processing and settings
 with left:
-    st.markdown("### 1. Upload PDF")
+    st.markdown('<div class="ui-card-title">📁 1. Upload Document</div>', unsafe_allow_html=True)
     uploaded_file = st.file_uploader(
         "Drag and drop a PDF here",
         type=["pdf"],
@@ -320,8 +610,8 @@ with left:
         pdf_bytes = uploaded_file.getvalue()
         current_hash = hashlib.sha256(pdf_bytes).hexdigest()
         st.markdown(
-            f'<div class="metric">📕 <b>{html.escape(uploaded_file.name)}</b><br>'
-            f'<span class="small-muted">{len(pdf_bytes) / (1024 * 1024):.2f} MB</span></div>',
+            f'<div class="metric-badge"><span>📕 <b>{html.escape(uploaded_file.name)}</b></span>'
+            f'<span style="color:#64748b; font-size:0.8rem;">{len(pdf_bytes) / (1024 * 1024):.2f} MB</span></div>',
             unsafe_allow_html=True,
         )
         if current_hash != st.session_state.pdf_hash:
@@ -341,7 +631,7 @@ with left:
             st.session_state.indexed_items = 0
             st.session_state.processing_error = None
 
-        if st.button("Inspect PDF pages", use_container_width=True):
+        if st.button("🔍 Inspect PDF Pages", use_container_width=True, type="primary"):
             try:
                 with st.spinner("Extracting text and rendering PDF pages…"):
                     pages = ingest_pdf(pdf_bytes)
@@ -369,14 +659,15 @@ with left:
     text_pages = sum(1 for page in pages if page_text(page))
     rendered_pages = sum(1 for page in pages if page_image(page))
 
-    st.markdown("### 2. Processing")
+    st.markdown('<div class="ui-card-title" style="margin-top:14px;">⚡ 2. Document Status</div>', unsafe_allow_html=True)
     if pages:
-        st.success("PDF processed successfully!")
-        st.markdown(f'<div class="metric">✣ Pages: <b>{len(pages)}</b></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="metric">✣ Text chunks: <b>{len(chunks)}</b></div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="metric">▧ Page images rendered: <b>{rendered_pages}</b></div>', unsafe_allow_html=True)
         st.markdown(
-            f'<div class="metric">⌘ Index: <b>{"Created (text + visuals)" if st.session_state.index_ready else "Not built yet"}</b></div>',
+            f'<div class="metric-badge"><span>📑 Total Pages</span><b>{len(pages)}</b></div>'
+            f'<div class="metric-badge"><span>✂️ Text Chunks</span><b>{len(chunks)}</b></div>'
+            f'<div class="metric-badge"><span>🖼️ Rendered Visuals</span><b>{rendered_pages}</b></div>'
+            f'<div class="metric-badge"><span>⚡ Index State</span>'
+            f'<b style="color:{"#16a34a" if st.session_state.index_ready else "#e11d48"};">'
+            f'{"Active" if st.session_state.index_ready else "Not Built"}</b></div>',
             unsafe_allow_html=True,
         )
         no_text_pages = [
@@ -384,78 +675,68 @@ with left:
         ]
         if no_text_pages:
             st.warning(
-                "Some pages have no selectable text: "
-                + ", ".join(map(str, no_text_pages[:12]))
-                + (", …" if len(no_text_pages) > 12 else "")
-                + ". OCR is not automatically performed by this app."
+                "Pages without text: "
+                + ", ".join(map(str, no_text_pages[:8]))
+                + (", …" if len(no_text_pages) > 8 else "")
+                + ". Visual RAG will analyze these with multimodal vision."
             )
     else:
-        st.info("Upload a PDF, then choose **Inspect PDF pages**.")
+        st.info("Upload a PDF document to begin inspecting pages.")
 
     st.markdown("---")
-    st.markdown("### 3. Model & Settings")
+    st.markdown('<div class="ui-card-title">⚙️ 3. Settings & Models</div>', unsafe_allow_html=True)
     chat_model_name = st.selectbox(
-        "LLM Provider",
+        "Chat Model (Groq)",
         options=["openai/gpt-oss-20b"],
         index=0,
-        help="Groq model IDs are configured in providers/groq_chat.py.",
+        help="Fast inference with Groq.",
     )
     vision_model_name = st.selectbox(
-        "Vision Provider",
+        "Vision Model (Groq)",
         options=[os.getenv("GROQ_VISION_MODEL", "qwen/qwen3.8-27b")],
-        help="Groq model ID configured in providers/groq_vision.py.",
+        help="Multimodal model for diagrams and figures.",
     )
     st.selectbox(
         "Embedding Provider",
-        options=["Local Sentence Transformers (all-MiniLM-L6-v2)"],
-        help="Embeddings run locally after the model is downloaded.",
+        options=["Local MiniLM-L6-v2 (HuggingFace)"],
+        help="Dense local embeddings running efficiently on CPU.",
     )
-    offline_mode = st.toggle(
-        "Use local / offline mode (if available)",
-        value=False,
-        help="Local embeddings are used. Groq chat and vision still require an internet connection and GROQ_API_KEY.",
-    )
-    if offline_mode:
-        st.info(
-            "Local embeddings are enabled, but full offline question answering is not "
-            "available unless you configure a local chat and vision provider."
-        )
 
-    if st.button("↻ Reprocess PDF", use_container_width=True, type="primary"):
+    if st.button("🔄 Reset Document & Chat", use_container_width=True):
         if uploaded_file is None:
-            st.warning("Upload a PDF first.")
+            st.warning("No PDF uploaded.")
         else:
             st.session_state.index_ready = False
             st.session_state.visual_descriptions = []
             st.session_state.chat_history = []
+            st.session_state.last_evidence = []
             st.rerun()
 
     st.markdown("---")
-    st.caption("API key: " + ("configured" if os.getenv("GROQ_API_KEY") else "missing"))
-    if not os.getenv("GROQ_API_KEY"):
-        st.warning("Set GROQ_API_KEY in your `.env` file to enable Groq chat and vision.")
+    has_groq_key = bool(os.getenv("GROQ_API_KEY"))
+    st.markdown(
+        f'<div style="font-size:0.82rem; color:{ "#16a34a" if has_groq_key else "#e11d48" }; font-weight:600;">'
+        f'● Groq API Key: {"Connected" if has_groq_key else "Missing from .env"}</div>',
+        unsafe_allow_html=True,
+    )
 
 
 # CENTER: index building, questions and chat
 with center:
-    st.markdown("### Ask a question about your PDF")
+    st.markdown('<div class="ui-card-title">💬 Document Q&A & Research</div>', unsafe_allow_html=True)
 
     if pages and not st.session_state.index_ready:
-        st.info(
-            "Your PDF has been inspected. Build the search index to search both "
-            "extracted text and visual descriptions."
-        )
-        if st.button("Build search index", type="primary", use_container_width=True):
+        st.info("Your PDF pages are loaded. Click below to construct the multimodal search index.")
+        if st.button("🚀 Build Search Index (Embeddings + Vision)", type="primary", use_container_width=True):
             if not os.getenv("GROQ_API_KEY"):
                 st.error("GROQ_API_KEY is missing. Add it to `.env` before building the visual index.")
             else:
                 try:
-                    with st.spinner("Building index: embedding text and describing page visuals…"):
+                    with st.spinner("Building index: embedding text and generating vision descriptions…"):
                         embedder = get_embedding_model()
                         vision_model = get_vision_model(vision_model_name)
                         store = get_vector_store()
 
-                        # Remove the previous document's vectors before re-indexing.
                         if st.session_state.index_source:
                             store.delete_source(st.session_state.index_source)
 
@@ -463,7 +744,7 @@ with center:
                         st.session_state.index_source = index_source
                         indexed_count = 0
 
-                        # Index text chunks, retaining source page metadata.
+                        # Index text chunks
                         for i, chunk in enumerate(chunks):
                             chunk_text = str(object_value(chunk, "text", "") or "").strip()
                             if not chunk_text:
@@ -484,21 +765,36 @@ with center:
                             )
                             indexed_count += 1
 
-                        # Describe page images, one page at a time to reduce rate-limit risk.
+                        # Describe page images
+                        pages_with_images = [
+                            page for page in pages
+                            if page_image(page)
+                        ]
+
                         descriptions = []
-                        pages_with_images = [page for page in pages if page_image(page)]
+                        failed_pages = []
                         progress = st.progress(0.0, text="Describing page visuals…")
-                        for i, page in enumerate(pages_with_images):
+                        fatal_api_error = False
+
+                        for i, page in enumerate(pages_with_images, start=1):
+                            if fatal_api_error:
+                                break
+                            pnum = page_number(page)
+
                             try:
                                 result = describe_pdf_pages([page], vision_model)
+
                                 for description in result:
                                     desc_text = str(
                                         object_value(description, "description", "") or ""
                                     ).strip()
+
                                     if not desc_text:
+                                        failed_pages.append(pnum)
                                         continue
-                                    pnum = int(object_value(description, "page_number", page_number(page)))
+
                                     descriptions.append(description)
+
                                     add_to_index(
                                         store,
                                         embedder,
@@ -512,14 +808,26 @@ with center:
                                         f"{index_source}:visual:{pnum}:{len(descriptions)}",
                                     )
                                     indexed_count += 1
+
                             except Exception as exc:
-                                # A single page failing should not discard the text index.
-                                st.warning(f"Could not describe page {page_number(page)}: {exc}")
+                                failed_pages.append(pnum)
+                                err_str = str(exc)
+                                if "401" in err_str or "invalid_api_key" in err_str.lower():
+                                    st.error("❌ Invalid Groq API Key! Please verify GROQ_API_KEY in your `.env` file.")
+                                    fatal_api_error = True
+                                    break
+                                else:
+                                    st.warning(f"Vision failed on PDF page {pnum}: {exc}")
+
                             progress.progress(
-                                (i + 1) / max(1, len(pages_with_images)),
-                                text=f"Describing page visuals… ({i + 1}/{len(pages_with_images)})",
+                                i / max(1, len(pages_with_images)),
+                                text=f"Analyzing visuals ({i}/{len(pages_with_images)})",
                             )
                         progress.empty()
+
+                        st.write("Pages sent to vision:", len(pages_with_images))
+                        st.write("Visual descriptions created:", len(descriptions))
+                        st.write("Pages with failures:", failed_pages)
 
                         st.session_state.visual_descriptions = descriptions
                         st.session_state.index_source = index_source
@@ -527,29 +835,28 @@ with center:
                         st.session_state.index_ready = indexed_count > 0
                         if st.session_state.index_ready:
                             st.success(
-                                f"Index created successfully: {indexed_count} searchable items "
-                                f"({len(chunks)} text chunks available; "
-                                f"{len(descriptions)} visual descriptions indexed)."
+                                f"✓ Index ready with {indexed_count} items ({len(chunks)} text chunks, {len(descriptions)} vision analyses)."
                             )
                         else:
-                            st.error("No searchable text or visual descriptions were indexed.")
+                            st.error("No searchable content was indexed.")
                 except Exception as exc:
-                    st.error("Index creation failed. Check the provider configuration and module APIs.")
+                    st.error("Index creation failed. Please check your credentials and logs.")
                     st.exception(exc)
 
     query = st.text_input(
-        "Ask anything about the document (text, charts, tables, diagrams)…",
-        placeholder="Ask anything about the document (text, charts, tables, diagrams)…",
+        "Ask a question about text, charts, diagrams, or numbers in your PDF…",
+        placeholder="e.g., What does the system architecture diagram illustrate?",
         label_visibility="collapsed",
         key="question_input",
         disabled=not st.session_state.index_ready,
     )
-    st.caption("Try these example questions:")
+
+    st.markdown('<div style="font-size:0.8rem; color:#64748b; font-weight:600; margin: 4px 0 6px 0;">Suggested Questions:</div>', unsafe_allow_html=True)
     examples = [
-        "What is the main contribution of this paper?",
-        "What does the chart on page 5 show?",
-        "Explain the architecture diagram on page 3.",
-        "What are the key results in the table?",
+        "What is the main architecture described?",
+        "What do the key charts or diagrams show?",
+        "Summarize the technical results & tables.",
+        "What are the main components and flow?",
     ]
     example_cols = st.columns(2)
     for i, example in enumerate(examples):
@@ -563,16 +870,16 @@ with center:
                 args=(example,),
             )
 
-    ask_col, clear_col = st.columns([4, 1])
+    ask_col, clear_col = st.columns([4, 1.2])
     with ask_col:
         ask_clicked = st.button(
-            "➤ Ask question",
+            "✨ Ask Question",
             type="primary",
             use_container_width=True,
             disabled=not st.session_state.index_ready,
         )
     with clear_col:
-        if st.button("Clear chat", use_container_width=True):
+        if st.button("🗑️ Clear", use_container_width=True):
             st.session_state.chat_history = []
             st.session_state.last_evidence = []
             st.session_state.last_question = None
@@ -581,10 +888,10 @@ with center:
     if ask_clicked:
         question = (st.session_state.question_input or "").strip()
         if not question:
-            st.warning("Enter a question first.")
+            st.warning("Please type a question.")
         else:
             try:
-                with st.spinner("Retrieving evidence and generating an answer…"):
+                with st.spinner("Searching document & formulating verified answer…"):
                     chat_model = get_chat_model(chat_model_name)
                     answer, evidence = answer_question(question, chat_model)
                 st.session_state.chat_history.append({"role": "user", "content": question})
@@ -598,23 +905,25 @@ with center:
                 st.error("Question answering failed.")
                 st.exception(exc)
 
-    # Render conversation history.
+    # Render conversation history with modern styling
     for i, message in enumerate(st.session_state.chat_history):
         if message["role"] == "user":
             content = html.escape(str(message["content"]))
             st.markdown(
-                f'<div class="chat-user">👤 {content}</div>',
+                f'<div class="chat-user-msg"><b>You</b><br>{content}</div>',
                 unsafe_allow_html=True,
             )
         else:
-            with st.container(key=f"chat_assistant_{i}"):
-                st.markdown("🤖")
-                st.markdown(str(message["content"]))
+            assistant_content = str(message["content"])
+            st.markdown(
+                f'<div class="chat-assistant-msg"><b style="color:#4f46e5;">🤖 Assistant</b><br><br>{assistant_content}</div>',
+                unsafe_allow_html=True,
+            )
 
-    # Evidence cards for the most recent answer.
+    # Cited sources section
     last_evidence = st.session_state.get("last_evidence", [])
     if last_evidence:
-        st.markdown("#### Cited Sources")
+        st.markdown('<div class="ui-card-title" style="margin-top:20px;">📚 Supporting Citations & Evidence</div>', unsafe_allow_html=True)
         seen_pages: set[int] = set()
         for item in last_evidence:
             pnum = int(item["page_number"])
@@ -624,16 +933,17 @@ with center:
             preview = next(
                 (page for page in pages if page_number(page) == pnum), None
             )
-            c1, c2 = st.columns([1, 4])
+            c1, c2 = st.columns([1, 3.5])
             with c1:
                 if preview and page_image(preview):
                     st.image(page_image(preview), use_container_width=True)
                 else:
                     st.caption(f"Page {pnum}")
             with c2:
-                st.markdown(f"**Page {pnum}** · {item['content_type']}")
+                ctype = "Visual Diagram" if item['content_type'] == "visual_description" else "Text Block"
+                st.markdown(f"**Page {pnum}** · <span style='color:#6366f1; font-weight:600;'>{ctype}</span>", unsafe_allow_html=True)
                 st.caption(item["text"][:260] + ("…" if len(item["text"]) > 260 else ""))
-                if st.button(f"View Page {pnum} →", key=f"view_citation_{pnum}"):
+                if st.button(f"🔎 Jump to Page {pnum}", key=f"view_citation_{pnum}"):
                     set_cited_page(pnum)
                     st.rerun()
 
@@ -644,19 +954,23 @@ with right:
     total_pages = len(current_pages)
     selected_page = st.session_state.cited_page
 
-    nav_left, title_col, nav_right = st.columns([0.55, 2.3, 0.55])
+    st.markdown('<div class="ui-card-title">📖 Document Inspector</div>', unsafe_allow_html=True)
+
+    nav_left, title_col, nav_right = st.columns([0.6, 2.0, 0.6])
     with title_col:
-        st.markdown(f"### Cited Page: {selected_page}")
+        st.markdown(
+            f'<div style="text-align:center; font-weight:700; color:#1e293b; padding-top:4px;">'
+            f'Page {selected_page} of {max(1, total_pages)}</div>',
+            unsafe_allow_html=True,
+        )
     with nav_left:
-        if st.button("‹", key="prev_page", disabled=not current_pages or selected_page <= 1):
+        if st.button("◀", key="prev_page", disabled=not current_pages or selected_page <= 1, use_container_width=True):
             set_cited_page(selected_page - 1)
             st.rerun()
     with nav_right:
-        if st.button("›", key="next_page", disabled=not current_pages or selected_page >= total_pages):
+        if st.button("▶", key="next_page", disabled=not current_pages or selected_page >= total_pages, use_container_width=True):
             set_cited_page(selected_page + 1)
             st.rerun()
-
-    st.caption(f"Page {selected_page} / {total_pages}" if total_pages else "Upload a PDF to preview pages.")
 
     if current_pages:
         selected = next(
@@ -670,14 +984,12 @@ with right:
             st.warning("No rendered image is available for this page.")
         extracted_text = page_text(selected)
         if extracted_text:
-            with st.expander("View extracted page text"):
-                st.write(extracted_text)
+            with st.expander("Extracted Page Text", expanded=False):
+                st.text_area("Extracted Text", extracted_text, height=180, disabled=True, label_visibility="collapsed")
         else:
-            st.caption("No selectable text was extracted from this page.")
+            st.caption("No raw text on this page.")
 
-        st.markdown("#### Page thumbnails")
-        # Streamlit has no built-in horizontally scrolling thumbnail carousel;
-        # this compact grid provides page navigation with the same functionality.
+        st.markdown('<div style="font-weight:700; font-size:0.9rem; margin-top:16px; margin-bottom:8px; color:#334155;">Thumbnail Gallery</div>', unsafe_allow_html=True)
         thumbnail_pages = current_pages[
             max(0, selected_page - 3) : min(total_pages, selected_page + 2)
         ]
@@ -689,7 +1001,7 @@ with right:
                 if img:
                     st.image(img, use_container_width=True)
                 if st.button(
-                    str(pnum),
+                    f"P.{pnum}",
                     key=f"thumbnail_{pnum}",
                     type="primary" if pnum == selected_page else "secondary",
                     use_container_width=True,
@@ -697,10 +1009,13 @@ with right:
                     set_cited_page(pnum)
                     st.rerun()
     else:
-        st.info("Your cited PDF page will appear here after upload and inspection.")
+        st.info("Upload and inspect a PDF to view pages, diagrams, and citation highlights.")
 
 st.markdown("---")
-st.caption(
-    "Multimodal PDF RAG · Page citations are based on retrieved indexed evidence. "
-    "Scanned PDFs may require OCR, which is not included by default."
+st.markdown(
+    '<div style="text-align:center; color:#94a3b8; font-size:0.8rem;">'
+    'Multimodal PDF RAG · Grounded answering with FAISS, Groq Vision &amp; Local Dense Embeddings'
+    '</div>',
+    unsafe_allow_html=True,
 )
+
