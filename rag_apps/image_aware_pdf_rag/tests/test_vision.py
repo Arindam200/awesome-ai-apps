@@ -1,10 +1,11 @@
 
+import logging
 from dataclasses import dataclass
 
 import pytest
 
 from vision import describe_pdf_pages
-from interfaces.vision import VisionResult
+from interfaces.vision import VisionImageTooLargeError, VisionResult
 
 
 FAKE_PNG = b"\x89PNG\r\n\x1a\nfake-image-data"
@@ -81,3 +82,21 @@ def test_rejects_mismatched_page_number():
             [FakePage(1, FAKE_PNG)],
             WrongPageVisionModel(),
         )
+
+
+def test_skips_oversized_page_and_continues(caplog):
+    class OversizedPageVisionModel(FakeVisionModel):
+        def describe_page(self, image_png, page_number):
+            if page_number == 1:
+                raise VisionImageTooLargeError("image exceeds provider limit")
+            return super().describe_page(image_png, page_number)
+
+    model = OversizedPageVisionModel()
+    pages = [FakePage(1, FAKE_PNG), FakePage(2, FAKE_PNG)]
+
+    with caplog.at_level(logging.WARNING):
+        results = describe_pdf_pages(pages, model)
+
+    assert model.called_pages == [2]
+    assert [result.page_number for result in results] == [2]
+    assert "Skipping visual description for page 1" in caplog.text

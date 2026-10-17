@@ -268,6 +268,58 @@ def test_load_falls_back_when_lock_access_is_denied(tmp_path, monkeypatch):
     assert loaded.search([1, 0, 0], top_k=1)[0].id == "a:1"
 
 
+def test_load_retries_when_snapshot_is_pruned_without_lock(
+    tmp_path,
+    monkeypatch,
+):
+    store = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+    store.add_documents([make_document("a:1", "a", 1, [1, 0, 0])])
+    previous_version = (
+        tmp_path / FAISSVectorStore.CURRENT_FILENAME
+    ).read_text(encoding="ascii")
+    store.add_documents([make_document("a:2", "a", 2, [0, 1, 0])])
+    selected_version = (
+        tmp_path / FAISSVectorStore.CURRENT_FILENAME
+    ).read_text(encoding="ascii")
+    original_load_unlocked = FAISSVectorStore._load_unlocked
+    original_open = Path.open
+    load_attempts = 0
+
+    def deny_lock_access(path, *args, **kwargs):
+        if path.name == ".persistence.lock":
+            raise PermissionError(errno.EACCES, "Access denied", str(path))
+        return original_open(path, *args, **kwargs)
+
+    def prune_selected_snapshot(cls, directory):
+        nonlocal load_attempts
+        load_attempts += 1
+        if load_attempts == 1:
+            shutil.rmtree(
+                directory
+                / FAISSVectorStore.VERSIONS_DIRNAME
+                / selected_version
+            )
+            (directory / FAISSVectorStore.CURRENT_FILENAME).write_text(
+                previous_version,
+                encoding="ascii",
+            )
+            raise FileNotFoundError("Selected snapshot was pruned")
+        return original_load_unlocked(directory)
+
+    monkeypatch.setattr(Path, "open", deny_lock_access)
+    monkeypatch.setattr(
+        FAISSVectorStore,
+        "_load_unlocked",
+        classmethod(prune_selected_snapshot),
+    )
+
+    loaded = FAISSVectorStore.load(tmp_path)
+
+    assert load_attempts == 2
+    assert loaded.index.ntotal == 1
+    assert loaded.search([1, 0, 0], top_k=1)[0].id == "a:1"
+
+
 def test_save_propagates_lock_access_errors(tmp_path, monkeypatch):
     store = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
     store.add_documents([make_document("a:1", "a", 1, [1, 0, 0])])

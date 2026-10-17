@@ -15,6 +15,10 @@ from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
 
+class VisionImageTooLargeError(RuntimeError):
+    """Raised when an image cannot be reduced to a provider's size limit."""
+
+
 @dataclass(frozen=True)
 class VisionResult:
     """Visual analysis result tied to its source PDF page."""

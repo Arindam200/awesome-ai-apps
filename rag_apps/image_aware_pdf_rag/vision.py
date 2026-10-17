@@ -3,10 +3,18 @@
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import Iterable
 
-from interfaces.vision import VisionModel, VisionResult, validate_vision_input
+from interfaces.vision import (
+    VisionImageTooLargeError,
+    VisionModel,
+    VisionResult,
+    validate_vision_input,
+)
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -52,10 +60,18 @@ def describe_pdf_pages(
 
         validate_vision_input(image_png, page_number)
 
-        result: VisionResult = vision_model.describe_page(
-            image_png=image_png,
-            page_number=page_number,
-        )
+        try:
+            result: VisionResult = vision_model.describe_page(
+                image_png=image_png,
+                page_number=page_number,
+            )
+        except VisionImageTooLargeError as exc:
+            logger.warning(
+                "Skipping visual description for page %s: %s",
+                page_number,
+                exc,
+            )
+            continue
 
         if result.page_number != page_number:
             raise ValueError(

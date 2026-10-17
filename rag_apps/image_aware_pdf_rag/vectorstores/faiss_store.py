@@ -442,7 +442,24 @@ class FAISSVectorStore:
             with _persistence_lock(directory):
                 return cls._load_unlocked(directory)
         except _PersistenceLockUnavailable:
-            return cls._load_unlocked(directory)
+            current_path = directory / cls.CURRENT_FILENAME
+
+            def read_current_version() -> str | None:
+                try:
+                    return current_path.read_text(encoding="ascii").strip()
+                except FileNotFoundError:
+                    return None
+
+            for attempt in range(3):
+                version_before = read_current_version()
+                try:
+                    return cls._load_unlocked(directory)
+                except (FileNotFoundError, RuntimeError):
+                    version_after = read_current_version()
+                    if version_after == version_before or attempt == 2:
+                        raise
+
+            raise RuntimeError("Unable to load a stable FAISS snapshot")
 
     @classmethod
     def _load_unlocked(cls, directory: Path) -> "FAISSVectorStore":

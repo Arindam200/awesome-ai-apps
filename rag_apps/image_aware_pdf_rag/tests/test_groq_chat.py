@@ -23,7 +23,8 @@ class FakeGroqClient:
         return SimpleNamespace(choices=[choice])
 
 
-def test_generate_returns_answer():
+def test_generate_returns_answer(monkeypatch):
+    monkeypatch.delenv("GROQ_CHAT_MODEL", raising=False)
     client = FakeGroqClient("Revenue increased by 20%.")
     model = GroqChatModel(client=client)
 
