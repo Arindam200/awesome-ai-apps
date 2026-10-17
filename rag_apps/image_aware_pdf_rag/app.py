@@ -600,17 +600,18 @@ with center:
 
     # Render conversation history.
     for i, message in enumerate(st.session_state.chat_history):
-        content = html.escape(str(message["content"]))
         if message["role"] == "user":
+            content = html.escape(str(message["content"]))
             st.markdown(
                 f'<div class="chat-user">👤 {content}</div>',
                 unsafe_allow_html=True,
             )
         else:
             st.markdown(
-                f'<div class="chat-assistant">🤖 {content}</div>',
+                '<div class="chat-assistant">🤖</div>',
                 unsafe_allow_html=True,
             )
+            st.markdown(str(message["content"]))
 
     # Evidence cards for the most recent answer.
     last_evidence = st.session_state.get("last_evidence", [])
