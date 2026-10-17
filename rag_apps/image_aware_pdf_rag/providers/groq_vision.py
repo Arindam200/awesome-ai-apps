@@ -113,7 +113,13 @@ class GroqVisionModel:
 
         with Image.open(BytesIO(image_png)) as image:
             image.load()
-            image = image.convert("RGB")
+            if "A" in image.getbands():
+                alpha = image.getchannel("A")
+                background = Image.new("RGB", image.size, "white")
+                background.paste(image.convert("RGB"), mask=alpha)
+                image = background
+            else:
+                image = image.convert("RGB")
 
         width, height = image.size
         while True:

@@ -454,7 +454,14 @@ class FAISSVectorStore:
                 version_before = read_current_version()
                 try:
                     return cls._load_unlocked(directory)
-                except (FileNotFoundError, RuntimeError):
+                except (FileNotFoundError, RuntimeError, ValueError) as exc:
+                    if (
+                        isinstance(exc, ValueError)
+                        and str(exc)
+                        != "Saved FAISS index and metadata are inconsistent"
+                    ):
+                        raise
+
                     version_after = read_current_version()
                     if version_after == version_before or attempt == 2:
                         raise

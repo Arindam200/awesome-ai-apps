@@ -320,6 +320,68 @@ def test_load_retries_when_snapshot_is_pruned_without_lock(
     assert loaded.search([1, 0, 0], top_k=1)[0].id == "a:1"
 
 
+def test_load_retries_when_selected_index_is_pruned_after_metadata_read(
+    tmp_path,
+    monkeypatch,
+):
+    store = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+    for index in range(3):
+        store.add_documents(
+            [
+                make_document(
+                    f"a:{index + 1}",
+                    "a",
+                    index + 1,
+                    [1, index, 0],
+                )
+            ]
+        )
+
+    versions_dir = tmp_path / FAISSVectorStore.VERSIONS_DIRNAME
+    newer_version = (
+        tmp_path / FAISSVectorStore.CURRENT_FILENAME
+    ).read_text(encoding="ascii")
+    selected_version = sorted(
+        (path for path in versions_dir.iterdir() if path.is_dir()),
+        key=lambda path: path.stat().st_mtime_ns,
+        reverse=True,
+    )[1].name
+    selected_dir = versions_dir / selected_version
+    (tmp_path / FAISSVectorStore.CURRENT_FILENAME).write_text(
+        selected_version,
+        encoding="ascii",
+    )
+    original_open = Path.open
+    original_read_text = Path.read_text
+    metadata_read = False
+
+    def deny_lock_access(path, *args, **kwargs):
+        if path.name == ".persistence.lock":
+            raise PermissionError(errno.EACCES, "Access denied", str(path))
+        return original_open(path, *args, **kwargs)
+
+    def prune_selected_index_after_metadata(path, *args, **kwargs):
+        nonlocal metadata_read
+        contents = original_read_text(path, *args, **kwargs)
+        if path == selected_dir / FAISSVectorStore.METADATA_FILENAME:
+            metadata_read = True
+            (selected_dir / FAISSVectorStore.INDEX_FILENAME).unlink()
+            (tmp_path / FAISSVectorStore.CURRENT_FILENAME).write_text(
+                newer_version,
+                encoding="ascii",
+            )
+        return contents
+
+    monkeypatch.setattr(Path, "open", deny_lock_access)
+    monkeypatch.setattr(Path, "read_text", prune_selected_index_after_metadata)
+
+    loaded = FAISSVectorStore.load(tmp_path)
+
+    assert metadata_read
+    assert loaded.index.ntotal == 3
+    assert len(loaded._documents) == 3
+
+
 def test_save_propagates_lock_access_errors(tmp_path, monkeypatch):
     store = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
     store.add_documents([make_document("a:1", "a", 1, [1, 0, 0])])

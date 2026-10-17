@@ -82,6 +82,31 @@ def test_describe_page_compresses_image_to_fit_payload_limit(monkeypatch):
     assert compressed_image.startswith(b"\xff\xd8")
 
 
+def test_describe_page_composites_transparency_onto_white(monkeypatch):
+    monkeypatch.setattr(groq_vision, "MAX_BASE64_IMAGE_BYTES", 1024)
+    image = Image.new("RGBA", (128, 128))
+    image.putdata([
+        (x * 17 % 256, y * 31 % 256, (x * y) % 256,
+         255 if x == 0 and y == 0 else 0)
+        for y in range(128)
+        for x in range(128)
+    ])
+    output = BytesIO()
+    image.save(output, format="PNG")
+    assert len(output.getvalue()) > 768
+    model = GroqVisionModel(
+        client=FakeGroqClient("A chart.", "stop")
+    )
+
+    prepared_image, media_type = model._prepare_image(output.getvalue())
+
+    with Image.open(BytesIO(prepared_image)) as result:
+        result.load()
+        assert media_type == "image/jpeg"
+        assert result.getpixel((7, 7))[0] > 245
+        assert result.getpixel((0, 0))[0] < 20
+
+
 def test_describe_page_reports_image_that_cannot_fit(monkeypatch):
     monkeypatch.setattr(groq_vision, "MAX_BASE64_IMAGE_BYTES", 4)
     model = GroqVisionModel(client=FakeGroqClient("A chart.", "stop"))
