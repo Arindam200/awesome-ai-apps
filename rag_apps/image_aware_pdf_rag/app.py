@@ -10,6 +10,7 @@ Groq chat, and Groq vision modules.
 from __future__ import annotations
 
 import hashlib
+import html
 import os
 from typing import Any
 
@@ -110,9 +111,10 @@ def get_embedding_model() -> LocalEmbeddingModel:
     return LocalEmbeddingModel()
 
 
-@st.cache_resource
 def get_vector_store() -> FAISSVectorStore:
-    return FAISSVectorStore()
+    if "vector_store" not in st.session_state:
+        st.session_state.vector_store = FAISSVectorStore()
+    return st.session_state.vector_store
 
 
 @st.cache_resource
@@ -158,6 +160,10 @@ def page_image(page: Any) -> bytes | None:
 
 def page_text(page: Any) -> str:
     return str(getattr(page, "text", "") or "").strip()
+
+
+def set_question_input(question: str) -> None:
+    st.session_state.question_input = question
 
 
 def object_value(obj: Any, key: str, default: Any = None) -> Any:
@@ -210,14 +216,28 @@ def format_history_for_prompt(history: list[dict[str, str]]) -> list[dict[str, s
 
 
 def retrieve_evidence(query: str, top_k: int = 5) -> list[dict[str, Any]]:
-    if not st.session_state.index_ready:
+    source_id = st.session_state.index_source
+    if not st.session_state.index_ready or not source_id:
         return []
     embedder = get_embedding_model()
     query_embedding = normalize_vector(embedder.embed_query(query))
     store = get_vector_store()
-    results = store.search(query_embedding, top_k=top_k)
+    candidate_limit = top_k
+    results = []
+    while True:
+        candidates = store.search(query_embedding, top_k=candidate_limit)
+        results = [
+            result
+            for result in candidates
+            if (object_value(result, "metadata", {}) or {}).get("source_id")
+            == source_id
+        ]
+        if len(results) >= top_k or len(candidates) < candidate_limit:
+            break
+        candidate_limit *= 2
+
     evidence = []
-    for result in results:
+    for result in results[:top_k]:
         metadata = object_value(result, "metadata", {}) or {}
         evidence.append(
             {
@@ -300,11 +320,13 @@ with left:
         pdf_bytes = uploaded_file.getvalue()
         current_hash = hashlib.sha256(pdf_bytes).hexdigest()
         st.markdown(
-            f'<div class="metric">📕 <b>{uploaded_file.name}</b><br>'
+            f'<div class="metric">📕 <b>{html.escape(uploaded_file.name)}</b><br>'
             f'<span class="small-muted">{len(pdf_bytes) / (1024 * 1024):.2f} MB</span></div>',
             unsafe_allow_html=True,
         )
         if current_hash != st.session_state.pdf_hash:
+            if st.session_state.index_source:
+                get_vector_store().delete_source(st.session_state.index_source)
             st.session_state.pdf_hash = current_hash
             st.session_state.pdf_name = uploaded_file.name
             st.session_state.pages = []
@@ -313,6 +335,8 @@ with left:
             st.session_state.index_ready = False
             st.session_state.index_source = None
             st.session_state.chat_history = []
+            st.session_state.last_evidence = []
+            st.session_state.last_question = None
             st.session_state.cited_page = 1
             st.session_state.indexed_items = 0
             st.session_state.processing_error = None
@@ -436,6 +460,7 @@ with center:
                             store.delete_source(st.session_state.index_source)
 
                         index_source = st.session_state.pdf_hash
+                        st.session_state.index_source = index_source
                         indexed_count = 0
 
                         # Index text chunks, retaining source page metadata.
@@ -529,9 +554,14 @@ with center:
     example_cols = st.columns(2)
     for i, example in enumerate(examples):
         with example_cols[i % 2]:
-            if st.button(example, key=f"example_{i}", use_container_width=True, disabled=not st.session_state.index_ready):
-                st.session_state.question_input = example
-                st.rerun()
+            st.button(
+                example,
+                key=f"example_{i}",
+                use_container_width=True,
+                disabled=not st.session_state.index_ready,
+                on_click=set_question_input,
+                args=(example,),
+            )
 
     ask_col, clear_col = st.columns([4, 1])
     with ask_col:
@@ -544,6 +574,8 @@ with center:
     with clear_col:
         if st.button("Clear chat", use_container_width=True):
             st.session_state.chat_history = []
+            st.session_state.last_evidence = []
+            st.session_state.last_question = None
             st.rerun()
 
     if ask_clicked:
@@ -568,15 +600,17 @@ with center:
 
     # Render conversation history.
     for i, message in enumerate(st.session_state.chat_history):
+        content = html.escape(str(message["content"]))
         if message["role"] == "user":
             st.markdown(
-                f'<div class="chat-user">👤 {message["content"]}</div>',
+                f'<div class="chat-user">👤 {content}</div>',
                 unsafe_allow_html=True,
             )
         else:
-            st.markdown('<div class="chat-assistant">🤖', unsafe_allow_html=True)
-            st.markdown(message["content"])
-            st.markdown("</div>", unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="chat-assistant">🤖 {content}</div>',
+                unsafe_allow_html=True,
+            )
 
     # Evidence cards for the most recent answer.
     last_evidence = st.session_state.get("last_evidence", [])
