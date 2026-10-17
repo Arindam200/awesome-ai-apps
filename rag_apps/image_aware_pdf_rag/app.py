@@ -80,7 +80,7 @@ st.markdown(
         background: #ecebff; border: 1px solid #e1dfff; border-radius: 12px;
         padding: 14px 16px; margin: 12px 0;
       }
-      .chat-assistant {
+      [class*="st-key-chat_assistant_"] {
         background: #f8faff; border: 1px solid #e7ebf6; border-radius: 12px;
         padding: 16px; margin: 10px 0;
       }
@@ -607,11 +607,9 @@ with center:
                 unsafe_allow_html=True,
             )
         else:
-            st.markdown(
-                '<div class="chat-assistant">🤖</div>',
-                unsafe_allow_html=True,
-            )
-            st.markdown(str(message["content"]))
+            with st.container(key=f"chat_assistant_{i}"):
+                st.markdown("🤖")
+                st.markdown(str(message["content"]))
 
     # Evidence cards for the most recent answer.
     last_evidence = st.session_state.get("last_evidence", [])
