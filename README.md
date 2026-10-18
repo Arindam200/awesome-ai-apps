@@ -284,6 +284,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 **Retrieval-augmented generation examples for document understanding and knowledge bases.** _18 projects_
 
+- [Image-Aware PDF RAG](rag_apps/image_aware_pdf_rag): Multimodal RAG system that understands text, charts, and diagrams in PDFs with page-level citations
 - [Agentic RAG with Agno and GPT-5](rag_apps/agentic_rag): Agentic RAG implementation with Agno and GPT-5
 - [Agentic Typed RAG with LlamaIndex](rag_apps/agentic_typed_rag_llamaindex): Typed, citation-verified RAG with structured answers, local document parsing, and deterministic refusal for weak evidence
 - [Codebase Q&A RAG](rag_apps/chat_with_code): Conversational code explorer and documentation assistant
