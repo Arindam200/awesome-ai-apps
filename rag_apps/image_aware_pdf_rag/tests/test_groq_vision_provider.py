@@ -113,3 +113,71 @@ def test_describe_page_reports_image_that_cannot_fit(monkeypatch):
 
     with pytest.raises(VisionImageTooLargeError, match="request limit"):
         model.describe_page(make_png(8, 8), 1)
+
+
+def test_describe_page_retries_on_truncation_and_succeeds():
+    class RetryClient:
+        def __init__(self):
+            self.calls = 0
+
+        def create(self, **kwargs):
+            self.calls += 1
+            if self.calls == 1:
+                return SimpleNamespace(
+                    choices=[
+                        SimpleNamespace(
+                            message=SimpleNamespace(content="Truncated initial text"),
+                            finish_reason="length",
+                        )
+                    ]
+                )
+            return SimpleNamespace(
+                choices=[
+                    SimpleNamespace(
+                        message=SimpleNamespace(content="Complete concise summary: Bar chart of revenue."),
+                        finish_reason="stop",
+                    )
+                ]
+            )
+
+    client = SimpleNamespace(chat=SimpleNamespace(completions=RetryClient()))
+    model = GroqVisionModel(client=client)
+
+    result = model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)
+
+    assert "Complete concise summary" in result.description
+    assert client.chat.completions.calls == 2
+
+
+def test_describe_page_handles_rate_limit_error():
+    class RateLimitClient:
+        def create(self, **kwargs):
+            exc = Exception("Rate limit exceeded for TPM/RPM")
+            exc.status_code = 429
+            raise exc
+
+    client = SimpleNamespace(chat=SimpleNamespace(completions=RateLimitClient()))
+    model = GroqVisionModel(client=client)
+
+    with pytest.raises(RuntimeError, match="rate limit exceeded"):
+        model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)
+
+
+def test_describe_page_rejects_empty_response():
+    class EmptyContentClient:
+        def create(self, **kwargs):
+            return SimpleNamespace(
+                choices=[
+                    SimpleNamespace(
+                        message=SimpleNamespace(content="   "),
+                        finish_reason="stop",
+                    )
+                ]
+            )
+
+    client = SimpleNamespace(chat=SimpleNamespace(completions=EmptyContentClient()))
+    model = GroqVisionModel(client=client)
+
+    with pytest.raises(RuntimeError, match="empty page description"):
+        model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)
+

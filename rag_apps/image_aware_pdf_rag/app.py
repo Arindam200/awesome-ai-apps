@@ -35,8 +35,12 @@ try:
     from embeddings.local import LocalEmbeddingModel
     from vectorstores.faiss_store import FAISSVectorStore
     from interfaces.vector_store import VectorDocument
+    from retrieval.retriever import PDFRetriever
     from providers.groq_chat import GroqChatModel
     from providers.groq_vision import GroqVisionModel
+    import logging
+
+    logger = logging.getLogger(__name__)
 except Exception as exc:
     st.error(
         "The app could not import one of the project modules. Run Streamlit "
@@ -473,6 +477,10 @@ defaults = {
     "cited_page": 1,
     "processing_error": None,
     "indexed_items": 0,
+    "text_chunks_indexed": 0,
+    "visual_pages_succeeded": [],
+    "visual_pages_failed": [],
+    "index_status": None,  # None, "inspected", "text_only", "complete", "partial_visual_failure", "failed"
 }
 for key, value in defaults.items():
     if key not in st.session_state:
@@ -534,11 +542,13 @@ def format_history_for_prompt(history: list[dict[str, str]]) -> list[dict[str, s
         {
             "role": "system",
             "content": (
-                "You are a helpful assistant answering questions about an uploaded PDF. "
-                "Use only the supplied evidence. If evidence is insufficient, say so. "
-                "Cite supporting pages using [Page N]. Distinguish information explicitly "
-                "shown in a chart or diagram from your own interpretation. Do not invent "
-                "numbers, chart labels, or claims."
+                "You are an expert PDF question-answering assistant.\n"
+                "Rules:\n"
+                "1. Answer strictly using the provided PDF evidence.\n"
+                "2. When a question asks about a specific chart (e.g. Chart 1.1) or page, locate the evidence for that exact chart/page.\n"
+                "   Never substitute a similarly named chart or different page (e.g. do not substitute Chart 1.2 for Chart 1.1).\n"
+                "3. Cite supporting pages using [Page N].\n"
+                "4. Do not invent chart labels, line colors, or numbers."
             ),
         }
     ]
@@ -551,34 +561,32 @@ def retrieve_evidence(query: str, top_k: int = 5) -> list[dict[str, Any]]:
     if not st.session_state.index_ready or not source_id:
         return []
     embedder = get_embedding_model()
-    query_embedding = normalize_vector(embedder.embed_query(query))
     store = get_vector_store()
-    candidate_limit = top_k
-    results = []
-    while True:
-        candidates = store.search(query_embedding, top_k=candidate_limit)
-        results = [
-            result
-            for result in candidates
-            if (object_value(result, "metadata", {}) or {}).get("source_id")
-            == source_id
-        ]
-        if len(results) >= top_k or len(candidates) < candidate_limit:
-            break
-        candidate_limit *= 2
+
+    retriever = PDFRetriever(embeddings=embedder, vector_store=store)
+    raw_evidence = retriever.retrieve(query=query, top_k=top_k, source_id=source_id)
 
     evidence = []
-    for result in results[:top_k]:
-        metadata = object_value(result, "metadata", {}) or {}
-        evidence.append(
-            {
-                "page_number": int(metadata.get("page_number", 1)),
-                "text": str(object_value(result, "text", "")),
-                "content_type": metadata.get("content_type", "text"),
-                "source": metadata.get("source", st.session_state.pdf_name or "uploaded PDF"),
-                "score": object_value(result, "score"),
-            }
+    print(f"\n[RETRIEVAL LOG] Query: '{query}' | Source: {source_id} | Returned {len(raw_evidence)} items:")
+    for idx, item in enumerate(raw_evidence, start=1):
+        record = {
+            "page_number": int(item.page_number),
+            "text": str(item.text),
+            "content_type": str(item.content_type),
+            "source": str(item.source),
+            "score": 0.0,
+        }
+        evidence.append(record)
+        snippet = item.text[:120].replace('\n', ' ')
+        print(f"  #{idx} [Page {item.page_number} | {item.content_type}] {snippet}...")
+        logger.info(
+            "Top-k evidence #%d: page=%d, type=%s, snippet=%s",
+            idx,
+            item.page_number,
+            item.content_type,
+            snippet,
         )
+
     return evidence
 
 
@@ -597,9 +605,11 @@ def answer_question(query: str, chat_model: GroqChatModel) -> tuple[str, list[di
     prompt = (
         f"Question: {query}\n\n"
         f"Retrieved PDF evidence:\n{evidence_text}\n\n"
-        "Answer clearly and concisely. Use bullet points for key findings when useful. "
-        "Include [Page N] citations for claims supported by the evidence. If the evidence "
-        "does not answer the question, state what is missing."
+        "Instructions:\n"
+        "- Answer the question using only the retrieved evidence above.\n"
+        "- If the question references a specific chart (e.g. Chart 1.1) or page, verify that the evidence matches that exact chart/page.\n"
+        "- Do not confuse or substitute different charts (e.g., Chart 1.1 vs Chart 1.2).\n"
+        "- Include [Page N] citations for claims supported by the evidence."
     )
     messages = format_history_for_prompt(st.session_state.chat_history)
     messages.append({"role": "user", "content": prompt})
@@ -687,6 +697,9 @@ with left:
                         object_value(chunk_result, "chunks", []) or []
                     )
                     st.session_state.index_ready = False
+                    st.session_state.index_status = "inspected"
+                    st.session_state.visual_pages_succeeded = []
+                    st.session_state.visual_pages_failed = []
                     st.session_state.processing_error = None
                     st.session_state.cited_page = 1
             except Exception as exc:
@@ -694,6 +707,7 @@ with left:
                 st.session_state.pages = []
                 st.session_state.chunks = []
                 st.session_state.index_ready = False
+                st.session_state.index_status = "failed"
 
     if st.session_state.processing_error:
         st.error(f"PDF processing failed: {st.session_state.processing_error}")
@@ -705,20 +719,48 @@ with left:
 
     st.markdown('<div class="ui-card-title" style="margin-top:14px;">⚡ 2. Document Status</div>', unsafe_allow_html=True)
     if pages:
+        status_label = "Not Built"
+        status_color = "#e11d48"
+        if st.session_state.index_ready:
+            if st.session_state.index_status == "complete":
+                status_label = "Active (Text + Vision)"
+                status_color = "#16a34a"
+            elif st.session_state.index_status == "partial_visual_failure":
+                status_label = "Active (Partial Vision)"
+                status_color = "#d97706"
+            elif st.session_state.index_status == "text_only":
+                status_label = "Active (Text Only)"
+                status_color = "#2563eb"
+            else:
+                status_label = "Active"
+                status_color = "#16a34a"
+        elif st.session_state.index_status == "inspected":
+            status_label = "Inspected (Ready to Index)"
+            status_color = "#6366f1"
+        elif st.session_state.index_status == "failed":
+            status_label = "Index Failed"
+            status_color = "#dc2626"
+
         st.markdown(
             f'<div class="metric-badge"><span>📑 Total Pages</span><b>{len(pages)}</b></div>'
             f'<div class="metric-badge"><span>✂️ Text Chunks</span><b>{len(chunks)}</b></div>'
             f'<div class="metric-badge"><span>🖼️ Rendered Visuals</span><b>{rendered_pages}</b></div>'
             f'<div class="metric-badge"><span>⚡ Index State</span>'
-            f'<b style="color:{"#16a34a" if st.session_state.index_ready else "#e11d48"};">'
-            f'{"Active" if st.session_state.index_ready else "Not Built"}</b></div>',
+            f'<b style="color:{status_color};">{status_label}</b></div>',
             unsafe_allow_html=True,
         )
+
+        if st.session_state.visual_pages_failed:
+            st.warning(
+                f"Visual analysis failed on page(s): {', '.join(map(str, st.session_state.visual_pages_failed))}. "
+                "Text search remains functional for all extracted pages."
+            )
+
         no_text_pages = [
             page_number(page) for page in pages if not page_text(page)
         ]
         if no_text_pages:
-            st.warning(
+            st.info(
                 "Pages without text: "
                 + ", ".join(map(str, no_text_pages[:8]))
                 + (", …" if len(no_text_pages) > 8 else "")
@@ -776,7 +818,7 @@ with center:
                 st.error("GROQ_API_KEY is missing. Add it to `.env` before building the visual index.")
             else:
                 try:
-                    with st.spinner("Building index: embedding text and generating vision descriptions…"):
+                    with st.spinner("Building index: embedding text chunks and generating visual analyses…"):
                         embedder = get_embedding_model()
                         vision_model = get_vision_model(vision_model_name)
                         store = get_vector_store()
@@ -787,8 +829,9 @@ with center:
                         index_source = st.session_state.pdf_hash
                         st.session_state.index_source = index_source
                         indexed_count = 0
+                        text_indexed_count = 0
 
-                        # Index text chunks
+                        # Step 1: Index text chunks
                         for i, chunk in enumerate(chunks):
                             chunk_text = str(object_value(chunk, "text", "") or "").strip()
                             if not chunk_text:
@@ -808,20 +851,24 @@ with center:
                                 f"{index_source}:text:{i}",
                             )
                             indexed_count += 1
+                            text_indexed_count += 1
 
-                        # Describe page images
+                        st.session_state.text_chunks_indexed = text_indexed_count
+
+                        # Step 2: Describe page images
                         pages_with_images = [
                             page for page in pages
                             if page_image(page)
                         ]
 
                         descriptions = []
-                        failed_pages = []
+                        succeeded_pages = []
+                        failed_pages_dict: dict[int, str] = {}
                         progress = st.progress(0.0, text="Describing page visuals…")
-                        fatal_api_error = False
+                        fatal_auth_error = False
 
                         for i, page in enumerate(pages_with_images, start=1):
-                            if fatal_api_error:
+                            if fatal_auth_error:
                                 break
                             pnum = page_number(page)
 
@@ -834,10 +881,11 @@ with center:
                                     ).strip()
 
                                     if not desc_text:
-                                        failed_pages.append(pnum)
+                                        failed_pages_dict[pnum] = "Empty description returned"
                                         continue
 
                                     descriptions.append(description)
+                                    succeeded_pages.append(pnum)
 
                                     add_to_index(
                                         store,
@@ -854,11 +902,11 @@ with center:
                                     indexed_count += 1
 
                             except Exception as exc:
-                                failed_pages.append(pnum)
                                 err_str = str(exc)
-                                if "401" in err_str or "invalid_api_key" in err_str.lower():
+                                failed_pages_dict[pnum] = err_str
+                                if "401" in err_str or "invalid_api_key" in err_str.lower() or "authentication failed" in err_str.lower():
                                     st.error("❌ Invalid Groq API Key! Please verify GROQ_API_KEY in your `.env` file.")
-                                    fatal_api_error = True
+                                    fatal_auth_error = True
                                     break
                                 else:
                                     st.warning(f"Vision failed on PDF page {pnum}: {exc}")
@@ -869,21 +917,35 @@ with center:
                             )
                         progress.empty()
 
-                        st.write("Pages sent to vision:", len(pages_with_images))
-                        st.write("Visual descriptions created:", len(descriptions))
-                        st.write("Pages with failures:", failed_pages)
-
                         st.session_state.visual_descriptions = descriptions
                         st.session_state.index_source = index_source
                         st.session_state.indexed_items = indexed_count
+                        st.session_state.visual_pages_succeeded = sorted(list(set(succeeded_pages)))
+                        st.session_state.visual_pages_failed = sorted(list(failed_pages_dict.keys()))
                         st.session_state.index_ready = indexed_count > 0
-                        if st.session_state.index_ready:
+
+                        if indexed_count == 0:
+                            st.session_state.index_status = "failed"
+                            st.error("No searchable content was indexed.")
+                        elif len(failed_pages_dict) == 0 and len(descriptions) > 0:
+                            st.session_state.index_status = "complete"
                             st.success(
-                                f"✓ Index ready with {indexed_count} items ({len(chunks)} text chunks, {len(descriptions)} vision analyses)."
+                                f"✓ Index fully ready with {indexed_count} items ({text_indexed_count} text chunks, {len(descriptions)} visual analyses)."
+                            )
+                        elif len(descriptions) > 0:
+                            st.session_state.index_status = "partial_visual_failure"
+                            st.warning(
+                                f"✓ Index ready with partial visual coverage ({indexed_count} total items: "
+                                f"{text_indexed_count} text chunks, {len(descriptions)} visual analyses across {len(st.session_state.visual_pages_succeeded)} pages; "
+                                f"failed on pages {st.session_state.visual_pages_failed})."
                             )
                         else:
-                            st.error("No searchable content was indexed.")
+                            st.session_state.index_status = "text_only"
+                            st.info(
+                                f"✓ Text-only index ready with {text_indexed_count} text chunks (visual analysis was unavailable or failed)."
+                            )
                 except Exception as exc:
+                    st.session_state.index_status = "failed"
                     st.error("Index creation failed. Please check your credentials and logs.")
                     st.exception(exc)
 

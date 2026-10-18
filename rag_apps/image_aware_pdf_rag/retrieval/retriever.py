@@ -25,8 +25,17 @@ class VectorStoreLike(Protocol):
         ...
 
 
+import re
+
+PAGE_REFERENCE_PATTERN = re.compile(r"\b(?:page|p\.?)\s*(\d+)\b", re.IGNORECASE)
+CHART_OR_FIGURE_PATTERN = re.compile(
+    r"\b(?:chart|figure|fig\.?|table|diagram)\s*([0-9]+(?:\.[0-9]+)*)\b",
+    re.IGNORECASE,
+)
+
+
 class PDFRetriever:
-    """Connect query embeddings, vector search, and PDF evidence."""
+    """Connect query embeddings, vector search, and PDF evidence with reference-aware ranking."""
 
     def __init__(
         self,
@@ -42,7 +51,7 @@ class PDFRetriever:
         top_k: int = 5,
         source_id: str | None = None,
     ) -> list[RetrievedEvidence]:
-        """Retrieve relevant evidence while preserving page numbers.
+        """Retrieve relevant evidence while preserving page numbers and prioritizing specific references.
 
         Args:
             query: User's question.
@@ -64,15 +73,22 @@ class PDFRetriever:
 
         filters = {"source_id": source_id} if source_id is not None else None
 
-        results = self.vector_store.search(
+        # Extract explicit structural references from the query (e.g., 'Chart 1.1', 'Page 1')
+        page_matches = [int(m) for m in PAGE_REFERENCE_PATTERN.findall(query)]
+        chart_matches = CHART_OR_FIGURE_PATTERN.findall(query)
+        has_specific_ref = bool(page_matches or chart_matches)
+
+        # Retrieve a broader pool of candidates to evaluate reference alignment
+        fetch_limit = max(top_k * 4, 20) if has_specific_ref else top_k
+        raw_results = self.vector_store.search(
             query_embedding=query_embedding,
-            top_k=top_k,
+            top_k=fetch_limit,
             filters=filters,
         )
 
-        evidence: list[RetrievedEvidence] = []
+        valid_candidates = []
 
-        for result in results:
+        for result in raw_results:
             metadata = result.metadata
 
             page_number = metadata.get("page_number")
@@ -81,11 +97,10 @@ class PDFRetriever:
                 or not isinstance(page_number, int)
                 or page_number < 1
             ):
-                # A result without a valid page number cannot support
-                # reliable page-level citations.
                 continue
 
-            if not result.text.strip():
+            text = result.text.strip()
+            if not text:
                 continue
 
             source = metadata.get(
@@ -99,12 +114,44 @@ class PDFRetriever:
             if not isinstance(content_type, str) or not content_type.strip():
                 content_type = "text"
 
+            score = getattr(result, "score", 0.0)
+
+            # Compute reference alignment boost
+            ref_boost = 0.0
+            lower_text = text.lower()
+
+            # Boost if query explicitly cited this page
+            if page_number in page_matches:
+                ref_boost += 2.0
+
+            # Boost if query cited a specific chart/figure/table (e.g. Chart 1.1) and it appears in text
+            for chart_id in chart_matches:
+                # Matches "Chart 1.1", "Figure 1.1", "1.1" in text
+                pattern = rf"\b(?:chart|figure|fig\.?|table)?\s*{re.escape(chart_id)}\b"
+                if re.search(pattern, lower_text):
+                    ref_boost += 3.0
+
+            valid_candidates.append({
+                "page_number": page_number,
+                "text": text,
+                "source": source,
+                "content_type": content_type,
+                "score": score,
+                "composite_score": score + ref_boost,
+            })
+
+        # Re-sort candidates considering semantic similarity and explicit reference alignment
+        if has_specific_ref:
+            valid_candidates.sort(key=lambda x: x["composite_score"], reverse=True)
+
+        evidence: list[RetrievedEvidence] = []
+        for item in valid_candidates[:top_k]:
             evidence.append(
                 RetrievedEvidence(
-                    page_number=page_number,
-                    text=result.text,
-                    source=source,
-                    content_type=content_type,
+                    page_number=item["page_number"],
+                    text=item["text"],
+                    source=item["source"],
+                    content_type=item["content_type"],
                 )
             )
 
