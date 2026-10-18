@@ -12,6 +12,7 @@ from __future__ import annotations
 import hashlib
 import html
 import os
+import re
 from typing import Any
 
 import streamlit as st
@@ -591,6 +592,20 @@ def retrieve_evidence(query: str, top_k: int = 5) -> list[dict[str, Any]]:
     return evidence
 
 
+def clean_markdown_response(text: str) -> str:
+    """Cleans model markdown artifacts, empty bold tags, and trailing whitespace."""
+    if not text:
+        return ""
+    # Strip empty bold markers like **    ** or ** ** or __  __
+    cleaned = re.sub(r"\*\*\s*\*\*", "", text)
+    cleaned = re.sub(r"__\s*__", "", cleaned)
+    # Strip lines that only contain whitespace and asterisks/underscores
+    cleaned = re.sub(r"^\s*[\*_]{2,}\s*$", "", cleaned, flags=re.MULTILINE)
+    # Collapse 3+ consecutive newlines to 2
+    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
+    return cleaned.strip()
+
+
 def answer_question(query: str, chat_model: GroqChatModel) -> tuple[str, list[dict[str, Any]]]:
     evidence = retrieve_evidence(query)
     if not evidence:
@@ -610,12 +625,14 @@ def answer_question(query: str, chat_model: GroqChatModel) -> tuple[str, list[di
         "- Answer the question using only the retrieved evidence above.\n"
         "- If the question references a specific chart (e.g. Chart 1.1) or page, verify that the evidence matches that exact chart/page.\n"
         "- Do not confuse or substitute different charts (e.g., Chart 1.1 vs Chart 1.2).\n"
-        "- Include [Page N] citations for claims supported by the evidence."
+        "- Include [Page N] citations for claims supported by the evidence.\n"
+        "- Format your answer cleanly in standard Markdown without empty bold tags (do not output **    ** or blank bold syntax)."
     )
     messages = format_history_for_prompt(st.session_state.chat_history)
     messages.append({"role": "user", "content": prompt})
-    answer = chat_model.generate(messages)
-    return str(answer), evidence
+    raw_answer = chat_model.generate(messages)
+    cleaned_answer = clean_markdown_response(str(raw_answer))
+    return cleaned_answer, evidence
 
 
 def set_cited_page(number: int) -> None:
@@ -950,13 +967,34 @@ with center:
                     st.error("Index creation failed. Please check your credentials and logs.")
                     st.exception(exc)
 
-    query = st.text_input(
-        "Ask a question about text, charts, diagrams, or numbers in your PDF…",
-        placeholder="e.g., What does the system architecture diagram illustrate?",
-        label_visibility="collapsed",
-        key="question_input",
-        disabled=not st.session_state.index_ready,
-    )
+    # QA Submission Form: Wrapping in st.form eliminates double-click and window collapse issues
+    with st.form("ask_question_form", clear_on_submit=False):
+        query = st.text_input(
+            "Ask a question about text, charts, diagrams, or numbers in your PDF…",
+            placeholder="e.g., What does the system architecture diagram illustrate?",
+            label_visibility="collapsed",
+            key="question_input",
+            disabled=not st.session_state.index_ready,
+        )
+        ask_col, clear_col = st.columns([4, 1.2])
+        with ask_col:
+            ask_clicked = st.form_submit_button(
+                "✨ Ask Question",
+                type="primary",
+                use_container_width=True,
+                disabled=not st.session_state.index_ready,
+            )
+        with clear_col:
+            clear_clicked = st.form_submit_button(
+                "🗑️ Clear",
+                use_container_width=True,
+            )
+
+    if clear_clicked:
+        st.session_state.chat_history = []
+        st.session_state.last_evidence = []
+        st.session_state.last_question = None
+        st.rerun()
 
     st.markdown('<div style="font-size:0.8rem; color:#64748b; font-weight:600; margin: 4px 0 6px 0;">Suggested Questions:</div>', unsafe_allow_html=True)
     examples = [
@@ -976,21 +1014,6 @@ with center:
                 on_click=set_question_input,
                 args=(example,),
             )
-
-    ask_col, clear_col = st.columns([4, 1.2])
-    with ask_col:
-        ask_clicked = st.button(
-            "✨ Ask Question",
-            type="primary",
-            use_container_width=True,
-            disabled=not st.session_state.index_ready,
-        )
-    with clear_col:
-        if st.button("🗑️ Clear", use_container_width=True):
-            st.session_state.chat_history = []
-            st.session_state.last_evidence = []
-            st.session_state.last_question = None
-            st.rerun()
 
     if ask_clicked:
         question = (st.session_state.question_input or "").strip()
@@ -1021,11 +1044,11 @@ with center:
                 unsafe_allow_html=True,
             )
         else:
-            assistant_content = str(message["content"])
-            st.markdown(
-                f'<div class="chat-assistant-msg"><b style="color:#4f46e5;">🤖 Assistant</b><br><br>{assistant_content}</div>',
-                unsafe_allow_html=True,
-            )
+            assistant_content = clean_markdown_response(str(message["content"]))
+            with st.container():
+                st.markdown('<div class="chat-assistant-msg"><b style="color:#4f46e5;">🤖 Assistant</b>', unsafe_allow_html=True)
+                st.markdown(assistant_content)
+                st.markdown('</div>', unsafe_allow_html=True)
 
     # Cited sources section
     last_evidence = st.session_state.get("last_evidence", [])
