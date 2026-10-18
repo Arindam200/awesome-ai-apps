@@ -13,11 +13,22 @@ MODEL = "openai/gpt-oss-20b"
 NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1/"
 
 
+def get_api_key() -> str:
+    api_key = os.getenv("NEBIUS_API_KEY")
+    if not api_key:
+        raise RuntimeError("Set NEBIUS_API_KEY in .env before starting an agent.")
+    return api_key
+
+
 async def draft_plan(topic: str) -> str:
     """Use Agno to make a short implementation plan for a user-supplied idea."""
     agent = Agent(
         name="Architect",
-        model=Nebius(id=os.getenv("NEBIUS_MODEL", MODEL), base_url=NEBIUS_BASE_URL),
+        model=Nebius(
+            id=os.getenv("NEBIUS_MODEL", MODEL),
+            base_url=NEBIUS_BASE_URL,
+            api_key=get_api_key(),
+        ),
         instructions=[
             "Draft a concrete three-step implementation plan for the user's idea.",
             "Keep the plan concise and make no claims about work already completed.",
@@ -37,7 +48,7 @@ def build_review_graph():
     model = ChatOpenAI(
         model=os.getenv("NEBIUS_MODEL", MODEL),
         base_url=NEBIUS_BASE_URL,
-        api_key=os.environ["NEBIUS_API_KEY"],
+        api_key=get_api_key(),
     )
 
     async def review(state: ReviewState) -> dict[str, str]:

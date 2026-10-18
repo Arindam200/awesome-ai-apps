@@ -28,7 +28,7 @@ from a2a.types import (
 from dotenv import load_dotenv
 from fastapi import FastAPI
 
-from agents import draft_plan, review_plan
+from agents import draft_plan, get_api_key, review_plan
 
 Answer = Callable[[str], Awaitable[str]]
 
@@ -133,6 +133,10 @@ def main() -> None:
     parser.add_argument("--port", type=int, required=True)
     parser.add_argument("--public-url", help="URL clients use to reach this service")
     args = parser.parse_args()
+    try:
+        get_api_key()
+    except RuntimeError as error:
+        parser.error(str(error))
     public_url = args.public_url or f"http://{args.host}:{args.port}"
     uvicorn.run(create_app(args.kind, public_url), host=args.host, port=args.port)
 

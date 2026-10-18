@@ -1,6 +1,7 @@
 """Offline checks of the real framework adapters and the A2A handoff."""
 
 import asyncio
+import logging
 import socket
 from contextlib import AsyncExitStack, asynccontextmanager
 
@@ -72,7 +73,9 @@ async def test_real_framework_adapters_with_local_model(monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_discovery_delegation_and_streaming(capsys):
+async def test_discovery_delegation_and_streaming(caplog):
+    caplog.set_level(logging.INFO, logger="client")
+
     async def architect(topic):
         return f"Plan for {topic}"
 
@@ -89,7 +92,7 @@ async def test_discovery_delegation_and_streaming(capsys):
         assert await run("a search tool", architect_url, reviewer_url) == (
             "Review of Plan for a search tool"
         )
-        output = capsys.readouterr().out
+        output = caplog.text
         assert "Discovered Agno Architect: draft_plan" in output
         assert "Discovered LangGraph Reviewer: review_plan" in output
         assert output.count("TASK_STATE_WORKING") == 2
@@ -98,3 +101,23 @@ async def test_discovery_delegation_and_streaming(capsys):
 
         with pytest.raises(ValueError, match="does not advertise"):
             await delegate(architect_url, "review_plan", "a search tool")
+
+
+@pytest.mark.asyncio
+async def test_missing_api_key(monkeypatch):
+    monkeypatch.delenv("NEBIUS_API_KEY", raising=False)
+    with pytest.raises(RuntimeError, match="Set NEBIUS_API_KEY in .env"):
+        await agents.draft_plan("a search tool")
+    with pytest.raises(RuntimeError, match="Set NEBIUS_API_KEY in .env"):
+        await agents.review_plan("a plan")
+
+
+@pytest.mark.asyncio
+async def test_task_timeout():
+    async def slow_answer(topic):
+        await asyncio.sleep(0.2)
+        return topic
+
+    async with serve(lambda url: create_app("architect", url, slow_answer)) as url:
+        with pytest.raises(asyncio.TimeoutError):
+            await delegate(url, "draft_plan", "a search tool", timeout=0.05)

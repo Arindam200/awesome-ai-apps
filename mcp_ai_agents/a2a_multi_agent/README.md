@@ -74,6 +74,8 @@ python client.py "Build a documentation search tool for a Python library"
 
 The client prints both discovered Agent Cards' names and URLs, each task's progress updates, the architect's plan, and the reviewer's response. To run a server on another machine, set `--host` and `--public-url` so its card advertises an address the client can reach. The client accepts `--architect-url` and `--reviewer-url` for those service base URLs.
 
+Card discovery has a 10-second HTTP timeout. Each delegated task has a 120-second deadline; use `--timeout` to change the task deadline in seconds. Both servers validate the API key at startup and report how to configure it if it is missing.
+
 Abbreviated output (task IDs and model responses vary):
 
 ```text
@@ -98,7 +100,7 @@ ruff format --check .
 mypy agents.py client.py server.py
 ```
 
-The tests exercise card discovery, A2A delegation, task updates, and the two-framework adapters with local stubs; they do not send requests to Nebius. Running the live example requires a valid key and network access to Nebius.
+The tests exercise card discovery, A2A delegation, task updates, missing-key errors, task deadlines, and the two-framework adapters with a local model stub; they do not send requests to Nebius. Running the live example requires a valid key and network access to Nebius.
 
 ## 📂 Project Structure
 
