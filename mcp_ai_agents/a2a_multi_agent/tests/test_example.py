@@ -7,10 +7,20 @@ from contextlib import AsyncExitStack, asynccontextmanager
 
 import pytest
 import uvicorn
+from a2a.types import (
+    AgentCard,
+    Artifact,
+    Part,
+    StreamResponse,
+    TaskArtifactUpdateEvent,
+    TaskState,
+    TaskStatus,
+    TaskStatusUpdateEvent,
+)
 from fastapi import FastAPI, Request
 
 import agents
-from client import delegate, run
+from client import delegate, read_response, run
 from server import create_app
 
 
@@ -121,3 +131,45 @@ async def test_task_timeout():
     async with serve(lambda url: create_app("architect", url, slow_answer)) as url:
         with pytest.raises(asyncio.TimeoutError):
             await delegate(url, "draft_plan", "a search tool", timeout=0.05)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "updates,expected",
+    [
+        (
+            [
+                ("plan", "First", False),
+                ("note", "Other artifact", False),
+                ("plan", " second", True),
+            ],
+            "First second",
+        ),
+        (
+            [("plan", "Old", False), ("plan", "New", False), ("plan", " plan", True)],
+            "New plan",
+        ),
+    ],
+)
+async def test_chunked_artifacts_keep_their_own_text(updates, expected):
+    class ChunkedClient:
+        async def send_message(self, request):
+            for artifact_id, text, append in updates:
+                yield StreamResponse(
+                    artifact_update=TaskArtifactUpdateEvent(
+                        artifact=Artifact(
+                            artifact_id=artifact_id, parts=[Part(text=text)]
+                        ),
+                        append=append,
+                    )
+                )
+            yield StreamResponse(
+                status_update=TaskStatusUpdateEvent(
+                    status=TaskStatus(state=TaskState.TASK_STATE_COMPLETED)
+                )
+            )
+
+    assert (
+        await read_response(ChunkedClient(), AgentCard(name="Chunked"), "idea")
+        == expected
+    )

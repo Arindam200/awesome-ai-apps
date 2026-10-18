@@ -10,6 +10,7 @@ Give the client a software idea. It asks the architect for a short implementatio
 - An A2A Agent Card for each service at `/.well-known/agent-card.json`.
 - Client-side discovery of each card and its advertised skill before delegation.
 - Live task state and artifact updates from both services in the terminal.
+- Artifact chunks assembled by ID before passing the full plan to the reviewer.
 - Offline integration tests with stub responses; no API key is needed to run tests.
 
 ## 🛠️ Tech Stack
@@ -100,7 +101,7 @@ ruff format --check .
 mypy agents.py client.py server.py
 ```
 
-The tests exercise card discovery, A2A delegation, task updates, missing-key errors, task deadlines, and the two-framework adapters with a local model stub; they do not send requests to Nebius. Running the live example requires a valid key and network access to Nebius.
+The tests exercise card discovery, A2A delegation, task updates, interleaved artifact chunks and replacements, missing-key errors, task deadlines, and the two-framework adapters with a local model stub; they do not send requests to Nebius. Running the live example requires a valid key and network access to Nebius.
 
 ## 📂 Project Structure
 
