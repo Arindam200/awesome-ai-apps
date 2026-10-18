@@ -542,11 +542,15 @@ col_left, col_center, col_right = st.columns([0.22, 0.46, 0.32], gap="medium")
 with col_left:
     st.markdown('<div class="panel-heading">📂 Upload PDF</div>', unsafe_allow_html=True)
 
+    if "pdf_uploader_version" not in st.session_state:
+        st.session_state.pdf_uploader_version = 0
+
     uploaded_file = st.file_uploader(
         "Upload PDF",
         type=["pdf"],
         help="Upload a PDF with text, charts, tables, or diagrams.",
         label_visibility="collapsed",
+        key=f"pdf_uploader_{st.session_state.pdf_uploader_version}",
     )
 
     if uploaded_file is not None:
@@ -576,6 +580,7 @@ with col_left:
                 st.session_state.last_question = None
                 st.session_state.cited_page = 1
                 st.session_state.index_status = None
+                st.session_state.pdf_uploader_version += 1
                 st.rerun()
 
         if current_hash != st.session_state.pdf_hash:
@@ -638,6 +643,9 @@ with col_left:
             elif st.session_state.index_status == "text_only":
                 status_text = "Text Only"
                 status_color = "#2563eb"
+            elif st.session_state.index_status == "failed":
+                status_text = "Visual Analysis Failed"
+                status_color = "#dc2626"
             else:
                 status_text = "Text + Visuals"
                 status_color = "#16a34a"
@@ -740,8 +748,16 @@ with col_left:
                             st.session_state.visual_pages_succeeded = sorted(list(set(succeeded_pages)))
                             st.session_state.visual_pages_failed = sorted(list(failed_pages_dict.keys()))
                             st.session_state.index_ready = indexed_count > 0
+                            succeeded_page_numbers = set(succeeded_pages)
+                            all_visual_pages_failed = bool(pages_with_images) and all(
+                                page_number(page) in failed_pages_dict
+                                and page_number(page) not in succeeded_page_numbers
+                                for page in pages_with_images
+                            )
 
                             if indexed_count == 0:
+                                st.session_state.index_status = "failed"
+                            elif all_visual_pages_failed:
                                 st.session_state.index_status = "failed"
                             elif len(failed_pages_dict) == 0 and len(descriptions) > 0:
                                 st.session_state.index_status = "complete"
@@ -770,13 +786,12 @@ with col_left:
         index=0,
         help="Local dense embeddings via Sentence Transformers.",
     )
-    vision_model_name = st.selectbox(
+    st.selectbox(
         "Vision Provider",
         options=[os.getenv("GROQ_VISION_MODEL", "qwen/qwen3.8-27b")],
         index=0,
         help="Multimodal vision model for chart analysis.",
     )
-    local_mode = st.toggle("Local / Offline Mode", value=False, help="Run embedding and retrieval locally without external calls where possible.")
 
     if st.button("🔄 Reprocess PDF", use_container_width=True):
         if not uploaded_file:
@@ -938,6 +953,9 @@ with col_right:
             st.image(image_bytes, use_container_width=True)
         else:
             st.info(f"No visual preview available for page {selected_page}.")
+            extracted_text = page_text(selected)
+            st.markdown("**Extracted text**")
+            st.text(extracted_text or "No extracted text available for this page.")
 
         # Compact horizontal strip of nearby page thumbnails
         st.markdown('<div style="font-size:0.76rem; font-weight:600; color:#64748b; margin-top:12px; margin-bottom:6px;">Nearby Pages</div>', unsafe_allow_html=True)
