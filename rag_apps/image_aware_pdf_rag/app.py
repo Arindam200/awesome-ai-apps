@@ -12,7 +12,6 @@ from __future__ import annotations
 import hashlib
 import html
 import os
-import re
 from typing import Any
 
 import streamlit as st
@@ -30,6 +29,7 @@ st.set_page_config(
 # Import after page configuration so Streamlit can show useful errors if a
 # project dependency or local module is missing.
 try:
+    from markdown_utils import clean_markdown_response
     from ingestion import ingest_pdf
     from chunking import chunk_pages
     from vision import describe_pdf_pages
@@ -267,7 +267,7 @@ st.markdown(
         line-height: 1.5;
       }
 
-      .chat-assistant-msg {
+      [class*="st-key-chat-assistant-msg-"] {
         background: var(--card-bg);
         border: 1px solid var(--card-border);
         border-radius: 14px 14px 14px 2px;
@@ -590,20 +590,6 @@ def retrieve_evidence(query: str, top_k: int = 5) -> list[dict[str, Any]]:
         )
 
     return evidence
-
-
-def clean_markdown_response(text: str) -> str:
-    """Cleans model markdown artifacts, empty bold tags, and trailing whitespace."""
-    if not text:
-        return ""
-    # Strip empty bold markers like **    ** or ** ** or __  __
-    cleaned = re.sub(r"\*\*\s*\*\*", "", text)
-    cleaned = re.sub(r"__\s*__", "", cleaned)
-    # Strip lines that only contain whitespace and asterisks/underscores
-    cleaned = re.sub(r"^\s*[\*_]{2,}\s*$", "", cleaned, flags=re.MULTILINE)
-    # Collapse 3+ consecutive newlines to 2
-    cleaned = re.sub(r"\n{3,}", "\n\n", cleaned)
-    return cleaned.strip()
 
 
 def answer_question(query: str, chat_model: GroqChatModel) -> tuple[str, list[dict[str, Any]]]:
@@ -1045,10 +1031,9 @@ with center:
             )
         else:
             assistant_content = clean_markdown_response(str(message["content"]))
-            with st.container():
-                st.markdown('<div class="chat-assistant-msg"><b style="color:#4f46e5;">🤖 Assistant</b>', unsafe_allow_html=True)
+            with st.container(key=f"chat-assistant-msg-{i}"):
+                st.markdown('<b style="color:#4f46e5;">🤖 Assistant</b>', unsafe_allow_html=True)
                 st.markdown(assistant_content)
-                st.markdown('</div>', unsafe_allow_html=True)
 
     # Cited sources section
     last_evidence = st.session_state.get("last_evidence", [])
