@@ -14,6 +14,7 @@ This repository is a comprehensive collection of **132 projects**, tutorials, an
 
 - [🚀 Featured AI Apps](#-featured-ai-apps)
   - [🧩 Starter Agents](#-starter-agents)
+- [MemTether](https://github.com/MemTether/MemTether) - Cross-client AI memory hub with bi-temporal governance, supersession chains, hash-chain audit, and 9 MCP tools. Local-first, zero cloud. `pip install memtether`
   - [🪶 Simple Agents](#-simple-agents)
   - [🎙️ Voice Agents](#-voice-agents)
   - [🗂️ MCP Agents](#️-mcp-agents)
