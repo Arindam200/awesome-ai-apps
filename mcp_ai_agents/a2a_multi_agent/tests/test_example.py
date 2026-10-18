@@ -149,6 +149,32 @@ async def test_task_timeout():
             [("plan", "Old", False), ("plan", "New", False), ("plan", " plan", True)],
             "New plan",
         ),
+        (
+            [
+                ("plan", "First", False),
+                ("plan", " second", True),
+                ("note", "Other artifact", False),
+            ],
+            "First second",
+        ),
+        (
+            [
+                ("plan", "Old", False),
+                ("note", "Other", False),
+                ("plan", "New", False),
+                ("note", " artifact", True),
+            ],
+            "New",
+        ),
+        (
+            [
+                ("", "First", False),
+                ("note", "Other", False),
+                ("", " second", True),
+                ("note", " artifact", True),
+            ],
+            "First second",
+        ),
     ],
 )
 async def test_chunked_artifacts_keep_their_own_text(updates, expected):

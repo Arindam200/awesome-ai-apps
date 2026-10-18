@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 async def read_response(client: Client, card: AgentCard, prompt: str) -> str:
     answer: str | None = None
+    answer_artifact_id: str | None = None
     artifacts: dict[str, str] = {}
     completed = False
     request = SendMessageRequest(
@@ -46,12 +47,15 @@ async def read_response(client: Client, card: AgentCard, prompt: str) -> str:
         elif event.HasField("artifact_update"):
             update = event.artifact_update
             artifact_id = update.artifact.artifact_id
+            if answer_artifact_id is None:
+                answer_artifact_id = artifact_id
             text = get_artifact_text(update.artifact)
             artifacts[artifact_id] = (
                 artifacts.get(artifact_id, "") + text if update.append else text
             )
-            answer = artifacts[artifact_id]
-            logger.info("[%s] artifact: %s", card.name, answer)
+            if artifact_id == answer_artifact_id:
+                answer = artifacts[artifact_id]
+            logger.info("[%s] artifact: %s", card.name, artifacts[artifact_id])
         elif event.HasField("message"):
             answer = get_message_text(event.message)
             completed = True

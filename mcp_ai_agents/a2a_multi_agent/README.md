@@ -30,7 +30,7 @@ User idea
   → discover LangGraph reviewer Agent Card → A2A task → risk and improvement
 ```
 
-Each service first emits a submitted task, then a working status, a text artifact, and a completed status. The client prints these events as they arrive. It reads the architect's artifact and uses that text as the reviewer's input; the handoff crosses the A2A protocol boundary rather than calling the other framework in-process.
+Each service first emits a submitted task, then a working status, a text artifact, and a completed status. The client logs these events as they arrive. For this example, the first artifact is the answer: subsequent chunks for that artifact are appended or replaced as indicated by the stream, while other artifacts are logged without replacing the answer. The architect's assembled answer becomes the reviewer's input; the handoff crosses the A2A protocol boundary rather than calling the other framework in-process.
 
 The services bind to localhost and keep task state in memory. A restart clears tasks. Shared deployments need authentication and durable task storage.
 
@@ -101,7 +101,7 @@ ruff format --check .
 mypy agents.py client.py server.py
 ```
 
-The tests exercise card discovery, A2A delegation, task updates, interleaved artifact chunks and replacements, missing-key errors, task deadlines, and the two-framework adapters with a local model stub; they do not send requests to Nebius. Running the live example requires a valid key and network access to Nebius.
+The tests exercise card discovery, A2A delegation, task updates, interleaved artifact chunks and replacements, stable answer selection when other artifacts arrive later, missing-key errors, task deadlines, and the two-framework adapters with a local model stub; they do not send requests to Nebius. Running the live example requires a valid key and network access to Nebius.
 
 ## 📂 Project Structure
 
