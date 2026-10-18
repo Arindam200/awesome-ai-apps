@@ -54,47 +54,27 @@ st.markdown(
       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
       @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
-      /* Theme design tokens with dark / light adaptivity */
-      :root {
-        --app-bg: radial-gradient(circle at 10% 20%, rgba(238, 242, 255, 0.8) 0%, rgba(248, 250, 252, 1) 50%, rgba(241, 245, 249, 0.9) 100%);
-        --text-primary: #0f172a;
-        --text-secondary: #475569;
-        --text-muted: #64748b;
-        --card-bg: #ffffff;
-        --card-border: #e2e8f0;
+      /* Theme design tokens follow Streamlit's active theme. */
+      .stApp {
+        --app-bg: var(--background-color);
+        --text-primary: var(--text-color);
+        --text-secondary: color-mix(in srgb, var(--text-color) 80%, var(--background-color));
+        --text-muted: color-mix(in srgb, var(--text-color) 65%, var(--background-color));
+        --card-bg: var(--secondary-background-color);
+        --card-border: color-mix(in srgb, var(--text-color) 14%, var(--secondary-background-color));
         --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-        --metric-bg: #f8fafc;
-        --metric-border: #e2e8f0;
-        --btn-bg: #ffffff;
-        --btn-text: #0f172a;
-        --btn-border: #cbd5e1;
-        --btn-hover-bg: #f1f5f9;
-        --btn-hover-border: #94a3b8;
-        --uploader-bg: #f8fafc;
-        --uploader-border: #cbd5e1;
-        --citation-bg: #f8fafc;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --app-bg: radial-gradient(circle at 10% 20%, rgba(15, 23, 42, 0.95) 0%, rgba(10, 15, 29, 1) 50%, rgba(15, 23, 42, 1) 100%);
-          --text-primary: #f8fafc;
-          --text-secondary: #cbd5e1;
-          --text-muted: #94a3b8;
-          --card-bg: #1e293b;
-          --card-border: rgba(255, 255, 255, 0.1);
-          --card-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.35);
-          --metric-bg: #0f172a;
-          --metric-border: rgba(255, 255, 255, 0.12);
-          --btn-bg: #1e293b;
-          --btn-text: #f8fafc;
-          --btn-border: rgba(255, 255, 255, 0.2);
-          --btn-hover-bg: #334155;
-          --btn-hover-border: rgba(255, 255, 255, 0.35);
-          --uploader-bg: #0f172a;
-          --uploader-border: rgba(255, 255, 255, 0.2);
-          --citation-bg: #0f172a;
-        }
+        --metric-bg: var(--background-color);
+        --metric-border: var(--card-border);
+        --btn-bg: var(--secondary-background-color);
+        --btn-text: var(--text-color);
+        --btn-border: color-mix(in srgb, var(--text-color) 28%, var(--secondary-background-color));
+        --btn-hover-bg: color-mix(in srgb, var(--secondary-background-color) 92%, var(--text-color));
+        --btn-hover-border: color-mix(in srgb, var(--text-color) 40%, var(--secondary-background-color));
+        --uploader-bg: var(--secondary-background-color);
+        --uploader-border: var(--btn-border);
+        --citation-bg: var(--secondary-background-color);
+        background: var(--app-bg) !important;
+        color: var(--text-primary) !important;
       }
 
       /* Base App Typography */
@@ -125,11 +105,6 @@ st.markdown(
         -webkit-font-smoothing: antialiased !important;
       }
       
-      .stApp {
-        background: var(--app-bg) !important;
-        color: var(--text-primary) !important;
-      }
-
       /* Make Streamlit top navbar transparent and integrate seamlessly */
       header[data-testid="stHeader"] {
         background: transparent !important;
@@ -1087,4 +1062,3 @@ st.markdown(
     '</div>',
     unsafe_allow_html=True,
 )
-
