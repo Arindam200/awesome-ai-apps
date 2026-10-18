@@ -567,7 +567,6 @@ def retrieve_evidence(query: str, top_k: int = 5) -> list[dict[str, Any]]:
     raw_evidence = retriever.retrieve(query=query, top_k=top_k, source_id=source_id)
 
     evidence = []
-    print(f"\n[RETRIEVAL LOG] Query: '{query}' | Source: {source_id} | Returned {len(raw_evidence)} items:")
     for idx, item in enumerate(raw_evidence, start=1):
         record = {
             "page_number": int(item.page_number),
@@ -578,12 +577,14 @@ def retrieve_evidence(query: str, top_k: int = 5) -> list[dict[str, Any]]:
         }
         evidence.append(record)
         snippet = item.text[:120].replace('\n', ' ')
-        print(f"  #{idx} [Page {item.page_number} | {item.content_type}] {snippet}...")
         logger.info(
-            "Top-k evidence #%d: page=%d, type=%s, snippet=%s",
-            idx,
+            "Retrieved evidence: page=%d, type=%s",
             item.page_number,
             item.content_type,
+        )
+        logger.debug(
+            "Retrieved evidence #%d snippet: %s",
+            idx,
             snippet,
         )
 

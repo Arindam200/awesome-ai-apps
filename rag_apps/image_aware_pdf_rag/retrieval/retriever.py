@@ -126,8 +126,10 @@ class PDFRetriever:
 
             # Boost if query cited a specific chart/figure/table (e.g. Chart 1.1) and it appears in text
             for chart_id in chart_matches:
-                # Matches "Chart 1.1", "Figure 1.1", "1.1" in text
-                pattern = rf"\b(?:chart|figure|fig\.?|table)?\s*{re.escape(chart_id)}\b"
+                pattern = (
+                    rf"\b(?:chart|figure|fig\.?|table|diagram)\s*"
+                    rf"{re.escape(chart_id)}(?!\.\d)\b"
+                )
                 if re.search(pattern, lower_text):
                     ref_boost += 3.0
 

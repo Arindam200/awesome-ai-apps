@@ -49,6 +49,7 @@ def make_result(
     page_number,
     text,
     content_type="text",
+    score=0.95,
 ):
     return SearchResult(
         id=chunk_id,
@@ -59,7 +60,7 @@ def make_result(
             "page_number": page_number,
             "content_type": content_type,
         },
-        score=0.95,
+        score=score,
     )
 
 
@@ -86,6 +87,22 @@ def test_retriever_returns_page_aware_evidence():
     assert evidence[0].text == "Revenue increased by 20%."
     assert evidence[0].source == "a.pdf"
     assert evidence[0].content_type == "text"
+
+
+def test_retriever_does_not_boost_bare_or_longer_chart_references():
+    bare_reference = make_result(
+        "a:1", "a", 1, "The value is associated with 1.1.", score=0.95
+    )
+    longer_reference = make_result(
+        "a:2", "a", 2, "Chart 1.1.2 shows the value.", score=0.95
+    )
+    unrelated = make_result("a:3", "a", 3, "Unrelated evidence.", score=0.96)
+    store = FakeVectorStore([bare_reference, longer_reference, unrelated])
+
+    evidence = PDFRetriever(FakeEmbeddings(), store).retrieve("Find Chart 1.1", top_k=1)
+
+    assert len(evidence) == 1
+    assert evidence[0].page_number == 3
 
 
 def test_retriever_preserves_visual_description_type():
