@@ -54,7 +54,50 @@ st.markdown(
       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
       @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 
-      /* Base App Typography - apply specifically to textual elements to never corrupt icon ligatures */
+      /* Theme design tokens with dark / light adaptivity */
+      :root {
+        --app-bg: radial-gradient(circle at 10% 20%, rgba(238, 242, 255, 0.8) 0%, rgba(248, 250, 252, 1) 50%, rgba(241, 245, 249, 0.9) 100%);
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --text-muted: #64748b;
+        --card-bg: #ffffff;
+        --card-border: #e2e8f0;
+        --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+        --metric-bg: #f8fafc;
+        --metric-border: #e2e8f0;
+        --btn-bg: #ffffff;
+        --btn-text: #0f172a;
+        --btn-border: #cbd5e1;
+        --btn-hover-bg: #f1f5f9;
+        --btn-hover-border: #94a3b8;
+        --uploader-bg: #f8fafc;
+        --uploader-border: #cbd5e1;
+        --citation-bg: #f8fafc;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --app-bg: radial-gradient(circle at 10% 20%, rgba(15, 23, 42, 0.95) 0%, rgba(10, 15, 29, 1) 50%, rgba(15, 23, 42, 1) 100%);
+          --text-primary: #f8fafc;
+          --text-secondary: #cbd5e1;
+          --text-muted: #94a3b8;
+          --card-bg: #1e293b;
+          --card-border: rgba(255, 255, 255, 0.1);
+          --card-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.35);
+          --metric-bg: #0f172a;
+          --metric-border: rgba(255, 255, 255, 0.12);
+          --btn-bg: #1e293b;
+          --btn-text: #f8fafc;
+          --btn-border: rgba(255, 255, 255, 0.2);
+          --btn-hover-bg: #334155;
+          --btn-hover-border: rgba(255, 255, 255, 0.35);
+          --uploader-bg: #0f172a;
+          --uploader-border: rgba(255, 255, 255, 0.2);
+          --citation-bg: #0f172a;
+        }
+      }
+
+      /* Base App Typography */
       html, body, p, h1, h2, h3, h4, h5, h6, input, textarea, select, label {
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
       }
@@ -83,8 +126,8 @@ st.markdown(
       }
       
       .stApp {
-        background: radial-gradient(circle at 10% 20%, rgba(238, 242, 255, 0.8) 0%, rgba(248, 250, 252, 1) 50%, rgba(241, 245, 249, 0.9) 100%);
-        color: #0f172a;
+        background: var(--app-bg) !important;
+        color: var(--text-primary) !important;
       }
 
       /* Make Streamlit top navbar transparent and integrate seamlessly */
@@ -99,12 +142,11 @@ st.markdown(
         pointer-events: auto;
       }
 
-      /* Keep navbar controls (Stop, Deploy, Settings menu) crisp and visible */
       header[data-testid="stHeader"] button, 
       header[data-testid="stHeader"] [data-testid="stToolbarActions"],
       header[data-testid="stHeader"] svg {
-        color: #f1f5f9 !important;
-        fill: #f1f5f9 !important;
+        color: var(--text-primary) !important;
+        fill: var(--text-primary) !important;
       }
 
       .block-container {
@@ -189,23 +231,23 @@ st.markdown(
 
       /* Section Cards */
       .ui-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
         border-radius: 16px;
         padding: 18px 20px;
         margin-bottom: 16px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+        box-shadow: var(--card-shadow);
         transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
 
       .ui-card:hover {
-        box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 8px 16px -2px rgba(0, 0, 0, 0.15);
       }
 
       .ui-card-title {
         font-size: 1.05rem;
         font-weight: 700;
-        color: #1e293b;
+        color: var(--text-primary);
         margin-bottom: 12px;
         display: flex;
         align-items: center;
@@ -215,8 +257,8 @@ st.markdown(
 
       /* Status Metrics */
       .metric-badge {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        background: var(--metric-bg);
+        border: 1px solid var(--metric-border);
         border-radius: 10px;
         padding: 8px 12px;
         margin: 6px 0;
@@ -224,88 +266,114 @@ st.markdown(
         display: flex;
         justify-content: space-between;
         align-items: center;
-        color: #334155;
+        color: var(--text-secondary);
       }
 
       .metric-badge b {
-        color: #0f172a;
+        color: var(--text-primary);
         font-weight: 600;
       }
 
       /* Chat Bubbles */
       .chat-user-msg {
         background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
-        color: #ffffff;
+        color: #ffffff !important;
         border-radius: 14px 14px 2px 14px;
         padding: 12px 16px;
         margin: 12px 0 12px auto;
         max-width: 85%;
-        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
         font-size: 0.95rem;
         line-height: 1.5;
       }
 
       .chat-assistant-msg {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
         border-radius: 14px 14px 14px 2px;
         padding: 16px 18px;
         margin: 12px auto 12px 0;
         max-width: 95%;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
-        color: #1e293b;
+        box-shadow: var(--card-shadow);
+        color: var(--text-primary);
         font-size: 0.95rem;
         line-height: 1.6;
       }
 
-      /* Buttons & Inputs */
-      div.stButton > button {
-        border-radius: 10px;
-        font-weight: 600;
-        letter-spacing: -0.01em;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        padding: 0.5rem 1rem;
-        border: 1px solid #cbd5e1;
+      /* Buttons & Inputs - ensures high contrast in both dark and light system themes */
+      div.stButton > button,
+      div.stDownloadButton > button {
+        background-color: var(--btn-bg) !important;
+        color: var(--btn-text) !important;
+        border: 1px solid var(--btn-border) !important;
+        border-radius: 10px !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.01em !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        padding: 0.5rem 1rem !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
       }
 
-      div.stButton > button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.08);
+      div.stButton > button * {
+        color: inherit !important;
       }
 
-      div.stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-        border: none;
-        color: #ffffff;
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+      div.stButton > button:hover,
+      div.stDownloadButton > button:hover {
+        background-color: var(--btn-hover-bg) !important;
+        border-color: var(--btn-hover-border) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
       }
 
-      div.stButton > button[kind="primary"]:hover {
-        background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
-        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.45);
+      div.stButton > button[kind="primary"],
+      div.stButton > button[data-testid="baseButton-primary"] {
+        background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%) !important;
+        border: none !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4) !important;
       }
 
-      /* Ensure columns maintain proper grid on wide layouts */
+      div.stButton > button[kind="primary"] *,
+      div.stButton > button[data-testid="baseButton-primary"] * {
+        color: #ffffff !important;
+      }
+
+      div.stButton > button[kind="primary"]:hover,
+      div.stButton > button[data-testid="baseButton-primary"]:hover {
+        background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%) !important;
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.5) !important;
+        color: #ffffff !important;
+      }
+
+      div.stButton > button:disabled {
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+        transform: none !important;
+        box-shadow: none !important;
+      }
+
+      /* Ensure columns maintain proper container backgrounds on wide layouts */
       [data-testid="column"] {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 18px;
-        padding: 22px 20px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+        background: var(--card-bg) !important;
+        border: 1px solid var(--card-border) !important;
+        border-radius: 18px !important;
+        padding: 22px 20px !important;
+        box-shadow: var(--card-shadow) !important;
+        color: var(--text-primary) !important;
       }
 
-      /* Clean, un-squished file uploader */
+      /* Clean, responsive file uploader */
       [data-testid="stFileUploader"] {
-        background: #f8fafc;
-        border: 2px dashed #cbd5e1;
-        border-radius: 16px;
-        padding: 10px 14px;
-        transition: all 0.2s ease;
+        background: var(--uploader-bg) !important;
+        border: 2px dashed var(--uploader-border) !important;
+        border-radius: 16px !important;
+        padding: 10px 14px !important;
+        transition: all 0.2s ease !important;
       }
 
       [data-testid="stFileUploader"]:hover {
-        border-color: #6366f1;
-        background: #f5f7ff;
+        border-color: #6366f1 !important;
       }
 
       [data-testid="stFileUploaderDropzone"] {
@@ -328,9 +396,10 @@ st.markdown(
         font-weight: 600 !important;
         font-size: 0.88rem !important;
         padding: 8px 18px !important;
-        background: #ffffff !important;
-        border: 1px solid #cbd5e1 !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+        background: var(--btn-bg) !important;
+        color: var(--btn-text) !important;
+        border: 1px solid var(--btn-border) !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
         margin: 6px auto !important;
         display: inline-flex !important;
         align-items: center !important;
@@ -339,16 +408,16 @@ st.markdown(
 
       [data-testid="stFileUploaderDropzoneInstructions"] {
         font-size: 0.82rem !important;
-        color: #64748b !important;
+        color: var(--text-muted) !important;
         text-align: center !important;
         margin-top: 6px !important;
       }
 
       /* Expander header styling */
       [data-testid="stExpander"] {
-        border: 1px solid #e2e8f0 !important;
+        border: 1px solid var(--card-border) !important;
         border-radius: 12px !important;
-        background: #ffffff !important;
+        background: var(--card-bg) !important;
         margin-top: 10px !important;
         margin-bottom: 10px !important;
       }
@@ -359,17 +428,17 @@ st.markdown(
         align-items: center !important;
         gap: 10px !important;
         font-weight: 600 !important;
-        color: #334155 !important;
+        color: var(--text-primary) !important;
       }
 
       [data-testid="stExpander"] summary:hover {
-        color: #4f46e5 !important;
+        color: #6366f1 !important;
       }
 
       /* Citations Card */
       .citation-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        background: var(--citation-bg);
+        border: 1px solid var(--card-border);
         border-left: 4px solid #6366f1;
         border-radius: 10px;
         padding: 10px 14px;
@@ -378,11 +447,11 @@ st.markdown(
 
       /* Page viewer styling */
       .viewer-box {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
         border-radius: 16px;
         padding: 16px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+        box-shadow: var(--card-shadow);
       }
     </style>
     """,
@@ -959,7 +1028,7 @@ with right:
     nav_left, title_col, nav_right = st.columns([0.6, 2.0, 0.6])
     with title_col:
         st.markdown(
-            f'<div style="text-align:center; font-weight:700; color:#1e293b; padding-top:4px;">'
+            f'<div style="text-align:center; font-weight:700; color:var(--text-primary); padding-top:4px;">'
             f'Page {selected_page} of {max(1, total_pages)}</div>',
             unsafe_allow_html=True,
         )
