@@ -2,7 +2,9 @@
 from __future__ import annotations
 import os
 from typing import Any
-from anthropic import Anthropic
+
+from interfaces.chat import ChatMessage, validate_messages
+
 
 class ClaudeChatModel:
     """ChatModel adapter for Anthropic Claude chat models."""
@@ -13,14 +15,17 @@ class ClaudeChatModel:
         api_key = os.getenv("ANTHROPIC_API_KEY")
         if client is None and not api_key:
             raise ValueError("ANTHROPIC_API_KEY is not set.")
-        self.client = client or Anthropic(api_key=api_key)
+        if client is None:
+            from anthropic import Anthropic
+
+            client = Anthropic(api_key=api_key)
+        self.client = client
         self.model = model or os.getenv("ANTHROPIC_CHAT_MODEL", "claude-sonnet-4-5")
         self.max_tokens = max_tokens
 
-    def generate(self, messages: list[dict[str, str]]) -> str:
+    def generate(self, messages: list[ChatMessage]) -> str:
         """Send chat messages to Anthropic Claude and return the generated answer."""
-        if not messages:
-            raise ValueError("messages must not be empty.")
+        validate_messages(messages)
         system_parts = [str(m.get("content", "")) for m in messages if m.get("role") == "system"]
         claude_messages = [
             {"role": m["role"], "content": m["content"]}

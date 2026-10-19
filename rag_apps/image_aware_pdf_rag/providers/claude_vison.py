@@ -3,8 +3,8 @@ from __future__ import annotations
 import base64
 import os
 from typing import Any
-from anthropic import Anthropic
 from interfaces.vision import VisionResult, validate_vision_input
+from providers.groq_vision import GroqVisionModel
 
 class ClaudeVisionModel:
     """VisionModel adapter for Anthropic Claude vision models."""
@@ -15,14 +15,19 @@ class ClaudeVisionModel:
         api_key = os.getenv("ANTHROPIC_API_KEY")
         if client is None and not api_key:
             raise ValueError("ANTHROPIC_API_KEY is not set.")
-        self.client = client or Anthropic(api_key=api_key)
+        if client is None:
+            from anthropic import Anthropic
+
+            client = Anthropic(api_key=api_key)
+        self.client = client
         self.model = model or os.getenv("ANTHROPIC_VISION_MODEL", "claude-sonnet-4-5")
         self.max_tokens = max_tokens
 
     def describe_page(self, image_png: bytes, page_number: int) -> VisionResult:
         """Generate a factual textual description of a rendered PDF page image."""
         validate_vision_input(image_png, page_number)
-        encoded = base64.standard_b64encode(image_png).decode("ascii")
+        prepared_image, media_type = GroqVisionModel._prepare_image(image_png)
+        encoded = base64.standard_b64encode(prepared_image).decode("ascii")
         prompt = (
             f"Analyze this image of PDF page {page_number}. In at most 140 words, "
             "describe useful evidence for document question answering. For charts, capture "
@@ -34,7 +39,7 @@ class ClaudeVisionModel:
             model=self.model, max_tokens=self.max_tokens,
             messages=[{"role": "user", "content": [
                 {"type": "image", "source": {
-                    "type": "base64", "media_type": "image/png", "data": encoded
+                    "type": "base64", "media_type": media_type, "data": encoded
                 }},
                 {"type": "text", "text": prompt},
             ]}],

@@ -4,6 +4,9 @@ import os
 from typing import Any
 from openai import OpenAI
 
+from interfaces.chat import ChatMessage, validate_messages
+
+
 class OpenAIChatModel:
     """ChatModel adapter for OpenAI chat completions models."""
 
@@ -17,10 +20,9 @@ class OpenAIChatModel:
         self.model = model or os.getenv("OPENAI_CHAT_MODEL", "gpt-4.1-mini")
         self.max_completion_tokens = max_completion_tokens
 
-    def generate(self, messages: list[dict[str, str]]) -> str:
+    def generate(self, messages: list[ChatMessage]) -> str:
         """Send chat messages to OpenAI and return the generated answer."""
-        if not messages:
-            raise ValueError("messages must not be empty.")
+        validate_messages(messages)
         response = self.client.chat.completions.create(
             model=self.model, messages=messages,
             max_completion_tokens=self.max_completion_tokens,

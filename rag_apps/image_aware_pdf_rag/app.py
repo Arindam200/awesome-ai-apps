@@ -653,7 +653,8 @@ with col_left:
                 with st.expander(f"⚠️ Visual issues ({len(fail_pages)} pages)", expanded=False):
                     for fp in fail_pages:
                         reason = err_dict.get(fp, "Unknown error")
-                        st.markdown(f"**Page {fp}:** `{html.escape(reason[:120])}`")
+                        st.markdown(f"**Page {fp}:**")
+                        st.code(reason[:120])
 
         if not st.session_state.index_ready and st.session_state.index_status == "inspected":
             if st.button("🚀 Index Document", type="primary", use_container_width=True):
