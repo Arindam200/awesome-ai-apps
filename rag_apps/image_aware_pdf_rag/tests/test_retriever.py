@@ -22,11 +22,13 @@ class FakeVectorStore:
         self.last_query_embedding = None
         self.last_top_k = None
         self.last_filters = None
+        self.search_filters = []
 
     def search(self, query_embedding, top_k=5, filters=None):
         self.last_query_embedding = query_embedding
         self.last_top_k = top_k
         self.last_filters = filters
+        self.search_filters.append(filters)
 
         results = self.results
 
@@ -167,6 +169,57 @@ def test_retriever_can_limit_search_to_one_pdf():
     assert store.last_filters == {"source_id": "b"}
     assert len(evidence) == 1
     assert evidence[0].source == "b.pdf"
+
+
+def test_explicit_page_search_merges_results_and_deduplicates_ids():
+    results = [
+        make_result(f"a:{page}", "a", page, f"Page {page} evidence", score=1.0)
+        for page in range(1, 21)
+    ]
+    explicitly_requested = make_result(
+        "a:25",
+        "a",
+        25,
+        "Page 25 evidence not in the semantic result pool",
+        score=0.1,
+    )
+    results.append(explicitly_requested)
+    store = FakeVectorStore(results)
+
+    evidence = PDFRetriever(FakeEmbeddings(), store).retrieve(
+        "Find details on page 25",
+        top_k=1,
+        source_id="a",
+    )
+
+    assert store.search_filters == [
+        {"source_id": "a"},
+        {"source_id": "a", "page_number": 25},
+    ]
+    assert len(evidence) == 1
+    assert evidence[0].page_number == 25
+
+
+def test_explicit_page_search_does_not_duplicate_semantic_results():
+    store = FakeVectorStore(
+        [
+            make_result(
+                f"a:{page}",
+                "a",
+                page,
+                f"Page {page} evidence",
+                score=1.0,
+            )
+            for page in range(1, 21)
+        ]
+    )
+
+    evidence = PDFRetriever(FakeEmbeddings(), store).retrieve(
+        "Find details on page 20",
+        top_k=2,
+    )
+
+    assert [item.page_number for item in evidence] == [20, 1]
 
 
 def test_retriever_respects_top_k():

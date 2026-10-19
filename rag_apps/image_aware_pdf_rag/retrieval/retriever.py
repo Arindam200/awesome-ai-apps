@@ -91,6 +91,17 @@ class PDFRetriever:
             top_k=fetch_limit,
             filters=filters,
         )
+        results_by_id = {result.id: result for result in raw_results}
+        for page_number in dict.fromkeys(page_matches):
+            page_filters = {**(filters or {}), "page_number": page_number}
+            page_results = self.vector_store.search(
+                query_embedding=query_embedding,
+                top_k=fetch_limit,
+                filters=page_filters,
+            )
+            for result in page_results:
+                results_by_id.setdefault(result.id, result)
+        raw_results = list(results_by_id.values())
 
         valid_candidates = []
 

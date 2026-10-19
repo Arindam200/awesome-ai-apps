@@ -337,20 +337,22 @@ def get_vector_store() -> FAISSVectorStore:
     return st.session_state.vector_store
 
 
+def current_groq_key() -> str | None:
+    """Reload the project environment and return the current Groq API key."""
+    load_dotenv(override=True)
+    return os.getenv("GROQ_API_KEY")
+
+
 @st.cache_resource
 def get_chat_model(model_name: str, api_key: str | None = None) -> GroqChatModel:
     """Load and cache the Groq chat model instance."""
-    load_dotenv(override=True)
-    key = api_key or os.getenv("GROQ_API_KEY")
-    return GroqChatModel(model=model_name, api_key=key)
+    return GroqChatModel(model=model_name, api_key=api_key)
 
 
 @st.cache_resource
 def get_vision_model(model_name: str, api_key: str | None = None) -> GroqVisionModel:
     """Load and cache the Groq multimodal vision model instance."""
-    load_dotenv(override=True)
-    key = api_key or os.getenv("GROQ_API_KEY")
-    return GroqVisionModel(model=model_name, api_key=key)
+    return GroqVisionModel(model=model_name, api_key=api_key)
 
 
 # ---------- Session state ----------
@@ -544,6 +546,7 @@ with col_left:
             )
         with c_del:
             if st.button("✕", help="Remove or replace file", key="remove_pdf_btn", use_container_width=True):
+                st.session_state.processing_error = None
                 if st.session_state.index_source:
                     get_vector_store().delete_source(st.session_state.index_source)
                 st.session_state.pdf_hash = None
@@ -658,13 +661,18 @@ with col_left:
 
         if not st.session_state.index_ready and st.session_state.index_status == "inspected":
             if st.button("🚀 Index Document", type="primary", use_container_width=True):
-                if not os.getenv("GROQ_API_KEY"):
+                st.session_state.processing_error = None
+                groq_api_key = current_groq_key()
+                if not groq_api_key:
                     st.error("GROQ_API_KEY is missing. Check your `.env`.")
                 else:
                     try:
                         with st.spinner("Embedding text and indexing visual descriptions…"):
                             embedder = get_embedding_model()
-                            vision_model = get_vision_model(os.getenv("GROQ_VISION_MODEL", "qwen/qwen3.8-27b"))
+                            vision_model = get_vision_model(
+                                os.getenv("GROQ_VISION_MODEL", "qwen/qwen3.8-27b"),
+                                groq_api_key,
+                            )
                             store = get_vector_store()
 
                             if st.session_state.index_source:
@@ -869,7 +877,10 @@ with col_center:
         else:
             try:
                 with st.spinner("Formulating grounded response…"):
-                    chat_model = get_chat_model(chat_model_name)
+                    chat_model = get_chat_model(
+                        chat_model_name,
+                        current_groq_key(),
+                    )
                     result = answer_question(question, chat_model)
                     answer = clean_markdown_response(result.answer)
                 st.session_state.chat_history.append({"role": "user", "content": question})

@@ -51,7 +51,11 @@ class GroqChatModel:
         if not response.choices:
             raise RuntimeError("Groq returned no completion choices")
 
-        content = response.choices[0].message.content
+        choice = response.choices[0]
+        if getattr(choice, "finish_reason", None) == "length":
+            raise RuntimeError("Groq chat response was truncated at the completion-token limit")
+
+        content = choice.message.content
 
         if not isinstance(content, str) or not content.strip():
             raise RuntimeError("Groq returned an empty or invalid response")

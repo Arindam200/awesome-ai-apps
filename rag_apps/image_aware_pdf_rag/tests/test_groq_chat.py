@@ -7,8 +7,9 @@ from providers.groq_chat import GroqChatModel
 
 
 class FakeGroqClient:
-    def __init__(self, content="Mock answer"):
+    def __init__(self, content="Mock answer", finish_reason=None):
         self.content = content
+        self.finish_reason = finish_reason
         self.last_request = None
         self.chat = SimpleNamespace(
             completions=SimpleNamespace(create=self.create)
@@ -18,7 +19,7 @@ class FakeGroqClient:
         self.last_request = kwargs
 
         message = SimpleNamespace(content=self.content)
-        choice = SimpleNamespace(message=message)
+        choice = SimpleNamespace(message=message, finish_reason=self.finish_reason)
 
         return SimpleNamespace(choices=[choice])
 
@@ -55,6 +56,15 @@ def test_rejects_empty_response():
     model = GroqChatModel(client=FakeGroqClient("  "))
 
     with pytest.raises(RuntimeError, match="empty"):
+        model.generate([
+            {"role": "user", "content": "Question"}
+        ])
+
+
+def test_rejects_truncated_response():
+    model = GroqChatModel(client=FakeGroqClient("Partial answer", "length"))
+
+    with pytest.raises(RuntimeError, match="truncated"):
         model.generate([
             {"role": "user", "content": "Question"}
         ])
