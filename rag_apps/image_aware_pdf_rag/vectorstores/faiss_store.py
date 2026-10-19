@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
+import copy
 import errno
 import json
 import os
 from pathlib import Path
 import shutil
+import threading
 import time
 from typing import Any, Iterable, Iterator
 from uuid import uuid4
@@ -25,6 +27,21 @@ class _PersistenceLockUnavailable(PermissionError):
 
 @contextmanager
 def _persistence_lock(directory: Path) -> Iterator[None]:
+    """Serialize persistence within this process and across processes."""
+    key = str(directory.resolve())
+    with _directory_locks_guard:
+        process_lock = _directory_locks.setdefault(key, threading.RLock())
+    with process_lock:
+        with _file_persistence_lock(directory):
+            yield
+
+
+_directory_locks_guard = threading.Lock()
+_directory_locks: dict[str, threading.RLock] = {}
+
+
+@contextmanager
+def _file_persistence_lock(directory: Path) -> Iterator[None]:
     """Serialize version activation, cleanup, and snapshot loading."""
     lock_path = directory / ".persistence.lock"
     try:
@@ -119,9 +136,66 @@ class FAISSVectorStore:
 
         # FAISS integer ID -> stored document fields.
         self._documents: dict[int, dict[str, Any]] = {}
+        self._mutation_lock = threading.RLock()
 
         if self.persist_dir:
             self.persist_dir.mkdir(parents=True, exist_ok=True)
+
+    @contextmanager
+    def _write_transaction(self) -> Iterator[None]:
+        """Reload the latest snapshot and atomically persist one mutation."""
+        with self._mutation_lock:
+            if self.persist_dir is None:
+                snapshot = self._snapshot_state()
+                try:
+                    yield
+                except BaseException:
+                    self._restore_state(snapshot)
+                    raise
+                return
+
+            with _persistence_lock(self.persist_dir):
+                current_path = self.persist_dir / self.CURRENT_FILENAME
+                legacy_metadata = self.persist_dir / self.METADATA_FILENAME
+                if current_path.exists() or legacy_metadata.exists():
+                    configured_dimension = self.dimension
+                    latest = self._load_unlocked(self.persist_dir)
+                    if (
+                        configured_dimension is not None
+                        and latest.dimension != configured_dimension
+                    ):
+                        raise ValueError(
+                            "Persisted vector dimension does not match this store"
+                        )
+                    self._restore_state(latest._snapshot_state())
+
+                snapshot = self._snapshot_state()
+                try:
+                    yield
+                    self._save_unlocked()
+                except BaseException:
+                    self._restore_state(snapshot)
+                    raise
+
+    def _snapshot_state(self) -> tuple[Any, ...]:
+        """Copy mutable index state for rollback after a failed write."""
+        return (
+            self.dimension,
+            faiss.clone_index(self.index) if self.index is not None else None,
+            self._next_faiss_id,
+            self._chunk_to_faiss.copy(),
+            copy.deepcopy(self._documents),
+        )
+
+    def _restore_state(self, snapshot: tuple[Any, ...]) -> None:
+        """Restore mutable index state from a transaction snapshot."""
+        (
+            self.dimension,
+            self.index,
+            self._next_faiss_id,
+            self._chunk_to_faiss,
+            self._documents,
+        ) = snapshot
 
     def _create_index(self, dimension: int) -> None:
         """Create an index that supports explicit integer IDs."""
@@ -161,75 +235,70 @@ class FAISSVectorStore:
         if not documents:
             return
 
-        prepared: list[tuple[VectorDocument, np.ndarray]] = []
-        seen_ids: set[str] = set()
+        with self._write_transaction():
+            prepared: list[tuple[VectorDocument, np.ndarray]] = []
+            seen_ids: set[str] = set()
+            expected_dimension = self.dimension
 
-        expected_dimension = self.dimension
+            for document in documents:
+                if not isinstance(document.id, str) or not document.id.strip():
+                    raise ValueError("Document ID must be a non-empty string")
 
-        for document in documents:
-            if not isinstance(document.id, str) or not document.id.strip():
-                raise ValueError("Document ID must be a non-empty string")
+                if document.id in seen_ids:
+                    raise ValueError(f"Duplicate document ID: {document.id}")
 
-            if document.id in seen_ids:
-                raise ValueError(f"Duplicate document ID: {document.id}")
+                seen_ids.add(document.id)
 
-            seen_ids.add(document.id)
+                if not isinstance(document.text, str) or not document.text.strip():
+                    raise ValueError(f"Document {document.id} has empty text")
 
-            if not isinstance(document.text, str) or not document.text.strip():
-                raise ValueError(f"Document {document.id} has empty text")
+                if not isinstance(document.metadata, dict):
+                    raise ValueError("Document metadata must be a dictionary")
 
-            if not isinstance(document.metadata, dict):
-                raise ValueError("Document metadata must be a dictionary")
+                vector = self._validate_embedding(
+                    document.embedding,
+                    expected_dimension,
+                )
 
-            vector = self._validate_embedding(
-                document.embedding,
-                expected_dimension,
+                if expected_dimension is None:
+                    expected_dimension = int(vector.size)
+
+                prepared.append((document, vector))
+
+            # Validate the entire batch before modifying the existing index.
+            if self.dimension is None:
+                self._create_index(expected_dimension)
+            elif self.index is None:
+                self._create_index(self.dimension)
+
+            existing_ids = [
+                document.id
+                for document, _ in prepared
+                if document.id in self._chunk_to_faiss
+            ]
+            self._delete_unlocked(existing_ids)
+
+            vectors = np.vstack([vector for _, vector in prepared]).astype(
+                np.float32,
+                copy=False,
             )
+            faiss_ids = np.arange(
+                self._next_faiss_id,
+                self._next_faiss_id + len(prepared),
+                dtype=np.int64,
+            )
+            self.index.add_with_ids(vectors, faiss_ids)
 
-            if expected_dimension is None:
-                expected_dimension = int(vector.size)
+            for (document, _), faiss_id in zip(prepared, faiss_ids):
+                integer_id = int(faiss_id)
+                self._chunk_to_faiss[document.id] = integer_id
+                self._documents[integer_id] = {
+                    "id": document.id,
+                    "text": document.text,
+                    "metadata": dict(document.metadata),
+                }
 
-            prepared.append((document, vector))
-
-        # Validate the entire batch before modifying the existing index.
-        if self.dimension is None:
-            self._create_index(expected_dimension)
-        elif self.index is None:
-            self._create_index(self.dimension)
-
-        # Replacing an existing stable ID must not leave stale vectors.
-        existing_ids = [
-            document.id
-            for document, _ in prepared
-            if document.id in self._chunk_to_faiss
-        ]
-        self.delete(existing_ids, save=False)
-
-        vectors = np.vstack([vector for _, vector in prepared]).astype(
-            np.float32,
-            copy=False,
-        )
-
-        faiss_ids = np.arange(
-            self._next_faiss_id,
-            self._next_faiss_id + len(prepared),
-            dtype=np.int64,
-        )
-
-        self.index.add_with_ids(vectors, faiss_ids)
-
-        for (document, _), faiss_id in zip(prepared, faiss_ids):
-            integer_id = int(faiss_id)
-
-            self._chunk_to_faiss[document.id] = integer_id
-            self._documents[integer_id] = {
-                "id": document.id,
-                "text": document.text,
-                "metadata": dict(document.metadata),
-            }
-
-        self._next_faiss_id += len(prepared)
-        self.save()
+            self._next_faiss_id += len(prepared)
 
     def search(
         self,
@@ -303,6 +372,16 @@ class FAISSVectorStore:
         if not ids:
             return
 
+        if not save:
+            with self._mutation_lock:
+                self._delete_unlocked(ids)
+            return
+
+        with self._write_transaction():
+            self._delete_unlocked(ids)
+
+    def _delete_unlocked(self, ids: list[str]) -> None:
+        """Delete chunks by stable IDs while a write transaction is held."""
         integer_ids = [
             self._chunk_to_faiss[chunk_id]
             for chunk_id in set(ids)
@@ -320,22 +399,19 @@ class FAISSVectorStore:
             if record:
                 self._chunk_to_faiss.pop(record["id"], None)
 
-        if save:
-            self.save()
-
     def delete_source(self, source_id: str) -> int:
         """Delete every chunk belonging to one PDF; return count removed."""
 
         if not isinstance(source_id, str) or not source_id.strip():
             raise ValueError("source_id must be a non-empty string")
 
-        chunk_ids = [
-            record["id"]
-            for record in self._documents.values()
-            if record["metadata"].get("source_id") == source_id
-        ]
-
-        self.delete(chunk_ids)
+        with self._write_transaction():
+            chunk_ids = [
+                record["id"]
+                for record in self._documents.values()
+                if record["metadata"].get("source_id") == source_id
+            ]
+            self._delete_unlocked(chunk_ids)
         return len(chunk_ids)
 
     def save(self) -> None:
@@ -344,90 +420,96 @@ class FAISSVectorStore:
         if self.persist_dir is None:
             return
 
+        with self._write_transaction():
+            pass
+
+    def _save_unlocked(self) -> None:
+        """Persist the current state while the persistence lock is held."""
+        if self.persist_dir is None:
+            return
+
         self.persist_dir.mkdir(parents=True, exist_ok=True)
+        payload = {
+            "dimension": self.dimension,
+            "next_faiss_id": self._next_faiss_id,
+            "documents": {
+                str(faiss_id): record
+                for faiss_id, record in self._documents.items()
+            },
+        }
 
-        with _persistence_lock(self.persist_dir):
-            payload = {
-                "dimension": self.dimension,
-                "next_faiss_id": self._next_faiss_id,
-                "documents": {
-                    str(faiss_id): record
-                    for faiss_id, record in self._documents.items()
-                },
-            }
+        version = uuid4().hex
+        versions_dir = self.persist_dir / self.VERSIONS_DIRNAME
+        versions_dir.mkdir(parents=True, exist_ok=True)
+        for stale_staging in versions_dir.glob(".tmp-*"):
+            if stale_staging.is_dir():
+                shutil.rmtree(stale_staging)
+        for stale_pointer in self.persist_dir.glob(
+            f".{self.CURRENT_FILENAME}.*.tmp"
+        ):
+            if stale_pointer.is_file():
+                stale_pointer.unlink()
 
-            version = uuid4().hex
-            versions_dir = self.persist_dir / self.VERSIONS_DIRNAME
-            versions_dir.mkdir(parents=True, exist_ok=True)
-            for stale_staging in versions_dir.glob(".tmp-*"):
-                if stale_staging.is_dir():
-                    shutil.rmtree(stale_staging)
-            for stale_pointer in self.persist_dir.glob(
-                f".{self.CURRENT_FILENAME}.*.tmp"
-            ):
-                if stale_pointer.is_file():
-                    stale_pointer.unlink()
+        staging_dir = versions_dir / f".tmp-{version}"
+        version_dir = versions_dir / version
+        current_path = self.persist_dir / self.CURRENT_FILENAME
+        temporary_current = (
+            self.persist_dir / f".{self.CURRENT_FILENAME}.{version}.tmp"
+        )
+        activated = False
+        staging_dir.mkdir()
 
-            staging_dir = versions_dir / f".tmp-{version}"
-            version_dir = versions_dir / version
-            current_path = self.persist_dir / self.CURRENT_FILENAME
-            temporary_current = (
-                self.persist_dir / f".{self.CURRENT_FILENAME}.{version}.tmp"
+        try:
+            if self.index is not None:
+                faiss.write_index(
+                    self.index,
+                    str(staging_dir / self.INDEX_FILENAME),
+                )
+
+            (staging_dir / self.METADATA_FILENAME).write_text(
+                json.dumps(payload, ensure_ascii=False, indent=2),
+                encoding="utf-8",
             )
-            activated = False
-            staging_dir.mkdir()
+            staging_dir.replace(version_dir)
 
-            try:
-                if self.index is not None:
-                    faiss.write_index(
-                        self.index,
-                        str(staging_dir / self.INDEX_FILENAME),
+            temporary_current.write_text(version, encoding="ascii")
+            temporary_current.replace(current_path)
+            activated = True
+
+            committed_versions = sorted(
+                (
+                    path
+                    for path in versions_dir.iterdir()
+                    if path.is_dir()
+                    and len(path.name) == 32
+                    and all(
+                        character in "0123456789abcdef"
+                        for character in path.name
                     )
+                ),
+                key=lambda path: path.stat().st_mtime_ns,
+                reverse=True,
+            )
+            retained = {version}
+            for path in committed_versions:
+                if len(retained) >= self.RETAINED_VERSIONS:
+                    break
+                retained.add(path.name)
 
-                (staging_dir / self.METADATA_FILENAME).write_text(
-                    json.dumps(payload, ensure_ascii=False, indent=2),
-                    encoding="utf-8",
-                )
-                staging_dir.replace(version_dir)
-
-                temporary_current.write_text(version, encoding="ascii")
-                temporary_current.replace(current_path)
-                activated = True
-
-                committed_versions = sorted(
-                    (
-                        path
-                        for path in versions_dir.iterdir()
-                        if path.is_dir()
-                        and len(path.name) == 32
-                        and all(
-                            character in "0123456789abcdef"
-                            for character in path.name
-                        )
-                    ),
-                    key=lambda path: path.stat().st_mtime_ns,
-                    reverse=True,
-                )
-                retained = {version}
-                for path in committed_versions:
-                    if len(retained) >= self.RETAINED_VERSIONS:
-                        break
-                    retained.add(path.name)
-
-                for path in committed_versions:
-                    if path.name not in retained:
-                        try:
-                            shutil.rmtree(path)
-                        except OSError:
-                            pass
-            except BaseException:
-                if staging_dir.exists():
-                    shutil.rmtree(staging_dir)
-                if temporary_current.exists():
-                    temporary_current.unlink()
-                if not activated and version_dir.exists():
-                    shutil.rmtree(version_dir)
-                raise
+            for path in committed_versions:
+                if path.name not in retained:
+                    try:
+                        shutil.rmtree(path)
+                    except OSError:
+                        pass
+        except BaseException:
+            if staging_dir.exists():
+                shutil.rmtree(staging_dir)
+            if temporary_current.exists():
+                temporary_current.unlink()
+            if not activated and version_dir.exists():
+                shutil.rmtree(version_dir)
+            raise
 
     @classmethod
     def load(cls, persist_dir: str | Path) -> "FAISSVectorStore":

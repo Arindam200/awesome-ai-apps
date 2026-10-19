@@ -2,6 +2,7 @@
 """Tests for the local FAISS vector store."""
 
 import errno
+from concurrent.futures import ThreadPoolExecutor
 import os
 from pathlib import Path
 import shutil
@@ -150,6 +151,53 @@ def test_save_and_reload(tmp_path):
     assert results[0].metadata["source_id"] == "report"
     assert results[0].metadata["page_number"] == 2
     assert results[0].text == "Revenue was 20% higher."
+
+
+def test_stale_store_writer_preserves_documents_committed_by_other_instance(
+    tmp_path,
+):
+    first_writer = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+    second_writer = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+
+    first_writer.add_documents(
+        [make_document("a:1", "a", 1, [1, 0, 0], "First writer")]
+    )
+    second_writer.add_documents(
+        [make_document("b:1", "b", 1, [0, 1, 0], "Second writer")]
+    )
+
+    loaded = FAISSVectorStore.load(tmp_path)
+    results = loaded.search([1, 0, 0], top_k=5)
+
+    assert {result.id for result in results} == {"a:1", "b:1"}
+    assert {result.text for result in results} == {
+        "First writer",
+        "Second writer",
+    }
+
+
+def test_concurrent_store_instances_preserve_both_writes(tmp_path):
+    stores = [
+        FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+        for _ in range(2)
+    ]
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        futures = [
+            executor.submit(
+                store.add_documents,
+                [make_document(f"{index}:1", str(index), 1, [1, index, 0])],
+            )
+            for index, store in enumerate(stores)
+        ]
+        for future in futures:
+            future.result()
+
+    loaded = FAISSVectorStore.load(tmp_path)
+    assert {result.id for result in loaded.search([1, 1, 0], top_k=5)} == {
+        "0:1",
+        "1:1",
+    }
 
 
 def test_failed_save_keeps_previous_version_active(tmp_path, monkeypatch):
