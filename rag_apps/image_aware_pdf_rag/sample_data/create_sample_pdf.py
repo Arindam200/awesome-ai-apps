@@ -79,7 +79,7 @@ def generate_sample_pdf(output_path: str = "sample_document.pdf") -> str:
         "Multimodal PDF RAG (Ours)      0.894               91.6%          340ms\n"
         "----------------------------------------------------------------------\n\n"
         "Key Findings:\n"
-        "- Multimodal PDF RAG improves accuracy by +37.4% over text-only baselines on documents\n"
+        "- Multimodal PDF RAG improves accuracy by 37.4 percentage points over text-only baselines on documents\n"
         "  containing diagrams, charts, and dense numerical tables.",
         fontsize=10,
         fontname="Courier",

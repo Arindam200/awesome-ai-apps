@@ -51,24 +51,26 @@ flowchart TD
 
 - Python 3.10+
 - [uv](https://github.com/astral-sh/uv) or `pip`
-- A [Groq API Key](https://console.groq.com) (or OpenAI / Anthropic API keys)
+- A [Groq API Key](https://console.groq.com) is required for the documented Streamlit
+  workflow. OpenAI and Anthropic API keys are optional and only needed when using
+  their separate provider adapters.
 
 ### Environment Variables
 
-Create a `.env` file in the project directory based on [.env.example](file:///.env.example):
+Create a `.env` file in the project directory based on [.env.example](.env.example):
 
 ```bash
 cp .env.example .env
 ```
 
-Configure your API keys and model choices:
+Configure your API keys and vision model. The app's chat model is currently fixed to
+`openai/gpt-oss-20b` in the model selector; `GROQ_CHAT_MODEL` does not change that selection.
 
 ```env
 GROQ_API_KEY="your_groq_api_key"
-GROQ_CHAT_MODEL="openai/gpt-oss-20b"
 GROQ_VISION_MODEL="qwen/qwen3.8-27b"
 
-# Optional alternative providers:
+# Optional keys for the separate OpenAI and Anthropic provider adapters:
 OPENAI_API_KEY="your_openai_api_key"
 ANTHROPIC_API_KEY="your_anthropic_api_key"
 ```
@@ -139,5 +141,4 @@ Contributions are welcome! Please feel free to submit a Pull Request. See [CONTR
 
 ## 📄 License
 
-This project is licensed under the Apache 2.0 License - see the [LICENSE](https://github.com/Arindam200/awesome-ai-apps/blob/main/LICENSE) file for details.
-
+This project is licensed under the [MIT License](https://github.com/Arindam200/awesome-ai-apps/blob/main/LICENSE).
