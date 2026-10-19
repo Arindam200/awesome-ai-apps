@@ -34,10 +34,11 @@ try:
     from chunking import chunk_pages
     from vision import describe_pdf_pages
     from embeddings.local import LocalEmbeddingModel
+    from interfaces.evidence import RetrievedEvidence
     from vectorstores.faiss_store import FAISSVectorStore
     from interfaces.vector_store import VectorDocument
     from retrieval.retriever import PDFRetriever
-    from pipeline import AnswerOrchestrator, AnswerResult, RetrievedEvidence
+    from pipeline import AnswerOrchestrator, AnswerResult
     from providers.groq_chat import GroqChatModel
     from providers.groq_vision import GroqVisionModel
     import logging

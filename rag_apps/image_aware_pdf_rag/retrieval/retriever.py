@@ -6,8 +6,8 @@ from __future__ import annotations
 from typing import Any, Protocol
 
 from interfaces.embeddings import validate_query
+from interfaces.evidence import RetrievedEvidence
 from interfaces.vector_store import SearchResult
-from pipeline import RetrievedEvidence
 
 
 class EmbeddingModelLike(Protocol):

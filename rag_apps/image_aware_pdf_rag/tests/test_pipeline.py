@@ -7,8 +7,8 @@ import pytest
 
 from pipeline import (
     AnswerOrchestrator,
-    RetrievedEvidence,
 )
+from interfaces.evidence import RetrievedEvidence
 
 
 class FakeRetriever:

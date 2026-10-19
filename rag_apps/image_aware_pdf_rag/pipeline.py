@@ -5,21 +5,12 @@ from dataclasses import dataclass
 from typing import Protocol
 
 from interfaces.chat import ChatMessage, ChatModel, validate_messages
+from interfaces.evidence import RetrievedEvidence
 from citations import (
     Citation,
     build_citations,
     format_answer_with_citations,
 )
-
-
-@dataclass(frozen=True)
-class RetrievedEvidence:
-    """Evidence retrieved from a PDF, with its original page number."""
-
-    page_number: int
-    text: str
-    source: str = "uploaded PDF"
-    content_type: str = "text"
 
 
 @dataclass(frozen=True)

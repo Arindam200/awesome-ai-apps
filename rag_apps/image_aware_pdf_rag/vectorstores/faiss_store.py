@@ -369,6 +369,9 @@ class FAISSVectorStore:
     ) -> None:
         """Delete chunks by their stable application IDs."""
 
+        if not save and self.persist_dir is not None:
+            raise ValueError("save=False is not supported for persistent stores")
+
         if not ids:
             return
 

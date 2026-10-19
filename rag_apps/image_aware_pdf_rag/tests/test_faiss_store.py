@@ -119,6 +119,35 @@ def test_readding_same_chunk_id_replaces_old_document():
     assert results[0].id == "a:1"
 
 
+def test_delete_without_save_rejects_persistent_store_before_mutation(tmp_path):
+    store = FAISSVectorStore(dimension=3, persist_dir=tmp_path)
+    store.add_documents(
+        [make_document("a:1", "a", 1, [1, 0, 0], "Original")]
+    )
+    current_version = (tmp_path / FAISSVectorStore.CURRENT_FILENAME).read_text(
+        encoding="ascii"
+    )
+
+    with pytest.raises(ValueError, match="save=False"):
+        store.delete(["a:1"], save=False)
+
+    assert len(store.search([1, 0, 0], top_k=1)) == 1
+    assert (tmp_path / FAISSVectorStore.CURRENT_FILENAME).read_text(
+        encoding="ascii"
+    ) == current_version
+
+
+def test_delete_without_save_remains_available_for_in_memory_store():
+    store = FAISSVectorStore(dimension=3)
+    store.add_documents(
+        [make_document("a:1", "a", 1, [1, 0, 0], "Original")]
+    )
+
+    store.delete(["a:1"], save=False)
+
+    assert store.search([1, 0, 0], top_k=1) == []
+
+
 def test_save_and_reload(tmp_path):
     store = FAISSVectorStore(
         dimension=3,
