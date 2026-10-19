@@ -5,8 +5,11 @@ from typing import Any
 from anthropic import Anthropic
 
 class ClaudeChatModel:
+    """ChatModel adapter for Anthropic Claude chat models."""
+
     def __init__(self, model: str | None = None, client: Any | None = None,
                  max_tokens: int = 1200) -> None:
+        """Initialize Claude client, model identifier, and generation budget."""
         api_key = os.getenv("ANTHROPIC_API_KEY")
         if client is None and not api_key:
             raise ValueError("ANTHROPIC_API_KEY is not set.")
@@ -15,6 +18,7 @@ class ClaudeChatModel:
         self.max_tokens = max_tokens
 
     def generate(self, messages: list[dict[str, str]]) -> str:
+        """Send chat messages to Anthropic Claude and return the generated answer."""
         if not messages:
             raise ValueError("messages must not be empty.")
         system_parts = [str(m.get("content", "")) for m in messages if m.get("role") == "system"]

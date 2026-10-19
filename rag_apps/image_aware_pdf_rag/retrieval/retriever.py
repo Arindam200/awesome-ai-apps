@@ -11,17 +11,23 @@ from pipeline import RetrievedEvidence
 
 
 class EmbeddingModelLike(Protocol):
+    """Protocol for models capable of embedding a text query."""
+
     def embed_query(self, text: str) -> list[float]:
+        """Convert a query string into a vector embedding."""
         ...
 
 
 class VectorStoreLike(Protocol):
+    """Protocol for stores capable of vector similarity search."""
+
     def search(
         self,
         query_embedding: list[float],
         top_k: int = 5,
         filters: dict[str, Any] | None = None,
     ) -> list[SearchResult]:
+        """Perform semantic similarity search against the vector index."""
         ...
 
 

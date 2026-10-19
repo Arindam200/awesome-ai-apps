@@ -1,6 +1,7 @@
 
-"""Integration test: PDF -> ingestion -> Groq vision."""
+"""Manual verification script: PDF -> ingestion -> Groq vision & chat."""
 
+import logging
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -11,9 +12,11 @@ from providers.groq_vision import GroqVisionModel
 from vision import describe_pdf_pages
 
 load_dotenv()
+logger = logging.getLogger(__name__)
 
 
-def main():
+def main() -> None:
+    """Run manual verification interactively with a chosen PDF and Groq models."""
     pdf_path = Path(
         input("Enter the path to your PDF: ").strip().strip('"')
     )
@@ -26,19 +29,19 @@ def main():
 
     # 1. Read the PDF.
     pdf_bytes = pdf_path.read_bytes()
-    print(f"\nLoaded PDF: {pdf_path.name}")
+    logger.info("Loaded PDF: %s", pdf_path.name)
 
     # 2. Extract text and render pages using your existing ingestion module.
     pages = ingest_pdf(pdf_bytes)
-    print(f"Pages ingested: {len(pages)}")
+    logger.info("Pages ingested: %d", len(pages))
 
     # 3. Describe the rendered page images using Groq vision.
     vision_model = GroqVisionModel()
     descriptions = describe_pdf_pages(pages[:1], vision_model)
 
     for item in descriptions:
-        print(f"\n--- Page {item.page_number} ---")
-        print(item.description)
+        logger.info("--- Page %s ---", item.page_number)
+        logger.info("%s", item.description)
 
     # 4. Test Groq chat separately.
     chat_model = GroqChatModel()
@@ -53,9 +56,10 @@ def main():
         }
     ])
 
-    print("\n--- Groq chat test ---")
-    print(answer)
+    logger.info("--- Groq chat test ---")
+    logger.info("%s", answer)
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     main()

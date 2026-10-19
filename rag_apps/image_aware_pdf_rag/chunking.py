@@ -6,6 +6,8 @@ from dataclasses import dataclass
 
 @dataclass
 class TextChunk:
+    """A bounded segment of text extracted from a specific document page."""
+
     page_number: int
     chunk_index: int
     text: str
@@ -15,6 +17,8 @@ class TextChunk:
 
 @dataclass
 class ChunkingResult:
+    """Result of document chunking containing extracted chunks and textless pages."""
+
     chunks: list[TextChunk]
     pages_without_text: list[int]
 

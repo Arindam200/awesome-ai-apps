@@ -1,8 +1,10 @@
 """Create a synthetic sample PDF with text, tables, and a diagram."""
 
-import io
+import logging
 from pathlib import Path
 import pymupdf
+
+logger = logging.getLogger(__name__)
 
 
 def generate_sample_pdf(output_path: str = "sample_document.pdf") -> str:
@@ -91,5 +93,6 @@ def generate_sample_pdf(output_path: str = "sample_document.pdf") -> str:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format="%(message)s")
     out = generate_sample_pdf("rag_apps/image_aware_pdf_rag/sample_data/sample_document.pdf")
-    print(f"Generated sample PDF at: {out}")
+    logger.info("Generated sample PDF at: %s", out)

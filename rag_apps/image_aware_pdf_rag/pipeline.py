@@ -39,6 +39,7 @@ class Retriever(Protocol):
         query: str,
         top_k: int = 5,
     ) -> list[RetrievedEvidence]:
+        """Retrieve top-k relevant evidence snippets matching the query."""
         ...
 
 
@@ -141,6 +142,7 @@ class AnswerOrchestrator:
 
     @staticmethod
     def _no_evidence_result(message: str) -> AnswerResult:
+        """Construct an AnswerResult indicating that insufficient evidence was retrieved."""
         return AnswerResult(
             answer=message,
             citations=[],

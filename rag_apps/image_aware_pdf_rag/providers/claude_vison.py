@@ -7,8 +7,11 @@ from anthropic import Anthropic
 from interfaces.vision import VisionResult, validate_vision_input
 
 class ClaudeVisionModel:
+    """VisionModel adapter for Anthropic Claude vision models."""
+
     def __init__(self, model: str | None = None, client: Any | None = None,
                  max_tokens: int = 700) -> None:
+        """Initialize Claude client, model identifier, and generation budget."""
         api_key = os.getenv("ANTHROPIC_API_KEY")
         if client is None and not api_key:
             raise ValueError("ANTHROPIC_API_KEY is not set.")
@@ -17,6 +20,7 @@ class ClaudeVisionModel:
         self.max_tokens = max_tokens
 
     def describe_page(self, image_png: bytes, page_number: int) -> VisionResult:
+        """Generate a factual textual description of a rendered PDF page image."""
         validate_vision_input(image_png, page_number)
         encoded = base64.standard_b64encode(image_png).decode("ascii")
         prompt = (

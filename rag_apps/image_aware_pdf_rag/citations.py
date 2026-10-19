@@ -7,11 +7,14 @@ from typing import Iterable
 
 @dataclass(frozen=True)
 class Citation:
+    """A verified source citation referencing a page number and text excerpt."""
+
     page_number: int
     excerpt: str
     source: str = "uploaded PDF"
 
     def __post_init__(self):
+        """Validate page number bounds and non-empty string fields."""
         if not isinstance(self.page_number, int) or isinstance(
             self.page_number, bool
         ):

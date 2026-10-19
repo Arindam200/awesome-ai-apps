@@ -135,6 +135,7 @@ class FAISSVectorStore:
         embedding: Iterable[float],
         expected_dimension: int | None = None,
     ) -> np.ndarray:
+        """Validate numeric type, 1D shape, and dimension conformance of an embedding."""
         try:
             vector = np.asarray(list(embedding), dtype=np.float32)
         except (TypeError, ValueError) as exc:
@@ -445,6 +446,7 @@ class FAISSVectorStore:
             current_path = directory / cls.CURRENT_FILENAME
 
             def read_current_version() -> str | None:
+                """Read the active snapshot version hash from current_path."""
                 try:
                     return current_path.read_text(encoding="ascii").strip()
                 except FileNotFoundError:
@@ -470,6 +472,7 @@ class FAISSVectorStore:
 
     @classmethod
     def _load_unlocked(cls, directory: Path) -> "FAISSVectorStore":
+        """Load index and metadata from disk without acquiring a file lock."""
         current_path = directory / cls.CURRENT_FILENAME
         if current_path.exists():
             version = current_path.read_text(encoding="ascii").strip()

@@ -238,6 +238,7 @@ class GroqVisionModel:
 
     @staticmethod
     def _prepare_image(image_png: bytes) -> tuple[bytes, str]:
+        """Validate and downsample/compress large images to stay under provider byte limits."""
         max_image_bytes = (MAX_BASE64_IMAGE_BYTES // 4) * 3
         if len(image_png) <= max_image_bytes:
             return image_png, "image/png"

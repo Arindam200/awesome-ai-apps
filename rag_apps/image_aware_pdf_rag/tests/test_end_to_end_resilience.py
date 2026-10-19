@@ -1,8 +1,7 @@
 """Integration and resilience tests for end-to-end multimodal PDF RAG indexing and answering."""
 
-from io import BytesIO
-import pytest
 import pymupdf
+import pytest
 
 from chunking import chunk_pages
 from ingestion import PDFIngestionError, ingest_pdf
@@ -196,7 +195,7 @@ def test_text_indexing_continues_when_all_vision_fails():
     for page in pages:
         try:
             vision.describe_page(page.image_png, page.page_number)
-        except Exception as exc:
+        except Exception:
             failed_visuals.append(page.page_number)
 
     assert failed_visuals == [1, 2]
@@ -211,7 +210,7 @@ def test_text_indexing_continues_when_all_vision_fails():
 def test_correct_page_number_metadata_and_citations():
     """Verify that retrieved text and visual evidence have correct page numbers and generate citations."""
     pdf_bytes = make_multipage_pdf(page_count=2)
-    pages = ingest_pdf(pdf_bytes)
+    ingest_pdf(pdf_bytes)
 
     embedder = FakeEmbedder()
     store = FAISSVectorStore()

@@ -51,7 +51,11 @@ def clean_markdown_response(text: str) -> str:
             cleaned_parts.append(part)
             continue
 
-        part = re.sub(r"\*\*[ \t]+\*\*|__[ \t]+__", "", part)
+        part = re.sub(
+            r"(?<!\S)\*\*[ \t]+\*\*(?!\S)|(?<!\S)__[ \t]+__(?!\S)",
+            "",
+            part,
+        )
         part = re.sub(r"\n{3,}", "\n\n", part)
         if index == 0:
             part = part.lstrip()

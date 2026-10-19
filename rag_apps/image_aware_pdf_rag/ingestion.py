@@ -22,6 +22,8 @@ class PDFIngestionError(ValueError):
 
 @dataclass
 class PageResult:
+    """Page-level extraction output containing text, rendered PNG bytes, and status."""
+
     page_number: int  # Always one-based
     text: str
     image_png: bytes | None
@@ -30,6 +32,7 @@ class PageResult:
     error: str | None = None
 
     def to_dict(self) -> dict:
+        """Serialize page result fields to a standard dictionary."""
         return {
             "page_number": self.page_number,
             "text": self.text,

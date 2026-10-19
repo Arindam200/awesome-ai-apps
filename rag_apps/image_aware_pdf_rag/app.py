@@ -325,10 +325,12 @@ st.markdown(
 # ---------- Cached resources ----------
 @st.cache_resource(show_spinner="Loading local embedding model…")
 def get_embedding_model() -> LocalEmbeddingModel:
+    """Load and cache the local Sentence-Transformers embedding model."""
     return LocalEmbeddingModel()
 
 
 def get_vector_store() -> FAISSVectorStore:
+    """Retrieve or initialize the session-scoped FAISS vector store instance."""
     if "vector_store" not in st.session_state:
         st.session_state.vector_store = FAISSVectorStore()
     return st.session_state.vector_store
@@ -336,6 +338,7 @@ def get_vector_store() -> FAISSVectorStore:
 
 @st.cache_resource
 def get_chat_model(model_name: str, api_key: str | None = None) -> GroqChatModel:
+    """Load and cache the Groq chat model instance."""
     load_dotenv(override=True)
     key = api_key or os.getenv("GROQ_API_KEY")
     return GroqChatModel(model=model_name, api_key=key)
@@ -343,6 +346,7 @@ def get_chat_model(model_name: str, api_key: str | None = None) -> GroqChatModel
 
 @st.cache_resource
 def get_vision_model(model_name: str, api_key: str | None = None) -> GroqVisionModel:
+    """Load and cache the Groq multimodal vision model instance."""
     load_dotenv(override=True)
     key = api_key or os.getenv("GROQ_API_KEY")
     return GroqVisionModel(model=model_name, api_key=key)
@@ -373,29 +377,35 @@ for key, value in defaults.items():
 
 # ---------- Helpers ----------
 def page_number(page: Any) -> int:
+    """Extract page number integer from a page object."""
     return int(getattr(page, "page_number", 1))
 
 
 def page_image(page: Any) -> bytes | None:
+    """Extract rendered PNG bytes from a page object if present."""
     image_bytes = getattr(page, "image_png", None)
     return image_bytes if isinstance(image_bytes, bytes) and image_bytes else None
 
 
 def page_text(page: Any) -> str:
+    """Extract trimmed text content from a page object."""
     return str(getattr(page, "text", "") or "").strip()
 
 
 def set_question_input(question: str) -> None:
+    """Set the pre-populated question text into Streamlit session state."""
     st.session_state.question_input = question
 
 
 def object_value(obj: Any, key: str, default: Any = None) -> Any:
+    """Retrieve attribute or dict key value with a fallback default."""
     if isinstance(obj, dict):
         return obj.get(key, default)
     return getattr(obj, key, default)
 
 
 def normalize_vector(vector: Any) -> list[float]:
+    """Convert embedding outputs from ndarrays or nested lists into float lists."""
     # Sentence Transformers wrappers commonly return a list or NumPy array.
     if hasattr(vector, "tolist"):
         vector = vector.tolist()
@@ -411,6 +421,7 @@ def add_to_index(
     metadata: dict[str, Any],
     item_id: str,
 ) -> None:
+    """Embed and index a single text or visual description into FAISS."""
     embedding = normalize_vector(embedding_model.embed_documents([text]))
     document = VectorDocument(
         id=item_id,
@@ -422,6 +433,7 @@ def add_to_index(
 
 
 def format_history_for_prompt(history: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Format recent chat history into structured prompt messages."""
     messages = [
         {
             "role": "system",
@@ -441,6 +453,7 @@ def format_history_for_prompt(history: list[dict[str, str]]) -> list[dict[str, s
 
 
 def retrieve_evidence(query: str, top_k: int = 5) -> list[dict[str, Any]]:
+    """Retrieve top-k relevant text and visual evidence items from the vector index."""
     source_id = st.session_state.index_source
     if not st.session_state.index_ready or not source_id:
         return []
@@ -476,6 +489,7 @@ def retrieve_evidence(query: str, top_k: int = 5) -> list[dict[str, Any]]:
 
 
 def answer_question(query: str, chat_model: GroqChatModel) -> tuple[str, list[dict[str, Any]]]:
+    """Retrieve evidence and generate a cited response to the user query."""
     evidence = retrieve_evidence(query)
     if not evidence:
         return (
@@ -506,6 +520,7 @@ def answer_question(query: str, chat_model: GroqChatModel) -> tuple[str, list[di
 
 
 def set_cited_page(number: int) -> None:
+    """Clamp and update the active cited page preview number in session state."""
     total = len(st.session_state.pages)
     if total:
         st.session_state.cited_page = max(1, min(number, total))
@@ -568,6 +583,8 @@ with col_left:
             )
         with c_del:
             if st.button("✕", help="Remove or replace file", key="remove_pdf_btn", use_container_width=True):
+                if st.session_state.index_source:
+                    get_vector_store().delete_source(st.session_state.index_source)
                 st.session_state.pdf_hash = None
                 st.session_state.pdf_name = None
                 st.session_state.pages = []

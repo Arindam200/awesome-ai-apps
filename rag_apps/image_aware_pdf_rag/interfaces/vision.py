@@ -27,6 +27,7 @@ class VisionResult:
     description: str
 
     def __post_init__(self):
+        """Validate page number bounds and non-empty description."""
         if (
             not isinstance(self.page_number, int)
             or isinstance(self.page_number, bool)

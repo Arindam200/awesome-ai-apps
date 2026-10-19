@@ -7,8 +7,11 @@ from openai import OpenAI
 from interfaces.vision import VisionResult, validate_vision_input
 
 class OpenAIVisionModel:
+    """VisionModel adapter for OpenAI vision models."""
+
     def __init__(self, model: str | None = None, client: Any | None = None,
                  max_completion_tokens: int = 600) -> None:
+        """Initialize OpenAI client, model identifier, and token budget."""
         api_key = os.getenv("OPENAI_API_KEY")
         if client is None and not api_key:
             raise ValueError("OPENAI_API_KEY is not set.")
@@ -17,6 +20,7 @@ class OpenAIVisionModel:
         self.max_completion_tokens = max_completion_tokens
 
     def describe_page(self, image_png: bytes, page_number: int) -> VisionResult:
+        """Generate a factual textual description of a rendered PDF page image."""
         validate_vision_input(image_png, page_number)
         encoded = base64.b64encode(image_png).decode("ascii")
         prompt = (

@@ -5,8 +5,11 @@ from typing import Any
 from openai import OpenAI
 
 class OpenAIChatModel:
+    """ChatModel adapter for OpenAI chat completions models."""
+
     def __init__(self, model: str | None = None, client: Any | None = None,
                  max_completion_tokens: int = 1200) -> None:
+        """Initialize OpenAI client, model identifier, and token budget."""
         api_key = os.getenv("OPENAI_API_KEY")
         if client is None and not api_key:
             raise ValueError("OPENAI_API_KEY is not set.")
@@ -15,6 +18,7 @@ class OpenAIChatModel:
         self.max_completion_tokens = max_completion_tokens
 
     def generate(self, messages: list[dict[str, str]]) -> str:
+        """Send chat messages to OpenAI and return the generated answer."""
         if not messages:
             raise ValueError("messages must not be empty.")
         response = self.client.chat.completions.create(
