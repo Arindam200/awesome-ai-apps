@@ -139,6 +139,9 @@ class GroqVisionModel:
             )
 
             try:
+                request_options = {}
+                if self.model == "qwen/qwen3.8-27b":
+                    request_options["reasoning_effort"] = "none"
                 response = self.client.chat.completions.create(
                     model=self.model,
                     messages=[
@@ -154,6 +157,7 @@ class GroqVisionModel:
                         }
                     ],
                     max_completion_tokens=tokens,
+                    **request_options,
                 )
             except Exception as exc:
                 err_type = type(exc).__name__

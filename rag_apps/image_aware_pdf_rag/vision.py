@@ -8,7 +8,6 @@ from dataclasses import dataclass
 from typing import Iterable
 
 from interfaces.vision import (
-    VisionImageTooLargeError,
     VisionModel,
     VisionResult,
     validate_vision_input,
@@ -26,10 +25,18 @@ class PageVisualDescription:
     content_type: str = "visual_description"
 
 
+@dataclass(frozen=True)
+class PageVisualBatch:
+    """Successful page descriptions and failures keyed by page number."""
+
+    descriptions: list[PageVisualDescription]
+    failures: dict[int, str]
+
+
 def describe_pdf_pages(
     pages: Iterable[object],
     vision_model: VisionModel,
-) -> list[PageVisualDescription]:
+) -> PageVisualBatch:
     """Generate visual descriptions for rendered PDF pages.
 
     Each page is expected to expose:
@@ -40,6 +47,7 @@ def describe_pdf_pages(
     """
 
     descriptions: list[PageVisualDescription] = []
+    failures: dict[int, str] = {}
 
     for page in pages:
         page_number = getattr(page, "page_number", None)
@@ -58,18 +66,17 @@ def describe_pdf_pages(
         if not image_png:
             continue
 
-        validate_vision_input(image_png, page_number)
-
         try:
+            validate_vision_input(image_png, page_number)
             result: VisionResult = vision_model.describe_page(
                 image_png=image_png,
                 page_number=page_number,
             )
-        except VisionImageTooLargeError as exc:
-            logger.warning(
-                "Skipping visual description for page %s: %s",
+        except Exception as exc:
+            failures[page_number] = str(exc)
+            logger.exception(
+                "Visual description failed for page %s",
                 page_number,
-                exc,
             )
             continue
 
@@ -91,4 +98,4 @@ def describe_pdf_pages(
             )
         )
 
-    return descriptions
+    return PageVisualBatch(descriptions=descriptions, failures=failures)

@@ -45,12 +45,23 @@ def make_png(width, height):
 
 def test_describe_page_returns_complete_description():
     model = GroqVisionModel(
+        model="qwen/qwen3.8-27b",
         client=FakeGroqClient("A chart shows revenue growth.", "stop")
     )
 
     result = model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)
 
     assert result.description == "A chart shows revenue growth."
+    assert model.client.last_request["reasoning_effort"] == "none"
+
+
+def test_describe_page_omits_reasoning_effort_for_other_models():
+    client = FakeGroqClient("A chart.", "stop")
+    model = GroqVisionModel(model="other/model", client=client)
+
+    model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)
+
+    assert "reasoning_effort" not in client.last_request
 
 
 def test_describe_page_rejects_truncated_description():
@@ -119,9 +130,11 @@ def test_describe_page_retries_on_truncation_and_succeeds():
     class RetryClient:
         def __init__(self):
             self.calls = 0
+            self.requests = []
 
         def create(self, **kwargs):
             self.calls += 1
+            self.requests.append(kwargs)
             if self.calls == 1:
                 return SimpleNamespace(
                     choices=[
@@ -141,12 +154,16 @@ def test_describe_page_retries_on_truncation_and_succeeds():
             )
 
     client = SimpleNamespace(chat=SimpleNamespace(completions=RetryClient()))
-    model = GroqVisionModel(client=client)
+    model = GroqVisionModel(model="qwen/qwen3.8-27b", client=client)
 
     result = model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)
 
     assert "Complete concise summary" in result.description
     assert client.chat.completions.calls == 2
+    assert all(
+        request["reasoning_effort"] == "none"
+        for request in client.chat.completions.requests
+    )
 
 
 def test_describe_page_handles_rate_limit_error():
@@ -180,4 +197,3 @@ def test_describe_page_rejects_empty_response():
 
     with pytest.raises(RuntimeError, match="empty page description"):
         model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)
-

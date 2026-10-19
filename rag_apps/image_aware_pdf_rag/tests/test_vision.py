@@ -38,13 +38,14 @@ def test_describes_pages_and_preserves_page_numbers():
         FakePage(2, FAKE_PNG),
     ]
 
-    results = describe_pdf_pages(pages, model)
+    batch = describe_pdf_pages(pages, model)
 
     assert model.called_pages == [1, 2]
-    assert len(results) == 2
-    assert results[0].page_number == 1
-    assert results[1].page_number == 2
-    assert results[0].content_type == "visual_description"
+    assert len(batch.descriptions) == 2
+    assert batch.descriptions[0].page_number == 1
+    assert batch.descriptions[1].page_number == 2
+    assert batch.descriptions[0].content_type == "visual_description"
+    assert batch.failures == {}
 
 
 def test_skips_pages_without_rendered_images():
@@ -55,11 +56,11 @@ def test_skips_pages_without_rendered_images():
         FakePage(2, FAKE_PNG),
     ]
 
-    results = describe_pdf_pages(pages, model)
+    batch = describe_pdf_pages(pages, model)
 
     assert model.called_pages == [2]
-    assert len(results) == 1
-    assert results[0].page_number == 2
+    assert len(batch.descriptions) == 1
+    assert batch.descriptions[0].page_number == 2
 
 
 def test_rejects_invalid_page_number():
@@ -67,6 +68,23 @@ def test_rejects_invalid_page_number():
 
     with pytest.raises(ValueError, match="page_number"):
         describe_pdf_pages([FakePage(0, FAKE_PNG)], model)
+
+
+def test_records_invalid_image_and_continues(caplog):
+    model = FakeVisionModel()
+    pages = [
+        FakePage(1, b"invalid image"),
+        FakePage(2, FAKE_PNG),
+    ]
+
+    with caplog.at_level(logging.ERROR):
+        batch = describe_pdf_pages(pages, model)
+
+    assert model.called_pages == [2]
+    assert [description.page_number for description in batch.descriptions] == [2]
+    assert 1 in batch.failures
+    assert "PNG image data" in batch.failures[1]
+    assert "Visual description failed for page 1" in caplog.text
 
 
 def test_rejects_mismatched_page_number():
@@ -94,9 +112,31 @@ def test_skips_oversized_page_and_continues(caplog):
     model = OversizedPageVisionModel()
     pages = [FakePage(1, FAKE_PNG), FakePage(2, FAKE_PNG)]
 
-    with caplog.at_level(logging.WARNING):
-        results = describe_pdf_pages(pages, model)
+    with caplog.at_level(logging.ERROR):
+        batch = describe_pdf_pages(pages, model)
 
     assert model.called_pages == [2]
-    assert [result.page_number for result in results] == [2]
-    assert "Skipping visual description for page 1" in caplog.text
+    assert [result.page_number for result in batch.descriptions] == [2]
+    assert 1 in batch.failures
+    assert "image exceeds provider limit" in batch.failures[1]
+    assert "Visual description failed for page 1" in caplog.text
+
+
+def test_records_provider_failure_and_continues(caplog):
+    class FailingPageVisionModel(FakeVisionModel):
+        def describe_page(self, image_png, page_number):
+            self.called_pages.append(page_number)
+            if page_number == 1:
+                raise RuntimeError("provider unavailable")
+            return VisionResult(page_number, f"Description for page {page_number}")
+
+    model = FailingPageVisionModel()
+    pages = [FakePage(1, FAKE_PNG), FakePage(2, FAKE_PNG)]
+
+    with caplog.at_level(logging.ERROR):
+        batch = describe_pdf_pages(pages, model)
+
+    assert model.called_pages == [1, 2]
+    assert [result.page_number for result in batch.descriptions] == [2]
+    assert batch.failures == {1: "provider unavailable"}
+    assert "Visual description failed for page 1" in caplog.text

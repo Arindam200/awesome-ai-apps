@@ -709,8 +709,15 @@ with col_left:
                                     break
                                 pnum = page_number(page)
                                 try:
-                                    result = describe_pdf_pages([page], vision_model)
-                                    for description in result:
+                                    batch = describe_pdf_pages([page], vision_model)
+                                    failed_pages_dict.update(batch.failures)
+                                    error = batch.failures.get(pnum)
+                                    if error is not None:
+                                        if "401" in error or "invalid_api_key" in error.lower():
+                                            st.session_state.processing_error = "Invalid Groq API Key."
+                                            fatal_auth_error = True
+                                        continue
+                                    for description in batch.descriptions:
                                         desc_text = str(
                                             object_value(description, "description", "") or ""
                                         ).strip()

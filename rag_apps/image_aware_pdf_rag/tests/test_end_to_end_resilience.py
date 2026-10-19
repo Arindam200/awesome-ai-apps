@@ -147,19 +147,12 @@ def test_one_page_vision_failure_does_not_stop_subsequent_pages():
     pages = ingest_pdf(pdf_bytes)
     vision = ControlledVisionModel(fail_pages={2})
 
-    successful_descriptions = []
-    failed_pages = []
-
-    for page in pages:
-        try:
-            desc = describe_pdf_pages([page], vision)
-            successful_descriptions.extend(desc)
-        except Exception:
-            failed_pages.append(page.page_number)
+    batch = describe_pdf_pages(pages, vision)
 
     assert vision.processed_pages == [1, 2, 3]
-    assert failed_pages == [2]
-    assert [d.page_number for d in successful_descriptions] == [1, 3]
+    assert set(batch.failures) == {2}
+    assert "incomplete page description" in batch.failures[2]
+    assert [d.page_number for d in batch.descriptions] == [1, 3]
 
 
 def test_text_indexing_continues_when_all_vision_fails():
@@ -321,4 +314,3 @@ def test_query_for_chart_1_1_selects_page_1_over_page_2():
     res = orchestrator.answer_question(query)
     assert "ONS data" in res.answer
     assert any(c.page_number == 1 for c in res.citations)
-

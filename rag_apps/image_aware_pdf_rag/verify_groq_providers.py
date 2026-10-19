@@ -37,11 +37,13 @@ def main() -> None:
 
     # 3. Describe the rendered page images using Groq vision.
     vision_model = GroqVisionModel()
-    descriptions = describe_pdf_pages(pages[:1], vision_model)
+    batch = describe_pdf_pages(pages[:1], vision_model)
 
-    for item in descriptions:
+    for item in batch.descriptions:
         logger.info("--- Page %s ---", item.page_number)
         logger.info("%s", item.description)
+    for page_number, error in batch.failures.items():
+        logger.error("Visual description failed for page %s: %s", page_number, error)
 
     # 4. Test Groq chat separately.
     chat_model = GroqChatModel()
