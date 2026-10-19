@@ -368,6 +368,7 @@ defaults = {
     "text_chunks_indexed": 0,
     "visual_pages_succeeded": [],
     "visual_pages_failed": [],
+    "visual_pages_errors": {},
     "index_status": None,  # None, "inspected", "text_only", "complete", "partial_visual_failure", "failed"
 }
 for key, value in defaults.items():
@@ -596,6 +597,9 @@ with col_left:
                 st.session_state.last_evidence = []
                 st.session_state.last_question = None
                 st.session_state.cited_page = 1
+                st.session_state.visual_pages_succeeded = []
+                st.session_state.visual_pages_failed = []
+                st.session_state.visual_pages_errors = {}
                 st.session_state.index_status = None
                 st.session_state.pdf_uploader_version += 1
                 st.rerun()
@@ -616,6 +620,9 @@ with col_left:
             st.session_state.cited_page = 1
             st.session_state.indexed_items = 0
             st.session_state.processing_error = None
+            st.session_state.visual_pages_succeeded = []
+            st.session_state.visual_pages_failed = []
+            st.session_state.visual_pages_errors = {}
             st.session_state.index_status = None
 
             # Automatic ingestion of uploaded PDF
@@ -674,6 +681,19 @@ with col_left:
             f'<div class="metric-row"><span>⚡ Status</span><b style="color:{status_color};">{status_text}</b></div>',
             unsafe_allow_html=True,
         )
+
+        if st.session_state.index_ready or st.session_state.index_status in {"failed", "partial_visual_failure"}:
+            succ_pages = st.session_state.get("visual_pages_succeeded", [])
+            fail_pages = st.session_state.get("visual_pages_failed", [])
+            err_dict = st.session_state.get("visual_pages_errors", {})
+
+            if succ_pages:
+                st.caption(f"✅ Visuals indexed: Pages {', '.join(str(p) for p in succ_pages)}")
+            if fail_pages:
+                with st.expander(f"⚠️ Visual issues ({len(fail_pages)} pages)", expanded=False):
+                    for fp in fail_pages:
+                        reason = err_dict.get(fp, "Unknown error")
+                        st.markdown(f"**Page {fp}:** `{html.escape(reason[:120])}`")
 
         if not st.session_state.index_ready and st.session_state.index_status == "inspected":
             if st.button("🚀 Index Document", type="primary", use_container_width=True):
@@ -764,6 +784,7 @@ with col_left:
                             st.session_state.indexed_items = indexed_count
                             st.session_state.visual_pages_succeeded = sorted(list(set(succeeded_pages)))
                             st.session_state.visual_pages_failed = sorted(list(failed_pages_dict.keys()))
+                            st.session_state.visual_pages_errors = dict(failed_pages_dict)
                             st.session_state.index_ready = indexed_count > 0
                             succeeded_page_numbers = set(succeeded_pages)
                             all_visual_pages_failed = bool(pages_with_images) and all(
