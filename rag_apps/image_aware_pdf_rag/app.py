@@ -37,6 +37,7 @@ try:
     from vectorstores.faiss_store import FAISSVectorStore
     from interfaces.vector_store import VectorDocument
     from retrieval.retriever import PDFRetriever
+    from pipeline import AnswerOrchestrator, AnswerResult, RetrievedEvidence
     from providers.groq_chat import GroqChatModel
     from providers.groq_vision import GroqVisionModel
     import logging
@@ -362,6 +363,7 @@ defaults = {
     "index_ready": False,
     "index_source": None,
     "chat_history": [],
+    "last_citations": [],
     "cited_page": 1,
     "processing_error": None,
     "indexed_items": 0,
@@ -433,91 +435,49 @@ def add_to_index(
     store.add_documents([document])
 
 
-def format_history_for_prompt(history: list[dict[str, str]]) -> list[dict[str, str]]:
-    """Format recent chat history into structured prompt messages."""
-    messages = [
-        {
-            "role": "system",
-            "content": (
-                "You are an expert PDF question-answering assistant.\n"
-                "Rules:\n"
-                "1. Answer strictly using the provided PDF evidence.\n"
-                "2. When a question asks about a specific chart (e.g. Chart 1.1) or page, locate the evidence for that exact chart/page.\n"
-                "   Never substitute a similarly named chart or different page (e.g. do not substitute Chart 1.2 for Chart 1.1).\n"
-                "3. Cite supporting pages using [Page N].\n"
-                "4. Do not invent chart labels, line colors, or numbers."
-            ),
-        }
-    ]
-    messages.extend(history[-8:])
-    return messages
+class SourceBoundPDFRetriever:
+    """Adapt PDFRetriever to the pipeline while restricting it to one PDF."""
 
+    def __init__(self, source_id: str | None) -> None:
+        self.source_id = source_id
 
-def retrieve_evidence(query: str, top_k: int = 5) -> list[dict[str, Any]]:
-    """Retrieve top-k relevant text and visual evidence items from the vector index."""
-    source_id = st.session_state.index_source
-    if not st.session_state.index_ready or not source_id:
-        return []
-    embedder = get_embedding_model()
-    store = get_vector_store()
+    def retrieve(self, query: str, top_k: int = 5) -> list[RetrievedEvidence]:
+        if not st.session_state.index_ready or not self.source_id:
+            return []
 
-    retriever = PDFRetriever(embeddings=embedder, vector_store=store)
-    raw_evidence = retriever.retrieve(query=query, top_k=top_k, source_id=source_id)
-
-    evidence = []
-    for idx, item in enumerate(raw_evidence, start=1):
-        record = {
-            "page_number": int(item.page_number),
-            "text": str(item.text),
-            "content_type": str(item.content_type),
-            "source": str(item.source),
-            "score": 0.0,
-        }
-        evidence.append(record)
-        snippet = item.text[:120].replace('\n', ' ')
-        logger.info(
-            "Retrieved evidence: page=%d, type=%s",
-            item.page_number,
-            item.content_type,
+        retriever = PDFRetriever(
+            embeddings=get_embedding_model(),
+            vector_store=get_vector_store(),
         )
-        logger.debug(
-            "Retrieved evidence #%d snippet: %s",
-            idx,
-            snippet,
+        evidence = retriever.retrieve(
+            query=query,
+            top_k=top_k,
+            source_id=self.source_id,
         )
+        for idx, item in enumerate(evidence, start=1):
+            logger.info(
+                "Retrieved evidence: page=%d, type=%s",
+                item.page_number,
+                item.content_type,
+            )
+            logger.debug(
+                "Retrieved evidence #%d snippet: %s",
+                idx,
+                item.text[:120].replace("\n", " "),
+            )
+        return evidence
 
-    return evidence
 
-
-def answer_question(query: str, chat_model: GroqChatModel) -> tuple[str, list[dict[str, Any]]]:
+def answer_question(query: str, chat_model: GroqChatModel) -> AnswerResult:
     """Retrieve evidence and generate a cited response to the user query."""
-    evidence = retrieve_evidence(query)
-    if not evidence:
-        return (
-            "I couldn't retrieve evidence from the document. Please upload a PDF and build the search index first.",
-            [],
-        )
-
-    evidence_text = "\n\n".join(
-        f"[Page {item['page_number']} | {item['content_type']}]\n{item['text']}"
-        for item in evidence
+    orchestrator = AnswerOrchestrator(
+        retriever=SourceBoundPDFRetriever(st.session_state.index_source),
+        chat_model=chat_model,
     )
-    prompt = (
-        f"Question: {query}\n\n"
-        f"Retrieved PDF evidence:\n{evidence_text}\n\n"
-        "Instructions:\n"
-        "- Answer the question using only the retrieved evidence above.\n"
-        "- Provide a concise, clear answer first, followed by key takeaways as a short bulleted list when useful.\n"
-        "- If the question references a specific chart (e.g. Chart 1.1) or page, verify that the evidence matches that exact chart/page.\n"
-        "- Do not confuse or substitute different charts (e.g., Chart 1.1 vs Chart 1.2).\n"
-        "- Include inline page citations such as [Page N] for claims supported by the evidence.\n"
-        "- Format your answer cleanly in standard Markdown without empty bold tags (do not output **    ** or blank bold syntax)."
+    return orchestrator.answer_question(
+        query,
+        history=st.session_state.chat_history,
     )
-    messages = format_history_for_prompt(st.session_state.chat_history)
-    messages.append({"role": "user", "content": prompt})
-    raw_answer = chat_model.generate(messages)
-    cleaned_answer = clean_markdown_response(str(raw_answer))
-    return cleaned_answer, evidence
 
 
 def set_cited_page(number: int) -> None:
@@ -594,7 +554,7 @@ with col_left:
                 st.session_state.index_ready = False
                 st.session_state.index_source = None
                 st.session_state.chat_history = []
-                st.session_state.last_evidence = []
+                st.session_state.last_citations = []
                 st.session_state.last_question = None
                 st.session_state.cited_page = 1
                 st.session_state.visual_pages_succeeded = []
@@ -615,7 +575,7 @@ with col_left:
             st.session_state.index_ready = False
             st.session_state.index_source = None
             st.session_state.chat_history = []
-            st.session_state.last_evidence = []
+            st.session_state.last_citations = []
             st.session_state.last_question = None
             st.session_state.cited_page = 1
             st.session_state.indexed_items = 0
@@ -775,7 +735,7 @@ with col_left:
                                     err_str = str(exc)
                                     failed_pages_dict[pnum] = err_str
                                     if "401" in err_str or "invalid_api_key" in err_str.lower():
-                                        st.error("Invalid Groq API Key.")
+                                        st.session_state.processing_error = "Invalid Groq API Key."
                                         fatal_auth_error = True
                                         break
 
@@ -839,7 +799,7 @@ with col_left:
             st.session_state.index_status = "inspected"
             st.session_state.visual_descriptions = []
             st.session_state.chat_history = []
-            st.session_state.last_evidence = []
+            st.session_state.last_citations = []
             st.rerun()
 
 
@@ -868,7 +828,7 @@ with col_center:
 
     if clear_clicked:
         st.session_state.chat_history = []
-        st.session_state.last_evidence = []
+        st.session_state.last_citations = []
         st.session_state.last_question = None
         st.rerun()
 
@@ -902,14 +862,15 @@ with col_center:
             try:
                 with st.spinner("Formulating grounded response…"):
                     chat_model = get_chat_model(chat_model_name)
-                    answer, evidence = answer_question(question, chat_model)
+                    result = answer_question(question, chat_model)
+                    answer = clean_markdown_response(result.answer)
                 st.session_state.chat_history.append({"role": "user", "content": question})
                 st.session_state.chat_history.append({"role": "assistant", "content": answer})
                 st.session_state.chat_history = st.session_state.chat_history[-20:]
-                st.session_state.last_evidence = evidence
+                st.session_state.last_citations = result.citations
                 st.session_state.last_question = question
-                if evidence:
-                    set_cited_page(int(evidence[0]["page_number"]))
+                if result.citations:
+                    set_cited_page(result.citations[0].page_number)
             except Exception as exc:
                 st.error("Question answering failed.")
                 st.exception(exc)
@@ -929,12 +890,12 @@ with col_center:
                 st.markdown(assistant_content)
 
     # Cited sources section at the bottom of the answer
-    last_evidence = st.session_state.get("last_evidence", [])
-    if last_evidence:
+    last_citations = st.session_state.get("last_citations", [])
+    if last_citations:
         st.markdown('<div class="panel-heading" style="margin-top:16px;">📚 Cited Sources</div>', unsafe_allow_html=True)
         seen_pages: set[int] = set()
-        for item in last_evidence:
-            pnum = int(item["page_number"])
+        for citation in last_citations:
+            pnum = citation.page_number
             if pnum in seen_pages:
                 continue
             seen_pages.add(pnum)
@@ -948,9 +909,9 @@ with col_center:
                 else:
                     st.caption(f"Page {pnum}")
             with c_info:
-                ctype = "Visual Region" if item['content_type'] == "visual_description" else "Text Section"
-                st.markdown(f"**Page {pnum}** · <span style='color:#7c3aed; font-size:0.78rem; font-weight:600;'>{ctype}</span>", unsafe_allow_html=True)
-                st.caption(item["text"][:140] + ("…" if len(item["text"]) > 140 else ""))
+                st.markdown(f"**Page {pnum}**")
+                st.caption(citation.source)
+                st.caption(citation.excerpt[:140] + ("…" if len(citation.excerpt) > 140 else ""))
             with c_action:
                 if st.button("View page", key=f"btn_cite_view_{pnum}", use_container_width=True):
                     set_cited_page(pnum)

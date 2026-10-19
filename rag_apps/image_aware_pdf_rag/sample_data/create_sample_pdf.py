@@ -79,8 +79,9 @@ def generate_sample_pdf(output_path: str = "sample_document.pdf") -> str:
         "Multimodal PDF RAG (Ours)      0.894               91.6%          340ms\n"
         "----------------------------------------------------------------------\n\n"
         "Key Findings:\n"
-        "- Multimodal PDF RAG improves accuracy by 37.4 percentage points over text-only baselines on documents\n"
-        "  containing diagrams, charts, and dense numerical tables.",
+        "- Multimodal PDF RAG improves accuracy by 37.4 percentage points over\n"
+        "  text-only baselines on documents containing diagrams, charts, and dense\n"
+        "  numerical tables.",
         fontsize=10,
         fontname="Courier",
     )
@@ -94,5 +95,6 @@ def generate_sample_pdf(output_path: str = "sample_document.pdf") -> str:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format="%(message)s")
-    out = generate_sample_pdf("rag_apps/image_aware_pdf_rag/sample_data/sample_document.pdf")
+    output_path = Path(__file__).resolve().parent / "sample_document.pdf"
+    out = generate_sample_pdf(str(output_path))
     logger.info("Generated sample PDF at: %s", out)

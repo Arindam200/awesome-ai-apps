@@ -16,7 +16,7 @@ from interfaces.vision import (
     validate_vision_input,
 )
 
-MAX_BASE64_IMAGE_BYTES = 19 * 1024 * 1024
+MAX_BASE64_IMAGE_BYTES = 3 * 1024 * 1024
 
 
 import logging

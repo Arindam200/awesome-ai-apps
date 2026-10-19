@@ -1,6 +1,8 @@
 
 """Tests for the provider-independent PDF RAG answer pipeline."""
 
+from types import SimpleNamespace
+
 import pytest
 
 from pipeline import (
@@ -102,6 +104,27 @@ def test_chat_model_receives_system_prompt_and_evidence(sample_evidence):
     assert "bar chart shows growth" in messages[1]["content"]
 
 
+def test_answer_question_includes_recent_chat_history(sample_evidence):
+    chat_model = FakeChatModel()
+    orchestrator = AnswerOrchestrator(
+        retriever=FakeRetriever(sample_evidence),
+        chat_model=chat_model,
+    )
+    history = [
+        {"role": "user", "content": "What is the report about?"},
+        {"role": "assistant", "content": "It is about revenue growth."},
+    ]
+
+    orchestrator.answer_question(
+        "Can you expand on that?",
+        history=history,
+    )
+
+    assert chat_model.last_messages is not None
+    assert chat_model.last_messages[1:3] == history
+    assert "Can you expand on that?" in chat_model.last_messages[3]["content"]
+
+
 def test_empty_retrieval_returns_message_without_calling_chat_model():
     retriever = FakeRetriever([])
     chat_model = FakeChatModel()
@@ -168,6 +191,42 @@ def test_invalid_page_number_is_rejected():
         ValueError,
         match="one-based page_number",
     ):
+        orchestrator.answer_question("What does the report say?")
+
+
+def test_structural_evidence_object_is_accepted():
+    retriever = FakeRetriever(
+        [
+            SimpleNamespace(
+                page_number=2,
+                text="The report shows growth.",
+                source="report.pdf",
+                content_type="text",
+            )
+        ]
+    )
+    orchestrator = AnswerOrchestrator(retriever, FakeChatModel())
+
+    result = orchestrator.answer_question("What does the report show?")
+
+    assert result.citations[0].page_number == 2
+    assert result.citations[0].source == "report.pdf"
+
+
+@pytest.mark.parametrize(
+    "item",
+    [
+        SimpleNamespace(
+            page_number=1,
+            text="Evidence",
+            source="report.pdf",
+        ),
+    ],
+)
+def test_missing_evidence_fields_are_rejected(item):
+    orchestrator = AnswerOrchestrator(FakeRetriever([item]), FakeChatModel())
+
+    with pytest.raises(TypeError, match="missing required"):
         orchestrator.answer_question("What does the report say?")
 
 
