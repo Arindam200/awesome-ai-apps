@@ -35,7 +35,7 @@ An AI-powered **YouTube Trend Coach** that uses **Memori v3** as long-term memor
 - Nebius Token Factory account + API key
 - Optional: Exa and Memori API keys
 
-The app uses Nebius Token Factory's OpenAI-compatible endpoint at `https://api.tokenfactory.nebius.com/v1` and the `MiniMaxAI/MiniMax-M3` model by default.
+The app uses Nebius Token Factory's OpenAI-compatible endpoint at `https://api.tokenfactory.nebius.com/v1` and the `MiniMaxAI/MiniMax-M3` model by default for both chat and ingestion. Nebius [documents this model ID](https://docs.tokenfactory.nebius.com/august-2026-deprecation-notice). Existing `YOUTUBE_TREND_MODEL` and `YOUTUBE_TREND_INGEST_MODEL` environment overrides are passed through unchanged; availability of an overridden model depends on Nebius. A Nebius route for MiniMax-M3.1-Flash has not been verified, so it is not offered here.
 
 ---
 

@@ -298,7 +298,6 @@ External web trends for this niche (may be partial):
                                 "content": full_prompt,
                             },
                         ],
-                        extra_body={"reasoning_split": True},
                     )
 
                     message = completion.choices[0].message
