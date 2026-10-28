@@ -48,7 +48,7 @@ def get_vector_store(text_chunks, model_name, api_key=None):
     embeddings = None
 
     if model_name == "Google AI":
-        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-2", google_api_key=api_key)
     # Add conditions for other models here
 
     if embeddings is None:
@@ -78,7 +78,7 @@ def get_conversational_chain(model_name, vectorstore=None, api_key=None):
 
         Answer:
     """
-        model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.3, google_api_key=api_key)
+        model = ChatGoogleGenerativeAI(model="gemini-3.8-flash", temperature=0.3, google_api_key=api_key)
         prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
         chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
         return chain
@@ -92,7 +92,7 @@ def user_input(user_question, model_name, api_key, pdf_docs, conversation_histor
     user_question_output = ""
     response_output = ""
     if model_name == "Google AI":
-        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-2", google_api_key=api_key)
         new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
         docs = new_db.similarity_search(user_question)
         chain = get_conversational_chain("Google AI", vectorstore=new_db, api_key=api_key)
