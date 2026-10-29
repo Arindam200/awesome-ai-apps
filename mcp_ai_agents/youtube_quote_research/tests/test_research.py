@@ -1,3 +1,5 @@
+import builtins
+import io
 import json
 import os
 import tempfile
@@ -331,13 +333,21 @@ class ResearchTests(unittest.IsolatedAsyncioTestCase):
                 },
             },
             "note": "Some passages were withheld.",
+            "unlock": {"url": "https://arcmira.com/pricing?src=top-level"},
         }
         source = passage(published_at="2026-08-21T12:00:00Z", source="creator_captions")
         search = TranscriptSearch(
             fake_server(tool_result({"chunks": [source], **metadata}))
         )
         returned = await search.search("test")
-        self.assertEqual(returned["search_metadata"], {"query": "test", **metadata})
+        output = render_report("test", Report(), search)
+        self.assertNotIn("https://arcmira.com/pricing", output)
+        self.assertEqual(
+            returned["search_metadata"]["access_limit"],
+            {"code": "freshness_required", "gate": "freshness"},
+        )
+        self.assertNotIn("access", returned["search_metadata"])
+        self.assertNotIn("unlock", returned["search_metadata"])
         output = render_report("test", Report(), search)
         self.assertIn("Transcript source: creator\\_captions", output)
         self.assertIn("Published: 2026-08-21T12:00:00Z", output)
@@ -347,10 +357,11 @@ class ResearchTests(unittest.IsolatedAsyncioTestCase):
             '"failed_batches": 2',
             '"state": "catching_up"',
             '"code": "freshness_required"',
-            "https://arcmira.com/pricing?src=test",
         ):
             self.assertIn(fact, output)
         self.assertIn("A fixture quote", output)
+        self.assertNotIn("https://arcmira.com/pricing", output)
+        self.assertNotIn("unlock", output)
 
     async def test_unknown_model_citation_is_rejected(self):
         search = TranscriptSearch(fake_server(tool_result({"chunks": [passage()]})))
@@ -460,6 +471,48 @@ class ResearchTests(unittest.IsolatedAsyncioTestCase):
     async def test_no_search_is_not_reported_as_no_results(self):
         with self.assertRaisesRegex(ValueError, "did not perform"):
             render_report("test", Report(), TranscriptSearch(AsyncMock()))
+
+
+class ConnectionTests(unittest.TestCase):
+    def test_connection_failures_print_one_line_without_running_model(self):
+        failures = [RuntimeError("fixture key rejected")]
+        if hasattr(builtins, "ExceptionGroup"):
+            failures.append(
+                builtins.ExceptionGroup(
+                    "connection tasks", [RuntimeError("fixture key rejected")]
+                )
+            )
+        for error in failures:
+            with self.subTest(error=type(error).__name__):
+                connection = AsyncMock()
+                connection.__aenter__.side_effect = error
+                stderr = io.StringIO()
+                with (
+                    patch.dict(
+                        os.environ,
+                        {
+                            "MODEL_PROVIDER": "openai",
+                            "OPENAI_MODEL": "fixture",
+                            "OPENAI_API_KEY": "fixture",
+                            "ARCMIRA_API_KEY": "fixture",
+                        },
+                        clear=True,
+                    ),
+                    patch("main.load_dotenv"),
+                    patch("main.MCPServerStreamableHttp", return_value=connection),
+                    patch("main.Runner.run", new_callable=AsyncMock) as model,
+                    patch("sys.argv", ["main.py", "fixture question"]),
+                    patch("sys.stderr", stderr),
+                ):
+                    with self.assertRaises(SystemExit) as failure:
+                        main()
+                    self.assertEqual(failure.exception.code, 1)
+                    self.assertEqual(
+                        stderr.getvalue(),
+                        "Could not connect to Arcmira. Check ARCMIRA_API_KEY "
+                        "and the service connection.\n",
+                    )
+                    model.assert_not_called()
 
 
 if __name__ == "__main__":

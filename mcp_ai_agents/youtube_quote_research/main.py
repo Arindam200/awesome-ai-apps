@@ -162,12 +162,17 @@ class TranscriptSearch:
                 "search_index",
                 "partial",
                 "failed_batches",
-                "access",
-                "unlock",
                 "note",
             ):
                 if field in payload:
                     metadata[field] = payload[field]
+            access = payload.get("access")
+            if isinstance(access, dict):
+                metadata["access_limit"] = {
+                    field: access[field]
+                    for field in ("code", "gate")
+                    if isinstance(access.get(field), str)
+                }
             self.queries.append(metadata)
             return {"sources": batch, "coverage": COVERAGE, "search_metadata": metadata}
 
@@ -274,18 +279,24 @@ async def run(question: str) -> str:
                 )
             )
             model = OpenAIChatCompletionsModel(model=model, openai_client=client)
-        server = await stack.enter_async_context(
-            MCPServerStreamableHttp(
-                name="Arcmira",
-                params={
-                    "url": MCP_URL,
-                    "headers": {
-                        "Authorization": "Bearer " + os.environ["ARCMIRA_API_KEY"]
+        try:
+            server = await stack.enter_async_context(
+                MCPServerStreamableHttp(
+                    name="Arcmira",
+                    params={
+                        "url": MCP_URL,
+                        "headers": {
+                            "Authorization": "Bearer " + os.environ["ARCMIRA_API_KEY"]
+                        },
                     },
-                },
-                client_session_timeout_seconds=60,
+                    client_session_timeout_seconds=60,
+                )
             )
-        )
+        except Exception as error:
+            raise RuntimeError(
+                "Could not connect to Arcmira. Check ARCMIRA_API_KEY "
+                "and the service connection."
+            ) from error
         search = TranscriptSearch(server)
         result = await Runner.run(make_agent(search, model), question, max_turns=6)
         return render_report(question, result.final_output, search)
