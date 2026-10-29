@@ -109,7 +109,7 @@ async def test_agno_error_status_is_not_a_plan(monkeypatch):
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize("failure_kind", ["raised", "agno_error"])
+@pytest.mark.parametrize("failure_kind", ["raised", "empty", "agno_error"])
 async def test_failed_answer_stops_delegation(monkeypatch, caplog, failure_kind):
     caplog.set_level(logging.INFO, logger="client")
     reviewer_calls = []
@@ -118,6 +118,8 @@ async def test_failed_answer_stops_delegation(monkeypatch, caplog, failure_kind)
         return RunOutput(status=RunStatus.error, content="Couldn't authenticate")
 
     async def failing_answer(topic):
+        if failure_kind == "empty":
+            raise RuntimeError
         raise RuntimeError("Model unavailable")
 
     async def reviewer(plan):
@@ -126,10 +128,12 @@ async def test_failed_answer_stops_delegation(monkeypatch, caplog, failure_kind)
 
     monkeypatch.setenv("NEBIUS_API_KEY", "test-key")
     monkeypatch.setattr(agents.Agent, "arun", failed_run)
-    answer = failing_answer if failure_kind == "raised" else agents.draft_plan
-    expected_error = (
-        "Model unavailable" if failure_kind == "raised" else "Couldn't authenticate"
-    )
+    answer = agents.draft_plan if failure_kind == "agno_error" else failing_answer
+    expected_error = {
+        "raised": "Model unavailable",
+        "empty": "RuntimeError",
+        "agno_error": "Couldn't authenticate",
+    }[failure_kind]
     async with AsyncExitStack() as stack:
         architect_url = await stack.enter_async_context(
             serve(lambda url: create_app("architect", url, answer))

@@ -69,7 +69,9 @@ class StreamingExecutor(AgentExecutor):
             answer = await self.answer(context.get_user_input())
         except Exception as error:  # noqa: BLE001 - report answer failures via A2A
             await updater.failed(
-                message=updater.new_agent_message(parts=[Part(text=str(error))])
+                message=updater.new_agent_message(
+                    parts=[Part(text=str(error) or type(error).__name__)]
+                )
             )
             return
         await updater.add_artifact(
