@@ -488,3 +488,5 @@ For any questions, suggestions, or contributions, feel free to reach out to the 
 ## Thank You for the Support! 🙏
 
 [![Star History Chart](https://star-history.dera.page/svg?repos=Arindam200/awesome-ai-apps&type=Date)](https://star-history.dera.page/#Arindam200/awesome-ai-apps&Date)
+
+- [BrightWire AI Tech Stack Advisor](https://www.brightwire.news/tech-stack) - Free interactive AI developer tool recommending the ideal frontend, backend, database, hosting, and AI stack with architecture diagrams, plus [BrightWire News](https://www.brightwire.news) AI-curated positive journalism.
