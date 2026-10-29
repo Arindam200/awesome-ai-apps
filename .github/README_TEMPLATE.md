@@ -56,8 +56,8 @@ SERVICE2_API_KEY="your_service2_api_key"
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/Arindam200/awesome-llm-apps.git
-   cd awesome-llm-apps/[project_directory]
+   git clone https://github.com/Arindam200/awesome-ai-apps.git
+   cd awesome-ai-apps/[project_directory]
    ```
 
 2. **Create and activate a virtual environment:**
@@ -114,11 +114,11 @@ project_name/
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. See the [CONTRIBUTING.md](https://github.com/Arindam200/awesome-llm-apps/blob/main/CONTRIBUTING.md) for more details.
+Contributions are welcome! Please feel free to submit a Pull Request. See the [CONTRIBUTING.md](https://github.com/Arindam200/awesome-ai-apps/blob/main/CONTRIBUTING.md) for more details.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Arindam200/awesome-llm-apps/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Arindam200/awesome-ai-apps/blob/main/LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
