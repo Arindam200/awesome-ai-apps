@@ -2,7 +2,7 @@
 Core logic for the YouTube Trend Analysis Agent.
 
 This module contains:
-- Memori initialization helpers (using an OpenAI-compatible client, e.g. MiniMax).
+- Memori initialization helpers (using Nebius Token Factory's OpenAI-compatible client).
 - YouTube scraping utilities.
 - Exa-based trend fetching.
 - Channel ingestion into Memori.
@@ -46,17 +46,19 @@ def init_memori_with_nebius() -> Memori | None:
     documents through the registered OpenAI-compatible client.
 
     NOTE:
-    - To use MiniMax, set:
-        OPENAI_BASE_URL = "https://api.minimax.io/v1"
-        OPENAI_API_KEY  = "<your-minimax-api-key>"
+    - To use MiniMax through Nebius Token Factory, set:
+        NEBIUS_API_KEY = "<your-nebius-api-key>"
+        # Set the Nebius Token Factory endpoint (the value below is the default):
+        NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
     """
-    # MiniMax (or other OpenAI-compatible) configuration via standard OpenAI env vars
-    base_url = os.getenv("OPENAI_BASE_URL", "https://api.minimax.io/v1")
-    api_key = os.getenv("OPENAI_API_KEY", "")
+    base_url = st.session_state.get(
+        "nebius_base_url", os.getenv("NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1")
+    )
+    api_key = st.session_state.get("nebius_api_key", os.getenv("NEBIUS_API_KEY", ""))
 
     if not api_key:
         st.warning(
-            "OPENAI_API_KEY is not set – Memori v3 ingestion will not be active."
+            "NEBIUS_API_KEY is not set – Memori v3 ingestion will not be active."
         )
         return None
 
@@ -79,7 +81,7 @@ def init_memori_with_nebius() -> Memori | None:
             base_url=base_url,
             api_key=api_key,
         )
-        # Use the OpenAI-compatible registration API; the client itself points to MiniMax (or any compatible provider).
+        # Register the Nebius Token Factory OpenAI-compatible client with Memori.
         mem = Memori(conn=SessionLocal).openai.register(client)
         # Attribution so Memori can attach memories to this process/entity.
         mem.attribution(entity_id="youtube-channel", process_id="youtube-trend-agent")
@@ -304,7 +306,7 @@ Description:
             _ = client.chat.completions.create(
                 model=os.getenv(
                     "YOUTUBE_TREND_INGEST_MODEL",
-                    "MiniMax-M2.1",
+                    "MiniMaxAI/MiniMax-M3",
                 ),
                 messages=[
                     {
