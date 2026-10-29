@@ -18,6 +18,7 @@ from agents import (
     function_tool,
     set_tracing_disabled,
 )
+from agents.exceptions import UserError
 from agents.mcp import MCPServerStreamableHttp
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
@@ -317,7 +318,7 @@ def main():
                 output.write(report)
         else:
             print(report)
-    except (ValueError, RuntimeError, OSError) as error:
+    except (ValueError, RuntimeError, OSError, UserError) as error:
         parser.exit(1, f"{error}\n")
 
 

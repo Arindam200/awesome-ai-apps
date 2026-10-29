@@ -474,6 +474,50 @@ class ResearchTests(unittest.IsolatedAsyncioTestCase):
 
 
 class ConnectionTests(unittest.TestCase):
+    def test_tool_call_failure_exits_without_writing_a_report(self):
+        server = fake_server(RuntimeError("fixture transcript service unavailable"))
+        connection = AsyncMock()
+        connection.__aenter__.return_value = server
+        stderr = io.StringIO()
+        stdout = io.StringIO()
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory) / "report.md"
+            with (
+                patch.dict(
+                    os.environ,
+                    {
+                        "MODEL_PROVIDER": "openai",
+                        "OPENAI_MODEL": "fixture",
+                        "OPENAI_API_KEY": "fixture",
+                        "ARCMIRA_API_KEY": "fixture",
+                    },
+                    clear=True,
+                ),
+                patch("main.load_dotenv"),
+                patch("main.MCPServerStreamableHttp", return_value=connection),
+                patch(
+                    "main.make_agent",
+                    side_effect=lambda search, model: make_agent(
+                        search, ScriptedModel()
+                    ),
+                ),
+                patch("sys.argv", ["main.py", "fixture", "--output", str(target)]),
+                patch("sys.stderr", stderr),
+                patch("sys.stdout", stdout),
+                self.assertRaises(SystemExit) as failure,
+            ):
+                main()
+            self.assertEqual(failure.exception.code, 1)
+            self.assertEqual(
+                stderr.getvalue(),
+                "Error running tool search_transcripts: fixture transcript service unavailable\n",
+            )
+            self.assertEqual(stdout.getvalue(), "")
+            self.assertFalse(target.exists())
+            self.assertEqual(server.call_tool.call_count, 2)
+            self.assertEqual(server.call_tool.call_args.args[0], "arcmira_execute_read")
+            connection.__aexit__.assert_awaited_once()
+
     def test_connection_failures_print_one_line_without_running_model(self):
         failures = [RuntimeError("fixture key rejected")]
         if hasattr(builtins, "ExceptionGroup"):
