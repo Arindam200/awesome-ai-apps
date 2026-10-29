@@ -4,6 +4,7 @@ import asyncio
 import logging
 import socket
 from contextlib import AsyncExitStack, asynccontextmanager
+from pathlib import Path
 
 import pytest
 import uvicorn
@@ -17,6 +18,8 @@ from a2a.types import (
     TaskStatus,
     TaskStatusUpdateEvent,
 )
+from agno.run import RunStatus
+from agno.run.agent import RunOutput
 from fastapi import FastAPI, Request
 
 import agents
@@ -47,7 +50,8 @@ async def serve(app_factory):
 
 
 @pytest.mark.asyncio
-async def test_real_framework_adapters_with_local_model(monkeypatch):
+@pytest.mark.parametrize("model_override", [None, "test-model-override"])
+async def test_real_framework_adapters_with_local_model(monkeypatch, model_override):
     app = FastAPI()
     requests = []
 
@@ -72,14 +76,76 @@ async def test_real_framework_adapters_with_local_model(monkeypatch):
         }
 
     monkeypatch.setenv("NEBIUS_API_KEY", "test-key")
-    monkeypatch.setenv("NEBIUS_MODEL", agents.MODEL)
+    if model_override is None:
+        monkeypatch.delenv("NEBIUS_MODEL", raising=False)
+    else:
+        monkeypatch.setenv("NEBIUS_MODEL", model_override)
     async with serve(lambda _: app) as url:
         monkeypatch.setattr(agents, "NEBIUS_BASE_URL", f"{url}/v1/")
         plan = await agents.draft_plan("a search tool")
         assert plan == "Reply to a search tool"
         assert await agents.review_plan(plan) == "Reply to Reply to a search tool"
     assert len(requests) == 2
-    assert all(request["model"] == agents.MODEL for request in requests)
+    assert all(
+        request["model"] == (model_override or agents.MODEL) for request in requests
+    )
+
+
+def test_default_model_matches_environment_example():
+    assert agents.MODEL == "openai/gpt-oss-120b"
+    example = Path(agents.__file__).with_name(".env.example").read_text()
+    assert f"NEBIUS_MODEL={agents.MODEL}" in example.splitlines()
+
+
+@pytest.mark.asyncio
+async def test_agno_error_status_is_not_a_plan(monkeypatch):
+    async def failed_run(self, topic):
+        return RunOutput(status=RunStatus.error, content="Couldn't authenticate")
+
+    monkeypatch.setenv("NEBIUS_API_KEY", "test-key")
+    monkeypatch.setattr(agents.Agent, "arun", failed_run)
+    with pytest.raises(RuntimeError, match="Couldn't authenticate"):
+        await agents.draft_plan("a search tool")
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("failure_kind", ["raised", "agno_error"])
+async def test_failed_answer_stops_delegation(monkeypatch, caplog, failure_kind):
+    caplog.set_level(logging.INFO, logger="client")
+    reviewer_calls = []
+
+    async def failed_run(self, topic):
+        return RunOutput(status=RunStatus.error, content="Couldn't authenticate")
+
+    async def failing_answer(topic):
+        raise RuntimeError("Model unavailable")
+
+    async def reviewer(plan):
+        reviewer_calls.append(plan)
+        return "This should never be called"
+
+    monkeypatch.setenv("NEBIUS_API_KEY", "test-key")
+    monkeypatch.setattr(agents.Agent, "arun", failed_run)
+    answer = failing_answer if failure_kind == "raised" else agents.draft_plan
+    expected_error = (
+        "Model unavailable" if failure_kind == "raised" else "Couldn't authenticate"
+    )
+    async with AsyncExitStack() as stack:
+        architect_url = await stack.enter_async_context(
+            serve(lambda url: create_app("architect", url, answer))
+        )
+        reviewer_url = await stack.enter_async_context(
+            serve(lambda url: create_app("reviewer", url, reviewer))
+        )
+        with pytest.raises(RuntimeError, match="ended in TASK_STATE_FAILED"):
+            await run("a search tool", architect_url, reviewer_url)
+
+    assert "TASK_STATE_WORKING" in caplog.text
+    assert "TASK_STATE_FAILED" in caplog.text
+    assert expected_error in caplog.text
+    assert "TASK_STATE_COMPLETED" not in caplog.text
+    assert "artifact:" not in caplog.text
+    assert reviewer_calls == []
 
 
 @pytest.mark.asyncio

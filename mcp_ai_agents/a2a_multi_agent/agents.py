@@ -5,11 +5,12 @@ from typing import TypedDict
 
 from agno.agent import Agent
 from agno.models.nebius import Nebius
+from agno.run import RunStatus
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 
-MODEL = "openai/gpt-oss-20b"
+MODEL = "openai/gpt-oss-120b"
 NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1/"
 
 
@@ -35,6 +36,8 @@ async def draft_plan(topic: str) -> str:
         ],
     )
     response = await agent.arun(topic)
+    if response.status == RunStatus.error:
+        raise RuntimeError(str(response.content))
     return str(response.content)
 
 
