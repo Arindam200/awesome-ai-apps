@@ -282,7 +282,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 📚 RAG Applications
 
-**Retrieval-augmented generation examples for document understanding and knowledge bases.** _18 projects_
+**Retrieval-augmented generation examples for document understanding and knowledge bases.** _19 projects_
 
 - [Agentic RAG with Agno and GPT-5](rag_apps/agentic_rag): Agentic RAG implementation with Agno and GPT-5
 - [Agentic Typed RAG with LlamaIndex](rag_apps/agentic_typed_rag_llamaindex): Typed, citation-verified RAG with structured answers, local document parsing, and deterministic refusal for weak evidence
@@ -290,6 +290,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Enterprise Contextual RAG](rag_apps/contextual_ai_rag): Enterprise-level RAG with managed datastores and quality evaluation
 - [Gemma 3 Document OCR](rag_apps/gemma_ocr/): OCR-based document and image processor using the Gemma 3 model
 - [GraphRAG with Neo4j](rag_apps/graphrag_neo4j): Knowledge graph extraction and Cypher-backed retrieval with Neo4j and Nebius
+- [Image-Aware PDF RAG](rag_apps/image_aware_pdf_rag): Multimodal RAG system that understands text, charts, and diagrams in PDFs with page-level citations
 - [LiteParse Invoice & Receipt Auditor](rag_apps/liteparse_invoice_auditor): Local OCR with LiteParse bounding boxes, Nebius LLM audit for math errors and duplicate charges, evidence pinning on scans, and an LLM batch summary
 - [LlamaIndex RAG Starter](rag_apps/llamaIndex_starter): LlamaIndex and Nebius RAG starter template
 - [LLM and RAG Debugger (WFGY 16-Problem Map)](rag_apps/wfgy_llm_debugger): 16-mode map-based debugger for LLM and RAG bugs

@@ -1,0 +1,13 @@
+PyMuPDF
+pytest
+Pillow
+faiss-cpu
+sentence-transformers
+numpy
+pytest
+dotenv
+groq
+streamlit
+python-dotenv
+openai
+anthropic
