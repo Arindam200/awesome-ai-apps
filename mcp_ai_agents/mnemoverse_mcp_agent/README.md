@@ -80,6 +80,9 @@ NEBIUS_API_KEY="your_nebius_api_key_here"
 which is useful when a key has already run this example and you want to watch the
 first move again.
 
+`NEBIUS_MODEL` is optional too. It picks the model that answers and defaults to
+`Qwen/Qwen3-30B-A3B-Instruct-2507`.
+
 ### Installation
 
 1. **Clone the repository:**
@@ -148,7 +151,8 @@ Disclosure: I work on Mnemoverse.
 
 ## Notes
 
-- The screenshot above is a first run on a fresh namespace with a Nebius key, so it shows all four parts, including the answer from the model.
+- The screenshot above is a first run on a fresh namespace with a Nebius key, so it shows all four parts, including the answer from the model. That run used `Qwen/Qwen3-235B-A22B-Instruct-2507`, which Nebius retires on November 9; the example now defaults to `Qwen/Qwen3-30B-A3B-Instruct-2507`.
+- The memory server runs as a child process and receives only the MCP SDK's default environment plus the `MNEMOVERSE_*` settings, so the Nebius key and anything else in your shell stay out of it.
 - The ranking positions shown depend on your own data. What the example demonstrates is that an outcome report changes the order, not any particular set of positions.
 - The MCP Python SDK exposes some fields under different names than the wire format, for instance `input_schema` against `inputSchema`, and the 1.x and 2.x lines differ from each other too. The example reads whichever the installed version has, and `pyproject.toml` declares the 2.x floor.
 

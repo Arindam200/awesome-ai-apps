@@ -28,7 +28,7 @@ import sys
 
 from dotenv import load_dotenv
 from mcp import ClientSession, StdioServerParameters
-from mcp.client.stdio import stdio_client
+from mcp.client.stdio import get_default_environment, stdio_client
 from openai import OpenAI
 from rich.console import Console
 from rich.panel import Panel
@@ -54,7 +54,7 @@ DOMAIN = os.getenv("MNEMOVERSE_DEMO_DOMAIN", "project:release-assistant-mcp")
 QUESTION = "how do we ship a release?"
 
 NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
-NEBIUS_MODEL = "Qwen/Qwen3-235B-A22B-Instruct-2507"
+NEBIUS_MODEL = os.getenv("NEBIUS_MODEL", "Qwen/Qwen3-30B-A3B-Instruct-2507")
 
 DECISIONS = [
     (
@@ -359,9 +359,13 @@ async def main() -> bool:
     server = StdioServerParameters(
         command=npx_path(),
         args=["-y", MEMORY_SERVER],
-        # The model key stays in this process for answer_from; the MCP server
-        # never needs it, so it is not passed to the child.
-        env={k: v for k, v in os.environ.items() if k != "NEBIUS_API_KEY"},
+        # The child gets the SDK's default environment (PATH, HOME and the like)
+        # plus the MNEMOVERSE_* settings, and nothing else from this shell, so
+        # the model key and any other secrets never reach it.
+        env={
+            **get_default_environment(),
+            **{k: v for k, v in os.environ.items() if k.startswith("MNEMOVERSE_")},
+        },
     )
     try:
         async with (
