@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="800" viewBox="0 0 1400 800">
+  <rect width="1400" height="800" fill="white"/>
+  <text x="700" y="65" text-anchor="middle"
+        font-family="Arial" font-size="42" font-weight="bold" fill="black">
+    Mnemoverse Memory Agent
+  </text>
+
+  <g font-family="Arial" font-size="25" text-anchor="middle" fill="black">
+    <rect x="60" y="180" width="240" height="100" rx="18" fill="white" stroke="black" stroke-width="3"/>
+    <text x="180" y="240">User Task</text>
+
+    <rect x="350" y="180" width="240" height="100" rx="18" fill="white" stroke="black" stroke-width="3"/>
+    <text x="470" y="225">
+      <tspan x="470" dy="0">Mnemoverse</tspan>
+      <tspan x="470" dy="32">Memory Read</tspan>
+    </text>
+
+    <rect x="640" y="180" width="240" height="100" rx="18" fill="white" stroke="black" stroke-width="3"/>
+    <text x="760" y="225">
+      <tspan x="760" dy="0">Relevant</tspan>
+      <tspan x="760" dy="32">Memories</tspan>
+    </text>
+
+    <rect x="930" y="180" width="240" height="100" rx="18" fill="white" stroke="black" stroke-width="3"/>
+    <text x="1050" y="240">Nebius LLM</text>
+
+    <rect x="350" y="450" width="240" height="100" rx="18" fill="white" stroke="black" stroke-width="3"/>
+    <text x="470" y="495">
+      <tspan x="470" dy="0">Assistant</tspan>
+      <tspan x="470" dy="32">Answer</tspan>
+    </text>
+
+    <rect x="640" y="450" width="240" height="100" rx="18" fill="white" stroke="black" stroke-width="3"/>
+    <text x="760" y="495">
+      <tspan x="760" dy="0">Store New</tspan>
+      <tspan x="760" dy="32">Memory</tspan>
+    </text>
+
+    <rect x="930" y="450" width="240" height="100" rx="18" fill="white" stroke="black" stroke-width="3"/>
+    <text x="1050" y="510">User Feedback</text>
+
+    <rect x="640" y="650" width="240" height="100" rx="18" fill="white" stroke="black" stroke-width="3"/>
+    <text x="760" y="695">
+      <tspan x="760" dy="0">Mnemoverse</tspan>
+      <tspan x="760" dy="32">Feedback</tspan>
+    </text>
+  </g>
+
+  <g stroke="black" stroke-width="4" fill="none">
+    <line x1="300" y1="230" x2="350" y2="230"/>
+    <line x1="590" y1="230" x2="640" y2="230"/>
+    <line x1="880" y1="230" x2="930" y2="230"/>
+    <line x1="1050" y1="280" x2="470" y2="450"/>
+    <line x1="590" y1="500" x2="640" y2="500"/>
+    <line x1="880" y1="500" x2="930" y2="500"/>
+    <line x1="1050" y1="550" x2="820" y2="650"/>
+    <line x1="760" y1="650" x2="760" y2="550"/>
+  </g>
+
+  <g fill="black">
+    <polygon points="350,230 335,222 335,238"/>
+    <polygon points="640,230 625,222 625,238"/>
+    <polygon points="930,230 915,222 915,238"/>
+    <polygon points="470,450 462,433 480,439"/>
+    <polygon points="640,500 625,492 625,508"/>
+    <polygon points="930,500 915,492 915,508"/>
+    <polygon points="820,650 805,642 808,660"/>
+    <polygon points="760,650 752,635 768,635"/>
+  </g>
+</svg>
