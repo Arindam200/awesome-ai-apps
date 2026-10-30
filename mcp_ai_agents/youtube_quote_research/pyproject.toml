@@ -1,0 +1,22 @@
+[project]
+name = "youtube-quote-research"
+version = "0.1.0"
+description = "Research indexed YouTube passages with timestamped sources through Arcmira MCP"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openai-agents==0.22.3",
+    "pydantic==2.13.5",
+    "python-dotenv==1.2.3",
+]
+
+[dependency-groups]
+dev = ["ruff==0.16.9"]
+
+[tool.uv]
+package = false
+exclude-newer = "2026-10-01T00:00:00Z"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
