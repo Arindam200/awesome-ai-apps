@@ -8,7 +8,7 @@ the brief points at the record it came from, so a reader can open the posting.
 Two steps, both optional in the sense that the example still runs without them:
 
 * Collection runs the Google Jobs Actor on Apify (needs APIFY_API_TOKEN). With
-  --fixture the records come from a JSON file instead and no network is used.
+  --fixture the records come from a JSON file instead and Apify is not called.
 * Narrative runs a Nebius Token Factory chat model over the records (needs
   NEBIUS_API_KEY). Without it the brief is the deterministic one built here.
 """
@@ -32,6 +32,7 @@ APIFY_RUN_URL = f"https://api.apify.com/v2/acts/{ACTOR_ID}/run-sync-get-dataset-
 NEBIUS_CHAT_URL = "https://api.tokenfactory.nebius.com/v1/chat/completions"
 DEFAULT_NEBIUS_MODEL = "Qwen/Qwen3-30B-A3B"
 POSTED_WITHIN = ("any", "24h", "3d", "7d", "30d")
+WINDOW_LABELS = {"any": "any time", "24h": "the last 24 hours", "3d": "the last 3 days", "7d": "the last 7 days", "30d": "the last 30 days"}
 
 SENIORITY_RULES = (
     ("intern", re.compile(r"\b(intern|internship|co-op)\b", re.I)),
@@ -76,12 +77,18 @@ SCHEDULE_WORDS = {"full-time", "part-time", "contractor", "internship", "tempora
 
 
 def clean_url(url: str) -> str:
-    """Drop tracking parameters (utm_*) so citations stay short and stable."""
+    """Drop tracking parameters (utm_*) so citations stay short and stable. The fragment stays."""
     if "?" not in url:
         return url
-    base, _, query = url.partition("?")
+    base, _, rest = url.partition("?")
+    query, hash_sign, fragment = rest.partition("#")
     kept = [p for p in query.split("&") if p and not p.lower().startswith("utm_")]
-    return base + ("?" + "&".join(kept) if kept else "")
+    return base + ("?" + "&".join(kept) if kept else "") + hash_sign + fragment
+
+
+def one_line(value) -> str:
+    """Collapse runs of whitespace, line breaks included, so a field stays on one line of the brief."""
+    return " ".join(str(value or "").split())
 
 
 def read_key(name: str, environ: dict[str, str] | None = None) -> str | None:
@@ -109,7 +116,7 @@ def normalize(rows: list[dict]) -> list[Record]:
     """Turn raw Actor rows into numbered records. Rows without a title are dropped."""
     records: list[Record] = []
     for row in rows:
-        title = (row.get("title") or "").strip()
+        title = one_line(row.get("title"))
         if not title:
             continue
         highlights = row.get("job_highlights") or []
@@ -129,16 +136,14 @@ def normalize(rows: list[dict]) -> list[Record]:
             elif not schedule and ext.lower() in SCHEDULE_WORDS:
                 schedule = ext
         apply_options = row.get("apply_options") or []
-        url = ""
-        if apply_options and isinstance(apply_options[0], dict):
-            url = apply_options[0].get("link") or ""
-        url = clean_url(url or row.get("share_link") or "")
+        links = [o.get("link") for o in apply_options if isinstance(o, dict) and o.get("link")]
+        url = clean_url(links[0] if links else (row.get("share_link") or ""))
         text = " ".join([title, " ".join(qualifications), row.get("description") or ""])
         records.append(
             Record(
                 n=len(records) + 1,
                 title=title,
-                company=(row.get("company_name") or "unknown").strip(),
+                company=one_line(row.get("company_name")) or "unknown",
                 location=(row.get("location") or "").strip(),
                 posted=posted,
                 schedule=schedule,
@@ -175,14 +180,29 @@ def cite(ns: list[int]) -> str:
     return " ".join(f"[{n}]" for n in ns)
 
 
-def render_brief(role: str, location: str, posted_within: str, records: list[Record], model_text: str | None = None) -> str:
+def render_brief(
+    role: str,
+    location: str,
+    posted_within: str,
+    records: list[Record],
+    model_text: str | None = None,
+    from_fixture: bool = False,
+) -> str:
+    """Write the Markdown brief. from_fixture=True says so in the heading, since the
+    posted-within window is applied by the Actor and not to fixture rows."""
     lines = [f"# Job market brief: {role} in {location}", ""]
-    window = {"any": "any time", "24h": "the last 24 hours", "3d": "the last 3 days", "7d": "the last 7 days", "30d": "the last 30 days"}[posted_within]
+    window = WINDOW_LABELS[posted_within]
     if not records:
-        lines += [f"Google Jobs returned no postings for this search in {window}. Nothing to summarize.", ""]
+        if from_fixture:
+            lines += ["The fixture file has no postings with a title. Nothing to summarize.", ""]
+        else:
+            lines += [f"Google Jobs returned no postings for this search in {window}. Nothing to summarize.", ""]
         return "\n".join(lines)
     s = summarize(records)
-    lines += [f"{s['total']} postings from {window}. Numbers in brackets point at the records below.", ""]
+    if from_fixture:
+        lines += [f"{s['total']} postings from the fixture file (the posted-within window applies to live runs only). Numbers in brackets point at the records below.", ""]
+    else:
+        lines += [f"{s['total']} postings from {window}. Numbers in brackets point at the records below.", ""]
     lines += ["## Who is hiring", ""]
     for company, ns in s["companies"][:12]:
         lines.append(f"- {company}: {len(ns)} posting{'s' if len(ns) != 1 else ''} {cite(ns)}")
@@ -273,12 +293,20 @@ def load_fixture(path: Path) -> list[dict]:
     return data if isinstance(data, list) else data.get("items", [])
 
 
+def limit_in_range(value: str) -> int:
+    """argparse type for --limit: the documented range is 10 to 100, checked before any paid call."""
+    limit = int(value)
+    if not 10 <= limit <= 100:
+        raise argparse.ArgumentTypeError("must be between 10 and 100")
+    return limit
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("role", help="job title or search phrase, for example 'data engineer'")
     p.add_argument("--location", default="Austin, TX", help="city, state or country (default: Austin, TX)")
     p.add_argument("--posted-within", choices=POSTED_WITHIN, default="7d", help="how fresh the postings must be (default: 7d)")
-    p.add_argument("--limit", type=int, default=30, help="most postings to collect, 10 to 100 (default: 30)")
+    p.add_argument("--limit", type=limit_in_range, default=30, help="most postings to collect, 10 to 100 (default: 30)")
     p.add_argument("--fixture", type=Path, help="read postings from this JSON file instead of calling Apify")
     p.add_argument("--no-model", action="store_true", help="skip the Nebius step even if NEBIUS_API_KEY is set")
     p.add_argument("--out", type=Path, help="write the brief to this file as well as stdout")
@@ -289,7 +317,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     if args.fixture:
-        rows = load_fixture(args.fixture)
+        rows = load_fixture(args.fixture)[: args.limit]
     else:
         token = read_key("APIFY_API_TOKEN")
         if not token:
@@ -304,10 +332,10 @@ def main(argv: list[str] | None = None) -> int:
         model = read_key("NEBIUS_MODEL") or DEFAULT_NEBIUS_MODEL
         try:
             narrative = model_brief(args.role, args.location, records, nebius_key, model)
-        except (urllib.error.URLError, KeyError, json.JSONDecodeError) as e:
+        except (urllib.error.URLError, TimeoutError, KeyError, json.JSONDecodeError) as e:
             print(f"Nebius step skipped: {e}", file=sys.stderr)
 
-    brief = render_brief(args.role, args.location, args.posted_within, records, narrative)
+    brief = render_brief(args.role, args.location, args.posted_within, records, narrative, from_fixture=bool(args.fixture))
     print(brief)
     if args.out:
         args.out.write_text(brief)

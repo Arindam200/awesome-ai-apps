@@ -10,7 +10,7 @@ Sample output: [assets/sample_brief.md](assets/sample_brief.md).
 - Normalizes each posting to title, company, location, posted date, schedule, qualifications and apply link, numbered `[1]`, `[2]`, ...
 - Writes a deterministic brief from those records: employers by posting count, seniority mix, skills that appear in two or more postings
 - Optionally asks a Nebius Token Factory model for a short narrative brief that cites the records by number
-- Runs fully offline from a fixture file, so the tests need no API keys
+- Reads postings from a fixture file when you pass `--fixture`, so the tests need no API keys and never call Apify. The Nebius step still runs if `NEBIUS_API_KEY` is set; add `--no-model` to skip it
 - An empty search renders as an empty search, never as an invented summary
 
 ## Tech Stack
@@ -59,10 +59,10 @@ pip install -r requirements.txt
 
 ## Usage
 
-Offline, from the bundled fixture (no keys needed):
+From the bundled fixture, with no Apify call and no model step:
 
 ```bash
-python main.py "data engineer" --location "Austin, TX" --fixture fixtures/sample_jobs.json
+python main.py "data engineer" --location "Austin, TX" --fixture fixtures/sample_jobs.json --no-model
 ```
 
 Live, last 7 days, up to 30 postings:
@@ -79,7 +79,7 @@ export NEBIUS_API_KEY=...
 python main.py "machine learning engineer" --location "Berlin" --posted-within 30d
 ```
 
-Options: `--posted-within {any,24h,3d,7d,30d}`, `--limit 10..100`, `--no-model`, `--json` to print the normalized records.
+Options: `--posted-within {any,24h,3d,7d,30d}`, `--limit 10..100` (values outside the range are rejected before anything is spent), `--no-model`, `--json` to print the normalized records. The posted-within window is applied by the Actor, so a fixture run says so in its heading instead of claiming a window.
 
 Run the tests:
 
