@@ -325,6 +325,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Financial Research Agent (AgentField)](advance_ai_agents/agentfield_finance_research_agent): Financial research agent with AgentField
 - [GitHub and LinkedIn Job Finder](advance_ai_agents/job_finder_agent): LinkedIn job search automation with Bright Data integration
 - [Jev Social Research Agent](advance_ai_agents/jev_social_research_agent): Typed Jev routing, local socai CLI evidence, and evidence-linked Nebius synthesis for Instagram, TikTok, and LinkedIn research
+- [Job Market Brief Agent](advance_ai_agents/job_market_brief_agent): Google Jobs postings for one role and city turned into numbered evidence records and a brief that cites them, with an optional Nebius narrative
 - [Local File-Editing Agent Prototype](advance_ai_agents/coding_harness_agent): Local coding-agent prototype with file discovery, reading, and editing tools
 - [Maintainer Intelligence Brief](advance_ai_agents/maintainer_brief): Weekly open-source intelligence briefs from community, security, and document signals with source citations
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent): Automated meeting notes and task creation from conversations
