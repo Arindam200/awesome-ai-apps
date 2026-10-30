@@ -1,4 +1,7 @@
-![Banner](/assets/awesome_banner.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/awesome_banner_dark.png">
+  <img alt="Awesome AI Apps" src="assets/awesome_banner_light.png">
+</picture>
 
 <div align="center">
 
