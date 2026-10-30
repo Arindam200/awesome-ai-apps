@@ -7,177 +7,135 @@
 
 # Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-<a href="https://trendshift.io/repositories/14662" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14662" alt="Arindam200%2Fawesome-ai-apps | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+**137 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
+
+[![GitHub stars](https://img.shields.io/github/stars/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Stars&color=yellow)](https://github.com/Arindam200/awesome-ai-apps/stargazers)
+[![Forks](https://img.shields.io/github/forks/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Forks)](https://github.com/Arindam200/awesome-ai-apps/network/members)
+[![Contributors](https://img.shields.io/github/contributors/Arindam200/awesome-ai-apps?style=flat&label=Contributors&color=blueviolet)](#-contributors)
+[![Last commit](https://img.shields.io/github/last-commit/Arindam200/awesome-ai-apps?style=flat&label=Last%20commit&color=brightgreen)](https://github.com/Arindam200/awesome-ai-apps/commits/main)
+[![License: MIT](https://img.shields.io/github/license/Arindam200/awesome-ai-apps?style=flat&label=License&color=blue)](LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat)](CONTRIBUTING.md)
+
+<a href="https://trendshift.io/repositories/14662" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14662" alt="Arindam200%2Fawesome-ai-apps | Trendshift" width="250" height="55"/></a>
+
+[**Browse projects**](#-browse-by-category) · [**Quick start**](#-quick-start) · [**Contribute**](#-contributing) · [**Sponsor**](#-sponsors) · [**Newsletter**](#-stay-updated)
 
 </div>
 
-This repository is a comprehensive collection of **132 projects**, tutorials, and recipes for building powerful LLM-powered applications, including text agents, voice assistants, RAG apps, and MCP-backed tools. These projects serve as a guide for developers working with various AI frameworks and stacks.
-
-## 📋 Table of Contents
-
-- [🚀 Featured AI Apps](#-featured-ai-apps)
-  - [🧩 Starter Agents](#-starter-agents)
-  - [🪶 Simple Agents](#-simple-agents)
-  - [🎙️ Voice Agents](#-voice-agents)
-  - [🗂️ MCP Agents](#️-mcp-agents)
-  - [🧠 Memory Agents](#-memory-agents)
-  - [📚 RAG Applications](#-rag-applications)
-  - [🔬 Advanced Agents](#-advanced-agents)
-  - [🧬 Fine-Tuning](#-fine-tuning)
-- [📺 Tutorials & Videos](#-tutorials--videos)
-- [🚀 Getting Started](#getting-started)
-- [🤝 Contributing](#-contributing)
-
----
+Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for building LLM-powered applications: text agents, voice assistants, RAG apps, MCP tools and fine-tuning pipelines. Each project lives in its own folder with a README, its own dependencies and a `.env.example`, so you can clone the repo, open one folder and run it.
 
 <div align="center">
 
 ## 💎 Sponsors
 
-<p align="center">
-  A huge thank you to our sponsors for their generous support!
-</p>
+<p align="center">A huge thank you to the companies supporting Awesome AI Apps.</p>
 
-<table align="center" cellpadding="10" style="width:100%; border-collapse:collapse;">
-  <tr align="center">
-    <td width="300" valign="middle" align="center">
-      <a href="https://dub.sh/brightdata" target="_blank" title="Visit Bright Data">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Bright_Data.svg" height="35" style="max-width:180px;" alt="Bright Data - Web Data Platform">
+<table align="center">
+  <tr>
+    <td align="center" width="33%">
+      <a href="https://dub.sh/brightdata" title="Bright Data">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/brightdata_dark.svg">
+          <img src="assets/sponsors/brightdata_light.svg" height="34" alt="Bright Data">
+        </picture>
       </a>
-      <br>
-      <sub>
-        <span style="white-space:nowrap;">Web Data Platform</span>
-        <br>
-        <a href="https://dub.sh/brightdata" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Bright Data website">
-        </a>
-      </sub>
+      <br><sub>Web Data Platform</sub>
     </td>
-    <td width="300" valign="middle" align="center">
-      <a href="https://dub.sh/nebius" target="_blank" title="Visit Nebius Token Factory">
-        <img src="./assets/nebius.png" height="36" style="max-width:180px;" alt="Nebius Token Factory">
+    <td align="center" width="33%">
+      <a href="https://dub.sh/nebius" title="Nebius Token Factory">
+        <img src="assets/sponsors/nebius.png" height="56" alt="Nebius Token Factory">
       </a>
-      <br>
-      <sub>
-        <span style="white-space:nowrap;">AI Inference Provider</span>
-        <br>
-        <a href="https://dub.sh/nebius" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Nebius Token Factory">
-        </a>
-      </sub>
+      <br><sub>AI Inference Provider</sub>
     </td>
-    <td width="300" valign="middle" align="center">
-      <a href="https://dub.sh/scrapegraphai" target="_blank" title="Visit ScrapeGraphAI on GitHub">
-        <img src="https://raw.githubusercontent.com/ScrapeGraphAI/ScrapeGraph-AI/main/docs/assets/scrapegraphai_logo.png" height="44" style="max-width:180px;" alt="ScrapeGraphAI - Web Scraping Library">
+    <td align="center" width="33%">
+      <a href="https://dub.sh/scrapegraphai" title="ScrapeGraphAI">
+        <img src="assets/sponsors/scrapegraphai.svg" height="54" alt="ScrapeGraphAI">
       </a>
-      <br>
-      <sub>
-        <span style="white-space:nowrap;">AI Web Scraping framework</span>
-        <br>
-        <a href="https://dub.sh/scrapegraphai" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="View ScrapeGraphAI on GitHub">
-        </a>
-      </sub>
+      <br><sub>ScrapeGraphAI · AI Web Scraping</sub>
     </td>
   </tr>
-  <tr align="center">
-    <td width="300" valign="middle" align="center">
-      <a href="https://dub.sh/memorilabs" target="_blank" title="Visit Memorilabs">
-        <img src="assets/memori.png" height="36" style="max-width:180px;" alt="Memori - SQL Native Memory for AI">
+  <tr>
+    <td align="center" width="33%">
+      <a href="https://dub.sh/memorilabs" title="Memori">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/memori_dark.png">
+          <img src="assets/sponsors/memori_light.png" height="34" alt="Memori">
+        </picture>
       </a>
-      <br>
-      <sub>
-        <span style="white-space:nowrap;">SQL Native Memory for AI</span>
-        <br>
-        <a href="https://dub.sh/memorilabs" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Memorilabs website">
-        </a>
-      </sub>
+      <br><sub>SQL Native Memory for AI</sub>
     </td>
-    <td width="300" valign="middle" align="center">
-      <a href="https://dub.sh/copilotkit" target="_blank" title="Visit CopilotKit">
-        <img src="assets/copilot-kit-logo.svg" height="36" style="max-width:180px;" alt="CopilotKit - Agentic Application Platform">
+    <td align="center" width="33%">
+      <a href="https://dub.sh/copilotkit" title="CopilotKit">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/copilotkit_dark.svg">
+          <img src="assets/sponsors/copilotkit_light.svg" height="30" alt="CopilotKit">
+        </picture>
       </a>
-      <br>
-      <sub>
-        <span style="white-space:nowrap;">Agentic Application Platform</span>
-        <br>
-        <a href="https://dub.sh/copilotkit" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit CopilotKit website">
-        </a>
-      </sub>
+      <br><sub>Agentic Application Platform</sub>
     </td>
-    <td width="300" valign="middle" align="center">
-      <a href="https://dub.sh/scalekitt" target="_blank" title="Visit ScaleKit">
-        <img src="assets/scalekit.svg" height="36" style="max-width:180px;" alt="ScaleKit - Auth Stack for AI">
+    <td align="center" width="33%">
+      <a href="https://dub.sh/scalekitt" title="ScaleKit">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/scalekit_dark.svg">
+          <img src="assets/sponsors/scalekit_light.svg" height="28" alt="ScaleKit">
+        </picture>
       </a>
-      <br>
-      <sub>
-        <span style="white-space:nowrap;">Auth Stack for AI</span>
-        <br>
-        <a href="https://dub.sh/scalekitt" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit ScaleKit website">
-        </a>
-      </sub>
+      <br><sub>Auth Stack for AI</sub>
     </td>
   </tr>
-  <tr align="center">
-    <td width="200" valign="middle" align="center">
-      <a href="https://okahu.ai" target="_blank" title="Visit Okahu">
-        <img src="assets/okahu.png" height="36" style="max-width:180px;" alt="Okahu - AI Platform">
+  <tr>
+    <td align="center" width="33%">
+      <a href="https://okahu.ai" title="Okahu">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/okahu_dark.png">
+          <img src="assets/sponsors/okahu_light.png" height="44" alt="Okahu">
+        </picture>
       </a>
-      <br>
-      <sub>
-        <span style="white-space:nowrap;">AI Observability Platform</span>
-        <br>
-        <a href="https://okahu.ai" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Okahu website">
-        </a>
-      </sub>
+      <br><sub>AI Observability Platform</sub>
     </td>
-    <td width="200" valign="middle" align="center">
-      <a href="https://dub.sh/agentfield" target="_blank" title="Visit AgentField">
-        <img src="assets/agentfield.png" height="40" style="max-width:180px;" alt="AgentField - Kubernetes for AI Agents">
+    <td align="center" width="33%">
+      <a href="https://dub.sh/agentfield" title="AgentField">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/agentfield_dark.png">
+          <img src="assets/sponsors/agentfield_light.png" height="36" alt="AgentField">
+        </picture>
       </a>
-      <br>
-      <sub>
-        <span style="white-space:nowrap;">Kubernetes for AI Agents</span>
-        <br>
-        <a href="https://dub.sh/agentfield" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit AgentField website">
-        </a>
-      </sub>
+      <br><sub>Kubernetes for AI Agents</sub>
     </td>
-    <td width="200" valign="middle" align="center">
-      <a href="https://dub.sh/byteful" target="_blank" title="Visit Byteful">
-      <img src="https://byteful.com/favicon.ico" height="40" style="max-width:180px;" alt="Byteful">
+    <td align="center" width="33%">
+      <a href="https://dub.sh/byteful" title="Byteful">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" srcset="assets/sponsors/byteful_dark.png">
+          <img src="assets/sponsors/byteful_light.png" height="38" alt="Byteful">
+        </picture>
       </a>
-      <br>
-      <sub>
-        <span style="white-space:nowrap;">Byteful</span>
-        <br>
-        <a href="https://dub.sh/byteful" target="_blank">
-          <img src="https://img.shields.io/badge/Visit%20Site-blue?style=flat-square" alt="Visit Byteful website">
-        </a>
-      </sub>
+      <br><sub>Residential &amp; ISP Proxies</sub>
     </td>
   </tr>
-
 </table>
 
-### 💎 Become a Sponsor
-
 <p align="center">
-Interested in sponsoring this project? Feel free to reach out!
-<br/>
-<a href="mailto:contact@studio1hq.com">
-    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email">
-</a>
+  <b>Want your product in front of developers building with LLMs?</b>
+  <br>
+  <a href="mailto:contact@studio1hq.com?subject=Sponsoring%20Awesome%20AI%20Apps">Become a sponsor →</a>
 </p>
 
 </div>
 
----
+## 🧭 Browse by Category
+
+| Category | What you'll find | Projects |
+| :-- | :-- | :-: |
+| [🧩 Starter Agents](#-starter-agents) | One minimal agent per framework: Agno, LangGraph, CrewAI, OpenAI Agents SDK, Google ADK, Mastra and more | 21 |
+| [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 20 |
+| [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 9 |
+| [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
+| [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
+| [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
+| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 36 |
+| [🧬 Fine-Tuning](#-fine-tuning) | LoRA fine-tuning, distillation and deployment of open models | 6 |
+
+**Also here:** [Tutorials & Videos](#-tutorials--videos) · [Quick Start](#-quick-start) · [Contributing](#-contributing) · [Contributors](#-contributors) · [Maintainers](#-maintainers) · [License](#-license)
 
 ## 🚀 Featured AI Apps
 
@@ -209,7 +167,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🪶 Simple Agents
 
-**Straightforward, practical use-cases for everyday AI applications.** _19 projects_
+**Straightforward, practical use-cases for everyday AI applications.** _20 projects_
 
 - [Agno Agent Examples](simple_ai_agents/agno_ai_examples): Simple to multi-agent examples with web search and a knowledge base
 - [Agno Agent UI](simple_ai_agents/agno_ui_agent): Interactive UI for web and finance agents
@@ -234,7 +192,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🎙️ Voice Agents
 
-**Real-time voice assistants and streaming speech pipelines** — including LiveKit, Pipecat, Gradium, and [VoxCode](voice_agents/Cursor_code_editor) (Deepgram + Cursor SDK). _9 projects_
+**Real-time voice assistants and streaming speech pipelines**, including LiveKit, Pipecat, Gradium, and [VoxCode](voice_agents/Cursor_code_editor) (Deepgram + Cursor SDK). _9 projects_
 
 - [AI Pitch Coach (Gradium + Nebius)](voice_agents/voice-agent-gradium-nebius-langchain): Conversational pitch coach using Gradium STT/TTS, LangChain orchestration, and Nebius reasoning
 - [Customer Support Voice Agent (LiveKit)](voice_agents/customer_support_agent): Nebius-powered voice support agent with context-preserving AI manager handoff, noise cancellation, and inactivity handling
@@ -243,7 +201,7 @@ Interested in sponsoring this project? Feel free to reach out!
 - [Multilingual Voice Agent (Pipecat + Sarvam)](voice_agents/pipecat_agent): Pipecat voice pipeline with Sarvam STT/TTS and OpenAI for chat; WebRTC (browser) or Daily transport via the Pipecat runner
 - [RSVP Confirmation Voice Agent (LiveKit)](voice_agents/livekit_rsvp_agent): Outbound voice agent that calls attendees, confirms RSVPs, and updates a JSON-backed event database
 - [Speed-to-Lead Sales Voice Agent](voice_agents/speed_to_lead_agent): LiveKit-based voice agent that calls inbound leads instantly, routes them to specialists, and logs to a mock CRM
-- [VoxCode — Deepgram + Cursor Voice Coding Agent](voice_agents/Cursor_code_editor): Local voice workspace for codebase summaries and architecture Q&A; Deepgram Voice Agent orchestration, Nebius reasoning, and optional Cursor SDK file inspection and edits
+- [VoxCode: Deepgram + Cursor Voice Coding Agent](voice_agents/Cursor_code_editor): Local voice workspace for codebase summaries and architecture Q&A; Deepgram Voice Agent orchestration, Nebius reasoning, and optional Cursor SDK file inspection and edits
 - [Web-Search Voice Agent (LiveKit)](voice_agents/livekit_web_search_agent): LiveKit + Gemini realtime voice agent with an Olostep-backed `web_search` tool for fresh, source-cited answers
 
 ### 🗂️ MCP Agents
@@ -308,7 +266,7 @@ Interested in sponsoring this project? Feel free to reach out!
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _35 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _36 projects_
 
 - [AI Hedge Fund Research Team](advance_ai_agents/ai-hedgefund): Agentic workflow for comprehensive financial analysis
 - [AI Trend Research Agent](advance_ai_agents/trend_analyzer_agent): AI trend mining and analysis with Google ADK
@@ -371,123 +329,94 @@ Interested in sponsoring this project? Feel free to reach out!
 - [**Build AI Agents**](https://www.youtube.com/playlist?list=PLMZM1DAlf0LqixhAG9BDk4O_FjqnaogK8): General AI agent development tutorials
 - [**Build with MCP**](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lolxax4L2HS54Me8gn1gkz4): Model Context Protocol tutorials and examples
 
----
+## ⚡ Quick Start
 
-<div align="center">
+You need **Python 3.10+**, **[uv](https://docs.astral.sh/uv/)** or `pip`, and the API keys listed in the project's README. Most projects run on [Nebius Token Factory](https://dub.sh/nebius).
 
-## 📥 Stay Updated with Daily AI Insight!
+```bash
+# 1. Clone the repo and pick a project
+git clone https://github.com/Arindam200/awesome-ai-apps.git
+cd awesome-ai-apps/starter_ai_agents/agno_starter
 
-Get easy-to-follow weekly tutorials and deep dives on AI, LLMs, and agent frameworks. Perfect for developers who want to learn, build, and stay ahead with new tech. Subscribe our Newsletter!
+# 2. Add your API keys
+cp .env.example .env
 
-[![Subscribe to our Newsletter](https://github.com/user-attachments/assets/990d1947-337b-4e87-a7e6-e619ec19dee6)](https://mranand.substack.com/subscribe)
+# 3. Install dependencies
+uv sync                              # or: pip install -r requirements.txt
 
-</div>
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- **Python 3.10+** (Python 3.11+ recommended for newer projects)
-- **Git** for cloning the repository
-- **Package Manager**: `pip` or `uv` (recommended for faster installs)
-- **API Keys**: Most projects require API keys (see individual project READMEs)
-
-### Quick Start
-
-1. **Clone the repository**
-
-   ```bash
-   git clone https://github.com/Arindam200/awesome-ai-apps.git
-   cd awesome-ai-apps
-   ```
-
-2. **Choose a project** and navigate to its directory
-
-   ```bash
-   cd starter_ai_agents/agno_starter  # Example: Start with Agno starter
-   ```
-
-3. **Set up environment variables**
-
-   ```bash
-   cp .env.example .env  # Copy example environment file
-   # Edit .env with your API keys
-   ```
-
-4. **Install dependencies**
-
-   ```bash
-   # Using pip
-   pip install -r requirements.txt
-
-   # OR using uv (recommended - faster)
-   uv sync
-   # or
-   uv pip install -e .
-   ```
-
-5. **Run the project**
-
-   ```bash
-   python main.py
-   # or for Streamlit apps
-   streamlit run app.py
-   ```
+# 4. Run it (each project's README has the exact command)
+uv run main.py                       # or: python main.py / streamlit run app.py
+```
 
 ## 🤝 Contributing
 
 We welcome contributions from the community! Here's how you can help:
 
-- 💡 **Add new projects**: Submit your own AI agent examples
-- 🔧 **Fix issues**: Contribute code improvements and bug fixes
-- 📝 **Improve documentation**: Help make projects more accessible
+- 💡 **Add a new project**: a self-contained, runnable example with its own README, dependencies and `.env.example`
+- 🔧 **Fix issues**: code improvements and bug fixes for existing projects
+- 📝 **Improve documentation**: help make projects easier to set up and understand
 - 🐛 **Report bugs** or suggest improvements via [GitHub Issues](https://github.com/Arindam200/awesome-ai-apps/issues)
 
-**Before contributing:**
+Before you open a PR, read the [Contributing Guidelines](CONTRIBUTING.md), check existing issues to avoid duplicates, and follow the [project README template](.github/README_TEMPLATE.md). This project follows a [Contributor Code of Conduct](CODE_OF_CONDUCT.md); by participating, you agree to abide by its terms.
 
-- Read our [Contributing Guidelines](CONTRIBUTING.md) for detailed information
-- Check existing issues to avoid duplicates
-- Follow the project structure and naming conventions
-- Ensure your project includes a comprehensive README.md
+## 🌟 Contributors
 
-**Important:** This project follows a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to abide by its terms.
+Awesome AI Apps is built by its community. Thank you to everyone who has shipped a project, fixed a bug or improved the docs! 💜
+
+<p align="center">
+  <a href="https://github.com/Arindam200/awesome-ai-apps/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=Arindam200/awesome-ai-apps&max=300&columns=14" alt="Contributors to Awesome AI Apps" />
+  </a>
+</p>
+
+Want to see your avatar here? Pick an [open issue](https://github.com/Arindam200/awesome-ai-apps/issues) or [add a project](CONTRIBUTING.md).
+
+## 👥 Maintainers
+
+<table align="center">
+  <tr>
+    <td align="center" width="160">
+      <a href="https://github.com/Arindam200">
+        <img src="https://avatars.githubusercontent.com/u/109217591?s=160&v=4" width="80" height="80" alt="Arindam Majumder"><br>
+        <b>Arindam Majumder</b>
+      </a>
+      <br><sub>@Arindam200</sub>
+    </td>
+    <td align="center" width="160">
+      <a href="https://github.com/shivaylamba">
+        <img src="https://avatars.githubusercontent.com/u/19529592?s=160&v=4" width="80" height="80" alt="Shivay Lamba"><br>
+        <b>Shivay Lamba</b>
+      </a>
+      <br><sub>@shivaylamba</sub>
+    </td>
+    <td align="center" width="160">
+      <a href="https://github.com/Astrodevil">
+        <img src="https://avatars.githubusercontent.com/u/73425223?s=160&v=4" width="80" height="80" alt="Amitesh Anand"><br>
+        <b>Amitesh Anand</b>
+      </a>
+      <br><sub>@Astrodevil</sub>
+    </td>
+  </tr>
+</table>
+
+For questions, suggestions or partnerships, reach out to the maintainers on GitHub or at [contact@studio1hq.com](mailto:contact@studio1hq.com).
+
+## 📬 Stay Updated
+
+<div align="center">
+
+Easy-to-follow weekly tutorials and deep dives on AI, LLMs and agent frameworks, for developers who want to learn, build and stay ahead. Subscribe to our newsletter!
+
+[![Subscribe to our Newsletter](https://github.com/user-attachments/assets/990d1947-337b-4e87-a7e6-e619ec19dee6)](https://mranand.substack.com/subscribe)
+
+</div>
 
 ## 📜 License
 
 This repository is licensed under the [MIT License](./LICENSE). Feel free to use and modify the examples for your projects.
 
-## 👥 Core Maintainers
-
-This project is actively maintained by:
-
-<p align="center">
-  <a href="https://github.com/Arindam200" title="Arindam Majumder">
-    <img src="https://avatars.githubusercontent.com/u/109217591?s=128&v=4" width="72" height="72" alt="Arindam Majumder" style="border-radius: 50%;" />
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/shivaylamba" title="Shivay Lamba">
-    <img src="https://avatars.githubusercontent.com/u/19529592?s=128&v=4" width="72" height="72" alt="Shivay Lamba" style="border-radius: 50%;" />
-  </a>
-  &nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/Astrodevil" title="Astrodevil">
-    <img src="https://avatars.githubusercontent.com/u/73425223?s=128&v=4" width="72" height="72" alt="Astrodevil" style="border-radius: 50%;" />
-  </a>
-</p>
-
-<p align="center">
-  <sub>
-    <a href="https://github.com/Arindam200">Arindam Majumder</a>
-    &nbsp;·&nbsp;
-    <a href="https://github.com/shivaylamba">Shivay Lamba</a>
-    &nbsp;·&nbsp;
-    <a href="https://github.com/Astrodevil">Amitesh Anand</a>
-  </sub>
-</p>
-
-For any questions, suggestions, or contributions, feel free to reach out to the maintainers.
-
-## Thank You for the Support! 🙏
+## ⭐ Star History
 
 [![Star History Chart](https://star-history.dera.page/svg?repos=Arindam200/awesome-ai-apps&type=Date)](https://star-history.dera.page/#Arindam200/awesome-ai-apps&Date)
+
+<p align="center">If this collection helped you, consider giving it a ⭐. It helps other developers find it.</p>
