@@ -38,13 +38,13 @@ Output of `python main.py 'data engineer' --location 'Austin, TX' --posted-withi
 
 ## Records
 
-- [1] Data Engineer, Waste Connections; The Woodlands, TX (https://careers.wasteconnections.com/us/en/job/R-104678/Data-Engineer)
-- [2] BI Data Modeling Engineer, Request Technology, LLC; Austin, TX (https://www.linkedin.com/jobs/view/bi-data-modeling-engineer-at-request-technology-llc-4483656067)
-- [3] Data Engineer - Full-time, Charles Schwab; Southlake, TX (https://www.snagajob.com/jobs/1305290655)
-- [4] Data Engineer - Senior Level, USAA; Hill Country Village, TX (https://jobs.womenforhire.com/job/usa/hill-country-village-tx/data-engineer-senior-level-365890/)
-- [5] Data Engineer - Mid Level, USAA; San Antonio, TX (https://www.tealhq.com/job/data-engineer_7ea1a0fb88da1a198eeb5d962d58eeb98552d)
-- [6] Automotive Data Engineering Tester, ITechMinds Global LLC; Lewisville, TX (https://www.linkedin.com/jobs/view/automotive-data-engineering-tester-at-itechminds-global-llc-4483873773)
-- [7] FDE – Vulnerability Data and Workflow Engineer, Eclerx; Austin, TX (https://www.indeed.com/viewjob?jk=b5aff486d9e9f8ca)
-- [8] 2027 Technology Summer Internship – Early Careers (Data Engineering), Wells Fargo; Irving, TX (+2 others) (https://www.wellsfargojobs.com/fr/jobs/r-583066/2027-technology-summer-internship-early-careers-data-engineering/)
-- [9] Data Visualization Engineer NM, Sarela Technology Solutions; Kirtland Air Force Base (https://www.linkedin.com/jobs/view/data-visualization-engineer-nm-at-sarela-technology-solutions-4481889267)
-- [10] Snowflake Data Engineer — ETL/ELT & Performance Tuning, Cloud Analytics Technologies, LLC; Dallas, TX (https://www.jobleads.com/us/job/snowflake-data-engineer-etl-elt-performance-tuning--dallas--ea8278db711ee37ace9f53124f820887c)
+- [1] Data Engineer, Waste Connections; The Woodlands, TX; 6 days ago; Full-time (https://careers.wasteconnections.com/us/en/job/R-104678/Data-Engineer)
+- [2] BI Data Modeling Engineer, Request Technology, LLC; Austin, TX; 3 days ago; Full-time (https://www.linkedin.com/jobs/view/bi-data-modeling-engineer-at-request-technology-llc-4483656067)
+- [3] Data Engineer - Full-time, Charles Schwab; Southlake, TX; 6 days ago; Full-time (https://www.snagajob.com/jobs/1305290655)
+- [4] Data Engineer - Senior Level, USAA; Hill Country Village, TX; 3 days ago; Full-time (https://jobs.womenforhire.com/job/usa/hill-country-village-tx/data-engineer-senior-level-365890/)
+- [5] Data Engineer - Mid Level, USAA; San Antonio, TX; 4 days ago; Full-time (https://www.tealhq.com/job/data-engineer_7ea1a0fb88da1a198eeb5d962d58eeb98552d)
+- [6] Automotive Data Engineering Tester, ITechMinds Global LLC; Lewisville, TX; 2 days ago; Contractor (https://www.linkedin.com/jobs/view/automotive-data-engineering-tester-at-itechminds-global-llc-4483873773)
+- [7] FDE – Vulnerability Data and Workflow Engineer, Eclerx; Austin, TX; 4 days ago; Full-time (https://www.indeed.com/viewjob?jk=b5aff486d9e9f8ca)
+- [8] 2027 Technology Summer Internship – Early Careers (Data Engineering), Wells Fargo; Irving, TX (+2 others); 4 days ago; Full-time (https://www.wellsfargojobs.com/fr/jobs/r-583066/2027-technology-summer-internship-early-careers-data-engineering/)
+- [9] Data Visualization Engineer NM, Sarela Technology Solutions; Kirtland Air Force Base; 3 days ago; Full-time (https://www.linkedin.com/jobs/view/data-visualization-engineer-nm-at-sarela-technology-solutions-4481889267)
+- [10] Snowflake Data Engineer — ETL/ELT & Performance Tuning, Cloud Analytics Technologies, LLC; Dallas, TX; 5 days ago; Full-time (https://www.jobleads.com/us/job/snowflake-data-engineer-etl-elt-performance-tuning--dallas--ea8278db711ee37ace9f53124f820887c)
