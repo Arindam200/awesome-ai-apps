@@ -1,37 +1,50 @@
+Output of `python main.py 'data engineer' --location 'Austin, TX' --posted-within 7d --limit 10` on 2026-10-30, without a Nebius key (so no "Model brief" section). Google Jobs widened the search beyond Austin, which is how the service behaves for a city with few fresh matches; the brief reports what came back.
+
 # Job market brief: data engineer in Austin, TX
 
-6 postings from the last 7 days. Numbers in brackets point at the records below.
+10 postings from the last 7 days. Numbers in brackets point at the records below.
 
 ## Who is hiring
 
-- Harbor Analytics: 2 postings [1] [2]
-- Pecan Street Robotics: 2 postings [3] [6]
-- Barton Springs Health: 1 posting [4]
-- Longhorn Logistics: 1 posting [5]
+- USAA: 2 postings [4] [5]
+- Charles Schwab: 1 posting [3]
+- Cloud Analytics Technologies, LLC: 1 posting [10]
+- Eclerx: 1 posting [7]
+- ITechMinds Global LLC: 1 posting [6]
+- Request Technology, LLC: 1 posting [2]
+- Sarela Technology Solutions: 1 posting [9]
+- Waste Connections: 1 posting [1]
+- Wells Fargo: 1 posting [8]
 
 ## Seniority mix
 
-- mid: 2
+- mid: 8
 - senior: 1
-- staff+: 1
-- junior: 1
-- lead: 0
+- intern: 1
 
 ## Skills that recur
 
-- Python: 4 postings [1] [3] [4] [5]
-- SQL: 4 postings [1] [4] [5] [6]
-- Airflow: 2 postings [1] [4]
-- Snowflake: 2 postings [1] [6]
-- Spark: 2 postings [2] [5]
+- Python: 9 postings [1] [2] [3] [4] [6] [7] [8] [9] [10]
+- SQL: 9 postings [1] [2] [3] [4] [6] [7] [8] [9] [10]
+- Power BI: 4 postings [2] [7] [8] [9]
+- Agile: 3 postings [2] [4] [6]
+- Bachelor's: 3 postings [1] [4] [8]
+- CI/CD: 3 postings [1] [3] [8]
+- Snowflake: 3 postings [2] [3] [10]
+- AWS: 2 postings [1] [6]
+- Azure: 2 postings [2] [6]
+- Tableau: 2 postings [7] [8]
+- dbt: 2 postings [4] [10]
 
 ## Records
 
-- [1] Senior Data Engineer, Harbor Analytics; Austin, TX; 2 days ago; Full-time (https://www.linkedin.com/jobs/view/0000000001)
-- [2] Data Engineer II, Harbor Analytics; Austin, TX; 5 days ago; Full-time (https://boards.greenhouse.io/example/jobs/0000000002)
-- [3] Staff Data Engineer, Platform, Pecan Street Robotics; Austin, TX (Hybrid); 1 day ago; Full-time (https://jobs.lever.co/example/0000000003)
-- [4] Junior Data Engineer, Barton Springs Health; Austin, TX; 3 days ago; Full-time (https://www.indeed.com/viewjob?jk=0000000004)
-- [5] Data Engineer (Contract), Longhorn Logistics; Round Rock, TX; 6 days ago; Contractor (https://www.dice.com/job-detail/0000000005)
-- [6] Analytics Engineer, Pecan Street Robotics; Austin, TX; 4 days ago; Full-time (https://jobs.lever.co/example/0000000006)
-
-(Illustrative. Replace with the output of a live run before opening the pull request; the seniority and skill counts above are from the fixture and the fixture's "lead: 0" line will not appear in a real run, since zero counts are not printed.)
+- [1] Data Engineer, Waste Connections; The Woodlands, TX (https://careers.wasteconnections.com/us/en/job/R-104678/Data-Engineer)
+- [2] BI Data Modeling Engineer, Request Technology, LLC; Austin, TX (https://www.linkedin.com/jobs/view/bi-data-modeling-engineer-at-request-technology-llc-4483656067)
+- [3] Data Engineer - Full-time, Charles Schwab; Southlake, TX (https://www.snagajob.com/jobs/1305290655)
+- [4] Data Engineer - Senior Level, USAA; Hill Country Village, TX (https://jobs.womenforhire.com/job/usa/hill-country-village-tx/data-engineer-senior-level-365890/)
+- [5] Data Engineer - Mid Level, USAA; San Antonio, TX (https://www.tealhq.com/job/data-engineer_7ea1a0fb88da1a198eeb5d962d58eeb98552d)
+- [6] Automotive Data Engineering Tester, ITechMinds Global LLC; Lewisville, TX (https://www.linkedin.com/jobs/view/automotive-data-engineering-tester-at-itechminds-global-llc-4483873773)
+- [7] FDE – Vulnerability Data and Workflow Engineer, Eclerx; Austin, TX (https://www.indeed.com/viewjob?jk=b5aff486d9e9f8ca)
+- [8] 2027 Technology Summer Internship – Early Careers (Data Engineering), Wells Fargo; Irving, TX (+2 others) (https://www.wellsfargojobs.com/fr/jobs/r-583066/2027-technology-summer-internship-early-careers-data-engineering/)
+- [9] Data Visualization Engineer NM, Sarela Technology Solutions; Kirtland Air Force Base (https://www.linkedin.com/jobs/view/data-visualization-engineer-nm-at-sarela-technology-solutions-4481889267)
+- [10] Snowflake Data Engineer — ETL/ELT & Performance Tuning, Cloud Analytics Technologies, LLC; Dallas, TX (https://www.jobleads.com/us/job/snowflake-data-engineer-etl-elt-performance-tuning--dallas--ea8278db711ee37ace9f53124f820887c)

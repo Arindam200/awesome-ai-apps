@@ -44,6 +44,20 @@ def test_company_grouping_orders_by_count_then_name():
     assert s["companies"][1] == ("Pecan Street Robotics", [3, 6])
 
 
+def test_extensions_fallback_and_url_cleaning():
+    rows = [{
+        "title": "Data Engineer",
+        "company_name": "Acme",
+        "location": "Austin, TX",
+        "extensions": ["3 days ago", "Full-time", "Health insurance"],
+        "share_link": "https://example.com/job/1?utm_campaign=google_jobs_apply&utm_source=x&ref=keep",
+    }]
+    r = main.normalize(rows)[0]
+    assert r.posted == "3 days ago"
+    assert r.schedule == "Full-time"
+    assert r.url == "https://example.com/job/1?ref=keep"
+
+
 def test_brief_cites_records_and_lists_them():
     brief = main.render_brief("data engineer", "Austin, TX", "7d", records())
     assert "# Job market brief: data engineer in Austin, TX" in brief

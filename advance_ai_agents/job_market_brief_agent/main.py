@@ -72,6 +72,18 @@ class Record:
     url: str = ""
 
 
+SCHEDULE_WORDS = {"full-time", "part-time", "contractor", "internship", "temporary", "per diem", "volunteer"}
+
+
+def clean_url(url: str) -> str:
+    """Drop tracking parameters (utm_*) so citations stay short and stable."""
+    if "?" not in url:
+        return url
+    base, _, query = url.partition("?")
+    kept = [p for p in query.split("&") if p and not p.lower().startswith("utm_")]
+    return base + ("?" + "&".join(kept) if kept else "")
+
+
 def read_key(name: str, environ: dict[str, str] | None = None) -> str | None:
     value = (environ if environ is not None else os.environ).get(name, "").strip()
     return value or None
@@ -106,11 +118,21 @@ def normalize(rows: list[dict]) -> list[Record]:
             if str(block.get("title", "")).lower().startswith("qualif"):
                 qualifications.extend(str(x).strip() for x in block.get("items", []) if str(x).strip())
         detected = row.get("detected_extensions") or {}
+        posted = str(detected.get("posted_at") or "").strip()
+        schedule = str(detected.get("schedule_type") or "").strip()
+        # Some rows only carry the plain "extensions" strings Google shows under
+        # the title, such as "3 days ago" or "Full-time". Use them as a fallback.
+        for ext in row.get("extensions") or []:
+            ext = str(ext).strip()
+            if not posted and re.search(r"\b(ago|today|yesterday)\b", ext, re.I):
+                posted = ext
+            elif not schedule and ext.lower() in SCHEDULE_WORDS:
+                schedule = ext
         apply_options = row.get("apply_options") or []
         url = ""
         if apply_options and isinstance(apply_options[0], dict):
             url = apply_options[0].get("link") or ""
-        url = url or row.get("share_link") or ""
+        url = clean_url(url or row.get("share_link") or "")
         text = " ".join([title, " ".join(qualifications), row.get("description") or ""])
         records.append(
             Record(
@@ -118,8 +140,8 @@ def normalize(rows: list[dict]) -> list[Record]:
                 title=title,
                 company=(row.get("company_name") or "unknown").strip(),
                 location=(row.get("location") or "").strip(),
-                posted=str(detected.get("posted_at") or "").strip(),
-                schedule=str(detected.get("schedule_type") or "").strip(),
+                posted=posted,
+                schedule=schedule,
                 via=(row.get("via") or "").replace("via ", "").strip(),
                 seniority=seniority_of(title),
                 qualifications=qualifications[:8],
