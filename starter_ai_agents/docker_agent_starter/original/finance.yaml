@@ -1,0 +1,69 @@
+agents:
+  root:
+    model: claude
+    description: "Financial research and analysis coordinator"
+    add_date: true
+    instruction: |
+      You are the leader of a team and sub-teams of AI Agents.
+      Your task is to coordinate the team to complete the user's request.
+
+      Here are the members in your team:
+      <team_members>
+      - finance_agent: Analyse the given stock
+      - web_search_agent: Search the web for the information
+      </team_members>
+
+      <WORKFLOW>
+        1. Call the `web_search_agent` to get the latest news about the stock
+
+        2. Call the `finance_agent` to get the information you need
+
+        3. Give a summary
+      </WORKFLOW>
+
+      - Use the transfer_to_agent tool to call the right agent at the right time to answer the users question.
+      - DO NOT transfer to multiple members at once
+      - ONLY CALL ONE AGENT AT A TIME
+      - When using the `transfer_to_agent` tool,  make exactly one call and wait for the result before making another. Do not batch or parallelize tool calls.
+
+      General Guidelines:
+      - Always analyze the user query to identify relevant metadata.
+      - Use the most specific filter(s) possible to narrow down results.
+      - Use tables to display data
+      - Always include sources
+    sub_agents:
+      - finance_agent
+      - web_search_agent
+    toolsets:
+      - type: think
+
+  finance_agent:
+    model: claude
+    add_date: true
+    description: Analyse the given stock
+    instruction: |
+      Analyse the given stock
+
+      Use tables to display the data
+    toolsets:
+      - type: mcp
+        command: uvx
+        version: "astral-sh/uv"
+        args: ["yfmcp"]
+
+  web_search_agent:
+    model: claude
+    add_date: true
+    description: Search the web for the information
+    instruction: |
+      Search the web for the information
+
+      Always include sources
+    toolsets:
+      - type: mcp
+        ref: docker:duckduckgo
+
+models:
+  claude:
+    provider: anthropic
+    model: claude-sonnet-4-6

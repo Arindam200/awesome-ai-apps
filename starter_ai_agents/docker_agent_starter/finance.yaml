@@ -1,0 +1,100 @@
+agents:
+  root:
+    model: coordinator
+    description: "Financial research and analysis coordinator"
+    add_date: true
+    instruction: |
+      You are the leader of a team and sub-teams of AI Agents.
+      Your task is to coordinate the team to complete the user's request.
+
+      Here are the members in your team:
+      <team_members>
+      - finance_agent: Analyse the given stock
+      - web_search_agent: Search the web for the information
+      </team_members>
+
+      <WORKFLOW>
+        1. Call the `web_search_agent` to get the latest news about the stock.
+           Keep the task to one short sentence, such as "Find the 5 most important
+           news items about NVIDIA from the last 30 days". Don't list sub-topics.
+
+        2. Call the `finance_agent` to get the information you need
+
+        3. Give a summary
+      </WORKFLOW>
+
+      - Use the transfer_task tool to call the right agent at the right time to answer the users question.
+      - DO NOT transfer to multiple members at once
+      - ONLY CALL ONE AGENT AT A TIME
+      - When using the `transfer_task` tool,  make exactly one call and wait for the result before making another. Do not batch or parallelize tool calls.
+
+      General Guidelines:
+      - Always analyze the user query to identify relevant metadata.
+      - Use the most specific filter(s) possible to narrow down results.
+      - Use tables to display data
+      - Always include sources
+    sub_agents:
+      - finance_agent
+      - web_search_agent
+    toolsets:
+      - type: think
+
+  finance_agent:
+    model: specialist
+    add_date: true
+    description: Analyse the given stock
+    instruction: |
+      Analyse the given stock
+
+      Use tables to display the data
+    toolsets:
+      - type: mcp
+        command: uvx
+        version: "astral-sh/uv"
+        args: ["yfmcp"]
+
+  web_search_agent:
+    model: specialist
+    add_date: true
+    description: Search the web for the information
+    instruction: |
+      Search the web for the information
+
+      Always include sources
+
+      How to research:
+      1. Call `search` with a specific query. If you put a month or year in the
+         query, copy it from "Today's date" at the end of these instructions.
+         Never guess the year from memory.
+      2. Search snippets are not enough. Call `fetch_content` with max_length 4000
+         on the 2 or 3 most relevant news pages. Read each page once; don't page
+         through it.
+      3. Answer only from what you fetched. Give every item its date and its
+         source URL. Skip anything older than 30 days before today's date.
+
+      Keep it short: use at most 3 searches and 4 page fetches in total, then
+      write your answer. If a fetch fails, try one other result, not more.
+
+      Never answer from memory: your training data is out of date. If search or
+      fetch fails, say so plainly instead of guessing.
+    toolsets:
+      - type: mcp
+        ref: docker:duckduckgo
+
+# Docker's original runs every agent on Claude. Here each role gets a Nebius model:
+# a big agentic model plans and writes; a fast, cheap one does the tool calls.
+models:
+  coordinator:
+    provider: nebius
+    model: zai-org/GLM-5.3
+
+  specialist:
+    provider: nebius
+    model: nvidia/Nemotron-3_5-Lightning
+
+# DuckDuckGo's search and fetch tools aren't marked read-only, so Docker Agent
+# would ask before every call. Pre-approve just these two.
+permissions:
+  allow:
+    - "search"
+    - "fetch_content"

@@ -7,7 +7,7 @@
 
 # Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-**137 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
+**138 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
 
 [![GitHub stars](https://img.shields.io/github/stars/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Stars&color=yellow)](https://github.com/Arindam200/awesome-ai-apps/stargazers)
 [![Forks](https://img.shields.io/github/forks/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Forks)](https://github.com/Arindam200/awesome-ai-apps/network/members)
@@ -126,7 +126,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 | Category | What you'll find | Projects |
 | :-- | :-- | :-: |
-| [🧩 Starter Agents](#-starter-agents) | One minimal agent per framework: Agno, LangGraph, CrewAI, OpenAI Agents SDK, Google ADK, Mastra and more | 21 |
+| [🧩 Starter Agents](#-starter-agents) | One minimal agent per framework: Agno, LangGraph, CrewAI, OpenAI Agents SDK, Google ADK, Mastra and more | 22 |
 | [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 20 |
 | [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 9 |
 | [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
@@ -141,13 +141,14 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🧩 Starter Agents
 
-**Quick-start agents for learning and extending different AI frameworks.** _21 projects_
+**Quick-start agents for learning and extending different AI frameworks.** _22 projects_
 
 - [AutoGen Tool-Calling Starter](starter_ai_agents/autogen_starter): Microsoft AutoGen `AssistantAgent` with a custom tool, powered by Nebius Token Factory
 - [AWS Strands Agent Starter](starter_ai_agents/aws_strands_starter): Weather report agent using AWS Strands SDK
 - [CAMEL AI Model Benchmark](starter_ai_agents/camel_ai_starter): Performance benchmarking tool comparing various AI models
 - [Coding Harness Starter](starter_ai_agents/coding_harness_starter): OpenAI Agents SDK coding loop with plan, approval-gated edits, fixed tests, and bounded review, powered by Nebius Token Factory
 - [CrewAI Research Crew](starter_ai_agents/crewai_starter): Multi-agent research team example
+- [Docker Agent Stock Research Team](starter_ai_agents/docker_agent_starter): Three-agent stock research team in one YAML file, with Docker Agent on Nebius Token Factory (GLM-5.3 + Nemotron) and MCP tools for web search and Yahoo Finance
 - [Docker cagent Multi-Agent Starter](starter_ai_agents/cagent_starter): Open-source customizable multi-agent runtime by Docker
 - [DSPy Optimization Starter](starter_ai_agents/dspy_starter): DSPy framework for building and optimizing AI systems
 - [Google Agent Development Kit Starter](starter_ai_agents/google_adk_starter): Google Agent Development Kit starter template
