@@ -85,11 +85,12 @@ NEBIUS_API_KEY="your_nebius_api_key_here"
 
    ```bash
    uv run main.py
-   If you installed dependencies with pip, run:
+   ```
 
-   \\ash
+   If you installed dependencies with `pip`, run:
+
+   ```bash
    python main.py
-   \
    ```
 
 2. The agent will:
