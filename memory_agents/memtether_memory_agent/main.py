@@ -6,8 +6,9 @@ Requires:
   pip install memtether openai python-dotenv rich
   .env with NEBIUS_API_KEY (or any OpenAI-compatible endpoint via OPENAI_BASE_URL)
 
-All memory operations use the MemTether Python API (memtether.remember / gateway.correct /
-gateway.as_of) and the `memtether court <uid>` CLI for the printable case file.
+Steps 1-4 are all real MemTether operations (Python API + court CLI). Step 5 uses
+Nebius chat completion to draft the *next* memory from the audit trail, showing
+how an LLM naturally feeds a governed store.
 """
 
 import os
@@ -31,8 +32,7 @@ MEMTETHER_DB = Path(tempfile.mkdtemp(prefix="memtether_demo_")) / "demo.db"
 os.environ["MEM_DB"] = str(MEMTETHER_DB)
 os.environ.setdefault("MEMTETHER_HOME", str(MEMTETHER_DB.parent))
 
-# LLM is optional for the demo flow (steps 1-4 are all real API calls to MemTether);
-# it is used to demonstrate a natural-language "what should I remember?" turn.
+# ------------------------------------------------------------------ LLM setup
 client = OpenAI(
     base_url=os.getenv("OPENAI_BASE_URL", "https://api.tokenfactory.nebius.com/v1"),
     api_key=os.getenv("NEBIUS_API_KEY", ""),
@@ -114,10 +114,29 @@ def step4_court(uid: str) -> None:
     console.print(out)
 
 
+def step5_llm_draft() -> None:
+    console.print(Panel("Step 5 — LLM drafts the next memory (Nebius chat)", style="cyan"))
+    system = (
+        "You are a memory assistant. Given an audit trail excerpt, propose ONE short "
+        "fact worth remembering next. Reply with the fact sentence only, no preamble."
+    )
+    user = (
+        "Audit trail: remember 'User prefers Clash proxy on port 7897' → corrected to "
+        "'User switched Clash proxy to port 7890'. What is the most likely next useful "
+        "fact to remember about this user's proxy setup?"
+    )
+    draft = llm(system, user).strip().splitlines()[0][:120]
+    console.print(f"  LLM draft: [bold]{draft}[/bold]")
+    import memtether
+    r = memtether.remember(draft, type="fact", source="demo-agent-llm")
+    if r.get("ok"):
+        console.print(f"  stored as: {r['uid']}  (source=demo-agent-llm)")
+
+
 def main() -> None:
     console.print(Panel(
         "[bold]MemTether Governed Memory Agent[/bold]\n"
-        "Write → Correct (supersede) → as_of query → Memory Court audit",
+        "Write → Correct (supersede) → as_of query → Memory Court audit → LLM draft",
         style="green",
     ))
     console.print(f"  DB: {MEMTETHER_DB}\n")
@@ -126,6 +145,7 @@ def main() -> None:
     uid2 = step2_correct(uid1)
     step3_as_of()
     step4_court(uid2)
+    step5_llm_draft()
 
     console.print(Panel(
         "[bold]Done.[/bold] Every write is hash-chained. Corrections supersede, never delete.\n"

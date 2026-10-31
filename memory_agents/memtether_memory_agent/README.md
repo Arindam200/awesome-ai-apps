@@ -85,6 +85,11 @@ NEBIUS_API_KEY="your_nebius_api_key_here"
 
    ```bash
    uv run main.py
+   If you installed dependencies with pip, run:
+
+   \\ash
+   python main.py
+   \
    ```
 
 2. The agent will:
@@ -95,6 +100,8 @@ NEBIUS_API_KEY="your_nebius_api_key_here"
    **Step 3 - Query memory as of a past date.** The agent calls `gateway.as_of(at, kind="valid")` to get the bi-temporal historical state.
 
    **Step 4 - Audit.** The agent runs `memtether court <uid>` to display the full case file: temporal validity, provenance chain, conflict verdicts, and hash-chain integrity.
+
+   **Step 5 - LLM draft (optional).** The agent asks Nebius chat completion to propose the next fact worth remembering, then stores it via memtether.remember(...) with source=demo-agent-llm — showing how an LLM naturally feeds a governed store.
 
 3. **Expected output** (abridged, real run):
 
@@ -116,7 +123,7 @@ NEBIUS_API_KEY="your_nebius_api_key_here"
    | Step 4 - Memory Court audit                                |
    | MEMTETHER MEMORY COURT - CASE FILE                         |
    | 1. CONTENT (current active version)                        |
-   |   test fact port 7890                                      |
+   |   User switched Clash proxy to port 7890                   |
    | 2. TEMPORAL EVIDENCE (bi-temporal)                         |
    |   valid (T):  2026-10-31 10:57:31 -> present               |
    | 3. PROVENANCE CHAIN (audit_log)                            |
