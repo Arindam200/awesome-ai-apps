@@ -26,12 +26,6 @@ load_dotenv()
 
 console = Console()
 
-# ------------------------------------------------------------------ MemTether setup
-# Use a temp DB so the demo is self-contained and doesn't touch any real memory hub.
-MEMTETHER_DB = Path(tempfile.mkdtemp(prefix="memtether_demo_")) / "demo.db"
-os.environ["MEM_DB"] = str(MEMTETHER_DB)
-os.environ.setdefault("MEMTETHER_HOME", str(MEMTETHER_DB.parent))
-
 # ------------------------------------------------------------------ LLM setup
 client = OpenAI(
     base_url=os.getenv("OPENAI_BASE_URL", "https://api.tokenfactory.nebius.com/v1"),
@@ -134,6 +128,13 @@ def step5_llm_draft() -> None:
 
 
 def main() -> None:
+    # MemTether setup lives inside main() so importing this module never
+    # mutates the process environment (CodeRabbit round-4 finding).
+    global MEMTETHER_DB
+    MEMTETHER_DB = Path(tempfile.mkdtemp(prefix="memtether_demo_")) / "demo.db"
+    os.environ["MEM_DB"] = str(MEMTETHER_DB)
+    os.environ.setdefault("MEMTETHER_HOME", str(MEMTETHER_DB.parent))
+
     console.print(Panel(
         "[bold]MemTether Governed Memory Agent[/bold]\n"
         "Write → Correct (supersede) → as_of query → Memory Court audit → LLM draft",
