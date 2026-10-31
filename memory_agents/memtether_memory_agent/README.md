@@ -88,37 +88,43 @@ NEBIUS_API_KEY="your_nebius_api_key_here"
    ```
 
 2. The agent will:
+   **Step 1 - Write a memory.** The agent calls the MemTether Python API `memtether.remember(...)` with a `source` tag and a fact, then prints the memory UID.
 
-   **Step 1 — Write a memory.** The agent calls `memtether remember` with a source tag and a fact, then prints the memory UID and chain anchor.
+   **Step 2 - Correct the memory.** The agent realizes a fact is outdated and calls `gateway.correct(...)` (supersede). The old version is marked superseded but not deleted - you can still query it with `gateway.as_of(...)`.
 
-   **Step 2 — Correct the memory.** The agent realizes a fact is outdated and calls `memtether correct` (supersede). The old version is marked superseded but not deleted — you can still query it with `--as_of`.
+   **Step 3 - Query memory as of a past date.** The agent calls `gateway.as_of(at, kind="valid")` to get the bi-temporal historical state.
 
-   **Step 3 — Query memory as of a past date.** The agent calls `memtether search --as_of 2026-10-01` to get the historical state, showing that the old value was "true" at that time.
+   **Step 4 - Audit.** The agent runs `memtether court <uid>` to display the full case file: temporal validity, provenance chain, conflict verdicts, and hash-chain integrity.
 
-   **Step 4 — Audit.** The agent runs `memtether court <uid>` to display the full case file: temporal validity, provenance chain, conflict verdicts, and hash-chain integrity.
-
-3. **Expected output** (abridged):
+3. **Expected output** (abridged, real run):
 
    ```
-   ┌────────────────────────────────────────────────┐
-   │ Step 1: Writing memory...                      │
-   │ uid: fact-20261031-abc123  source: demo-agent  │
-   │ chain: PASS (1 anchor, 1 entry)                │
-   ├────────────────────────────────────────────────┤
-   │ Step 2: Correcting (supersede)...              │
-   │ old: fact-20261031-abc123 → superseded         │
-   │ new: fact-20261031-def456                      │
-   ├────────────────────────────────────────────────┤
-   │ Step 3: Searching as_of 2026-10-01...          │
-   │ result: old value (correct for that date)      │
-   ├────────────────────────────────────────────────┤
-   │ Step 4: Memory Court audit...                  │
-   │ 1. CONTENT    Clash proxy port is 7897         │
-   │ 2. TEMPORAL    valid: 10-05 → present          │
-   │ 3. PROVENANCE #1 remember → #2 correct         │
-   │ 4. CONFLICTS  case #3: verdict=superseded      │
-   │ 5. INTEGRITY  chain: PASS                      │
-   └────────────────────────────────────────────────┘
+   +============================================================+
+   | Step 1 - Writing a memory via MemTether                    |
+   |   uid: fact-20261031-105731-c60584857488                   |
+   |   fact: User prefers Clash proxy on port 7897              |
+   |   source: demo-agent  (hash-chained, tamper-evident)       |
+   +------------------------------------------------------------+
+   | Step 2 - Correcting the memory (supersede, not delete)     |
+   |   old: fact-...c60584857488 -> superseded                  |
+   |   new: fact-20261031-105731-64746a294e3b  op: supersede    |
+   +------------------------------------------------------------+
+   | Step 3 - Querying memory as of a past date                 |
+   |   count at 2026-01-01: 0 (demo DB created just now)        |
+   |   latest active fact: User switched Clash proxy to 7890    |
+   +------------------------------------------------------------+
+   | Step 4 - Memory Court audit                                |
+   | MEMTETHER MEMORY COURT - CASE FILE                         |
+   | 1. CONTENT (current active version)                        |
+   |   test fact port 7890                                      |
+   | 2. TEMPORAL EVIDENCE (bi-temporal)                         |
+   |   valid (T):  2026-10-31 10:57:31 -> present               |
+   | 3. PROVENANCE CHAIN (audit_log)                            |
+   |   #1 remember  by=demo-agent                               |
+   |   #2 correct   by=demo-agent                               |
+   | 5. INTEGRITY PROOF                                         |
+   |   chain: PASS (1 anchors, 2 entries hashed)                |
+   +============================================================+
    ```
 
 ## 📂 Project Structure

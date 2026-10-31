@@ -5,9 +5,11 @@ from __future__ import annotations
 Requires:
   pip install memtether openai python-dotenv rich
   .env with NEBIUS_API_KEY (or any OpenAI-compatible endpoint via OPENAI_BASE_URL)
+
+All memory operations use the MemTether Python API (memtether.remember / gateway.correct /
+gateway.as_of) and the `memtether court <uid>` CLI for the printable case file.
 """
 
-import json
 import os
 import subprocess
 import sys
@@ -18,7 +20,6 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from rich.console import Console
 from rich.panel import Panel
-from rich.table import Table
 
 load_dotenv()
 
@@ -27,24 +28,11 @@ console = Console()
 # ------------------------------------------------------------------ MemTether setup
 # Use a temp DB so the demo is self-contained and doesn't touch any real memory hub.
 MEMTETHER_DB = Path(tempfile.mkdtemp(prefix="memtether_demo_")) / "demo.db"
-os.environ["MEMTETHER_DB"] = str(MEMTETHER_DB)
+os.environ["MEM_DB"] = str(MEMTETHER_DB)
+os.environ.setdefault("MEMTETHER_HOME", str(MEMTETHER_DB.parent))
 
-
-def _run(args: list[str], label: str) -> dict:
-    """Run a memtether CLI subcommand and return parsed JSON."""
-    cmd = ["memtether", *args]
-    r = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
-    if r.returncode != 0:
-        console.print(f"[red]memtether {' '.join(args[:2])} failed (rc={r.returncode})[/red]")
-        console.print(r.stderr or r.stdout)
-        sys.exit(1)
-    try:
-        return json.loads(r.stdout)
-    except json.JSONDecodeError:
-        return {"raw": r.stdout}
-
-
-# ------------------------------------------------------------------ LLM setup
+# LLM is optional for the demo flow (steps 1-4 are all real API calls to MemTether);
+# it is used to demonstrate a natural-language "what should I remember?" turn.
 client = OpenAI(
     base_url=os.getenv("OPENAI_BASE_URL", "https://api.tokenfactory.nebius.com/v1"),
     api_key=os.getenv("NEBIUS_API_KEY", ""),
@@ -62,67 +50,68 @@ def llm(system: str, user: str) -> str:
     return resp.choices[0].message.content or ""
 
 
+def _court_cli(uid: str) -> str:
+    """Run `memtether court <uid>` and return the printable case file."""
+    r = subprocess.run(
+        ["memtether", "court", uid],
+        capture_output=True, text=True, encoding="utf-8", errors="replace",
+    )
+    if r.returncode != 0:
+        console.print(f"[red]memtether court failed (rc={r.returncode})[/red]")
+        console.print(r.stderr or r.stdout)
+        sys.exit(1)
+    return r.stdout
+
+
 # ------------------------------------------------------------------ Demo steps
 def step1_write() -> str:
-    console.print(Panel("Step 1 — Writing a memory via MemTether", style="cyan"))
+    console.print(Panel("Step 1 — Writing a memory via MemTether Python API", style="cyan"))
+    import memtether
     fact = "User prefers Clash proxy on port 7897"
-    r = _run(
-        ["remember", fact, "--source", "demo-agent", "--type", "fact", "--json"],
-        "remember",
-    )
-    uid = r.get("uid") or r.get("data", {}).get("uid", "unknown")
+    r = memtether.remember(fact, type="fact", source="demo-agent")
+    if not r.get("ok"):
+        console.print(f"[red]remember failed: {r}[/red]")
+        sys.exit(1)
+    uid = r["uid"]
     console.print(f"  uid: [bold]{uid}[/bold]")
     console.print(f"  fact: {fact}")
-    console.print(f"  source: demo-agent  (hash-chained, tamper-evident)")
+    console.print("  source: demo-agent  (hash-chained, tamper-evident)")
     return uid
 
 
 def step2_correct(old_uid: str) -> str:
     console.print(Panel("Step 2 — Correcting the memory (supersede, not delete)", style="cyan"))
+    from gateway import correct
     new_fact = "User switched Clash proxy to port 7890"
-    r = _run(
-        ["correct", old_uid, "--new-content", new_fact, "--source", "demo-agent", "--json"],
-        "correct",
-    )
-    new_uid = r.get("uid") or r.get("data", {}).get("uid", "unknown")
-    op = r.get("op") or r.get("data", {}).get("op", "supersede")
+    r = correct(old_uid, new_fact, reason="user corrected the port", by_agent="demo-agent")
+    if not r.get("ok"):
+        console.print(f"[red]correct failed: {r}[/red]")
+        sys.exit(1)
+    new_uid = r["new_uid"]
     console.print(f"  old: [dim]{old_uid}[/dim] → [yellow]superseded[/yellow]")
-    console.print(f"  new: [bold]{new_uid}[/bold]  op: {op}")
-    console.print(f"  (old version is NOT deleted — query it with --as_of)")
+    console.print(f"  new: [bold]{new_uid}[/bold]  op: {r.get('op', 'supersede')}")
+    console.print("  (old version is NOT deleted — query it with as_of)")
     return new_uid
 
 
 def step3_as_of() -> None:
-    console.print(Panel("Step 3 — Querying memory as of a past date", style="cyan"))
-    r = _run(
-        ["search", "Clash proxy port", "--as_of", "2026-10-01", "--json"],
-        "search --as_of",
-    )
-    hits = r.get("hits") or r.get("data", {}).get("hits") or []
-    console.print(f"  query: 'Clash proxy port' as_of 2026-10-01")
-    if hits:
-        h = hits[0]
-        console.print(f"  → [bold]{h.get('content', h.get('text', ''))[:80]}[/bold]")
-        console.print(f"    (correct for that date — the correction hadn't happened yet)")
-    else:
-        console.print("  → no hits (temporal filter working)")
+    console.print(Panel("Step 3 — Querying memory as of a past date (bi-temporal)", style="cyan"))
+    from gateway import as_of
+    r = as_of("2026-01-01 00:00:00", kind="valid")
+    console.print("  query: all facts valid at 2026-01-01 (before this demo ran)")
+    console.print(f"  count: {r['count']} (correct — demo DB was created just now)")
+    r2 = as_of("2100-01-01 00:00:00", kind="valid")
+    active = [row for row in r2["rows"] if row["status"] == "active"]
+    if active:
+        row = active[-1]
+        console.print(f"  latest active fact: [bold]{row['content'][:60]}[/bold]")
+        console.print(f"    valid_from={row['valid_from']}  status={row['status']}")
 
 
 def step4_court(uid: str) -> None:
     console.print(Panel("Step 4 — Memory Court audit (hash chain + provenance)", style="cyan"))
-    r = _run(["court", uid, "--json"], "court")
-    table = Table(show_header=False, box=None)
-    table.add_column(style="bold")
-    table.add_column()
-    data = r.get("data", r)
-    table.add_row("1. CONTENT", str(data.get("content", ""))[:60])
-    table.add_row("2. TEMPORAL", str(data.get("temporal", "valid")))
-    prov = data.get("provenance", "")
-    table.add_row("3. PROVENANCE", str(prov)[:60] if prov else "remember → correct chain")
-    table.add_row("4. CONFLICTS", str(data.get("conflicts", "case: superseded"))[:60])
-    chain = data.get("chain", data.get("integrity", "PASS"))
-    table.add_row("5. INTEGRITY", f"chain: {chain}")
-    console.print(table)
+    out = _court_cli(uid)
+    console.print(out)
 
 
 def main() -> None:
