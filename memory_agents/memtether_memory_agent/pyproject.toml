@@ -1,0 +1,12 @@
+[project]
+name = "memtether-memory-agent"
+version = "0.1.0"
+description = "A governed memory agent that writes, corrects, and recalls memories via MemTether (pip install memtether), with Nebius Token Factory as the LLM."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "memtether>=0.1.0a83",
+    "openai>=1.97.0",
+    "python-dotenv>=1.1.1",
+    "rich>=14.0.0",
+]
