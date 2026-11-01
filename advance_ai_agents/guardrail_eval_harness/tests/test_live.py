@@ -195,6 +195,62 @@ class TestLiveMocked:
         assert aggregate == "error"
         assert totals.errored > 0
 
+    def test_provider_error_becomes_labeled_run_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import httpx2
+        from openai import APIConnectionError
+
+        monkeypatch.setenv("NEBIUS_API_KEY", "fake-key")
+        backend = LiveBackend(model_name="test-model")
+
+        class ExplodingModel(ScriptedModel):
+            def __init__(self) -> None:
+                super().__init__([])
+
+            async def get_response(self, *args, **kwargs):
+                raise APIConnectionError(request=httpx2.Request("POST", "https://x"))
+
+        backend.build_model = lambda: ExplodingModel()  # type: ignore[method-assign]
+        trace = asyncio.run(backend.run_case(make_live_scenario()))
+        assert trace.run_error is not None
+        assert trace.run_error.startswith("provider error: APIConnectionError")
+
+    def test_live_report_continues_past_provider_failure(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import httpx2
+        from openai import APIConnectionError
+
+        monkeypatch.setenv("NEBIUS_API_KEY", "fake-key")
+        backend = LiveBackend(model_name="test-model")
+        healthy = ScriptedModel(
+            [
+                [
+                    {
+                        "type": "message",
+                        "text": '{"status":"answered","message":"TCK-1001 is open.","refusal_reason":null}',
+                    }
+                ]
+            ]
+        )
+
+        class ExplodingModel(ScriptedModel):
+            def __init__(self) -> None:
+                super().__init__([])
+
+            async def get_response(self, *args, **kwargs):
+                raise APIConnectionError(request=httpx2.Request("POST", "https://x"))
+
+        built = iter([healthy, ExplodingModel()])
+        backend.build_model = lambda: next(built)  # type: ignore[method-assign]
+        cases, totals, aggregate = live_report(
+            backend, [make_live_scenario(), make_live_scenario()]
+        )
+        assert [c.status for c in cases] == ["pass", "error"]
+        assert aggregate == "error"
+        assert totals.passed > 0 and totals.errored > 0
+
     def test_offline_never_touches_live_module(self) -> None:
         from guardrail_eval_harness.evaluation import evaluate_scenarios
 

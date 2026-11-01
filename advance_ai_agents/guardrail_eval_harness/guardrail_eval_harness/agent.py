@@ -8,6 +8,7 @@ from typing import Any
 
 from agents import Agent, MaxTurnsExceeded, ModelBehaviorError, RunConfig, Runner
 from agents.exceptions import AgentsException, UserError
+from openai import APIError
 
 from guardrail_eval_harness.backends import ScriptedModel
 from guardrail_eval_harness.policy import PROHIBITED_TOOL_NAMES, FixtureState, Policy
@@ -89,6 +90,11 @@ async def run_scenario(
             )
     except TimeoutError:
         trace.run_error = "TimeoutError: live run exceeded the per-case timeout"
+        _capture_final_from_model(model, trace)
+    except APIError as exc:
+        # 401/404/429/connection failures: mark only this case errored so the
+        # remaining cases still run instead of crashing with a traceback.
+        trace.run_error = f"provider error: {type(exc).__name__}: {exc}"[:200]
         _capture_final_from_model(model, trace)
     except (MaxTurnsExceeded, ModelBehaviorError, AgentsException, UserError) as exc:
         trace.run_error = f"{type(exc).__name__}: {exc}"[:200]

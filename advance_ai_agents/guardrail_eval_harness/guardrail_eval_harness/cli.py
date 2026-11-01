@@ -8,6 +8,7 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from dotenv import load_dotenv
+from openai import APIError
 
 from guardrail_eval_harness import reporting
 from guardrail_eval_harness.evaluation import evaluate_scenarios
@@ -85,6 +86,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             cases, totals, aggregate = live_report(backend, live_scenarios)
         except (OSError, RuntimeError, ValueError) as exc:
             print(f"runner error: {type(exc).__name__}: {exc}", file=sys.stderr)
+            return EXIT_CONFIG_ERROR
+        except APIError as exc:
+            # Per-case provider failures are already caught in run_scenario;
+            # anything that escapes still must not surface as a traceback.
+            print(f"provider error: {type(exc).__name__}: {exc}", file=sys.stderr)
             return EXIT_CONFIG_ERROR
     else:
         if args.live_model:
