@@ -27,15 +27,29 @@ load_dotenv()
 console = Console()
 
 # ------------------------------------------------------------------ LLM setup
-client = OpenAI(
-    base_url=os.getenv("OPENAI_BASE_URL", "https://api.tokenfactory.nebius.com/v1"),
-    api_key=os.getenv("NEBIUS_API_KEY", ""),
-)
 MODEL = os.getenv("LLM_MODEL", "deepseek-ai/DeepSeek-V3-0324")
+
+
+def _llm_client():
+    """Build the OpenAI-compatible client lazily so that importing this
+    module (or running the memory-only steps 1-4) never requires an API key.
+    """
+    return OpenAI(
+        base_url=os.getenv("OPENAI_BASE_URL", "https://api.tokenfactory.nebius.com/v1"),
+        api_key=os.getenv("NEBIUS_API_KEY", ""),
+    )
 
 
 def llm(system: str, user: str) -> str:
     """Call the LLM once and return the assistant reply."""
+    if not os.getenv("NEBIUS_API_KEY") and not os.getenv("OPENAI_API_KEY"):
+        console.print(
+            "[yellow]LLM step skipped: set NEBIUS_API_KEY (or OPENAI_BASE_URL/"
+            "OPENAI_API_KEY) in .env to enable step 5. Steps 1-4 (memory governance)"
+            "already ran successfully.[/yellow]"
+        )
+        return ""
+    client = _llm_client()
     resp = client.chat.completions.create(
         model=MODEL,
         messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
@@ -45,9 +59,17 @@ def llm(system: str, user: str) -> str:
 
 
 def _court_cli(uid: str) -> str:
-    """Run `memtether court <uid>` and return the printable case file."""
+    """Run `memtether court <uid>` and return the printable case file.
+
+    Uses `sys.executable -m memtether` when the `memtether` script is not on
+    PATH (common when the package is installed inside a venv that is not
+    activated in the parent shell).
+    """
+    import shutil
+    exe = shutil.which("memtether")
+    cmd = [exe, "court", uid] if exe else [sys.executable, "-m", "memtether", "court", uid]
     r = subprocess.run(
-        ["memtether", "court", uid],
+        cmd,
         capture_output=True, text=True, encoding="utf-8", errors="replace",
     )
     if r.returncode != 0:
@@ -119,7 +141,16 @@ def step5_llm_draft() -> None:
         "'User switched Clash proxy to port 7890'. What is the most likely next useful "
         "fact to remember about this user's proxy setup?"
     )
-    draft = llm(system, user).strip().splitlines()[0][:120]
+    try:
+        reply = llm(system, user)
+    except Exception as exc:
+        console.print(f"  [yellow]step 5 skipped: LLM call failed ({type(exc).__name__}: {str(exc)[:120]})[/yellow]")
+        console.print("  [yellow]Memory governance steps 1-4 already completed and are fully functional without it.[/yellow]")
+        return
+    if not reply:
+        console.print("  [yellow]step 5 skipped (no LLM key) - memory governance steps 1-4 already completed[/yellow]")
+        return
+    draft = reply.strip().splitlines()[0][:120]
     console.print(f"  LLM draft: [bold]{draft}[/bold]")
     import memtether
     r = memtether.remember(draft, type="fact", source="demo-agent-llm")
