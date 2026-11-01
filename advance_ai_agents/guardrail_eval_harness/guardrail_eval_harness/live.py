@@ -49,32 +49,34 @@ class LiveBackend:
             raise ValueError("NEBIUS_API_KEY must be set for --mode live")
         self._client: Any | None = None
 
-    def _ensure_client(self) -> Any:
-        if self._client is None:
-            from openai import AsyncOpenAI
-
-            self._client = AsyncOpenAI(
-                base_url=os.getenv("EXAMPLE_BASE_URL", self.base_url),
-                api_key=self._api_key,
-            )
-        return self._client
-
     def build_model(self) -> Any:
+        # A fresh client per case: cases run in separate asyncio.run() loops,
+        # and an httpx.AsyncClient is bound to the loop that created it.
         from agents import OpenAIChatCompletionsModel
+        from openai import AsyncOpenAI
 
+        self._client = AsyncOpenAI(
+            base_url=os.getenv("EXAMPLE_BASE_URL", self.base_url),
+            api_key=self._api_key,
+        )
         return OpenAIChatCompletionsModel(
             model=self.model_name,
-            openai_client=self._ensure_client(),
+            openai_client=self._client,
         )
 
     async def run_case(self, scenario: Scenario) -> RunTrace:
         model = self.build_model()
-        return await run_scenario(
-            scenario,
-            model=model,
-            timeout_seconds=self.per_case_timeout_seconds,
-            max_turns=self.max_turns,
-        )
+        try:
+            return await run_scenario(
+                scenario,
+                model=model,
+                timeout_seconds=self.per_case_timeout_seconds,
+                max_turns=self.max_turns,
+            )
+        finally:
+            client, self._client = self._client, None
+            if client is not None:
+                await client.close()
 
 
 def live_report(

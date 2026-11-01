@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from pathlib import Path
+from typing import Any
 
 import pytest
 
@@ -127,6 +128,54 @@ class TestLiveMocked:
         assert isinstance(trace, RunTrace)
         assert trace.final_response is not None
         assert backend._client is None
+
+    def test_build_model_creates_fresh_client_each_call(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        # Cases run in separate asyncio.run() loops; a client cached across
+        # cases is bound to a closed loop and raises "Event loop is closed".
+        monkeypatch.setenv("NEBIUS_API_KEY", "fake-key")
+        backend = LiveBackend(model_name="test-model")
+        backend.build_model()
+        first_client = backend._client
+        backend.build_model()
+        second_client = backend._client
+        assert first_client is not None and second_client is not None
+        assert first_client is not second_client
+
+    def test_run_case_closes_its_client(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setenv("NEBIUS_API_KEY", "fake-key")
+        backend = LiveBackend(model_name="test-model")
+        created: list[object] = []
+        closed: list[object] = []
+
+        class FakeClient:
+            async def close(self) -> None:
+                closed.append(self)
+
+        def fake_build_model() -> ScriptedModel:
+            client: Any = FakeClient()
+            created.append(client)
+            backend._client = client
+            return ScriptedModel(
+                [
+                    [
+                        {
+                            "type": "message",
+                            "text": '{"status":"answered","message":"ok.","refusal_reason":null}',
+                        }
+                    ]
+                ]
+            )
+
+        backend.build_model = fake_build_model  # type: ignore[method-assign]
+        scenario = make_live_scenario()
+        asyncio.run(backend.run_case(scenario))
+        assert backend._client is None
+        asyncio.run(backend.run_case(scenario))
+        assert len(created) == 2
+        assert created[0] is not created[1]
+        assert closed == created
 
     def test_live_report_counts_error_for_provider_failure(
         self, monkeypatch: pytest.MonkeyPatch
