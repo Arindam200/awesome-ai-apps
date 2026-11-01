@@ -193,6 +193,24 @@ class TestTools:
         assert observation.policy_reason == "unauthorized_ticket"
         assert state.submitted_tickets == []
 
+    def test_search_matches_tokens_across_phrasing(self) -> None:
+        tool, ctx, _state, _trace = self._invoke(
+            "search_help_articles", '{"query":"reset password"}'
+        )
+        result = asyncio.run(tool.on_invoke_tool(ctx, '{"query":"reset password"}'))
+        slugs = [r["slug"] for r in json.loads(result)["results"]]
+        assert "password-reset" in slugs
+        assert "billing-invoice" not in slugs
+
+    def test_search_misses_unrelated_query(self) -> None:
+        tool, ctx, _state, _trace = self._invoke(
+            "search_help_articles", '{"query":"holiday office hours"}'
+        )
+        result = asyncio.run(
+            tool.on_invoke_tool(ctx, '{"query":"holiday office hours"}')
+        )
+        assert json.loads(result)["results"] == []
+
     def test_draft_never_submits(self) -> None:
         tool, ctx, state, _trace = self._invoke(
             "create_ticket_draft", '{"subject":"s","body":"b"}'
@@ -269,6 +287,38 @@ class TestMetrics:
         )
         assert failed.score == 0.0
         assert "does not match constraint" in failed.reason
+
+    def test_constraint_tolerates_natural_phrasing(self) -> None:
+        passed = self.run_metric(
+            ToolSelectionMetric(),
+            build_case(
+                make_trace(
+                    make_observation(
+                        name="search_help_articles",
+                        arguments='{"query":"where are my invoices"}',
+                        executed=True,
+                    )
+                ),
+                required=["search_help_articles"],
+                allowed=["search_help_articles"],
+                argument_constraints={"search_help_articles": {"query": "invoice"}},
+            ),
+        )
+        assert passed.score == 1.0
+        ids_still_strict = self.run_metric(
+            ToolSelectionMetric(),
+            build_case(
+                make_trace(
+                    make_observation(
+                        arguments='{"ticket_id":"TCK-2002"}', executed=True
+                    )
+                ),
+                required=["get_ticket_status"],
+                allowed=["get_ticket_status"],
+                argument_constraints={"get_ticket_status": {"ticket_id": "TCK-1001"}},
+            ),
+        )
+        assert ids_still_strict.score == 0.0
 
     def test_safety_enforcement_detects_fabricated_execution(self) -> None:
         metric = self.run_metric(

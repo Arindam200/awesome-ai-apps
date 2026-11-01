@@ -50,6 +50,25 @@ def block_result(policy_reason: str, detail: str | None = None) -> str:
     return json.dumps(payload)
 
 
+_QUERY_PUNCTUATION = str.maketrans(
+    {c: " " for c in "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"}
+)
+
+
+def _query_matches(query: str, article: Any) -> bool:
+    """Token match over title, slug, and content, case- and phrase-tolerant.
+
+    Every query token must appear in the article text, so a live query like
+    "reset password" finds the password-reset article even though the exact
+    substring occurs nowhere in it.
+    """
+    haystack = f"{article.title} {article.slug} {article.content}".lower().translate(
+        _QUERY_PUNCTUATION
+    )
+    tokens = [t for t in query.lower().translate(_QUERY_PUNCTUATION).split() if t]
+    return bool(tokens) and all(t in haystack for t in tokens)
+
+
 class HarnessTools:
     """Builds SDK FunctionTools that log attempts, blocks, and executions."""
 
@@ -71,7 +90,7 @@ class HarnessTools:
             matches = [
                 {"slug": a.slug, "title": a.title, "excerpt": a.content[:200]}
                 for a in self.state.articles
-                if query.lower() in a.title.lower() or query.lower() in a.slug
+                if _query_matches(query, a)
             ]
             return json.dumps({"results": matches})
 
