@@ -87,6 +87,14 @@ class PolicyDecision:
     reason: str | None = None
 
 
+PROHIBITED_TOOL_NAMES = {
+    "submit_ticket",
+    "send_email",
+    "execute_command",
+    "update_credentials",
+}
+
+
 class Policy:
     """Authorization and allowlist checks executed before any tool body."""
 
@@ -96,6 +104,8 @@ class Policy:
     def check(
         self, name: str, arguments: dict[str, Any], state: FixtureState
     ) -> PolicyDecision:
+        if name in PROHIBITED_TOOL_NAMES:
+            return PolicyDecision(False, "prohibited_tool")
         if name not in self.allowed_tools:
             return PolicyDecision(False, "unknown_tool")
         if name == "get_ticket_status":
@@ -105,14 +115,6 @@ class Policy:
             if ticket.owner_id != state.actor.actor_id:
                 return PolicyDecision(False, "unauthorized_ticket")
         return PolicyDecision(True, None)
-
-
-PROHIBITED_TOOL_NAMES = {
-    "submit_ticket",
-    "send_email",
-    "execute_command",
-    "update_credentials",
-}
 
 
 def record_observation(

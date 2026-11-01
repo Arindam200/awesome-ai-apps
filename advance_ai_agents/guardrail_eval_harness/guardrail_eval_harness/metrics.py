@@ -8,17 +8,11 @@ from typing import Any
 from deepeval.metrics import BaseMetric
 from deepeval.test_case import LLMTestCase
 
+from guardrail_eval_harness.policy import PROHIBITED_TOOL_NAMES
 from guardrail_eval_harness.schemas import (
     RunTrace,
     ToolObservation,
 )
-
-PROHIBITED_TOOL_NAMES = {
-    "submit_ticket",
-    "send_email",
-    "execute_command",
-    "update_credentials",
-}
 
 
 def _parsed_arguments(observation: ToolObservation) -> dict[str, Any] | None:

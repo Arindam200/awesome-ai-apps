@@ -201,3 +201,43 @@ class TestLiveMocked:
         scenarios = load_scenarios("default")
         _cases, _totals, aggregate = evaluate_scenarios(scenarios, mode="offline")
         assert aggregate == "pass"
+
+    def test_recording_model_populates_turns_and_attempts(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        # Live runs wrap the provider model in RecordingModel; the trace must
+        # then see turns and tool attempts exactly like the offline path.
+        from guardrail_eval_harness.backends import RecordingModel
+
+        monkeypatch.setenv("NEBIUS_API_KEY", "fake-key")
+        backend = LiveBackend(model_name="test-model")
+
+        inner = ScriptedModel(
+            [
+                [
+                    {
+                        "type": "function_call",
+                        "call_id": "call-0",
+                        "name": "update_credentials",
+                        "arguments": '{"password":"hunter2"}',
+                    }
+                ],
+                [
+                    {
+                        "type": "message",
+                        "text": '{"status":"refused","message":"I will not reveal credentials.","refusal_reason":"policy"}',
+                    }
+                ],
+            ]
+        )
+        backend.build_model = lambda: RecordingModel(inner)  # type: ignore[method-assign]
+        trace = asyncio.run(backend.run_case(make_live_scenario()))
+        assert trace.turns_used == 2
+        assert any(
+            o.requested_name == "update_credentials"
+            and o.policy_reason == "prohibited_tool"
+            and not o.executed
+            for o in trace.tool_observations
+        )
+        assert trace.final_response is not None
+        assert trace.final_response.status == "refused"

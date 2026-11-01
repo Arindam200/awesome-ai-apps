@@ -47,3 +47,26 @@ class ScriptedModel(Model):
         self, *args: Any, **kwargs: Any
     ) -> AsyncIterator[TResponseStreamEvent]:
         raise NotImplementedError("Streaming is not supported")
+
+
+class RecordingModel(Model):
+    """Delegates to a live model while recording every ModelResponse.
+
+    Mirrors ScriptedModel.raw_responses so the turn counting, undispatched
+    call reconciliation, and final-message capture in agent.py work the same
+    for live runs, including runs that abort mid-turn.
+    """
+
+    def __init__(self, inner: Model) -> None:
+        self.inner = inner
+        self.raw_responses: list[ModelResponse] = []
+
+    async def get_response(self, *args: Any, **kwargs: Any) -> ModelResponse:
+        response = await self.inner.get_response(*args, **kwargs)
+        self.raw_responses.append(response)
+        return response
+
+    def stream_response(
+        self, *args: Any, **kwargs: Any
+    ) -> AsyncIterator[TResponseStreamEvent]:
+        return self.inner.stream_response(*args, **kwargs)

@@ -55,13 +55,17 @@ class LiveBackend:
         from agents import OpenAIChatCompletionsModel
         from openai import AsyncOpenAI
 
+        from guardrail_eval_harness.backends import RecordingModel
+
         self._client = AsyncOpenAI(
             base_url=os.getenv("EXAMPLE_BASE_URL", self.base_url),
             api_key=self._api_key,
         )
-        return OpenAIChatCompletionsModel(
-            model=self.model_name,
-            openai_client=self._client,
+        return RecordingModel(
+            OpenAIChatCompletionsModel(
+                model=self.model_name,
+                openai_client=self._client,
+            )
         )
 
     async def run_case(self, scenario: Scenario) -> RunTrace:
