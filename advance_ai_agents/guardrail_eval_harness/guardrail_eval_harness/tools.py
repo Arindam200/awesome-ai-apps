@@ -29,6 +29,19 @@ ARGUMENT_MODELS: dict[str, type[Any]] = {
 }
 
 
+def block_result(policy_reason: str, detail: str | None = None) -> str:
+    """Tool result handed back to the model when the harness blocks a call.
+
+    Returning the block (instead of raising) lets the model produce its own
+    refusal turn; raising would abort the SDK run, so live refusals could
+    never be evaluated.
+    """
+    payload: dict[str, Any] = {"status": "blocked", "policy_reason": policy_reason}
+    if detail:
+        payload["detail"] = detail
+    return json.dumps(payload)
+
+
 class HarnessTools:
     """Builds SDK FunctionTools that log attempts, blocks, and executions."""
 
@@ -117,9 +130,7 @@ class HarnessTools:
                     "schema_invalid",
                     False,
                 )
-                raise ValueError(
-                    f"Invalid arguments for {name}: {schema_error}"
-                ) from exc
+                return block_result("schema_invalid", schema_error)
 
             decision = self.policy.check(name, parsed, self.state)
             if not decision.allowed:
@@ -134,7 +145,7 @@ class HarnessTools:
                     decision.reason,
                     False,
                 )
-                raise PermissionError(f"blocked:{decision.reason}")
+                return block_result(decision.reason)
 
             call_kwargs = dict(parsed)
             if body_param is not None and "body" in call_kwargs:

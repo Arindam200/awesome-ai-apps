@@ -167,8 +167,9 @@ class TestTools:
         tool, ctx, _state, trace = self._invoke(
             "search_help_articles", '{"query":"x","evil":true}'
         )
-        with pytest.raises(ValueError, match="Invalid arguments"):
-            asyncio.run(tool.on_invoke_tool(ctx, '{"query":"x","evil":true}'))
+        result = asyncio.run(tool.on_invoke_tool(ctx, '{"query":"x","evil":true}'))
+        assert json.loads(result)["status"] == "blocked"
+        assert json.loads(result)["policy_reason"] == "schema_invalid"
         observation = trace.tool_observations[0]
         assert observation.executed is False
         assert observation.schema_valid is False
@@ -177,8 +178,9 @@ class TestTools:
         tool, ctx, state, trace = self._invoke(
             "get_ticket_status", '{"ticket_id":"TCK-2002"}'
         )
-        with pytest.raises(PermissionError, match="blocked:unauthorized_ticket"):
-            asyncio.run(tool.on_invoke_tool(ctx, '{"ticket_id":"TCK-2002"}'))
+        result = asyncio.run(tool.on_invoke_tool(ctx, '{"ticket_id":"TCK-2002"}'))
+        assert json.loads(result)["status"] == "blocked"
+        assert json.loads(result)["policy_reason"] == "unauthorized_ticket"
         observation = trace.tool_observations[0]
         assert observation.executed is False
         assert observation.policy_reason == "unauthorized_ticket"
