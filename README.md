@@ -131,7 +131,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 9 |
 | [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
-| [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
+| [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 19 |
 | [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 36 |
 | [🧬 Fine-Tuning](#-fine-tuning) | LoRA fine-tuning, distillation and deployment of open models | 6 |
 
@@ -244,7 +244,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 📚 RAG Applications
 
-**Retrieval-augmented generation examples for document understanding and knowledge bases.** _18 projects_
+**Retrieval-augmented generation examples for document understanding and knowledge bases.** _19 projects_
 
 - [Agentic RAG with Agno and GPT-5](rag_apps/agentic_rag): Agentic RAG implementation with Agno and GPT-5
 - [Agentic Typed RAG with LlamaIndex](rag_apps/agentic_typed_rag_llamaindex): Typed, citation-verified RAG with structured answers, local document parsing, and deterministic refusal for weak evidence
@@ -252,6 +252,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Enterprise Contextual RAG](rag_apps/contextual_ai_rag): Enterprise-level RAG with managed datastores and quality evaluation
 - [Gemma 3 Document OCR](rag_apps/gemma_ocr/): OCR-based document and image processor using the Gemma 3 model
 - [GraphRAG with Neo4j](rag_apps/graphrag_neo4j): Knowledge graph extraction and Cypher-backed retrieval with Neo4j and Nebius
+- [Haystack Enterprise Knowledge Triage](rag_apps/haystack_enterprise_knowledge_triage): Haystack pipelines that route questions by intent, retrieve and rerank evidence, and return cited answers with a low-confidence fallback
 - [LiteParse Invoice & Receipt Auditor](rag_apps/liteparse_invoice_auditor): Local OCR with LiteParse bounding boxes, Nebius LLM audit for math errors and duplicate charges, evidence pinning on scans, and an LLM batch summary
 - [LlamaIndex RAG Starter](rag_apps/llamaIndex_starter): LlamaIndex and Nebius RAG starter template
 - [LLM and RAG Debugger (WFGY 16-Problem Map)](rag_apps/wfgy_llm_debugger): 16-mode map-based debugger for LLM and RAG bugs
