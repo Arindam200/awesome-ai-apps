@@ -6,7 +6,7 @@ A lightweight tool-calling agent built with the OpenAI Python SDK and any OpenAI
 
 - **Provider-neutral configuration**: One set of environment variables works with any compatible endpoint.
 - **Local by default**: Uses Ollama's OpenAI-compatible API; no paid API key is required when the local server does not require authentication.
-- **Hosted or self-hosted**: Point the same code at another compatible service by changing the base URL, key, and model.
+- **Hosted or self-hosted**: Point the same code at another compatible service by changing the base URL, key, and model; the README includes a Nebius Token Factory example.
 - **Three built-in tools**: Current time, word count, and safe arithmetic calculation.
 - **Shared tool-calling loop**: The model requests a tool, Python runs it, and the result goes back to the model.
 - **No agent framework**: The loop and tool schemas are small, explicit, and easy to follow.
@@ -59,6 +59,7 @@ This project uses the OpenAI-compatible Chat Completions API. It can work with s
 - [LM Studio](https://lmstudio.ai/)
 - [vLLM](https://docs.vllm.ai/)
 - [OpenAI](https://platform.openai.com/)
+- [Nebius Token Factory](https://tokenfactory.nebius.com/)
 - Other services that expose an OpenAI-compatible Chat Completions interface
 
 These are examples, not a guarantee of universal compatibility.
@@ -131,6 +132,18 @@ LLM_API_KEY=your_api_key
 LLM_MODEL=your-model-id
 ```
 
+### Hosted example: Nebius Token Factory
+
+Nebius Token Factory is an optional hosted OpenAI-compatible backend. Hosted usage may require an account and may be billed. Replace the placeholder key and model with the values from your account:
+
+```env
+LLM_BASE_URL=https://api.tokenfactory.nebius.com/v1/
+LLM_API_KEY=your_nebius_api_key
+LLM_MODEL=Qwen/Qwen3-30B-A3B
+```
+
+Switching between local Ollama and a hosted endpoint only requires changing these three values; no code changes are needed.
+
 Do not commit `.env` or real credentials.
 
 ## Usage
@@ -190,6 +203,18 @@ Hardware requirements depend on the selected model, quantization, context length
 - Hosted endpoints run the model on the provider's hardware, so your machine only needs to run this Python client.
 
 Check the model and serving backend documentation for their actual requirements.
+
+## Model Suggestions
+
+The default `qwen3:8b` is a tool-capable model that works with Ollama. A smaller model such as `qwen3:4b` can be a better starting point on a lower-memory laptop. Both are examples, not guarantees; tool support varies by model and serving backend.
+
+Check the capabilities before relying on a model:
+
+```bash
+ollama show qwen3:8b
+```
+
+Look for `tools` in the output. If the model does not list `tools`, choose another tool-capable model. A 4B–9B quantized model is a reasonable starting range for laptop inference, but actual memory use depends on quantization, context length, and the serving backend.
 
 ## Limitations
 
