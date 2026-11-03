@@ -1,0 +1,22 @@
+[project]
+name = "local-llm-starter"
+version = "0.1.0"
+description = "A provider-neutral tool-calling agent using the OpenAI SDK and an OpenAI-compatible API."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openai>=1.40.0",
+    "python-dotenv>=1.0.1",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.9.0",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
