@@ -88,8 +88,6 @@ def main(argv: Sequence[str] | None = None) -> int:
             print(f"runner error: {type(exc).__name__}: {exc}", file=sys.stderr)
             return EXIT_CONFIG_ERROR
         except APIError as exc:
-            # Per-case provider failures are already caught in run_scenario;
-            # anything that escapes still must not surface as a traceback.
             print(f"provider error: {type(exc).__name__}: {exc}", file=sys.stderr)
             return EXIT_CONFIG_ERROR
     else:

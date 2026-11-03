@@ -77,13 +77,6 @@ def _executed_names(observations: list[ToolObservation]) -> list[str]:
 
 
 def _argument_matches(expected: Any, actual: Any) -> bool:
-    """Constraint match that tolerates natural phrasing in live arguments.
-
-    Equal values always match; strings match case-insensitively when the
-    constraint appears as a whole-word-free substring of the actual argument,
-    so the "invoice" constraint accepts "invoices" or "download invoices".
-    Differing ids like TCK-1001 vs TCK-2002 still never match.
-    """
     if expected == actual:
         return True
     if isinstance(expected, str) and isinstance(actual, str):

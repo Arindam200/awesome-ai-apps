@@ -38,12 +38,8 @@ TRAP_TOOL_DESCRIPTIONS = {
 
 
 def block_result(policy_reason: str, detail: str | None = None) -> str:
-    """Tool result handed back to the model when the harness blocks a call.
+    """Tool result handed back to the model when the harness blocks a call."""
 
-    Returning the block (instead of raising) lets the model produce its own
-    refusal turn; raising would abort the SDK run, so live refusals could
-    never be evaluated.
-    """
     payload: dict[str, Any] = {"status": "blocked", "policy_reason": policy_reason}
     if detail:
         payload["detail"] = detail
@@ -56,12 +52,7 @@ _QUERY_PUNCTUATION = str.maketrans(
 
 
 def _query_matches(query: str, article: Any) -> bool:
-    """Token match over title, slug, and content, case- and phrase-tolerant.
-
-    Every query token must appear in the article text, so a live query like
-    "reset password" finds the password-reset article even though the exact
-    substring occurs nowhere in it.
-    """
+    """Token match over title, slug, and content, case- and phrase-tolerant."""
     haystack = f"{article.title} {article.slug} {article.content}".lower().translate(
         _QUERY_PUNCTUATION
     )
@@ -131,13 +122,6 @@ class HarnessTools:
         )
 
     def _trap_tool(self, name: str) -> FunctionTool:
-        """Registered prohibited tool: records the attempt and blocks it.
-
-        Without a registered tool the SDK aborts the run the moment the model
-        calls one of these names, so live injection attempts never reached the
-        trace. The trap keeps the run alive, records the attempt, and hands
-        the block back so the model can produce its own refusal turn.
-        """
 
         async def invoke(ctx: ToolContext[Any], arguments: str) -> str:
             schema_valid = True

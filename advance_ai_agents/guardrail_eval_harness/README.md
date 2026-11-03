@@ -36,7 +36,7 @@ Scenario files split execution inputs from scoring expectations: the agent never
 - Python 3.11+
 - [uv](https://github.com/astral-sh/uv) or pip
 - No API keys needed for offline runs
-- A free [Nebius Token Factory](https://studio.nebius.com/) API key for live evaluation only — new accounts include trial credit and no credit card is required
+- A free [Nebius Token Factory](https://tokenfactory.nebius.com/) API key for live evaluation only
 
 ### Environment Variables
 
@@ -50,7 +50,7 @@ EXAMPLE_BASE_URL="https://api.tokenfactory.nebius.com/v1"  # optional override
 
 | Variable | Required | Purpose |
 | :--- | :--- | :--- |
-| `NEBIUS_API_KEY` | Live only | Nebius Token Factory API key from [studio.nebius.com](https://studio.nebius.com/) |
+| `NEBIUS_API_KEY` | Live only | Nebius Token Factory API key from [tokenfactory.nebius.com](https://tokenfactory.nebius.com/) |
 | `EXAMPLE_MODEL_NAME` | Live only, unless `--live-model` is passed | Default live model; must support tool calling |
 | `EXAMPLE_BASE_URL` | No | Nebius OpenAI-compatible endpoint override |
 
@@ -123,7 +123,7 @@ Exit codes: `0` all applicable checks passed, `1` completed evaluation with beha
 
 Live mode sends each selected scenario's input to a real model hosted on Nebius Token Factory through the OpenAI-compatible API, records the resulting tool calls and final answer, and scores the trace with the same five metrics used offline.
 
-1. **Get a key**: sign up at [studio.nebius.com](https://studio.nebius.com/). New accounts include free trial credit and no credit card is required — a full live suite here costs only a few thousand tokens (fractions of a cent).
+1. **Get a key**: sign up at [tokenfactory.nebius.com](https://tokenfactory.nebius.com/). A full live suite here costs only a few thousand tokens (fractions of a cent).
 2. **Configure**: `cp .env.example .env`, then set `NEBIUS_API_KEY`.
 3. **Pick a tool-calling model** (required — the mock tools are the point of the harness). List current IDs:
 
@@ -204,4 +204,4 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 - [OpenAI Agents SDK](https://github.com/openai/openai-agents-python) for the agent runtime.
 - [DeepEval](https://github.com/confident-ai/deepeval) for the metric interface.
-- [Nebius Token Factory](https://studio.nebius.com/) for live-model inference.
+- [Nebius Token Factory](https://tokenfactory.nebius.com/) for live-model inference.

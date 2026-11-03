@@ -50,13 +50,6 @@ class ScriptedModel(Model):
 
 
 class RecordingModel(Model):
-    """Delegates to a live model while recording every ModelResponse.
-
-    Mirrors ScriptedModel.raw_responses so the turn counting, undispatched
-    call reconciliation, and final-message capture in agent.py work the same
-    for live runs, including runs that abort mid-turn.
-    """
-
     def __init__(self, inner: Model) -> None:
         self.inner = inner
         self.raw_responses: list[ModelResponse] = []
