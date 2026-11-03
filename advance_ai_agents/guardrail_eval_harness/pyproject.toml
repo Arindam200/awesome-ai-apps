@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "guardrail-eval-harness"
+version = "0.1.0"
+description = "Offline-first, deterministic guardrail evaluation with DeepEval, OpenAI Agents SDK, and Nebius Token Factory"
+requires-python = ">=3.11"
+dependencies = [
+    "deepeval==4.2.3",
+    "openai-agents==0.22.2",
+    "openai==3.14.1",
+    "pydantic==2.13.5",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==9.1.1", "pytest-socket==0.8.1", "ruff==0.16.8", "mypy==2.3.1"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["guardrail_eval_harness"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "--disable-socket --allow-unix-socket"
+
+[tool.ruff]
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[[tool.mypy.overrides]]
+module = "guardrail_eval_harness.metrics"
+# DeepEval's observe_methods metaclass makes __init_subclass__ untyped.
+disable_error_code = ["no-untyped-call"]
