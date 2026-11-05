@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "context-relay-nconnect-handoff"
+version = "0.1.0"
+description = "Inspect a reviewed Context Relay handoff over MCP while using NConnect for Nebius-powered coding agents"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["mcp==1.30.0"]
+
+[project.scripts]
+relay-nconnect-demo = "context_relay_nconnect_handoff.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["context_relay_nconnect_handoff"]
+
+[tool.ruff]
+line-length = 100

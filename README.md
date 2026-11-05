@@ -7,7 +7,7 @@
 
 # Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-**141 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
+**142 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
 
 [![GitHub stars](https://img.shields.io/github/stars/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Stars&color=yellow)](https://github.com/Arindam200/awesome-ai-apps/stargazers)
 [![Forks](https://img.shields.io/github/forks/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Forks)](https://github.com/Arindam200/awesome-ai-apps/network/members)
@@ -129,7 +129,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | [🧩 Starter Agents](#-starter-agents) | One minimal agent per framework: Agno, LangGraph, CrewAI, OpenAI Agents SDK, Google ADK, Mastra and more | 22 |
 | [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 21 |
 | [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 9 |
-| [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
+| [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 15 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
 | [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
 | [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 38 |
@@ -208,8 +208,9 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🗂️ MCP Agents
 
-**Examples using Model Context Protocol for external tool integration.** _14 projects_
+**Examples using Model Context Protocol for external tool integration.** _15 projects_
 
+- [Context Relay + NConnect Handoff](mcp_ai_agents/context_relay_nconnect_handoff): Move a reviewed coding task from Claude Code to Codex over MCP while NConnect routes both agents to Nebius
 - [Couchbase LangGraph MCP Agent](mcp_ai_agents/langchain_langgraph_mcp_agent): LangChain ReAct agent with Couchbase integration
 - [Couchbase MCP Server](mcp_ai_agents/couchbase_mcp_server): Couchbase database integration with MCP protocol
 - [Custom MCP Server Starter](mcp_ai_agents/custom_mcp_server): Custom MCP server implementation example
