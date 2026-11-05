@@ -21,6 +21,8 @@ def main() -> None:
         raise AssertionError("Changing the amount inside seven days must fail")
 
     assert ledger.apply("evt-2", 200, start + timedelta(days=2)) == 700
+    assert ledger.apply("evt-1", 500, start + timedelta(days=3)) == 500
+    assert ledger.total_cents == 700
     assert ledger.apply("evt-1", 500, start + timedelta(days=7)) == 1200
     assert ledger.total_cents == 1200
     print("Webhook ledger contract passed")
