@@ -127,7 +127,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | Category | What you'll find | Projects |
 | :-- | :-- | :-: |
 | [🧩 Starter Agents](#-starter-agents) | One minimal agent per framework: Agno, LangGraph, CrewAI, OpenAI Agents SDK, Google ADK, Mastra and more | 22 |
-| [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 20 |
+| [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 21 |
 | [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 9 |
 | [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
@@ -168,7 +168,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🪶 Simple Agents
 
-**Straightforward, practical use-cases for everyday AI applications.** _20 projects_
+**Straightforward, practical use-cases for everyday AI applications.** _21 projects_
 
 - [Agno Agent Examples](simple_ai_agents/agno_ai_examples): Simple to multi-agent examples with web search and a knowledge base
 - [Agno Agent UI](simple_ai_agents/agno_ui_agent): Interactive UI for web and finance agents
@@ -180,6 +180,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Financial Reasoning Agent](simple_ai_agents/reasoning_agent): Step-by-step financial reasoning demonstration
 - [Human-in-the-Loop Agent](simple_ai_agents/human_in_the_loop_agent): HITL actions for safe AI task execution
 - [LangChain Operations Agent Collection](simple_ai_agents/langchain_simple_agents): Nebius-powered incident response, support, vendor risk, and data quality agents with typed outputs and guarded tools
+- [LLM Cost Tracker](simple_ai_agents/llm_cost_tracker): Local request metadata and configured-rate cost estimates for compatible chat clients, with a Streamlit dashboard
 - [Macro Event Brief Agent](simple_ai_agents/macro_event_brief_agent): Scheduled macro releases with last prints, publication times and sources, plus an optional Nebius brief that cites each record
 - [Mastra Weather Bot](simple_ai_agents/mastra_ai_weather_agent): Weather updates using Mastra AI framework
 - [Natural-Language Database Assistant](simple_ai_agents/talk_to_db): Natural language database queries with GibsonAI and LangChain
