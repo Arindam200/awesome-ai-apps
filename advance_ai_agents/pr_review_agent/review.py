@@ -15,6 +15,8 @@ MAX_PATCH_CHARS = 100_000
 
 
 class Finding(BaseModel):
+    """One actionable finding on an added line of the inspected diff."""
+
     model_config = ConfigDict(extra="forbid", strict=True)
 
     path: str
@@ -24,6 +26,8 @@ class Finding(BaseModel):
 
 
 class Review(BaseModel):
+    """Structured model output validated before previewing or publishing."""
+
     model_config = ConfigDict(extra="forbid", strict=True)
 
     summary: str = Field(min_length=1, max_length=4000)
@@ -32,6 +36,8 @@ class Review(BaseModel):
 
 @dataclass(frozen=True)
 class Snapshot:
+    """Bounded file patches pinned to the PR's head and base commits."""
+
     repository: str
     number: int
     head_sha: str
@@ -59,7 +65,8 @@ def added_lines(patch: str) -> set[int]:
     """Return new-file line numbers for added diff lines; omit headers and context lines."""
     result: set[int] = set()
     line: int | None = None
-    for text in patch.splitlines():
+    # Diff records use LF; other Unicode separators can be literal source content.
+    for text in patch.split("\n"):
         if text.startswith("@@"):
             match = re.match(r"@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@", text)
             if not match:

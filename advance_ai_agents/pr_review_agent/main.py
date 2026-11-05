@@ -13,6 +13,7 @@ from review import Review, Snapshot, analyze, fetch_snapshot, inline_comments, p
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Preview a validated review, publishing only when --post is explicit."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("url", nargs="?", help="Public GitHub PR URL")
     parser.add_argument("--post", action="store_true", help="Publish one COMMENT review to GitHub")
