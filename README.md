@@ -132,7 +132,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
 | [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
-| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 36 |
+| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 37 |
 | [🧬 Fine-Tuning](#-fine-tuning) | LoRA fine-tuning, distillation and deployment of open models | 6 |
 
 **Also here:** [Tutorials & Videos](#-tutorials--videos) · [Quick Start](#-quick-start) · [Contributing](#-contributing) · [Contributors](#-contributors) · [Maintainers](#-maintainers) · [License](#-license)
@@ -267,7 +267,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _36 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _37 projects_
 
 - [AI Hedge Fund Research Team](advance_ai_agents/ai-hedgefund): Agentic workflow for comprehensive financial analysis
 - [AI Trend Research Agent](advance_ai_agents/trend_analyzer_agent): AI trend mining and analysis with Google ADK
@@ -294,6 +294,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Nebius Autonomous Pipeline Optimizer](advance_ai_agents/nebius-autoresearch-autoresearch-mar30): NYC taxi analytics pipeline optimizer with iterative code search using real-time or batch Nebius Token Factory inference
 - [Pre-Meeting Intel Agent (Briefing Room)](advance_ai_agents/meeting_briefing_agent): LangGraph plan-research-reflect loop with Tavily web search that turns a company name into a cited one-page meeting brief
 - [Price Monitoring Agent](advance_ai_agents/price_monitoring_agent): Price monitoring and alerting agent powered by CrewAI, Twilio, and Nebius
+- [PR Review Agent](advance_ai_agents/pr_review_agent): Preview-first Agno/Nebius GitHub diff review with validated inline comments and an explicit publishing gate
 - [Prompt Format Benchmark](advance_ai_agents/context_engineering_pipeline): Benchmark harness for comparing XML, JSON, and Markdown prompt formats across accuracy, latency, and token usage
 - [Sandboxed Browser Game Generator](advance_ai_agents/pydantic_game_agent): FastAPI multi-agent studio that generates sandboxed browser games from one prompt using Pydantic AI and GLM-5.2 on Nebius
 - [SEO Content Strategy Team](advance_ai_agents/content_team_agent): SEO content optimization workflow with Agno and SerpAPI for Google AI Search ranking
