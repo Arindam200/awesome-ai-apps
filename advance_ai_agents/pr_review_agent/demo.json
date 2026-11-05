@@ -1,0 +1,23 @@
+{
+  "snapshot": {
+    "repository": "example/demo",
+    "number": 1,
+    "head_sha": "0000000000000000000000000000000000000000",
+    "base_sha": "1111111111111111111111111111111111111111",
+    "title": "Add average helper (synthetic fixture)",
+    "patches": {
+      "stats.py": "@@ -0,0 +1,2 @@\n+def average(values):\n+    return sum(values) / len(values)"
+    }
+  },
+  "review": {
+    "summary": "Synthetic example: an empty list causes division by zero. No tests were run.",
+    "findings": [
+      {
+        "path": "stats.py",
+        "line": 2,
+        "category": "bug",
+        "explanation": "An empty values list has length zero. Define the empty-input behavior before dividing and add a regression test."
+      }
+    ]
+  }
+}
