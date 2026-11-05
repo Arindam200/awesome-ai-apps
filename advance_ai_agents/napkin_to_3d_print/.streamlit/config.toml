@@ -1,0 +1,3 @@
+[server]
+# The app runs model-written CAD code locally. Keep it on this machine only.
+address = "localhost"

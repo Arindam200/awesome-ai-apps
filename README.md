@@ -7,7 +7,7 @@
 
 # Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-**138 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
+**141 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
 
 [![GitHub stars](https://img.shields.io/github/stars/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Stars&color=yellow)](https://github.com/Arindam200/awesome-ai-apps/stargazers)
 [![Forks](https://img.shields.io/github/forks/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Forks)](https://github.com/Arindam200/awesome-ai-apps/network/members)
@@ -132,7 +132,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
 | [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
-| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 36 |
+| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 38 |
 | [🧬 Fine-Tuning](#-fine-tuning) | LoRA fine-tuning, distillation and deployment of open models | 6 |
 
 **Also here:** [Tutorials & Videos](#-tutorials--videos) · [Quick Start](#-quick-start) · [Contributing](#-contributing) · [Contributors](#-contributors) · [Maintainers](#-maintainers) · [License](#-license)
@@ -179,6 +179,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Email-to-Calendar Assistant](simple_ai_agents/email_to_calendar_scheduler): AI-powered Gmail reader and Google Calendar manager
 - [Financial Reasoning Agent](simple_ai_agents/reasoning_agent): Step-by-step financial reasoning demonstration
 - [Human-in-the-Loop Agent](simple_ai_agents/human_in_the_loop_agent): HITL actions for safe AI task execution
+- [Jailbreak Arena (NeMo Guardrails)](simple_ai_agents/nemo_guardrails_arena): Split-screen demo where an unguarded Nemotron bot and a NeMo Guardrails-protected bot face the same attacks, with a live block/leak scoreboard
 - [LangChain Operations Agent Collection](simple_ai_agents/langchain_simple_agents): Nebius-powered incident response, support, vendor risk, and data quality agents with typed outputs and guarded tools
 - [LLM Cost Tracker](simple_ai_agents/llm_cost_tracker): Local request metadata and configured-rate cost estimates for compatible chat clients, with a Streamlit dashboard
 - [Macro Event Brief Agent](simple_ai_agents/macro_event_brief_agent): Scheduled macro releases with last prints, publication times and sources, plus an optional Nebius brief that cites each record
@@ -268,7 +269,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _36 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _38 projects_
 
 - [AI Hedge Fund Research Team](advance_ai_agents/ai-hedgefund): Agentic workflow for comprehensive financial analysis
 - [AI Trend Research Agent](advance_ai_agents/trend_analyzer_agent): AI trend mining and analysis with Google ADK
@@ -292,7 +293,9 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Maintainer Intelligence Brief](advance_ai_agents/maintainer_brief): Weekly open-source intelligence briefs from community, security, and document signals with source citations
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent): Automated meeting notes and task creation from conversations
 - [Multi-Agent Coding Harness](advance_ai_agents/coding_agent_harness): Deep LangGraph coding crew with planning, repository exploration, human-gated file edits, and E2B-sandboxed test loops
+- [Napkin → 3D Print](advance_ai_agents/napkin_to_3d_print): Kimi K3.1 Pro on [Nebius Token Factory](https://dub.sh/nebius) turns a photo of a hand sketch into parametric CadQuery, checks its own render against the drawing, and exports a printable STL with live dimension sliders
 - [Nebius Autonomous Pipeline Optimizer](advance_ai_agents/nebius-autoresearch-autoresearch-mar30): NYC taxi analytics pipeline optimizer with iterative code search using real-time or batch Nebius Token Factory inference
+- [Paper → Interactive Explainer](advance_ai_agents/paper_to_interactive_explainer): Kimi K3.1 Pro on Nebius reads a whole research paper, figures included, and builds a self-tested, Distill-style interactive explainer as a single HTML page
 - [Pre-Meeting Intel Agent (Briefing Room)](advance_ai_agents/meeting_briefing_agent): LangGraph plan-research-reflect loop with Tavily web search that turns a company name into a cited one-page meeting brief
 - [Price Monitoring Agent](advance_ai_agents/price_monitoring_agent): Price monitoring and alerting agent powered by CrewAI, Twilio, and Nebius
 - [Prompt Format Benchmark](advance_ai_agents/context_engineering_pipeline): Benchmark harness for comparing XML, JSON, and Markdown prompt formats across accuracy, latency, and token usage
