@@ -190,7 +190,7 @@ def main(argv: list[str] | None = None) -> int:
     check = commands.add_parser(
         "check", help="Verify NConnect-launched Codex sees Relay's MCP entry"
     )
-    check.add_argument("--model", default="moonshotai/Kimi-K3.1-Pro")
+    check.add_argument("--model", default="zai-org/GLM-5.3-Flash")
     check.add_argument("--nconnect-bin", default=os.environ.get("NCONNECT_BIN", "nconnect"))
     args = parser.parse_args(argv)
 

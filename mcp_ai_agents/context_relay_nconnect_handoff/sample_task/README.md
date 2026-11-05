@@ -19,6 +19,6 @@ The starter `WebhookLedger.apply(event_id, amount_cents, now)` adds a charge eve
 
 Suggested Claude Code starting prompt:
 
-> Read `README.md`, `webhook_ledger.py` and `verify.py`. Propose an idempotency design, add per-event tracking and duplicate suppression, then stop before implementing amount conflicts and expiry. State your decisions and open work clearly.
+> Read `README.md`, `webhook_ledger.py` and `verify.py`. Do not edit files. Design the seven-day idempotency fix, state the currently failing assertion and leave the implementation steps for another coding agent.
 
 Capture the Claude session in Relay, review and offer its checkpoint to Codex, then ask Codex through NConnect to finish the remaining rules and run `python3 verify.py`. The handoff should carry the seven-day rule and the still-failing checks, rather than a pasted transcript.
