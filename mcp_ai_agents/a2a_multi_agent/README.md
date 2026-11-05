@@ -45,7 +45,7 @@ The services bind to localhost and keep task state in memory. A restart clears t
 
 ### Environment Variables
 
-Copy `.env.example` to `.env` in this directory and set `NEBIUS_API_KEY`. Both servers load this file. `NEBIUS_MODEL` defaults to `openai/gpt-oss-20b` and can be changed to another Nebius chat model.
+Copy `.env.example` to `.env` in this directory and set `NEBIUS_API_KEY`. Both servers load this file. `NEBIUS_MODEL` defaults to `openai/gpt-oss-120b` and can be changed to another Nebius chat model.
 
 ### Installation
 
