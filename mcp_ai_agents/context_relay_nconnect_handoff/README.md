@@ -15,18 +15,9 @@ The offline check proves MCP transport and the handoff contract. It does **not**
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    A[Claude Code] -->|model requests| N[NConnect]
-    C[Codex] -->|model requests| N
-    N -->|inference| T[Nebius Token Factory]
-    A -->|native session history| R[Context Relay capture]
-    R --> V[Human reviews sources and checkpoint]
-    V --> H[Offered handoff packet]
-    H --> M[Project-scoped Relay stdio MCP server]
-    M -->|inspect and accept| C
-    P[This Python MCP client] -.->|offline verification| M
-```
+![Workflow diagram: Claude Code history becomes a reviewed Context Relay packet for Codex over MCP; both agents use Studio1 NConnect for Nebius model calls](assets/workflow.png)
+
+[Editable SVG source](assets/workflow.svg). The purple path carries selected context; the green path carries model requests through [NConnect by Studio1 OSS](https://github.com/Studio1-OSS/nconnect) to Nebius Token Factory.
 
 No chat database is edited or silently merged. Relay captures completed visible turns, and the person making the handoff selects the evidence and instructions that the next agent may receive. The receiver still checks the working tree and does the remaining work.
 
@@ -35,7 +26,7 @@ No chat database is edited or silently merged. Relay captures completed visible 
 | Component | Role |
 | --- | --- |
 | [Context Relay `0.3.0-beta.1`](https://www.npmjs.com/package/@mahekara28/context-relay) | Local session capture, checkpoint review, handoff packet, stdio MCP server |
-| [NConnect](https://nconnect.sh/docs) | Routes Claude Code and Codex model requests to Nebius Token Factory |
+| [NConnect by Studio1 OSS](https://github.com/Studio1-OSS/nconnect) | Routes Claude Code and Codex model requests to Nebius Token Factory |
 | [Nebius Token Factory](https://tokenfactory.nebius.com/) | Model inference; the verified run used `moonshotai/Kimi-K3.1-Pro` for Claude Code and `zai-org/GLM-5.3-Flash` for Codex |
 | [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk) | Independent client used to verify Relay's MCP tools |
 
@@ -148,6 +139,8 @@ This guide uses the **published** Context Relay `0.3.0-beta.1`. Its UI supports 
 
 ```text
 context_relay_nconnect_handoff/
+├── assets/workflow.svg             # editable architecture illustration
+├── assets/workflow.png             # README and PR preview
 ├── assets/live-proof.png            # rendered summary of the verified live run
 ├── assets/mcp-proof.png             # rendered output of a real local MCP check
 ├── context_relay_nconnect_handoff/
