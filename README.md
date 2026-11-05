@@ -127,7 +127,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | Category | What you'll find | Projects |
 | :-- | :-- | :-: |
 | [🧩 Starter Agents](#-starter-agents) | One minimal agent per framework: Agno, LangGraph, CrewAI, OpenAI Agents SDK, Google ADK, Mastra and more | 22 |
-| [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 21 |
+| [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 22 |
 | [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 9 |
 | [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
@@ -168,7 +168,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🪶 Simple Agents
 
-**Straightforward, practical use-cases for everyday AI applications.** _21 projects_
+**Straightforward, practical use-cases for everyday AI applications.** _22 projects_
 
 - [Agno Agent Examples](simple_ai_agents/agno_ai_examples): Simple to multi-agent examples with web search and a knowledge base
 - [Agno Agent UI](simple_ai_agents/agno_ui_agent): Interactive UI for web and finance agents
