@@ -1,0 +1,19 @@
+[project]
+name = "paper-to-interactive-explainer"
+version = "0.1.0"
+description = "Kimi K3.1 Pro on Nebius Token Factory reads a whole research paper, figures included, and builds a self-tested, Distill-style interactive explainer"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit>=1.50.0",
+    "openai>=1.50.0",
+    "python-dotenv>=1.1.1",
+    "pymupdf>=1.24.0",
+    "httpx>=0.27.0",
+    "defusedxml>=0.7.1",
+    "pillow>=10.4.0",
+]
+
+[project.optional-dependencies]
+# Headless-Chrome self-test: uv sync --extra qa && uv run playwright install chromium
+qa = ["playwright>=1.47.0"]
