@@ -72,6 +72,13 @@ nconnect configure
 nconnect models
 ```
 
+For a reproducible coding task, copy the [webhook idempotency exercise](sample_task/README.md) into a separate scratch project and follow its prompt. Its `verify.py` intentionally fails until the second agent finishes the rules:
+
+```sh
+cp -R sample_task /tmp/relay-webhook-lab
+cd /tmp/relay-webhook-lab
+```
+
 From the **coding project to be handed off**, register the same root for both harnesses. Save the `projectId` from `project add` as `RELAY_PROJECT_ID`:
 
 ```sh
@@ -125,6 +132,7 @@ context_relay_nconnect_handoff/
 ├── assets/mcp-proof.png             # rendered output of a real local MCP check
 ├── context_relay_nconnect_handoff/
 │   └── cli.py                       # demo, read-only inspector, NConnect check
+├── sample_task/                   # deliberately unfinished webhook exercise
 ├── tests/test_handoff.py            # integration checks against Relay's MCP server
 ├── .env.example                     # key name, no credential
 ├── pyproject.toml
