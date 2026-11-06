@@ -17,6 +17,8 @@ import main
 from main import demo_reply
 from tracker import CostTracker, load_pricing, load_rows
 
+PROJECT = Path(__file__).resolve().parents[1]
+
 
 @pytest.fixture
 def setup(tmp_path):
@@ -110,6 +112,20 @@ def test_storage_failure_does_not_hide_success_or_original_error(setup, monkeypa
     assert caught.value is error
     assert "metadata could not be saved" in caplog.text
     assert "secret" not in caplog.text
+
+
+def test_unencodable_tag_does_not_replace_success_or_provider_error(setup, caplog):
+    """Isolate SQLite's UnicodeEncodeError without losing the provider's original result."""
+    tracker, client, response, _ = setup
+    assert tracker.create(model="model", tag="\ud800") is response
+    error = RuntimeError("private-provider-error")
+    client.chat.completions.create.side_effect = error
+    with pytest.raises(RuntimeError) as caught:
+        tracker.create(model="model", tag="\ud800")
+    assert caught.value is error
+    assert load_rows(tracker.database) == []
+    assert caplog.text.count("Request metadata could not be saved") == 2
+    assert "private-provider-error" not in caplog.text
 
 
 def test_unrepresentable_cost_does_not_hide_success(setup, caplog):
@@ -217,7 +233,7 @@ def test_real_sdk_http_fixture_records_metadata(tmp_path, base_url):
     with httpx.Client(transport=httpx.MockTransport(respond)) as transport:
         with OpenAI(api_key="offline", base_url=base_url, http_client=transport) as client:
             tracker = CostTracker(
-                client, tmp_path / "demo.db", "demo", Path("pricing.example.json")
+                client, tmp_path / "demo.db", "demo", PROJECT / "pricing.example.json"
             )
             response = tracker.create(model="fixture-model", tag="demo", messages=[])
             assert response.choices[0].message.content == "Offline fixture reply"
@@ -232,7 +248,7 @@ def test_dashboard_displays_known_and_unknown_costs(setup, monkeypatch):
     response.usage = None
     tracker.create(model="model", tag="unknown")
     monkeypatch.setenv("LLM_COST_DB", str(tracker.database))
-    app = AppTest.from_file(str(Path("dashboard.py").resolve()), default_timeout=15).run()
+    app = AppTest.from_file(str(PROJECT / "dashboard.py"), default_timeout=15).run()
     assert not app.exception
     metrics = {metric.label: metric.value for metric in app.metric}
     assert metrics["Requests"] == "2"
@@ -249,7 +265,7 @@ def test_dashboard_unpriced_provider_filter_keeps_total_unknown(setup, monkeypat
     other = CostTracker(client, tracker.database, "unpriced-provider", pricing)
     other.create(model="model")
     monkeypatch.setenv("LLM_COST_DB", str(tracker.database))
-    app = AppTest.from_file(str(Path("dashboard.py").resolve()), default_timeout=15).run()
+    app = AppTest.from_file(str(PROJECT / "dashboard.py"), default_timeout=15).run()
     app.selectbox[0].select("unpriced-provider").run()
     assert not app.exception
     metrics = {metric.label: metric.value for metric in app.metric}
@@ -261,6 +277,15 @@ def test_dashboard_unpriced_provider_filter_keeps_total_unknown(setup, monkeypat
 def test_dashboard_empty_or_missing_database_is_explained(tmp_path, monkeypatch):
     """Explain an unreadable database in the UI without crashing or creating it."""
     monkeypatch.setenv("LLM_COST_DB", str(tmp_path / "absent.db"))
-    app = AppTest.from_file(str(Path("dashboard.py").resolve()), default_timeout=15).run()
+    app = AppTest.from_file(str(PROJECT / "dashboard.py"), default_timeout=15).run()
+    assert not app.exception
+    assert "No readable request database" in app.info[0].value
+
+
+def test_dashboard_invalid_path_is_explained(monkeypatch):
+    """Render a path-resolution failure as guidance instead of an application exception."""
+    monkeypatch.setenv("LLM_COST_DB", "missing.db")
+    app = AppTest.from_file(str(PROJECT / "dashboard.py"), default_timeout=15).run()
+    app.text_input[0].set_value("invalid\0path.db").run()
     assert not app.exception
     assert "No readable request database" in app.info[0].value

@@ -21,7 +21,7 @@ def render() -> None:
     path = st.text_input("SQLite database", os.getenv("LLM_COST_DB", ".data/demo.sqlite3"))
     try:
         rows = load_rows(Path(path))
-    except sqlite3.Error:
+    except (sqlite3.Error, ValueError, OSError):
         st.info("No readable request database. Run `uv run python main.py --demo` first.")
         return
     if not rows:

@@ -53,7 +53,8 @@ uv sync --python 3.12
 
 ### Environment Variables
 
-For live mode, copy `.env.example` to `.env` in this directory:
+For live mode, copy `.env.example` to `.env` in this directory, then configure the values
+below. Set `LLM_PRICING_FILE` to the `pricing.json` you create with your provider's rates:
 
 ```dotenv
 LLM_API_KEY=your_key
@@ -84,6 +85,7 @@ provider label and **requested** model ID you pass to the tracker:
 These numbers illustrate the file format; they are not real quotes for a model. Finite,
 non-negative JSON numbers or decimal strings are accepted. `pricing.example.json` contains
 synthetic demo rates only, so real models remain unpriced until you configure their rates.
+Correcting the pricing path affects new requests; existing unknown-cost rows stay unknown.
 
 ## Usage
 

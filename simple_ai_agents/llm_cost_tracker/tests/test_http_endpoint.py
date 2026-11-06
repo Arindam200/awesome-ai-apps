@@ -65,7 +65,10 @@ def test_loopback_endpoint_records_success_unknown_usage_and_error(tmp_path):
                 timeout=5,
             ) as client:
                 tracker = CostTracker(
-                    client, tmp_path / "usage.db", "demo", Path("pricing.example.json")
+                    client,
+                    tmp_path / "usage.db",
+                    "demo",
+                    Path(__file__).resolve().parents[1] / "pricing.example.json",
                 )
                 for model in ["fixture-model", "unknown-usage"]:
                     response = tracker.create(

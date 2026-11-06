@@ -84,6 +84,16 @@ class CostTracker:
 
     def _record(self, model: str, tag: str, start: float, response: Any, error: Exception | None):
         """Persist request metadata without replacing a provider result on storage failure."""
+        try:
+            self._record_metadata(model, tag, start, response, error)
+        except Exception:
+            # Metadata encoding and SDK usage access can fail outside SQLite's exception family.
+            logging.getLogger(__name__).warning("Request metadata could not be saved")
+
+    def _record_metadata(
+        self, model: str, tag: str, start: float, response: Any, error: Exception | None
+    ) -> None:
+        """Calculate and persist metadata; the caller isolates all recording failures."""
         usage = getattr(response, "usage", None)
         incoming = _token_count(getattr(usage, "prompt_tokens", None))
         outgoing = _token_count(getattr(usage, "completion_tokens", None))
@@ -106,17 +116,13 @@ class CostTracker:
             outgoing,
             cost,
         )
-        try:
-            with closing(sqlite3.connect(self.database, timeout=5)) as connection, connection:
-                connection.execute(
-                    "INSERT INTO requests (timestamp,provider,model,tag,latency_ms,status,"
-                    "error_type,"
-                    "input_tokens,output_tokens,estimated_cost_usd) VALUES (?,?,?,?,?,?,?,?,?,?)",
-                    row,
-                )
-        except sqlite3.Error:
-            # Do not leak provider error text or turn a successful paid request into an error.
-            logging.getLogger(__name__).warning("Request metadata could not be saved")
+        with closing(sqlite3.connect(self.database, timeout=5)) as connection, connection:
+            connection.execute(
+                "INSERT INTO requests (timestamp,provider,model,tag,latency_ms,status,"
+                "error_type,"
+                "input_tokens,output_tokens,estimated_cost_usd) VALUES (?,?,?,?,?,?,?,?,?,?)",
+                row,
+            )
 
     def create(self, *, model: str, tag: str = "default", **kwargs: Any) -> Any:
         """Call chat.completions.create and record usage; streaming and async are unsupported."""
