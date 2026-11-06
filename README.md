@@ -7,7 +7,7 @@
 
 # Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-**141 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
+**142 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
 
 [![GitHub stars](https://img.shields.io/github/stars/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Stars&color=yellow)](https://github.com/Arindam200/awesome-ai-apps/stargazers)
 [![Forks](https://img.shields.io/github/forks/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Forks)](https://github.com/Arindam200/awesome-ai-apps/network/members)

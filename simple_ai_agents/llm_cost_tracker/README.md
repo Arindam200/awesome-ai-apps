@@ -159,8 +159,9 @@ uv run pytest -q
 ```
 
 Tests use temporary SQLite databases, real SDK request serialization with mock HTTP
-transports, concurrent writes, and Streamlit AppTest interactions. They check unknown
-versus zero costs, decimal rates, provider separation, failed writes/calls, secret-free
+transports and a loopback HTTP fixture server, concurrent writes, and Streamlit AppTest
+interactions. They check unknown versus zero costs, decimal rates, provider separation,
+failed writes/calls, secret-free
 metadata and dashboard filters. No live-provider billing or inference was tested.
 
 ## Project Structure
