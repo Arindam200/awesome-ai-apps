@@ -1,0 +1,6 @@
+[project]
+name = "tracemind"
+version = "0.1.0"
+description = "Adaptive learning diagnostic agent for identifying step-level misconceptions in student reasoning."
+requires-python = ">=3.10"
+dependencies = []
