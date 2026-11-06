@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import operator
 import os
+from collections import Counter
 from pathlib import Path
 from typing import Annotated, Literal, TypedDict
 
@@ -246,9 +247,9 @@ def check_report(report: RiskReport, findings: list[dict]) -> list[str]:
     """List citation and severity problems instead of repairing them.
 
     This proves reference coverage (every cited ID exists and every finding
-    is cited) and flags issues rated below their most severe finding. It
-    cannot prove the merged wording kept each point, which is why the report
-    also prints the original findings.
+    is cited), and flags a finding cited by several issues and an issue rated
+    below its most severe finding. It cannot prove the merged wording kept
+    each point, which is why the report also prints the original findings.
     """
     by_id = {f["id"]: f for f in findings}
     warnings = []
@@ -267,7 +268,13 @@ def check_report(report: RiskReport, findings: list[dict]) -> list[str]:
                 f"Issue '{issue.title}' is rated {issue.risk_level}, below its most "
                 f"severe finding ({highest}); check its reasoning."
             )
-    cited = {source_id for issue in report.issues for source_id in issue.source_ids}
+    uses = Counter(s for issue in report.issues for s in set(issue.source_ids))
+    warnings += [
+        f"{source_id} is cited by {count} issues; check whether they repeat one risk."
+        for source_id, count in uses.items()
+        if count > 1 and source_id in by_id
+    ]
+    cited = set(uses)
     warnings += [
         f"No issue cites {f['id']} ({f['title']}); see the original findings."
         for f in findings
@@ -319,7 +326,12 @@ def render_markdown(state: ReviewState) -> str:
     """Render the final state as a Markdown report."""
     report = state["report"]
     lines = ["# Risk Review Report", "", report.summary, "", "## Issues", ""]
-    if not report.issues:
+    if not report.issues and state["findings"]:
+        lines += [
+            "The coordinator returned no issues; see the validation warnings.",
+            "",
+        ]
+    elif not report.issues:
         lines += ["No issues.", ""]
     issues = sorted(report.issues, key=lambda issue: RISK_ORDER[issue.risk_level])
     for n, issue in enumerate(issues, start=1):

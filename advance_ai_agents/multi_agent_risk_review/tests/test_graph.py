@@ -33,9 +33,9 @@ CANNED = {
     "Operations Reviewer": [finding("No rollback plan", "high")],
 }
 
-# The coordinator merges SEC-1 with LEG-1, rates the critical SEC-2 as only
-# high, cites an ID nobody raised, and never cites OPS-1, so all three
-# problems must surface as warnings.
+# The coordinator merges SEC-1 with LEG-1, cites SEC-1 again in a second
+# issue, rates the critical SEC-2 as only high, cites an ID nobody raised, and
+# never cites OPS-1, so all four problems must surface as warnings.
 MERGED = g.RiskReport(
     summary="Not ready to approve.",
     issues=[
@@ -49,7 +49,7 @@ MERGED = g.RiskReport(
         g.ReportIssue(
             title="Shared admin key",
             risk_level="high",
-            source_ids=["SEC-2"],
+            source_ids=["SEC-2", "SEC-1"],
             reasoning="One key with billing rights in a wiki.",
             recommendation="Issue scoped keys and rotate them.",
         ),
@@ -76,15 +76,16 @@ class FakeStructured:
             raise AssertionError("unknown reviewer prompt")
         if self.schema is g.RiskReport:
             self.llm.coordinator_inputs.append(messages[1].content)
-            return MERGED
+            return self.llm.report
         raise AssertionError(f"unexpected schema: {self.schema}")
 
 
 class FakeLLM:
     """Stands in for ChatOpenAI and returns canned structured outputs."""
 
-    def __init__(self, reviewer_findings=CANNED):
+    def __init__(self, reviewer_findings=CANNED, report=MERGED):
         self.reviewer_findings = reviewer_findings
+        self.report = report
         self.coordinator_inputs = []
 
     def with_structured_output(self, schema):
@@ -115,7 +116,8 @@ def test_report_problems_are_warnings_not_repairs():
     assert any(
         "rated high, below its most severe finding (critical)" in w for w in warnings
     ), warnings
-    assert len(warnings) == 3, warnings
+    assert any("SEC-1 is cited by 2 issues" in w for w in warnings), warnings
+    assert len(warnings) == 4, warnings
     # The report is kept as the coordinator wrote it.
     assert final["report"] == MERGED
 
@@ -125,7 +127,21 @@ def test_report_problems_are_warnings_not_repairs():
     assert "No issue cites OPS-1" in markdown
     # Issues are listed critical first.
     assert markdown.index("(CRITICAL)") < markdown.index("(MEDIUM)")
-    print("report test OK: bad citations and downgrades are reported, originals kept")
+    print("report test OK: bad citations, reuse and downgrades are reported")
+
+
+def test_empty_report_is_not_an_all_clear():
+    """Findings with no merged issues must not read as "No issues."."""
+    empty_report = g.RiskReport(summary="Ready to approve.", issues=[])
+    final = g.build_graph(FakeLLM(report=empty_report)).invoke(
+        g.initial_state("a deployment plan")
+    )
+
+    assert len(final["warnings"]) == 5, final["warnings"]
+    markdown = g.render_markdown(final)
+    assert "No issues." not in markdown
+    assert "The coordinator returned no issues" in markdown
+    print("empty report test OK: findings without issues are flagged")
 
 
 def test_no_findings_skips_the_coordinator():
@@ -160,5 +176,6 @@ def test_missing_api_key_is_reported():
 if __name__ == "__main__":
     test_reviewers_run_and_coordinator_sees_every_finding()
     test_report_problems_are_warnings_not_repairs()
+    test_empty_report_is_not_an_all_clear()
     test_no_findings_skips_the_coordinator()
     test_missing_api_key_is_reported()

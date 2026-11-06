@@ -12,7 +12,7 @@ Built with **LangGraph**, **Pydantic** structured outputs and **Nebius Token Fac
 - **Four independent reviewers**: security, legal, finance and operations each make their own model call on the same document, in parallel.
 - **Structured findings**: every finding is a Pydantic object with a title, a risk level (`low`, `medium`, `high` or `critical`), a quote from the document as evidence, the reasoning and a recommendation.
 - **Coordinator merge**: findings about the same problem become one issue that lists the IDs it covers (`SEC-1`, `LEG-2`, ...). When reviewers rate a problem differently, the coordinator keeps the higher level unless quoted evidence shows a mitigation, and says why.
-- **Report check**: code checks the coordinator's work. An ID no reviewer raised, a finding no issue cites, or an issue rated below its most severe finding is printed under "Validation warnings" instead of being fixed silently.
+- **Report check**: code checks the coordinator's work. An ID no reviewer raised, a finding no issue cites, a finding cited by more than one issue, or an issue rated below its most severe finding is printed under "Validation warnings" instead of being fixed silently.
 - **Original findings kept**: the report ends with every reviewer's own findings, so the merged wording can be checked against them.
 
 ## 🛠️ Tech Stack
@@ -105,7 +105,7 @@ multi_agent_risk_review/
 
 - **Default model:** `Qwen/Qwen3-30B-A3B-Instruct-2507` on Nebius Token Factory, the same default as the [Briefing Room](../meeting_briefing_agent) agent. Set `NEBIUS_MODEL` or pass `--model` to try a larger model.
 - **The report is model output.** Reviewers are told to quote the document and not to invent facts, but a model can still overstate a risk, so check the evidence quotes before acting on a finding.
-- **The report check proves references, not wording.** It confirms that every cited ID exists, that every finding is cited and that no issue is rated below its most severe finding without a warning. It cannot prove the merged text kept each point, which is why the original findings are printed too.
+- **The report check proves references, not wording.** It confirms that every cited ID exists and that every finding is cited, and it warns when a finding is cited twice or an issue is rated below its most severe finding. It cannot prove the merged text kept each point, which is why the original findings are printed too.
 
 ## 🤝 Contributing
 
