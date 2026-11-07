@@ -76,6 +76,9 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     """Run the red-team suite and write the reports."""
     args = parse_args(argv)
+    if args.variants <= 0:
+        print("Error: --variants must be a positive integer.", file=sys.stderr)
+        return 2
     provider = os.environ.get("LLM_PROVIDER", "offline")
     if provider != "offline":
         print(
