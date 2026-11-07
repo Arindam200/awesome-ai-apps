@@ -1,0 +1,27 @@
+[project]
+name = "agent-red-team"
+version = "0.1.0"
+description = "Defensive prompt-injection red-team agent: attack your OWN agent with prompt-injection tests and report which ones succeed"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.4.0",
+]
+dotenv = [
+    "python-dotenv>=1.0.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/Arindam200/awesome-ai-apps"
+Repository = "https://github.com/Arindam200/awesome-ai-apps"
+Issues = "https://github.com/Arindam200/awesome-ai-apps/issues"
+
+[tool.ruff]
+line-length = 79
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
