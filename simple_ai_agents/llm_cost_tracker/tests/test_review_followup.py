@@ -137,7 +137,9 @@ def test_configured_live_database_does_not_hide_the_demo(example):
     assert not app.text_input
 
 
-@pytest.mark.parametrize("problem", ["directory", "invalid-json", "invalid-rates", "unreadable"])
+@pytest.mark.parametrize(
+    "problem", ["directory", "invalid-json", "invalid-rates", "unreadable", "deep-json"]
+)
 def test_live_pricing_failures_are_identified_before_any_request(
     example, monkeypatch, capsys, problem
 ):
@@ -146,9 +148,13 @@ def test_live_pricing_failures_are_identified_before_any_request(
     if problem == "directory":
         pricing.mkdir()
     else:
-        pricing.write_text(
-            "{" if problem == "invalid-json" else '{"demo":{"m":{}}}', encoding="utf-8"
-        )
+        content = "{" if problem == "invalid-json" else '{"demo":{"m":{}}}'
+        if problem == "deep-json":
+            content = "{}"
+        pricing.write_text(content, encoding="utf-8")
+    if problem == "deep-json":
+        # Parser recursion thresholds differ across supported Python versions.
+        monkeypatch.setattr(tracker, "load_pricing", MagicMock(side_effect=RecursionError))
     if problem == "unreadable":
         original = Path.read_text
 

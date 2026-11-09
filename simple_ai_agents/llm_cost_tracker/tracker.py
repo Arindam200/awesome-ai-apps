@@ -97,7 +97,7 @@ class CostTracker:
             self.prices = load_pricing(pricing)
         except FileNotFoundError as error:
             raise PricingFileNotFoundError("Pricing file not found") from error
-        except (OSError, ValueError) as error:
+        except (OSError, ValueError, RecursionError) as error:
             raise PricingConfigurationError("Pricing configuration could not be loaded") from error
         database.parent.mkdir(parents=True, exist_ok=True)
         with closing(sqlite3.connect(database)) as connection, connection:
