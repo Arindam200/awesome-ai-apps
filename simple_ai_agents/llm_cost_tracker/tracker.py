@@ -12,6 +12,14 @@ from decimal import Decimal, DecimalException, InvalidOperation
 from pathlib import Path
 from typing import Any
 
+PROJECT_DIR = Path(__file__).resolve().parent
+
+
+def project_path(value: str | Path) -> Path:
+    """Resolve example configuration against its directory, preserving absolute paths."""
+    return PROJECT_DIR / Path(value).expanduser()
+
+
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS requests (
     id INTEGER PRIMARY KEY,

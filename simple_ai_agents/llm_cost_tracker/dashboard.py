@@ -3,24 +3,23 @@
 import os
 import sqlite3
 from decimal import Decimal
-from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 from dotenv import load_dotenv
 
-from tracker import load_rows
+from tracker import load_rows, project_path
 
 
 def render() -> None:
     """Render local request totals and charts, preserving unknown-cost records."""
-    load_dotenv(Path(__file__).with_name(".env"))
+    load_dotenv(project_path(".env"))
     st.set_page_config(page_title="LLM Cost Tracker", layout="wide")
     st.title("LLM Cost Tracker")
     st.caption("Configured-rate estimates, not invoices. The demo uses synthetic prices and usage.")
     path = st.text_input("SQLite database", os.getenv("LLM_COST_DB", ".data/demo.sqlite3"))
     try:
-        rows = load_rows(Path(path))
+        rows = load_rows(project_path(path))
     except (sqlite3.Error, ValueError, OSError):
         st.info("No readable request database. Run `uv run python main.py --demo` first.")
         return

@@ -202,7 +202,7 @@ def test_demo_default_does_not_use_the_live_database(monkeypatch):
     monkeypatch.setenv("LLM_COST_DB", "host-usage.sqlite3")
     monkeypatch.setattr("sys.argv", ["main.py", "--demo"])
     assert main.main() == 0
-    assert constructor.call_args.args[1] == Path(".data/demo.sqlite3")
+    assert constructor.call_args.args[1] == PROJECT / ".data/demo.sqlite3"
 
 
 def test_live_cli_does_not_echo_provider_error(monkeypatch, capsys):

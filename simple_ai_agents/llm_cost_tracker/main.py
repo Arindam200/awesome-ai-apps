@@ -9,7 +9,7 @@ import httpx
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from tracker import CostTracker
+from tracker import CostTracker, project_path
 
 
 def demo_reply(request: httpx.Request) -> httpx.Response:
@@ -42,17 +42,18 @@ def main() -> int:
     parser.add_argument("--tag", default="example")
     parser.add_argument("--database", type=Path)
     args = parser.parse_args()
-    load_dotenv(Path(__file__).with_name(".env"))
-    database = args.database or (
-        Path(".data/demo.sqlite3")
-        if args.demo
-        else Path(os.getenv("LLM_COST_DB", ".data/usage.sqlite3"))
+    load_dotenv(project_path(".env"))
+    database = project_path(
+        args.database
+        or (".data/demo.sqlite3" if args.demo else os.getenv("LLM_COST_DB", ".data/usage.sqlite3"))
     )
-    pricing = Path(os.getenv("LLM_PRICING_FILE", "pricing.example.json"))
+    pricing = project_path(os.getenv("LLM_PRICING_FILE", "pricing.json"))
     if args.demo:
         with httpx.Client(transport=httpx.MockTransport(demo_reply)) as transport:
             with OpenAI(api_key="offline-fixture", http_client=transport) as client:
-                tracker = CostTracker(client, database, "demo", Path("pricing.example.json"))
+                tracker = CostTracker(
+                    client, database, "demo", project_path("pricing.example.json")
+                )
                 for model, tag in [
                     ("fixture-model", "research"),
                     ("fixture-model", "review"),
@@ -70,9 +71,19 @@ def main() -> int:
         with OpenAI(
             api_key=key, base_url=os.getenv("LLM_BASE_URL"), timeout=60, max_retries=1
         ) as client:
-            tracker = CostTracker(
-                client, database, os.getenv("LLM_PROVIDER", "compatible"), pricing
-            )
+            provider = os.getenv("LLM_PROVIDER", "compatible")
+            try:
+                tracker = CostTracker(client, database, provider, pricing)
+            except FileNotFoundError:
+                print(
+                    "Pricing file not found. Copy pricing.example.json to pricing.json, replace "
+                    "the synthetic entries with your provider's current model rates, or set "
+                    "LLM_PRICING_FILE to an existing pricing file. Relative paths use this "
+                    "example's directory. No request was sent."
+                )
+                return 1
+            if (provider, model) not in tracker.prices:
+                print("No configured rate for this provider/model; recorded costs will be unknown.")
             tracker.create(
                 model=model, tag=args.tag, messages=[{"role": "user", "content": args.prompt}]
             )
