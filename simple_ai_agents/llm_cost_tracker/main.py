@@ -3,13 +3,14 @@
 import argparse
 import json
 import os
+import sqlite3
 from pathlib import Path
 
 import httpx
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from tracker import CostTracker, project_path
+from tracker import CostTracker, PricingFileNotFoundError, project_path
 
 
 def demo_reply(request: httpx.Request) -> httpx.Response:
@@ -43,43 +44,64 @@ def main() -> int:
     parser.add_argument("--database", type=Path)
     args = parser.parse_args()
     load_dotenv(project_path(".env"))
-    database = project_path(
-        args.database
-        or (".data/demo.sqlite3" if args.demo else os.getenv("LLM_COST_DB", ".data/usage.sqlite3"))
-    )
-    pricing = project_path(os.getenv("LLM_PRICING_FILE", "pricing.json"))
+    try:
+        database = project_path(
+            args.database
+            or (
+                ".data/demo.sqlite3"
+                if args.demo
+                else os.getenv("LLM_COST_DB", ".data/usage.sqlite3")
+            )
+        )
+    except (RuntimeError, ValueError, OSError):
+        print("Database path could not be resolved; check --database or LLM_COST_DB.")
+        return 1
     if args.demo:
-        with httpx.Client(transport=httpx.MockTransport(demo_reply)) as transport:
-            with OpenAI(api_key="offline-fixture", http_client=transport) as client:
-                tracker = CostTracker(
-                    client, database, "demo", project_path("pricing.example.json")
-                )
-                for model, tag in [
-                    ("fixture-model", "research"),
-                    ("fixture-model", "review"),
-                    ("unknown-usage", "research"),
-                ]:
-                    tracker.create(
-                        model=model, tag=tag, messages=[{"role": "user", "content": "demo"}]
+        try:
+            with httpx.Client(transport=httpx.MockTransport(demo_reply)) as transport:
+                with OpenAI(api_key="offline-fixture", http_client=transport) as client:
+                    tracker = CostTracker(
+                        client, database, "demo", project_path("pricing.example.json")
                     )
+                    for model, tag in [
+                        ("fixture-model", "research"),
+                        ("fixture-model", "review"),
+                        ("unknown-usage", "research"),
+                    ]:
+                        tracker.create(
+                            model=model, tag=tag, messages=[{"role": "user", "content": "demo"}]
+                        )
+        except Exception as error:
+            print(
+                f"Offline demo failed ({type(error).__name__}); "
+                "check demo pricing and database configuration."
+            )
+            return 1
         print(f"Added 3 offline fixture requests to {database}. Prices and usage are synthetic.")
         return 0
     model, key = os.getenv("LLM_MODEL"), os.getenv("LLM_API_KEY")
     if not model or not key:
         parser.error("Set LLM_MODEL and LLM_API_KEY for live mode, or use --demo")
     try:
+        pricing = project_path(os.getenv("LLM_PRICING_FILE", "pricing.json"))
         with OpenAI(
             api_key=key, base_url=os.getenv("LLM_BASE_URL"), timeout=60, max_retries=1
         ) as client:
             provider = os.getenv("LLM_PROVIDER", "compatible")
             try:
                 tracker = CostTracker(client, database, provider, pricing)
-            except FileNotFoundError:
+            except PricingFileNotFoundError:
                 print(
                     "Pricing file not found. Copy pricing.example.json to pricing.json, replace "
                     "the synthetic entries with your provider's current model rates, or set "
                     "LLM_PRICING_FILE to an existing pricing file. Relative paths use this "
                     "example's directory. No request was sent."
+                )
+                return 1
+            except (sqlite3.Error, OSError):
+                print(
+                    "Database initialization failed; check LLM_COST_DB or --database. "
+                    "No request was sent."
                 )
                 return 1
             if (provider, model) not in tracker.prices:

@@ -77,6 +77,10 @@ def load_rows(path: Path) -> list[dict[str, Any]]:
         return [dict(row) for row in connection.execute("SELECT * FROM requests ORDER BY id")]
 
 
+class PricingFileNotFoundError(FileNotFoundError):
+    """Distinguish a missing pricing file from a database initialization error."""
+
+
 class CostTracker:
     """Wrap an existing client's create method, preserving response and exception objects."""
 
@@ -85,7 +89,10 @@ class CostTracker:
         self.client = client
         self.database = database
         self.provider = provider
-        self.prices = load_pricing(pricing)
+        try:
+            self.prices = load_pricing(pricing)
+        except FileNotFoundError as error:
+            raise PricingFileNotFoundError("Pricing file not found") from error
         database.parent.mkdir(parents=True, exist_ok=True)
         with closing(sqlite3.connect(database)) as connection, connection:
             connection.execute(SCHEMA)

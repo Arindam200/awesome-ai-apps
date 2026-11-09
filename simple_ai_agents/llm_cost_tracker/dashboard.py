@@ -17,11 +17,23 @@ def render() -> None:
     st.set_page_config(page_title="LLM Cost Tracker", layout="wide")
     st.title("LLM Cost Tracker")
     st.caption("Configured-rate estimates, not invoices. The demo uses synthetic prices and usage.")
-    path = st.text_input("SQLite database", os.getenv("LLM_COST_DB", ".data/demo.sqlite3"))
+    path = os.getenv("LLM_COST_DB")
+    if not path:
+        source = st.selectbox(
+            "Request source", ["Choose a source", "Live requests", "Offline demo"]
+        )
+        if source == "Choose a source":
+            st.info("Choose live requests or the offline demo to view recorded usage.")
+            return
+        path = ".data/usage.sqlite3" if source == "Live requests" else ".data/demo.sqlite3"
     try:
         rows = load_rows(project_path(path))
-    except (sqlite3.Error, ValueError, OSError):
-        st.info("No readable request database. Run `uv run python main.py --demo` first.")
+    except (sqlite3.Error, ValueError, OSError, RuntimeError):
+        st.info(
+            "No readable request database. Check the operator's LLM_COST_DB setting, "
+            "run a tracked live request, or seed the offline demo with "
+            "`uv run python main.py --demo`."
+        )
         return
     if not rows:
         st.info("No requests recorded yet.")

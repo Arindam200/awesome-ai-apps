@@ -285,7 +285,10 @@ def test_dashboard_empty_or_missing_database_is_explained(tmp_path, monkeypatch)
 def test_dashboard_invalid_path_is_explained(monkeypatch):
     """Render a path-resolution failure as guidance instead of an application exception."""
     monkeypatch.setenv("LLM_COST_DB", "missing.db")
+    monkeypatch.setattr(
+        "tracker.project_path",
+        lambda value: Path("invalid\0path.db") if value == "missing.db" else PROJECT / value,
+    )
     app = AppTest.from_file(str(PROJECT / "dashboard.py"), default_timeout=15).run()
-    app.text_input[0].set_value("invalid\0path.db").run()
     assert not app.exception
     assert "No readable request database" in app.info[0].value

@@ -101,8 +101,8 @@ the CLI explains how to create it and exits before sending a request. A configur
 without a rate for the selected provider/model produces a warning; the request can proceed
 with an unknown cost. No provider rates are bundled or fetched automatically.
 
-CLI and dashboard relative paths (pricing, databases and `--database`) are resolved against
-this example's directory, including paths entered in the dashboard. Absolute paths are
+CLI and operator-configured dashboard relative paths (pricing, databases and `--database`)
+are resolved against this example's directory. Absolute paths are
 preserved and `~` is expanded. `CostTracker` used directly in your own application keeps
 normal `Path` behavior; pass paths appropriate to that application.
 
@@ -117,8 +117,10 @@ uv run python main.py --demo
 uv run streamlit run dashboard.py
 ```
 
-Open the local URL Streamlit prints. Select `.data/demo.sqlite3` in the database field if
-your environment points to a different file. Each demo invocation appends three requests:
+Open the local URL Streamlit prints. If `LLM_COST_DB` is unset, explicitly select **Offline
+demo** in the source selector. If it is set, the dashboard reads that operator-configured
+database; unset it before launching the dashboard to choose between the fixed demo and live
+locations. Viewers cannot enter arbitrary filesystem paths. Each demo invocation appends three requests:
 two with known synthetic costs and one with unknown usage. The default demo file is separate
 from `LLM_COST_DB`; `--database PATH` deliberately overrides this separation.
 
@@ -136,7 +138,8 @@ uv run python main.py --tag research --prompt "Explain deterministic agent tests
 uv run streamlit run dashboard.py
 ```
 
-Live calls may incur provider charges. Select the live database path to inspect that run.
+Live calls may incur provider charges. The dashboard reads `LLM_COST_DB` when configured;
+otherwise select **Live requests** to inspect the default live database, `.data/usage.sqlite3`.
 Only metadata is recorded; this example does not print or persist the generated answer.
 
 ### Wrap an Existing Client
@@ -206,6 +209,7 @@ llm_cost_tracker/
 ├── tests/test_tracker.py  # Offline behavior and UI checks
 ├── tests/test_http_endpoint.py # Actual loopback HTTP/SDK checks
 ├── tests/test_startup.py  # CLI configuration and dashboard path regressions
+├── tests/test_review_followup.py # Data source selection and startup error handling
 ├── assets/demo.png
 ├── .env.example
 ├── .streamlit/config.toml

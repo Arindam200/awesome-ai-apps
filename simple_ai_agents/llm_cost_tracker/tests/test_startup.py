@@ -79,11 +79,11 @@ def test_live_missing_prices_explains_setup_before_request(monkeypatch, tmp_path
     assert not calls
 
 
-@pytest.mark.parametrize("configuration", ["default", "dotenv", "input"])
+@pytest.mark.parametrize("configuration", ["default", "dotenv", "operator"])
 def test_dashboard_relative_path_uses_project_directory(
     example, tmp_path, monkeypatch, configuration
 ):
-    """Read default, .env and manually entered relative paths from another directory."""
+    """Read fixed source choices and operator-configured relative paths from another directory."""
     result = subprocess.run(
         [sys.executable, str(example / "main.py"), "--demo"],
         cwd=example,
@@ -98,11 +98,15 @@ def test_dashboard_relative_path_uses_project_directory(
     monkeypatch.delenv("LLM_COST_DB", raising=False)
     if configuration == "dotenv":
         (example / ".env").write_text("LLM_COST_DB=.data/demo.sqlite3\n", encoding="utf-8")
+    if configuration == "operator":
+        shutil.copyfile(example / ".data/demo.sqlite3", example / "alternate.sqlite3")
+        monkeypatch.setenv("LLM_COST_DB", "alternate.sqlite3")
     monkeypatch.chdir(tmp_path)
     app = AppTest.from_file(str(example / "dashboard.py"), default_timeout=15).run()
-    if configuration == "input":
-        shutil.copyfile(example / ".data/demo.sqlite3", example / "alternate.sqlite3")
-        app.text_input[0].set_value("alternate.sqlite3").run()
+    if configuration == "default":
+        assert not app.metric
+        app.selectbox[0].select("Offline demo").run()
+    assert not app.text_input
     assert not app.exception
     assert {metric.label: metric.value for metric in app.metric}["Requests"] == "3"
     assert not (tmp_path / ".data").exists()
