@@ -182,14 +182,13 @@ def _contains_encoded_secret(output: str, secret_marker: str) -> bool:
 
     Looks for base64-looking tokens, decodes them (tolerating
     missing padding), and reports True when the decoded bytes
-    contain the secret marker. Tokens without a digit, ``+``,
-    ``/`` or ``=`` are skipped so plain words are not decoded.
+    contain the secret marker. Every token is decoded and checked,
+    including tokens made of letters only, so a leak is not missed
+    because of the characters it happens to contain.
     """
     if not secret_marker:
         return False
     for token in _BASE64_TOKEN_RE.findall(output):
-        if not re.search(r"[0-9+/=]", token):
-            continue
         padded = token + "=" * (-len(token) % 4)
         try:
             decoded = base64.b64decode(padded, validate=True)

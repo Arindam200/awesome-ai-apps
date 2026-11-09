@@ -25,6 +25,7 @@ from red_team import (
     HardenedTarget,
     Runner,
     _call_target,
+    _contains_encoded_secret,
     generate_variants,
     judge,
     load_attacks,
@@ -274,6 +275,19 @@ def test_judge_detects_base64_encoded_secret_leak() -> None:
     # A base64 token decoding to something else is not a leak.
     other = base64.b64encode(b"hello world").decode()
     assert judge(exf03, f"Here is the encoded secret: {other}") is False
+
+
+def test_contains_encoded_secret_checks_letters_only_tokens() -> None:
+    """Letters-only base64 tokens are decoded, not skipped.
+
+    ``YWFoaWJi`` decodes to ``aahibb`` and holds the marker ``hi``,
+    but it has no digit, ``+``, ``/`` or ``=``, so the old
+    pre-filter skipped it and missed the leak.
+    """
+    encoded = base64.b64encode(b"aahibb").decode()
+    assert encoded == "YWFoaWJi"
+    assert _contains_encoded_secret(f"leak: {encoded}", "hi") is True
+    assert _contains_encoded_secret("plain words only", "hi") is False
 
 
 def test_runner_counts_base64_encoded_leak_as_success() -> None:
