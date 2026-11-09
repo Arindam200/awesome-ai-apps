@@ -266,7 +266,9 @@ def test_dashboard_unpriced_provider_filter_keeps_total_unknown(setup, monkeypat
     other.create(model="model")
     monkeypatch.setenv("LLM_COST_DB", str(tracker.database))
     app = AppTest.from_file(str(PROJECT / "dashboard.py"), default_timeout=15).run()
-    app.selectbox[0].select("unpriced-provider").run()
+    next(widget for widget in app.selectbox if widget.label == "Provider").select(
+        "unpriced-provider"
+    ).run()
     assert not app.exception
     metrics = {metric.label: metric.value for metric in app.metric}
     assert metrics["Requests"] == "1"

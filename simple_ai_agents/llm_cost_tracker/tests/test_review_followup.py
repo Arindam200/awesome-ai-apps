@@ -121,3 +121,51 @@ def test_dashboard_explains_operator_path_expansion_errors(example, monkeypatch)
     app = AppTest.from_file(str(PROJECT / "dashboard.py"), default_timeout=15).run()
     assert not app.exception
     assert "No readable request database" in app.info[0].value
+
+
+def test_configured_live_database_does_not_hide_the_demo(example):
+    """A configured live file remains separate while viewers can choose the fixed demo."""
+    seed(example / ".data/usage.sqlite3", example)
+    seed(example / ".data/demo.sqlite3", example, count=2)
+    app = AppTest.from_file(str(PROJECT / "dashboard.py"), default_timeout=15).run()
+    assert not app.exception
+    assert {metric.label: metric.value for metric in app.metric}["Requests"] == "1"
+    source = next(widget for widget in app.selectbox if widget.label == "Request source")
+    source.select("Offline demo").run()
+    assert not app.exception
+    assert {metric.label: metric.value for metric in app.metric}["Requests"] == "2"
+    assert not app.text_input
+
+
+@pytest.mark.parametrize("problem", ["directory", "invalid-json", "invalid-rates", "unreadable"])
+def test_live_pricing_failures_are_identified_before_any_request(
+    example, monkeypatch, capsys, problem
+):
+    """Invalid/unreadable pricing never becomes a database error or a provider call."""
+    pricing = example / "bad-pricing.json"
+    if problem == "directory":
+        pricing.mkdir()
+    else:
+        pricing.write_text(
+            "{" if problem == "invalid-json" else '{"demo":{"m":{}}}', encoding="utf-8"
+        )
+    if problem == "unreadable":
+        original = Path.read_text
+
+        def read(path, *args, **kwargs):
+            if path == pricing:
+                raise PermissionError("private-pricing-detail")
+            return original(path, *args, **kwargs)
+
+        monkeypatch.setattr(Path, "read_text", read)
+    monkeypatch.setenv("LLM_PRICING_FILE", str(pricing))
+    monkeypatch.setattr(sys, "argv", ["main.py"])
+    client = MagicMock()
+    client.__enter__.return_value = client
+    monkeypatch.setattr(main, "OpenAI", lambda **_: client)
+    assert main.main() == 1
+    output = capsys.readouterr().out
+    assert "Pricing configuration" in output
+    assert "Database initialization failed" not in output
+    assert "private-pricing-detail" not in output
+    client.chat.completions.create.assert_not_called()

@@ -118,9 +118,9 @@ uv run streamlit run dashboard.py
 ```
 
 Open the local URL Streamlit prints. If `LLM_COST_DB` is unset, explicitly select **Offline
-demo** in the source selector. If it is set, the dashboard reads that operator-configured
-database; unset it before launching the dashboard to choose between the fixed demo and live
-locations. Viewers cannot enter arbitrary filesystem paths. Each demo invocation appends three requests:
+demo** in the source selector. If it is set, **Configured requests** reads that operator-configured
+database; **Offline demo** remains available as a separate fixed selection. Viewers cannot enter
+arbitrary filesystem paths. Each demo invocation appends three requests:
 two with known synthetic costs and one with unknown usage. The default demo file is separate
 from `LLM_COST_DB`; `--database PATH` deliberately overrides this separation.
 

@@ -18,14 +18,17 @@ def render() -> None:
     st.title("LLM Cost Tracker")
     st.caption("Configured-rate estimates, not invoices. The demo uses synthetic prices and usage.")
     path = os.getenv("LLM_COST_DB")
-    if not path:
-        source = st.selectbox(
-            "Request source", ["Choose a source", "Live requests", "Offline demo"]
-        )
-        if source == "Choose a source":
-            st.info("Choose live requests or the offline demo to view recorded usage.")
-            return
-        path = ".data/usage.sqlite3" if source == "Live requests" else ".data/demo.sqlite3"
+    configured_label = "Configured requests" if path else "Live requests"
+    sources = {
+        configured_label: path or ".data/usage.sqlite3",
+        "Offline demo": ".data/demo.sqlite3",
+    }
+    choices = list(sources) if path else ["Choose a source", *sources]
+    source = st.selectbox("Request source", choices)
+    if source == "Choose a source":
+        st.info("Choose live requests or the offline demo to view recorded usage.")
+        return
+    path = sources[source]
     try:
         rows = load_rows(project_path(path))
     except (sqlite3.Error, ValueError, OSError, RuntimeError):

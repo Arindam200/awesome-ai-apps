@@ -10,7 +10,7 @@ import httpx
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from tracker import CostTracker, PricingFileNotFoundError, project_path
+from tracker import CostTracker, PricingConfigurationError, PricingFileNotFoundError, project_path
 
 
 def demo_reply(request: httpx.Request) -> httpx.Response:
@@ -83,7 +83,14 @@ def main() -> int:
     if not model or not key:
         parser.error("Set LLM_MODEL and LLM_API_KEY for live mode, or use --demo")
     try:
-        pricing = project_path(os.getenv("LLM_PRICING_FILE", "pricing.json"))
+        try:
+            pricing = project_path(os.getenv("LLM_PRICING_FILE", "pricing.json"))
+        except (RuntimeError, ValueError, OSError):
+            print(
+                "Pricing configuration path could not be resolved; check LLM_PRICING_FILE. "
+                "No request was sent."
+            )
+            return 1
         with OpenAI(
             api_key=key, base_url=os.getenv("LLM_BASE_URL"), timeout=60, max_retries=1
         ) as client:
@@ -96,6 +103,12 @@ def main() -> int:
                     "the synthetic entries with your provider's current model rates, or set "
                     "LLM_PRICING_FILE to an existing pricing file. Relative paths use this "
                     "example's directory. No request was sent."
+                )
+                return 1
+            except PricingConfigurationError:
+                print(
+                    "Pricing configuration could not be loaded; check LLM_PRICING_FILE, "
+                    "file access and JSON rates. No request was sent."
                 )
                 return 1
             except (sqlite3.Error, OSError):
