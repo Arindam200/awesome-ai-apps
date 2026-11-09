@@ -27,6 +27,7 @@ of live provider billing or inference quality.
 
 Python 3.11+, the OpenAI Python client for compatible Chat Completions endpoints,
 SQLite from the standard library, pandas, Streamlit, pytest and Ruff.
+Python 3.11 is required for the standard-library `datetime.UTC` constant.
 
 ## Workflow
 
@@ -54,7 +55,15 @@ uv sync --python 3.12
 ### Environment Variables
 
 For live mode, copy `.env.example` to `.env` in this directory, then configure the values
-below. Set `LLM_PRICING_FILE` to the `pricing.json` you create with your provider's rates:
+below. Create a live pricing file before sending requests:
+
+```bash
+cp .env.example .env
+cp pricing.example.json pricing.json
+```
+
+Replace the copied synthetic `demo` entries with your provider's current model rates,
+following the format below. `LLM_PRICING_FILE` defaults to `pricing.json`:
 
 ```dotenv
 LLM_API_KEY=your_key
@@ -68,7 +77,8 @@ LLM_PRICING_FILE=pricing.json
 The environment takes precedence over `.env`. Keep secrets local. The database and `.env`
 are ignored by Git, and Streamlit usage telemetry is disabled in `.streamlit/config.toml`.
 
-Create `pricing.json` from your provider's current published rates. Keys must match the
+Use your provider's current published rates, such as the
+[Nebius pricing catalog](https://tokenfactory.nebius.com/prices). Keys must match the
 provider label and **requested** model ID you pass to the tracker:
 
 ```json
@@ -86,6 +96,15 @@ These numbers illustrate the file format; they are not real quotes for a model. 
 non-negative JSON numbers or decimal strings are accepted. `pricing.example.json` contains
 synthetic demo rates only, so real models remain unpriced until you configure their rates.
 Correcting the pricing path affects new requests; existing unknown-cost rows stay unknown.
+Live mode never falls back to the synthetic demo pricing file. If the live file is missing,
+the CLI explains how to create it and exits before sending a request. A configured file
+without a rate for the selected provider/model produces a warning; the request can proceed
+with an unknown cost. No provider rates are bundled or fetched automatically.
+
+CLI and dashboard relative paths (pricing, databases and `--database`) are resolved against
+this example's directory, including paths entered in the dashboard. Absolute paths are
+preserved and `~` is expanded. `CostTracker` used directly in your own application keeps
+normal `Path` behavior; pass paths appropriate to that application.
 
 ## Usage
 
@@ -102,6 +121,13 @@ Open the local URL Streamlit prints. Select `.data/demo.sqlite3` in the database
 your environment points to a different file. Each demo invocation appends three requests:
 two with known synthetic costs and one with unknown usage. The default demo file is separate
 from `LLM_COST_DB`; `--database PATH` deliberately overrides this separation.
+
+You can also launch from `simple_ai_agents/` without changing where files are stored:
+
+```bash
+uv run --project llm_cost_tracker python llm_cost_tracker/main.py --demo
+uv run --project llm_cost_tracker streamlit run llm_cost_tracker/dashboard.py
+```
 
 ### Live Request
 
@@ -165,6 +191,8 @@ transports and a loopback HTTP fixture server, concurrent writes, and Streamlit 
 interactions. They check unknown versus zero costs, decimal rates, provider separation,
 failed writes/calls, secret-free
 metadata and dashboard filters. No live-provider billing or inference was tested.
+Startup regressions also run the CLI from the project, its parent and an unrelated directory,
+and verify dashboard paths, missing live prices, custom paths and unknown-price warnings.
 
 ## Project Structure
 
@@ -174,7 +202,10 @@ llm_cost_tracker/
 ├── main.py                # Live request and offline fixture demo
 ├── dashboard.py           # Local read-only metadata dashboard
 ├── pricing.example.json   # Synthetic rates
+├── pricing.json           # Create locally with verified provider/model rates
 ├── tests/test_tracker.py  # Offline behavior and UI checks
+├── tests/test_http_endpoint.py # Actual loopback HTTP/SDK checks
+├── tests/test_startup.py  # CLI configuration and dashboard path regressions
 ├── assets/demo.png
 ├── .env.example
 ├── .streamlit/config.toml
