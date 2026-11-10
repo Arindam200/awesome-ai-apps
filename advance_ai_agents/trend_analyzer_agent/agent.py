@@ -9,7 +9,7 @@ from google.genai import types
 
 from exa_py import Exa
 from tavily import TavilyClient
-from firecrawl import FirecrawlApp
+from firecrawl import Firecrawl
 from dotenv import load_dotenv
 import os
 
@@ -71,24 +71,18 @@ def tavily_search_ai_analysis(_: str) -> dict:
 
 # --- Tool 3: Firecrawl scrapper ---
 def firecrawl_scrape_nebius(_: str) -> dict:
-    firecrawl = FirecrawlApp(api_key=os.getenv("FIRECRAWL_API_KEY"))
+    firecrawl = Firecrawl(api_key=os.getenv("FIRECRAWL_API_KEY"))
     try:
-        scrape_result = firecrawl.scrape_url(
+        scrape_result = firecrawl.scrape(
             url="https://tokenfactory.nebius.com/",
             formats=["markdown"],
             only_main_content=True
         )
         
-        if scrape_result.success:
-            return {
-                "type": "firecrawl",
-                "markdown": scrape_result.markdown
-            }
-        else:
-            return {
-                "type": "firecrawl",
-                "error": "Scraping failed."
-            }
+        return {
+            "type": "firecrawl",
+            "markdown": scrape_result.markdown
+        }
 
     except Exception as e:
         return {
