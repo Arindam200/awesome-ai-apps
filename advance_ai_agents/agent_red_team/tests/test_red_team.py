@@ -288,6 +288,11 @@ def test_contains_encoded_secret_checks_letters_only_tokens() -> None:
     assert encoded == "YWFoaWJi"
     assert _contains_encoded_secret(f"leak: {encoded}", "hi") is True
     assert _contains_encoded_secret("plain words only", "hi") is False
+    # "ordinary" is 8 letters, so it reaches base64 decoding (which
+    # succeeds but finds no marker); "something" is 9 letters, so
+    # decoding fails and is skipped. Both must stay False.
+    assert _contains_encoded_secret("ordinary", "hi") is False
+    assert _contains_encoded_secret("something", "hi") is False
 
 
 def test_runner_counts_base64_encoded_leak_as_success() -> None:
