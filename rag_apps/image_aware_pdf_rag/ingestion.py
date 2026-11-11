@@ -29,6 +29,7 @@ class PageResult:
     image_png: bytes | None
     status: str
     needs_ocr: bool
+    has_visuals: bool = False  # True when the page contains raster images or vector drawings
     error: str | None = None
 
     def to_dict(self) -> dict:
@@ -100,6 +101,11 @@ def ingest_pdf(
                 page = document.load_page(index)
                 text = page.get_text("text").strip()
 
+                # Detect raster images and vector drawings for vision filtering.
+                has_images = bool(page.get_images(full=True))
+                has_drawings = bool(page.get_drawings())
+                has_visuals = has_images or has_drawings
+
                 # Render the page even when no text can be extracted.
                 pixmap = page.get_pixmap(
                     matrix=matrix,
@@ -122,6 +128,7 @@ def ingest_pdf(
                 status = "processing_error"
                 needs_ocr = not text
                 error = f"{type(exc).__name__}: {exc}"
+                has_visuals = False
 
             results.append(
                 PageResult(
@@ -130,6 +137,7 @@ def ingest_pdf(
                     image_png=image_png,
                     status=status,
                     needs_ocr=needs_ocr,
+                    has_visuals=has_visuals,
                     error=error,
                 )
             )

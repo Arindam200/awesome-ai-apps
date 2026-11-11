@@ -1,12 +1,11 @@
-
 from types import SimpleNamespace
 
 import pytest
 
-from providers.groq_chat import GroqChatModel
+from providers.nebius_chat import NebiusChatModel
 
 
-class FakeGroqClient:
+class FakeNebiusClient:
     def __init__(self, content="Mock answer", finish_reason=None):
         self.content = content
         self.finish_reason = finish_reason
@@ -25,20 +24,20 @@ class FakeGroqClient:
 
 
 def test_generate_returns_answer(monkeypatch):
-    monkeypatch.delenv("GROQ_CHAT_MODEL", raising=False)
-    client = FakeGroqClient("Revenue increased by 20%.")
-    model = GroqChatModel(client=client)
+    monkeypatch.delenv("NEBIUS_CHAT_MODEL", raising=False)
+    client = FakeNebiusClient("Revenue increased by 20%.")
+    model = NebiusChatModel(client=client)
 
     result = model.generate([
         {"role": "user", "content": "What happened to revenue?"}
     ])
 
     assert result == "Revenue increased by 20%."
-    assert client.last_request["model"] == "openai/gpt-oss-20b"
+    assert client.last_request["model"] == "openai/gpt-oss-120b"
 
 
 def test_generate_strips_whitespace():
-    model = GroqChatModel(client=FakeGroqClient("  Answer  "))
+    model = NebiusChatModel(client=FakeNebiusClient("  Answer  "))
 
     assert model.generate([
         {"role": "user", "content": "Question"}
@@ -46,14 +45,14 @@ def test_generate_strips_whitespace():
 
 
 def test_rejects_empty_messages():
-    model = GroqChatModel(client=FakeGroqClient())
+    model = NebiusChatModel(client=FakeNebiusClient())
 
     with pytest.raises((ValueError, TypeError)):
         model.generate([])
 
 
 def test_rejects_empty_response():
-    model = GroqChatModel(client=FakeGroqClient("  "))
+    model = NebiusChatModel(client=FakeNebiusClient("  "))
 
     with pytest.raises(RuntimeError, match="empty"):
         model.generate([
@@ -62,7 +61,7 @@ def test_rejects_empty_response():
 
 
 def test_rejects_truncated_response():
-    model = GroqChatModel(client=FakeGroqClient("Partial answer", "length"))
+    model = NebiusChatModel(client=FakeNebiusClient("Partial answer", "length"))
 
     with pytest.raises(RuntimeError, match="truncated"):
         model.generate([
@@ -79,7 +78,7 @@ def test_rejects_no_choices():
                 )
             )
 
-    model = GroqChatModel(client=EmptyClient())
+    model = NebiusChatModel(client=EmptyClient())
 
     with pytest.raises(RuntimeError, match="no completion choices"):
         model.generate([
@@ -88,7 +87,7 @@ def test_rejects_no_choices():
 
 
 def test_missing_api_key(monkeypatch):
-    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+    monkeypatch.delenv("NEBIUS_API_KEY", raising=False)
 
-    with pytest.raises(ValueError, match="GROQ_API_KEY"):
-        GroqChatModel()
+    with pytest.raises(ValueError, match="NEBIUS_API_KEY"):
+        NebiusChatModel()

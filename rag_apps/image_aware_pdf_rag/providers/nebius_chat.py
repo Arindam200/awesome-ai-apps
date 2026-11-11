@@ -1,5 +1,5 @@
 
-"""Groq chat provider adapter."""
+"""Nebius Token Factory chat provider adapter (OpenAI-compatible)."""
 
 from __future__ import annotations
 
@@ -8,9 +8,13 @@ from typing import Any
 
 from interfaces.chat import ChatMessage, validate_messages
 
+NEBIUS_BASE_URL = os.getenv(
+    "NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1/"
+)
 
-class GroqChatModel:
-    """Generate text responses through Groq's chat completions API."""
+
+class NebiusChatModel:
+    """Generate text responses through the Nebius Token Factory chat API."""
 
     def __init__(
         self,
@@ -19,8 +23,8 @@ class GroqChatModel:
         client: Any | None = None,
     ) -> None:
         self.model = model or os.getenv(
-            "GROQ_CHAT_MODEL",
-            "openai/gpt-oss-20b",
+            "NEBIUS_CHAT_MODEL",
+            "openai/gpt-oss-120b",
         )
 
         if client is not None:
@@ -28,15 +32,15 @@ class GroqChatModel:
             self.client = client
             return
 
-        key = api_key or os.getenv("GROQ_API_KEY")
+        key = api_key or os.getenv("NEBIUS_API_KEY")
         if not key:
             raise ValueError(
-                "Missing Groq API key. Set GROQ_API_KEY in your environment."
+                "Missing Nebius API key. Set NEBIUS_API_KEY in your environment."
             )
 
-        from groq import Groq
+        from openai import OpenAI
 
-        self.client = Groq(api_key=key)
+        self.client = OpenAI(api_key=key, base_url=NEBIUS_BASE_URL)
 
     def generate(self, messages: list[ChatMessage]) -> str:
         """Generate an answer from validated chat messages."""
@@ -49,15 +53,15 @@ class GroqChatModel:
         )
 
         if not response.choices:
-            raise RuntimeError("Groq returned no completion choices")
+            raise RuntimeError("Nebius returned no completion choices")
 
         choice = response.choices[0]
         if getattr(choice, "finish_reason", None) == "length":
-            raise RuntimeError("Groq chat response was truncated at the completion-token limit")
+            raise RuntimeError("Nebius chat response was truncated at the completion-token limit")
 
         content = choice.message.content
 
         if not isinstance(content, str) or not content.strip():
-            raise RuntimeError("Groq returned an empty or invalid response")
+            raise RuntimeError("Nebius returned an empty or invalid response")
 
         return content.strip()

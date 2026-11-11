@@ -1,5 +1,5 @@
 
-"""Groq vision provider adapter for rendered PDF pages."""
+"""Nebius Token Factory vision provider adapter for rendered PDF pages."""
 
 from __future__ import annotations
 
@@ -18,6 +18,9 @@ from interfaces.vision import (
 
 MAX_BASE64_IMAGE_BYTES = 3 * 1024 * 1024
 
+NEBIUS_BASE_URL = os.getenv(
+    "NEBIUS_BASE_URL", "https://api.tokenfactory.nebius.com/v1/"
+)
 
 import logging
 
@@ -27,7 +30,7 @@ DEFAULT_VISION_MAX_COMPLETION_TOKENS = 1024
 RETRY_VISION_MAX_COMPLETION_TOKENS = 1536
 
 
-class GroqVisionModel:
+class NebiusVisionModel:
     """Describe charts, diagrams, tables, and other page visuals."""
 
     def __init__(
@@ -38,10 +41,10 @@ class GroqVisionModel:
         max_completion_tokens: int | None = None,
     ) -> None:
         self.model = model or os.getenv(
-            "GROQ_VISION_MODEL",
-            "qwen/qwen3.8-27b",
+            "NEBIUS_VISION_MODEL",
+            "google/gemma-3-27b-it",
         )
-        env_tokens = os.getenv("GROQ_VISION_MAX_COMPLETION_TOKENS")
+        env_tokens = os.getenv("NEBIUS_VISION_MAX_COMPLETION_TOKENS")
         self.max_completion_tokens = (
             max_completion_tokens
             or (int(env_tokens) if env_tokens and env_tokens.isdigit() else None)
@@ -52,15 +55,15 @@ class GroqVisionModel:
             self.client = client
             return
 
-        key = api_key or os.getenv("GROQ_API_KEY")
+        key = api_key or os.getenv("NEBIUS_API_KEY")
         if not key:
             raise ValueError(
-                "Missing Groq API key. Set GROQ_API_KEY in your environment."
+                "Missing Nebius API key. Set NEBIUS_API_KEY in your environment."
             )
 
-        from groq import Groq
+        from openai import OpenAI
 
-        self.client = Groq(api_key=key)
+        self.client = OpenAI(api_key=key, base_url=NEBIUS_BASE_URL)
 
     def describe_page(
         self,
@@ -131,7 +134,7 @@ class GroqVisionModel:
             label = attempt["label"]
 
             logger.info(
-                "Calling Groq vision API for page %d (attempt=%s, model=%s, max_tokens=%d)",
+                "Calling Nebius vision API for page %d (attempt=%s, model=%s, max_tokens=%d)",
                 page_number,
                 label,
                 self.model,
@@ -139,9 +142,6 @@ class GroqVisionModel:
             )
 
             try:
-                request_options = {}
-                if self.model == "qwen/qwen3.8-27b":
-                    request_options["reasoning_effort"] = "none"
                 response = self.client.chat.completions.create(
                     model=self.model,
                     messages=[
@@ -157,13 +157,12 @@ class GroqVisionModel:
                         }
                     ],
                     max_completion_tokens=tokens,
-                    **request_options,
                 )
             except Exception as exc:
                 err_type = type(exc).__name__
                 status_code = getattr(exc, "status_code", getattr(exc, "code", None))
                 logger.error(
-                    "Groq vision request failed on page %d (model=%s, error_type=%s, status_code=%s): %s",
+                    "Nebius vision request failed on page %d (model=%s, error_type=%s, status_code=%s): %s",
                     page_number,
                     self.model,
                     err_type,
@@ -172,20 +171,20 @@ class GroqVisionModel:
                 )
                 if status_code == 429 or "rate_limit" in str(exc).lower() or "429" in str(exc):
                     raise RuntimeError(
-                        f"Groq rate limit exceeded (HTTP 429) while processing page {page_number}: {exc}"
+                        f"Nebius rate limit exceeded (HTTP 429) while processing page {page_number}: {exc}"
                     ) from exc
                 elif status_code == 401 or "invalid_api_key" in str(exc).lower():
                     raise RuntimeError(
-                        f"Groq authentication failed (HTTP 401): {exc}"
+                        f"Nebius authentication failed (HTTP 401): {exc}"
                     ) from exc
                 else:
                     raise RuntimeError(
-                        f"Groq vision error on page {page_number} ({err_type}{f' {status_code}' if status_code else ''}): {exc}"
+                        f"Nebius vision error on page {page_number} ({err_type}{f' {status_code}' if status_code else ''}): {exc}"
                     ) from exc
 
             if not response.choices:
-                logger.error("Groq returned empty choices for page %d (model=%s)", page_number, self.model)
-                raise RuntimeError(f"Groq returned no vision completion choices for page {page_number}")
+                logger.error("Nebius returned empty choices for page %d (model=%s)", page_number, self.model)
+                raise RuntimeError(f"Nebius returned no vision completion choices for page {page_number}")
 
             choice = response.choices[0]
             finish_reason = getattr(choice, "finish_reason", None)
@@ -193,7 +192,7 @@ class GroqVisionModel:
             text = (raw_content or "").strip()
 
             logger.info(
-                "Groq vision response received for page %d (model=%s, finish_reason=%s, chars=%d)",
+                "Nebius vision response received for page %d (model=%s, finish_reason=%s, chars=%d)",
                 page_number,
                 self.model,
                 finish_reason,
@@ -202,7 +201,7 @@ class GroqVisionModel:
 
             if finish_reason == "length":
                 logger.warning(
-                    "Groq vision response truncated (finish_reason='length') on page %d (model=%s, tokens_requested=%d, attempt=%s).",
+                    "Nebius vision response truncated (finish_reason='length') on page %d (model=%s, tokens_requested=%d, attempt=%s).",
                     page_number,
                     self.model,
                     tokens,
@@ -226,17 +225,17 @@ class GroqVisionModel:
                     return last_truncation_text + " [Note: Visual description was partially truncated by token limit]"
                 else:
                     raise RuntimeError(
-                        f"Groq returned an incomplete page description (completion token limit reached) on page {page_number}"
+                        f"Nebius returned an incomplete page description (completion token limit reached) on page {page_number}"
                     )
 
             if not text:
                 logger.error(
-                    "Groq returned an empty page description for page %d (model=%s, finish_reason=%s)",
+                    "Nebius returned an empty page description for page %d (model=%s, finish_reason=%s)",
                     page_number,
                     self.model,
                     finish_reason,
                 )
-                raise RuntimeError(f"Groq returned an empty page description for page {page_number}")
+                raise RuntimeError(f"Nebius returned an empty page description for page {page_number}")
 
             return text
 

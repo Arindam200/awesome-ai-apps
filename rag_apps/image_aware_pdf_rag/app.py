@@ -4,7 +4,7 @@ Run from rag_apps/image_aware_pdf_rag:
     uv run streamlit run app.py
 
 Uses the project's existing ingestion, chunking, vision, embeddings, FAISS,
-Groq chat, and Groq vision modules.
+Nebius chat, and Nebius vision modules.
 """
 
 from __future__ import annotations
@@ -39,8 +39,8 @@ try:
     from interfaces.vector_store import VectorDocument
     from retrieval.retriever import PDFRetriever
     from pipeline import AnswerOrchestrator, AnswerResult
-    from providers.groq_chat import GroqChatModel
-    from providers.groq_vision import GroqVisionModel
+    from providers.nebius_chat import NebiusChatModel
+    from providers.nebius_vision import NebiusVisionModel
     import logging
 
     logger = logging.getLogger(__name__)
@@ -338,22 +338,22 @@ def get_vector_store() -> FAISSVectorStore:
     return st.session_state.vector_store
 
 
-def current_groq_key() -> str | None:
-    """Reload the project environment and return the current Groq API key."""
+def current_nebius_key() -> str | None:
+    """Reload the project environment and return the current Nebius API key."""
     load_dotenv(override=True)
-    return os.getenv("GROQ_API_KEY")
+    return os.getenv("NEBIUS_API_KEY")
 
 
 @st.cache_resource
-def get_chat_model(model_name: str, api_key: str | None = None) -> GroqChatModel:
-    """Load and cache the Groq chat model instance."""
-    return GroqChatModel(model=model_name, api_key=api_key)
+def get_chat_model(model_name: str, api_key: str | None = None) -> NebiusChatModel:
+    """Load and cache the Nebius chat model instance."""
+    return NebiusChatModel(model=model_name, api_key=api_key)
 
 
 @st.cache_resource
-def get_vision_model(model_name: str, api_key: str | None = None) -> GroqVisionModel:
-    """Load and cache the Groq multimodal vision model instance."""
-    return GroqVisionModel(model=model_name, api_key=api_key)
+def get_vision_model(model_name: str, api_key: str | None = None) -> NebiusVisionModel:
+    """Load and cache the Nebius multimodal vision model instance."""
+    return NebiusVisionModel(model=model_name, api_key=api_key)
 
 
 # ---------- Session state ----------
@@ -471,7 +471,7 @@ class SourceBoundPDFRetriever:
         return evidence
 
 
-def answer_question(query: str, chat_model: GroqChatModel) -> AnswerResult:
+def answer_question(query: str, chat_model: NebiusChatModel) -> AnswerResult:
     """Retrieve evidence and generate a cited response to the user query."""
     orchestrator = AnswerOrchestrator(
         retriever=SourceBoundPDFRetriever(st.session_state.index_source),
@@ -614,7 +614,7 @@ with col_left:
 
     pages = st.session_state.pages
     chunks = st.session_state.chunks
-    rendered_visuals = sum(1 for page in pages if page_image(page))
+    rendered_visuals = sum(1 for page in pages if getattr(page, "has_visuals", False) and page_image(page))
 
     # Section B: Processing status
     st.markdown('<div class="panel-heading" style="margin-top:14px;">⚡ Processing Status</div>', unsafe_allow_html=True)
@@ -663,16 +663,16 @@ with col_left:
         if not st.session_state.index_ready and st.session_state.index_status == "inspected":
             if st.button("🚀 Index Document", type="primary", use_container_width=True):
                 st.session_state.processing_error = None
-                groq_api_key = current_groq_key()
-                if not groq_api_key:
-                    st.error("GROQ_API_KEY is missing. Check your `.env`.")
+                nebius_api_key = current_nebius_key()
+                if not nebius_api_key:
+                    st.error("NEBIUS_API_KEY is missing. Check your `.env`.")
                 else:
                     try:
                         with st.spinner("Embedding text and indexing visual descriptions…"):
                             embedder = get_embedding_model()
                             vision_model = get_vision_model(
-                                os.getenv("GROQ_VISION_MODEL", "qwen/qwen3.8-27b"),
-                                groq_api_key,
+                                os.getenv("NEBIUS_VISION_MODEL", "google/gemma-3-27b-it"),
+                                nebius_api_key,
                             )
                             store = get_vector_store()
 
@@ -707,7 +707,11 @@ with col_left:
 
                             st.session_state.text_chunks_indexed = text_indexed_count
 
-                            pages_with_images = [p for p in pages if page_image(p)]
+                            # Only run vision on pages that actually contain images or drawings.
+                            pages_with_images = [
+                                p for p in pages
+                                if page_image(p) and getattr(p, "has_visuals", False)
+                            ]
                             descriptions = []
                             succeeded_pages = []
                             failed_pages_dict: dict[int, str] = {}
@@ -723,7 +727,7 @@ with col_left:
                                     error = batch.failures.get(pnum)
                                     if error is not None:
                                         if "401" in error or "invalid_api_key" in error.lower():
-                                            st.session_state.processing_error = "Invalid Groq API Key."
+                                            st.session_state.processing_error = "Invalid Nebius API Key."
                                             fatal_auth_error = True
                                         continue
                                     for description in batch.descriptions:
@@ -752,7 +756,7 @@ with col_left:
                                     err_str = str(exc)
                                     failed_pages_dict[pnum] = err_str
                                     if "401" in err_str or "invalid_api_key" in err_str.lower():
-                                        st.session_state.processing_error = "Invalid Groq API Key."
+                                        st.session_state.processing_error = "Invalid Nebius API Key."
                                         fatal_auth_error = True
                                         break
 
@@ -791,9 +795,9 @@ with col_left:
     st.markdown('<div class="panel-heading" style="margin-top:14px;">⚙️ Model & Settings</div>', unsafe_allow_html=True)
     chat_model_name = st.selectbox(
         "LLM Provider",
-        options=["openai/gpt-oss-20b"],
+        options=["openai/gpt-oss-120b"],
         index=0,
-        help="Groq LLM provider for fast answering.",
+        help="Nebius Token Factory model for fast answering.",
     )
     st.selectbox(
         "Embedding Provider",
@@ -803,7 +807,7 @@ with col_left:
     )
     st.selectbox(
         "Vision Provider",
-        options=[os.getenv("GROQ_VISION_MODEL", "qwen/qwen3.8-27b")],
+        options=[os.getenv("NEBIUS_VISION_MODEL", "google/gemma-3-27b-it")],
         index=0,
         help="Multimodal vision model for chart analysis.",
     )
@@ -853,9 +857,9 @@ with col_center:
     st.markdown('<div style="font-size:0.78rem; color:#64748b; font-weight:600; margin: 4px 0 6px 0;">Try an example:</div>', unsafe_allow_html=True)
     example_questions = [
         "What is the main contribution of this paper?",
-        "What does the chart on page 5 show?",
-        "Explain the architecture diagram on page 3.",
-        "What are the key results in the table on page 8?",
+        "What does the chart on page 2 show?",
+        "Explain the architecture diagram on page 2.",
+        "What are the key results in the table on page 3?",
     ]
     ex_row1 = st.columns(2)
     ex_row2 = st.columns(2)
@@ -880,7 +884,7 @@ with col_center:
                 with st.spinner("Formulating grounded response…"):
                     chat_model = get_chat_model(
                         chat_model_name,
-                        current_groq_key(),
+                        current_nebius_key(),
                     )
                     result = answer_question(question, chat_model)
                     answer = clean_markdown_response(result.answer)

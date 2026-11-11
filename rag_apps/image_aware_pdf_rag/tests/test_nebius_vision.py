@@ -6,11 +6,11 @@ import pytest
 from PIL import Image
 
 from interfaces.vision import VisionImageTooLargeError
-from providers import groq_vision
-from providers.groq_vision import GroqVisionModel
+from providers import nebius_vision
+from providers.nebius_vision import NebiusVisionModel
 
 
-class FakeGroqClient:
+class FakeNebiusClient:
     def __init__(self, content, finish_reason):
         self.last_request = None
 
@@ -44,20 +44,19 @@ def make_png(width, height):
 
 
 def test_describe_page_returns_complete_description():
-    model = GroqVisionModel(
-        model="qwen/qwen3.8-27b",
-        client=FakeGroqClient("A chart shows revenue growth.", "stop")
+    model = NebiusVisionModel(
+        model="google/gemma-3-27b-it",
+        client=FakeNebiusClient("A chart shows revenue growth.", "stop")
     )
 
     result = model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)
 
     assert result.description == "A chart shows revenue growth."
-    assert model.client.last_request["reasoning_effort"] == "none"
 
 
 def test_describe_page_omits_reasoning_effort_for_other_models():
-    client = FakeGroqClient("A chart.", "stop")
-    model = GroqVisionModel(model="other/model", client=client)
+    client = FakeNebiusClient("A chart.", "stop")
+    model = NebiusVisionModel(model="google/gemma-3-27b-it", client=client)
 
     model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)
 
@@ -65,8 +64,8 @@ def test_describe_page_omits_reasoning_effort_for_other_models():
 
 
 def test_describe_page_rejects_truncated_description():
-    model = GroqVisionModel(
-        client=FakeGroqClient("A chart shows revenue...", "length")
+    model = NebiusVisionModel(
+        client=FakeNebiusClient("A chart shows revenue...", "length")
     )
 
     with pytest.raises(RuntimeError, match="incomplete"):
@@ -74,9 +73,9 @@ def test_describe_page_rejects_truncated_description():
 
 
 def test_describe_page_compresses_image_to_fit_payload_limit(monkeypatch):
-    monkeypatch.setattr(groq_vision, "MAX_BASE64_IMAGE_BYTES", 4096)
-    client = FakeGroqClient("A chart.", "stop")
-    model = GroqVisionModel(client=client)
+    monkeypatch.setattr(nebius_vision, "MAX_BASE64_IMAGE_BYTES", 4096)
+    client = FakeNebiusClient("A chart.", "stop")
+    model = NebiusVisionModel(client=client)
 
     model.describe_page(make_png(128, 128), 1)
 
@@ -89,12 +88,12 @@ def test_describe_page_compresses_image_to_fit_payload_limit(monkeypatch):
     compressed_image = base64.b64decode(encoded_image)
 
     assert media_type == "image/jpeg"
-    assert len(encoded_image) <= groq_vision.MAX_BASE64_IMAGE_BYTES
+    assert len(encoded_image) <= nebius_vision.MAX_BASE64_IMAGE_BYTES
     assert compressed_image.startswith(b"\xff\xd8")
 
 
 def test_describe_page_composites_transparency_onto_white(monkeypatch):
-    monkeypatch.setattr(groq_vision, "MAX_BASE64_IMAGE_BYTES", 1024)
+    monkeypatch.setattr(nebius_vision, "MAX_BASE64_IMAGE_BYTES", 1024)
     image = Image.new("RGBA", (128, 128))
     image.putdata([
         (x * 17 % 256, y * 31 % 256, (x * y) % 256,
@@ -105,8 +104,8 @@ def test_describe_page_composites_transparency_onto_white(monkeypatch):
     output = BytesIO()
     image.save(output, format="PNG")
     assert len(output.getvalue()) > 768
-    model = GroqVisionModel(
-        client=FakeGroqClient("A chart.", "stop")
+    model = NebiusVisionModel(
+        client=FakeNebiusClient("A chart.", "stop")
     )
 
     prepared_image, media_type = model._prepare_image(output.getvalue())
@@ -119,8 +118,8 @@ def test_describe_page_composites_transparency_onto_white(monkeypatch):
 
 
 def test_describe_page_reports_image_that_cannot_fit(monkeypatch):
-    monkeypatch.setattr(groq_vision, "MAX_BASE64_IMAGE_BYTES", 4)
-    model = GroqVisionModel(client=FakeGroqClient("A chart.", "stop"))
+    monkeypatch.setattr(nebius_vision, "MAX_BASE64_IMAGE_BYTES", 4)
+    model = NebiusVisionModel(client=FakeNebiusClient("A chart.", "stop"))
 
     with pytest.raises(VisionImageTooLargeError, match="request limit"):
         model.describe_page(make_png(8, 8), 1)
@@ -154,16 +153,12 @@ def test_describe_page_retries_on_truncation_and_succeeds():
             )
 
     client = SimpleNamespace(chat=SimpleNamespace(completions=RetryClient()))
-    model = GroqVisionModel(model="qwen/qwen3.8-27b", client=client)
+    model = NebiusVisionModel(model="google/gemma-3-27b-it", client=client)
 
     result = model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)
 
     assert "Complete concise summary" in result.description
     assert client.chat.completions.calls == 2
-    assert all(
-        request["reasoning_effort"] == "none"
-        for request in client.chat.completions.requests
-    )
 
 
 def test_describe_page_handles_rate_limit_error():
@@ -174,7 +169,7 @@ def test_describe_page_handles_rate_limit_error():
             raise exc
 
     client = SimpleNamespace(chat=SimpleNamespace(completions=RateLimitClient()))
-    model = GroqVisionModel(client=client)
+    model = NebiusVisionModel(client=client)
 
     with pytest.raises(RuntimeError, match="rate limit exceeded"):
         model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)
@@ -193,7 +188,7 @@ def test_describe_page_rejects_empty_response():
             )
 
     client = SimpleNamespace(chat=SimpleNamespace(completions=EmptyContentClient()))
-    model = GroqVisionModel(client=client)
+    model = NebiusVisionModel(client=client)
 
     with pytest.raises(RuntimeError, match="empty page description"):
         model.describe_page(b"\x89PNG\r\n\x1a\nimage", 1)

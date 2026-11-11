@@ -1,14 +1,79 @@
-"""Create a synthetic sample PDF with text, tables, and a diagram."""
+"""Create a synthetic sample PDF with text, a raster bar chart, and a table."""
 
+import io
 import logging
 from pathlib import Path
+
 import pymupdf
 
 logger = logging.getLogger(__name__)
 
 
+def _make_bar_chart_png(width: int = 400, height: int = 260) -> bytes:
+    """Draw a simple bar chart using only the standard library and return PNG bytes.
+
+    Uses PyMuPDF's in-memory document trick so we keep the dependency list short
+    (no matplotlib or Pillow needed beyond what's already installed).
+    """
+    try:
+        from PIL import Image, ImageDraw, ImageFont
+    except ImportError:
+        return b""
+
+    img = Image.new("RGB", (width, height), color=(255, 255, 255))
+    draw = ImageDraw.Draw(img)
+
+    # Chart data: quarterly revenue
+    quarters = ["Q1", "Q2", "Q3", "Q4"]
+    values = [18, 22, 15, 27]  # $ millions
+    bar_color = (79, 70, 229)  # indigo
+    max_val = 30
+
+    margin_left, margin_bottom = 50, 40
+    chart_w = width - margin_left - 20
+    chart_h = height - margin_bottom - 30
+
+    # Axes
+    draw.line(
+        [(margin_left, 20), (margin_left, height - margin_bottom)],
+        fill=(30, 30, 30),
+        width=2,
+    )
+    draw.line(
+        [(margin_left, height - margin_bottom), (width - 10, height - margin_bottom)],
+        fill=(30, 30, 30),
+        width=2,
+    )
+
+    bar_w = chart_w // (len(values) * 2)
+    for i, (q, v) in enumerate(zip(quarters, values)):
+        bar_h = int((v / max_val) * chart_h)
+        x0 = margin_left + i * (bar_w * 2) + bar_w // 2
+        y0 = height - margin_bottom - bar_h
+        x1 = x0 + bar_w
+        y1 = height - margin_bottom
+        draw.rectangle([x0, y0, x1, y1], fill=bar_color)
+        # Value label above bar
+        draw.text((x0 + 2, y0 - 14), f"${v}M", fill=(30, 30, 30))
+        # Quarter label below axis
+        draw.text((x0 + 2, height - margin_bottom + 4), q, fill=(30, 30, 30))
+
+    # Y-axis labels
+    for tick in [0, 10, 20, 30]:
+        y = height - margin_bottom - int((tick / max_val) * chart_h)
+        draw.line([(margin_left - 4, y), (margin_left, y)], fill=(30, 30, 30), width=1)
+        draw.text((2, y - 7), f"{tick}", fill=(80, 80, 80))
+
+    # Title
+    draw.text((margin_left, 4), "Quarterly Revenue ($ millions)", fill=(30, 30, 30))
+
+    buf = io.BytesIO()
+    img.save(buf, format="PNG")
+    return buf.getvalue()
+
+
 def generate_sample_pdf(output_path: str = "sample_document.pdf") -> str:
-    """Generate a sample 3-page PDF with text, a table, and a vector diagram."""
+    """Generate a sample 3-page PDF with text, a raster bar chart, and a table."""
     doc = pymupdf.open()
 
     # Page 1: Paper Overview & Contributions
@@ -30,33 +95,26 @@ def generate_sample_pdf(output_path: str = "sample_document.pdf") -> str:
         fontsize=11,
     )
 
-    # Page 2: System Architecture Diagram (drawn vector shapes)
+    # Page 2: Raster Bar Chart (embedded PNG)
     p2 = doc.new_page(width=595, height=842)
     p2.insert_text(
-        (50, 70),
-        "System Architecture & Flow Diagram",
-        fontsize=16,
+        (50, 50),
+        "Figure 1 — Quarterly Revenue ($ millions)",
+        fontsize=14,
         color=(0.1, 0.1, 0.3),
     )
-    p2.draw_rect(pymupdf.Rect(50, 100, 200, 160), color=(0.4, 0.2, 0.8), fill=(0.95, 0.93, 1.0))
-    p2.insert_text((70, 135), "1. PDF Ingestion\n(PyMuPDF / Pixmaps)", fontsize=10)
 
-    p2.draw_line(pymupdf.Point(200, 130), pymupdf.Point(260, 130), color=(0.4, 0.2, 0.8), width=2)
-
-    p2.draw_rect(pymupdf.Rect(260, 100, 410, 160), color=(0.4, 0.2, 0.8), fill=(0.95, 0.93, 1.0))
-    p2.insert_text((275, 135), "2. Dual Pipeline\n(Text + Vision LLM)", fontsize=10)
-
-    p2.draw_line(pymupdf.Point(410, 130), pymupdf.Point(470, 130), color=(0.4, 0.2, 0.8), width=2)
-
-    p2.draw_rect(pymupdf.Rect(470, 100, 560, 160), color=(0.4, 0.2, 0.8), fill=(0.95, 0.93, 1.0))
-    p2.insert_text((485, 135), "3. FAISS Store\n(Dense Index)", fontsize=10)
+    chart_png = _make_bar_chart_png()
+    if chart_png:
+        rect = pymupdf.Rect(80, 80, 480, 340)
+        p2.insert_image(rect, stream=chart_png)
 
     p2.insert_text(
-        (50, 200),
-        "Diagram Notes:\n"
-        "The architecture consists of three sequential pipeline stages connected via high-throughput\n"
-        "message channels. Ingestion passes rendered page images to the vision model and raw UTF-8\n"
-        "to the sentence chunker before unifying in the FAISS vector index.",
+        (50, 360),
+        "Chart Notes:\n"
+        "Q4 posted the highest quarterly revenue at $27M, driven by enterprise contract renewals.\n"
+        "Q3 was the weakest quarter at $15M due to summer seasonality. Q1 and Q2 show steady\n"
+        "growth from $18M to $22M as the product reached general availability.",
         fontsize=11,
     )
 

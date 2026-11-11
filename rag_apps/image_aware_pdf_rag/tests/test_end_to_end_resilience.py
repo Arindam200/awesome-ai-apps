@@ -55,15 +55,15 @@ class ControlledVisionModel:
         if page_number in self.fail_pages:
             if self.fail_reason == "length":
                 raise RuntimeError(
-                    f"Groq returned an incomplete page description (completion token limit reached) on page {page_number}"
+                    f"Nebius returned an incomplete page description (completion token limit reached) on page {page_number}"
                 )
             elif self.fail_reason == "rate_limit":
                 raise RuntimeError(
-                    f"Groq rate limit exceeded (HTTP 429) while processing page {page_number}"
+                    f"Nebius rate limit exceeded (HTTP 429) while processing page {page_number}"
                 )
             elif self.fail_reason == "empty":
                 raise RuntimeError(
-                    f"Groq returned an empty page description for page {page_number}"
+                    f"Nebius returned an empty page description for page {page_number}"
                 )
             else:
                 raise RuntimeError(f"Vision failed on page {page_number}: unexpected error")
