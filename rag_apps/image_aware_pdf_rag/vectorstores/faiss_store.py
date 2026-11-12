@@ -150,12 +150,12 @@ class FAISSVectorStore:
         if filters is not None and not isinstance(filters, dict):
             raise ValueError("filters must be a dictionary or None")
 
-        query = self._validate_embedding(
-            query_embedding,
-            self.dimension,
-        ).reshape(1, -1)
-
         with self._lock:
+            query = self._validate_embedding(
+                query_embedding,
+                self.dimension,
+            ).reshape(1, -1)
+
             if self.index is None or self.index.ntotal == 0:
                 return []
 
