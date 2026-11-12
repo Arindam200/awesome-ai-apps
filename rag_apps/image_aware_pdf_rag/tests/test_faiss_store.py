@@ -161,6 +161,15 @@ def test_rejects_non_finite_embedding():
         )
 
 
+def test_rejects_zero_page_number():
+    store = FAISSVectorStore(dimension=3)
+
+    with pytest.raises(ValueError, match="page_number"):
+        store.add_documents(
+            [make_document("a:1", "a", 0, [1, 0, 0])]
+        )
+
+
 def test_search_empty_store_returns_no_results():
     store = FAISSVectorStore(dimension=3)
 

@@ -8,7 +8,12 @@ from typing import Any, Iterable
 import faiss
 import numpy as np
 
-from interfaces.vector_store import SearchResult, VectorDocument
+from interfaces.vector_store import (
+    SearchResult,
+    VectorDocument,
+    validate_document,
+    validate_search_input,
+)
 
 
 class FAISSVectorStore:
@@ -80,19 +85,12 @@ class FAISSVectorStore:
             expected_dimension = self.dimension
 
             for document in documents:
-                if not isinstance(document.id, str) or not document.id.strip():
-                    raise ValueError("Document ID must be a non-empty string")
+                validate_document(document)
 
                 if document.id in seen_ids:
                     raise ValueError(f"Duplicate document ID: {document.id}")
 
                 seen_ids.add(document.id)
-
-                if not isinstance(document.text, str) or not document.text.strip():
-                    raise ValueError(f"Document {document.id} has empty text")
-
-                if not isinstance(document.metadata, dict):
-                    raise ValueError("Document metadata must be a dictionary")
 
                 vector = self._validate_embedding(
                     document.embedding,
@@ -147,8 +145,7 @@ class FAISSVectorStore:
     ) -> list[SearchResult]:
         """Return the most similar matching documents."""
 
-        if isinstance(top_k, bool) or not isinstance(top_k, int) or top_k < 1:
-            raise ValueError("top_k must be a positive integer")
+        validate_search_input(query_embedding, top_k)
 
         if filters is not None and not isinstance(filters, dict):
             raise ValueError("filters must be a dictionary or None")
