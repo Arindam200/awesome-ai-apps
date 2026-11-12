@@ -795,7 +795,7 @@ with col_left:
     st.markdown('<div class="panel-heading" style="margin-top:14px;">⚙️ Model & Settings</div>', unsafe_allow_html=True)
     chat_model_name = st.selectbox(
         "LLM Provider",
-        options=["openai/gpt-oss-120b"],
+        options=[os.getenv("NEBIUS_CHAT_MODEL", "openai/gpt-oss-120b")],
         index=0,
         help="Nebius Token Factory model for fast answering.",
     )
@@ -858,7 +858,7 @@ with col_center:
     example_questions = [
         "What is the main contribution of this paper?",
         "What does the chart on page 2 show?",
-        "Explain the architecture diagram on page 2.",
+        "What was the Q4 revenue in the chart on page 2?",
         "What are the key results in the table on page 3?",
     ]
     ex_row1 = st.columns(2)

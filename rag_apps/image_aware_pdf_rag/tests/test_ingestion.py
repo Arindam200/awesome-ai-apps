@@ -110,3 +110,30 @@ def test_unsupported_input_type_is_rejected():
         pass
     else:
         raise AssertionError("Expected ValueError")
+
+
+def test_inline_raster_image_detected():
+    """Verify pages with inline raster images (BI...ID...EI) are flagged with has_visuals=True."""
+    pdf_content = (
+        b"%PDF-1.4\n"
+        b"1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n"
+        b"2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n"
+        b"3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 200 200] /Contents 4 0 R >>\nendobj\n"
+        b"4 0 obj\n<< /Length 72 >>\nstream\n"
+        b"q 50 0 0 50 20 20 cm\n"
+        b"BI\n/W 2\n/H 2\n/CS /DeviceRGB\n/BPC 8\nID\n"
+        b"\xff\x00\x00\x00\xff\x00\x00\x00\xff\xff\xff\xff\nEI\nQ\n"
+        b"endstream\nendobj\n"
+        b"xref\n0 5\n"
+        b"0000000000 65535 f \n"
+        b"0000000009 00000 n \n"
+        b"0000000058 00000 n \n"
+        b"0000000115 00000 n \n"
+        b"0000000202 00000 n \n"
+        b"trailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n326\n%%EOF\n"
+    )
+
+    results = ingest_pdf(pdf_content)
+    assert len(results) == 1
+    page = results[0]
+    assert page.has_visuals is True

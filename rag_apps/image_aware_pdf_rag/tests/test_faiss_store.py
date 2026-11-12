@@ -167,6 +167,19 @@ def test_search_empty_store_returns_no_results():
     assert store.search([1, 0, 0], top_k=3) == []
 
 
+def test_search_empty_store_validates_query_embedding():
+    store = FAISSVectorStore(dimension=3)
+
+    with pytest.raises(ValueError, match="non-empty"):
+        store.search([], top_k=3)
+
+    with pytest.raises(ValueError, match="finite"):
+        store.search([np.nan, 0, 0], top_k=3)
+
+    with pytest.raises(ValueError, match="dimension"):
+        store.search([1, 0], top_k=3)
+
+
 def test_concurrent_writes_are_thread_safe():
     store = FAISSVectorStore(dimension=3)
 

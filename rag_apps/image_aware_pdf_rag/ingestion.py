@@ -101,8 +101,8 @@ def ingest_pdf(
                 page = document.load_page(index)
                 text = page.get_text("text").strip()
 
-                # Detect raster images and vector drawings for vision filtering.
-                has_images = bool(page.get_images(full=True))
+                # Detect raster images (including inline images) and vector drawings for vision filtering.
+                has_images = bool(page.get_image_info()) or bool(page.get_images(full=True))
                 has_drawings = bool(page.get_drawings())
                 has_visuals = has_images or has_drawings
 
@@ -118,7 +118,7 @@ def ingest_pdf(
                     status = "text_extracted"
                 else:
                     needs_ocr = True
-                    if page.get_images(full=True):
+                    if has_images:
                         status = "image_only_needs_ocr"
                     else:
                         status = "no_selectable_text_needs_review"

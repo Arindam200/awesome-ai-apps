@@ -22,5 +22,25 @@ dev = [
 
 [build-system]
 requires = ["setuptools>=68"]
-build-backend = "setuptools.backends.legacy:build"
+build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+py-modules = [
+    "app",
+    "chunking",
+    "citations",
+    "ingestion",
+    "markdown_utils",
+    "pipeline",
+    "vision",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = [
+    "embeddings*",
+    "interfaces*",
+    "providers*",
+    "retrieval*",
+    "vectorstores*",
+]
