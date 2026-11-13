@@ -1,0 +1,8 @@
+.data/
+.env
+pricing.json
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+uv.lock
