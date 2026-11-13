@@ -1,0 +1,87 @@
+[
+  {
+    "title": "Senior Data Engineer",
+    "company_name": "Harbor Analytics",
+    "location": "Austin, TX",
+    "via": "via LinkedIn",
+    "description": "Own the pipelines that feed our reporting layer. You will work with Python, Airflow and Snowflake and partner with analysts on dbt models.",
+    "job_highlights": [
+      {"title": "Qualifications", "items": ["5+ years building data pipelines", "Python and SQL", "Airflow or a similar orchestrator", "Snowflake or BigQuery"]},
+      {"title": "Benefits", "items": ["Health insurance", "401(k) match"]}
+    ],
+    "apply_options": [{"title": "LinkedIn", "link": "https://www.linkedin.com/jobs/view/0000000001"}],
+    "detected_extensions": {"posted_at": "2 days ago", "schedule_type": "Full-time"},
+    "share_link": "https://www.google.com/search?q=example1"
+  },
+  {
+    "title": "Data Engineer II",
+    "company_name": "Harbor Analytics",
+    "location": "Austin, TX",
+    "via": "via Greenhouse",
+    "description": "Build and maintain Spark jobs on AWS. Terraform for infrastructure, Kafka for streaming.",
+    "job_highlights": [
+      {"title": "Qualifications", "items": ["3+ years with Spark", "AWS (EMR, Glue, S3)", "Kafka", "Terraform a plus"]}
+    ],
+    "apply_options": [{"title": "Greenhouse", "link": "https://boards.greenhouse.io/example/jobs/0000000002"}],
+    "detected_extensions": {"posted_at": "5 days ago", "schedule_type": "Full-time"},
+    "share_link": "https://www.google.com/search?q=example2"
+  },
+  {
+    "title": "Staff Data Engineer, Platform",
+    "company_name": "Pecan Street Robotics",
+    "location": "Austin, TX (Hybrid)",
+    "via": "via Lever",
+    "description": "Lead the design of our lakehouse on GCP and BigQuery. Mentor engineers, set standards for CI/CD and data quality.",
+    "job_highlights": [
+      {"title": "Qualifications", "items": ["8+ years in data engineering", "GCP and BigQuery", "Python", "Kubernetes", "CI/CD ownership"]}
+    ],
+    "apply_options": [{"title": "Lever", "link": "https://jobs.lever.co/example/0000000003"}],
+    "detected_extensions": {"posted_at": "1 day ago", "schedule_type": "Full-time"},
+    "share_link": "https://www.google.com/search?q=example3"
+  },
+  {
+    "title": "Junior Data Engineer",
+    "company_name": "Barton Springs Health",
+    "location": "Austin, TX",
+    "via": "via Indeed",
+    "description": "Entry-level role on a small team. SQL, Python, Airflow. Healthcare data, so attention to PHI handling matters.",
+    "job_highlights": [
+      {"title": "Qualifications", "items": ["Bachelor's in a quantitative field", "SQL", "Some Python", "Interest in Airflow"]}
+    ],
+    "apply_options": [{"title": "Indeed", "link": "https://www.indeed.com/viewjob?jk=0000000004"}],
+    "detected_extensions": {"posted_at": "3 days ago", "schedule_type": "Full-time"},
+    "share_link": "https://www.google.com/search?q=example4"
+  },
+  {
+    "title": "Data Engineer (Contract)",
+    "company_name": "Longhorn Logistics",
+    "location": "Round Rock, TX",
+    "via": "via Dice",
+    "description": "Six-month contract migrating SQL Server ETL to Azure Data Factory and Databricks. Spark and SQL daily.",
+    "job_highlights": [
+      {"title": "Qualifications", "items": ["Azure Data Factory", "Spark or Databricks", "Strong SQL", "Python"]}
+    ],
+    "apply_options": [{"title": "Dice", "link": "https://www.dice.com/job-detail/0000000005"}],
+    "detected_extensions": {"posted_at": "6 days ago", "schedule_type": "Contractor"},
+    "share_link": "https://www.google.com/search?q=example5"
+  },
+  {
+    "title": "Analytics Engineer",
+    "company_name": "Pecan Street Robotics",
+    "location": "Austin, TX",
+    "via": "via Lever",
+    "description": "dbt, Snowflake, Looker. Turn raw events into models the business trusts.",
+    "job_highlights": [
+      {"title": "Qualifications", "items": ["dbt", "Snowflake", "Looker or Tableau", "SQL"]}
+    ],
+    "apply_options": [{"title": "Lever", "link": "https://jobs.lever.co/example/0000000006"}],
+    "detected_extensions": {"posted_at": "4 days ago", "schedule_type": "Full-time"},
+    "share_link": "https://www.google.com/search?q=example6"
+  },
+  {
+    "title": "",
+    "company_name": "Broken Row Inc",
+    "location": "Austin, TX",
+    "description": "This row has no title and should be dropped by normalize()."
+  }
+]

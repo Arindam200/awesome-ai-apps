@@ -289,6 +289,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [GitHub and LinkedIn Job Finder](advance_ai_agents/job_finder_agent): LinkedIn job search automation with Bright Data integration
 - [Inkwire: Circuit Sketch → Live Simulation](advance_ai_agents/circuit_sketch_to_simulation): Inkling 2 Small on [Nebius Token Factory](https://dub.sh/nebius) turns a photo of a hand-drawn circuit into a working interactive simulation, finds the mistakes, reviews screenshots of its own page, and a circuit solver checks every number
 - [Jev Social Research Agent](advance_ai_agents/jev_social_research_agent): Typed Jev routing, local socai CLI evidence, and evidence-linked Nebius synthesis for Instagram, TikTok, and LinkedIn research
+- [Job Market Brief Agent](advance_ai_agents/job_market_brief_agent): Google Jobs postings for one role and city turned into numbered evidence records and a brief that cites them, with an optional Nebius narrative
 - [Local File-Editing Agent Prototype](advance_ai_agents/coding_harness_agent): Local coding-agent prototype with file discovery, reading, and editing tools
 - [Maintainer Intelligence Brief](advance_ai_agents/maintainer_brief): Weekly open-source intelligence briefs from community, security, and document signals with source citations
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent): Automated meeting notes and task creation from conversations
