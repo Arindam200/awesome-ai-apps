@@ -8,6 +8,6 @@ dependencies = [
     "google-adk",
     "exa-py",
     "tavily-python",
-    "firecrawl-py",
+    "firecrawl-py>=4.55.0,<5",
     "python-dotenv",
 ]
