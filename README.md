@@ -227,7 +227,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🧠 Memory Agents
 
-**Agents with advanced memory capabilities for context retention and personalization.** _13 projects_
+**Agents with advanced memory capabilities for context retention and personalization.** _14 projects_
 
 - [AI Research Consultant with Long-Term Memory](memory_agents/ai_consultant_agent/): AI-powered consulting agent using **Memori v3** as a long-term memory fabric and **ExaAI** for research
 - [arXiv Researcher Agent with Memori](memory_agents/arxiv_researcher_agent_with_memori): Research assistant using OpenAI Agents and GibsonAI Memori
@@ -237,6 +237,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Customer Support Voice Agent](memory_agents/customer_support_voice_agent): Voice-enabled customer support assistant with Memori v3 and Firecrawl for knowledge base management
 - [Engineering Content Agent](memory_agents/engineering_content_agent): Chat-first Agno app that turns HN demand, DEV.to supply gaps, and Weaviate Engram memory into a developer trend digest plus DevRel talk and blog ideation via Nebius
 - [Job Search Agent](memory_agents/job_search_agent): Job search agent with memory for preference tracking
+- [Mnemoverse Memory Agent](memory_agents/mnemoverse_memory_agent): Project assistant with persistent memory and feedback using the Mnemoverse Python SDK and Nebius Token Factory
 - [Persistent Memory Agent (Agno)](memory_agents/agno_memory_agent): Agno-based agent with persistent memory capabilities
 - [Product Launch Agent](memory_agents/product_launch_agent): Competitive intelligence tool for analyzing competitor product launches
 - [Social Media Agent](memory_agents/social_media_agent): Social media automation agent with memory for brand voice
