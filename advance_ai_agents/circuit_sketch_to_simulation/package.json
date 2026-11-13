@@ -1,0 +1,38 @@
+{
+  "name": "inkwire",
+  "version": "0.1.0",
+  "description": "Photograph a hand-drawn circuit, mistakes and all. Inkling 2 Small reads it, builds a working simulation, checks it by looking at it, and a circuit solver checks the physics.",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "smoke": "tsx scripts/smoke.mts",
+    "browser": "playwright-core install chromium"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "dependencies": {
+    "jsonrepair": "^3.15.0",
+    "next": "16.4.3",
+    "openai": "^7.47.0",
+    "playwright-core": "^1.64.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sharp": "0.35.5",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "tsx": "4.23.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.12"
+  }
+}

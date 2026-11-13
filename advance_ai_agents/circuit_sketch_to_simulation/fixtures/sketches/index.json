@@ -1,0 +1,11 @@
+[
+  { "id": "led-switch", "file": "cghd-c31-d1.jpg", "name": "LED with a switch, 5 V", "url": "https://huggingface.co/datasets/lowercaseonly/cghd/blob/main/drafter_3/images/C31_D1_P1.jpg", "author": "CGHD drafter 3", "licence": "CC BY-SA 3.0" },
+  { "id": "rc-led", "file": "cghd-c16-d1.jpg", "name": "Switch, 1000 uF capacitor and LED", "url": "https://huggingface.co/datasets/lowercaseonly/cghd/blob/main/drafter_2/images/C16_D1_P1.jpg", "author": "CGHD drafter 2", "licence": "CC BY-SA 3.0" },
+  { "id": "rc-led-9v", "file": "cghd-c9-d1.jpg", "name": "9 V, 22 uF and an LED", "url": "https://huggingface.co/datasets/lowercaseonly/cghd/blob/main/drafter_1/images/C9_D1_P1.jpg", "author": "CGHD drafter 1", "licence": "CC BY-SA 3.0" },
+  { "id": "lamp-two-switches", "file": "cghd-c145-d1.jpg", "name": "Lamp with two switches", "url": "https://huggingface.co/datasets/lowercaseonly/cghd/blob/main/drafter_13/images/C145_D1_P1.jpg", "author": "CGHD drafter 13", "licence": "CC BY-SA 3.0" },
+  { "id": "divider", "file": "cghd-c5-d1.jpg", "name": "Voltage divider, 9 V", "url": "https://huggingface.co/datasets/lowercaseonly/cghd/blob/main/drafter_1/images/C5_D1_P1.jpg", "author": "CGHD drafter 1", "licence": "CC BY-SA 3.0" },
+  { "id": "parallel", "file": "cghd-c4-d1.jpg", "name": "Three resistors in parallel", "url": "https://huggingface.co/datasets/lowercaseonly/cghd/blob/main/drafter_1/images/C4_D1_P1.jpg", "author": "CGHD drafter 1", "licence": "CC BY-SA 3.0" },
+  { "id": "switch-resistor", "file": "cghd-c136-d1.jpg", "name": "Source, switch and resistor, no values", "url": "https://huggingface.co/datasets/lowercaseonly/cghd/blob/main/drafter_12/images/C136_D1_P1.jpg", "author": "CGHD drafter 12", "licence": "CC BY-SA 3.0" },
+  { "id": "pot-divider", "file": "wm-volt-divider.jpg", "name": "Potentiometer divider, annotated", "url": "https://commons.wikimedia.org/wiki/File:Volt_divider_1000.jpg", "author": "Circuit-fantasist", "licence": "CC BY-SA 4.0" },
+  { "id": "whiteboard-led", "file": "wm-ex1sch2.jpg", "name": "Whiteboard LED and 1k resistor", "url": "https://commons.wikimedia.org/wiki/File:Ex1sch2.jpg", "author": "Bongo128", "licence": "CC BY-SA 3.0" }
+]
