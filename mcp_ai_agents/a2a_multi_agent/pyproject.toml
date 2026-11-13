@@ -1,0 +1,31 @@
+[project]
+name = "a2a-multi-agent-example"
+version = "0.1.0"
+description = "An Agno and LangGraph collaboration over the A2A protocol"
+requires-python = ">=3.10"
+dependencies = [
+    "a2a-sdk[fastapi]>=1.2,<2",
+    "agno>=2.6,<3",
+    "httpx>=0.27,<1",
+    "langchain-openai>=1,<2",
+    "langgraph>=1.2,<2",
+    "python-dotenv>=1,<2",
+    "uvicorn>=0.30,<1",
+]
+
+[project.optional-dependencies]
+dev = ["mypy>=1.13,<2", "pytest>=8,<10", "pytest-asyncio>=0.24,<2", "ruff>=0.8,<1"]
+
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["agents", "client", "server"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
