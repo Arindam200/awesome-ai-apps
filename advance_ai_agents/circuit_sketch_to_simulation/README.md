@@ -1,4 +1,4 @@
-![Inkwire run page: the sketch with each part boxed, the mistakes found, and the simulation Inkling 2 Small built](./docs/run.png)
+![Inkwire run page: the sketch with each part boxed, the mistakes found, and the simulation Inkling 2 Small built](./assets/run.png)
 
 # Inkwire: Circuit Sketch → Live Simulation
 
@@ -148,7 +148,7 @@ Contributions are welcome! Please feel free to submit a Pull Request. See the [C
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/Arindam200/awesome-ai-apps/blob/main/LICENSE) file for details. The example sketches keep their own CC BY-SA licences, and so does `docs/run.png`, which shows one of them; see [`fixtures/sketches/ATTRIBUTION.md`](./fixtures/sketches/ATTRIBUTION.md).
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Arindam200/awesome-ai-apps/blob/main/LICENSE) file for details. The example sketches keep their own CC BY-SA licences, and so does `assets/run.png`, which shows one of them; see [`fixtures/sketches/ATTRIBUTION.md`](./fixtures/sketches/ATTRIBUTION.md).
 
 ## 🙏 Acknowledgments
 

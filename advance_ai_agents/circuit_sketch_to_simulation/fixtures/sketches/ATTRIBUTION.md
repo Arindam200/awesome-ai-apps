@@ -30,6 +30,6 @@ The Zenodo record lists CC BY 4.0, and the Hugging Face mirror states CC BY-SA 3
 | wm-volt-divider.jpg | https://commons.wikimedia.org/wiki/File:Volt_divider_1000.jpg | Circuit-fantasist | CC BY-SA 4.0 |
 | wm-ex1sch2.jpg | https://commons.wikimedia.org/wiki/File:Ex1sch2.jpg | Bongo128 | CC BY-SA 3.0 |
 
-## Images and video in docs/
+## Screenshot in assets/
 
-`docs/run.png` and `docs/demo.mp4` show the CGHD sketch `cghd-c31-d1.jpg` (drafter_3/images/C31_D1_P1.jpg, J. Thoma, F. Bayer et al.) inside the app. Because they include that sketch, these two files are shared under CC BY-SA 3.0, with the same credit. The rest of the screen content is this project's own.
+`assets/run.png` shows the CGHD sketch `cghd-c31-d1.jpg` (drafter_3/images/C31_D1_P1.jpg, J. Thoma, F. Bayer et al.) inside the app. Because it includes that sketch, this file is shared under CC BY-SA 3.0, with the same credit. The rest of the screen content is this project's own.
