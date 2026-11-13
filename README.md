@@ -7,7 +7,7 @@
 
 # Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-**141 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
+**142 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
 
 [![GitHub stars](https://img.shields.io/github/stars/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Stars&color=yellow)](https://github.com/Arindam200/awesome-ai-apps/stargazers)
 [![Forks](https://img.shields.io/github/forks/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Forks)](https://github.com/Arindam200/awesome-ai-apps/network/members)
@@ -132,7 +132,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
 | [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
-| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 38 |
+| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 39 |
 | [🧬 Fine-Tuning](#-fine-tuning) | LoRA fine-tuning, distillation and deployment of open models | 6 |
 
 **Also here:** [Tutorials & Videos](#-tutorials--videos) · [Quick Start](#-quick-start) · [Contributing](#-contributing) · [Contributors](#-contributors) · [Maintainers](#-maintainers) · [License](#-license)
@@ -293,6 +293,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Maintainer Intelligence Brief](advance_ai_agents/maintainer_brief): Weekly open-source intelligence briefs from community, security, and document signals with source citations
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent): Automated meeting notes and task creation from conversations
 - [Multi-Agent Coding Harness](advance_ai_agents/coding_agent_harness): Deep LangGraph coding crew with planning, repository exploration, human-gated file edits, and E2B-sandboxed test loops
+- [Multi-Agent Risk Review](advance_ai_agents/multi_agent_risk_review): Security, legal, finance and operations reviewers built with LangGraph and Pydantic on Nebius Token Factory, merged by a coordinator into one risk report that cites the findings it merges and warns about any it leaves out
 - [Napkin → 3D Print](advance_ai_agents/napkin_to_3d_print): Kimi K3.1 Pro on [Nebius Token Factory](https://dub.sh/nebius) turns a photo of a hand sketch into parametric CadQuery, checks its own render against the drawing, and exports a printable STL with live dimension sliders
 - [Nebius Autonomous Pipeline Optimizer](advance_ai_agents/nebius-autoresearch-autoresearch-mar30): NYC taxi analytics pipeline optimizer with iterative code search using real-time or batch Nebius Token Factory inference
 - [Paper → Interactive Explainer](advance_ai_agents/paper_to_interactive_explainer): Kimi K3.1 Pro on Nebius reads a whole research paper, figures included, and builds a self-tested, Distill-style interactive explainer as a single HTML page
