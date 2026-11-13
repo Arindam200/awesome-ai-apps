@@ -1,0 +1,17 @@
+{
+  "text": "",
+  "toolCalls": [
+    {
+      "name": "submit_circuit",
+      "arguments": "{\"asDrawn\": {\"components\": [{\"id\": \"B1\", \"type\": \"battery\", \"nodes\": [\"vcc\", \"gnd\"], \"value\": 9, \"box\": [0.238, 0.445, 0.162, 0.133], \"label\": \"9V\", \"confidence\": 0.9}, {\"id\": \"R1\", \"type\": \"resistor\", \"nodes\": [\"vcc\", \"n1\"], \"value\": 100, \"box\": [0.572, 0.45, 0.046, 0.096], \"label\": \"100 \u03a9\", \"confidence\": 0.9}, {\"id\": \"R2\", \"type\": \"resistor\", \"nodes\": [\"n1\", \"gnd\"], \"value\": 480, \"box\": [0.572, 0.585, 0.046, 0.077], \"label\": \"480 \u03a9\", \"confidence\": 0.8}]}, \"fixed\": {\"components\": [{\"id\": \"B1\", \"type\": \"battery\", \"nodes\": [\"vcc\", \"gnd\"], \"value\": 9, \"box\": [0.238, 0.445, 0.162, 0.133], \"label\": \"9V\", \"confidence\": 0.95}, {\"id\": \"R1\", \"type\": \"resistor\", \"nodes\": [\"vcc\", \"n1\"], \"value\": 100, \"box\": [0.572, 0.45, 0.046, 0.096], \"label\": \"100 \u03a9\", \"confidence\": 0.95}, {\"id\": \"R2\", \"type\": \"resistor\", \"nodes\": [\"n1\", \"gnd\"], \"value\": 480, \"box\": [0.572, 0.585, 0.046, 0.077], \"label\": \"480 \u03a9\", \"confidence\": 0.9}]}, \"issues\": [], \"summary\": \"A 9 V source is wired to a single series loop through a 100 \u03a9 resistor and a 480 \u03a9 resistor back to the source. The loop is complete and no load or fault element is drawn.\", \"title\": \"9 V battery with two series resistors\"}"
+    }
+  ],
+  "finishReason": "tool_calls",
+  "usage": {
+    "input": 3116,
+    "cachedInput": 2048,
+    "output": 4354,
+    "reasoning": 3750
+  },
+  "ms": 25341
+}

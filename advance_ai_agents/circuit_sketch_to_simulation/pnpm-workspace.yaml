@@ -1,0 +1,8 @@
+# pnpm 11+ asks about each install script. None is needed: esbuild ships prebuilt binaries and sharp is unused.
+allowBuilds:
+  esbuild: false
+  sharp: false
+# Patched versions of Next.js's own dependencies (pnpm audit).
+overrides:
+  postcss: 8.5.31
+  sharp: 0.35.5
