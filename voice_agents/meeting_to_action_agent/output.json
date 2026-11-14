@@ -1,0 +1,26 @@
+{
+    "action_items": [
+        {
+            "task": "Finalize the budget",
+            "owner": "Sarah",
+            "deadline": "Friday"
+        },
+        {
+            "task": "Order more swag for the conference",
+            "owner": "Uncertain",
+            "deadline": "Uncertain"
+        }
+    ],
+    "risks": [
+        "Messing up the legacy database migration"
+    ],
+    "blockers": [
+        "Waiting on design assets from the agency for the new landing page"
+    ],
+    "follow_ups": [
+        "Follow up on the database migration next week"
+    ],
+    "open_questions": [
+        "Who should own the legacy database migration?"
+    ]
+}
