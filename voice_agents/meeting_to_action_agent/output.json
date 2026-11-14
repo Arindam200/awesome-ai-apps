@@ -18,9 +18,7 @@
         "Waiting on design assets from the agency for the new landing page"
     ],
     "follow_ups": [
-        "Follow up on the database migration next week"
+        "Follow up next week on the migration plan for the legacy database"
     ],
-    "open_questions": [
-        "Who should own the legacy database migration?"
-    ]
+    "open_questions": []
 }

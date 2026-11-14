@@ -4,16 +4,31 @@ A self-contained Python example that takes a meeting transcript (or audio transc
 
 ## Features
 - Reads a raw meeting transcript.
-- Uses an LLM (OpenAI, Ollama, or vLLM) to extract structured data.
+- Uses Nebius Token Factory (default), Ollama, or vLLM to extract structured data.
 - **Uncertainty Handling:** Explicitly marks missing owners or deadlines as "Uncertain" instead of hallucinating.
 - Exports pure JSON for downstream enterprise tools.
 
 ## Prerequisites
 
+1. **Default provider: Nebius Token Factory.** Set your API key as an environment variable:
+   ```bash
+   export NEBIUS_API_KEY="your-api-key-here"
+   ```
+   The agent uses Nebius Token Factory automatically (`NEBIUS_API_BASE` defaults to `https://api.tokenfactory.nebius.com/v1/` with a Qwen model). See `.env.example` for all supported variables.
 
-1. Install Ollama from https://ollama.com/
-2. Pull the default model by running: `ollama run llama3`
+## Optional: Use Ollama locally
 
+If you prefer to run the agent locally with Ollama, set the corresponding Nebius-style environment variables:
+```bash
+export NEBIUS_API_BASE="http://host.docker.internal:11434/v1"
+export NEBIUS_API_KEY="not-needed"
+export MODEL_NAME="qwen2.5-coder:14b"   # or your preferred model
+```
+Then install Ollama and pull a compatible model:
+```bash
+# Install from https://ollama.com/
+ollama run qwen2.5-coder:14b
+```
 
 ## Setup & Run
 
@@ -22,16 +37,10 @@ A self-contained Python example that takes a meeting transcript (or audio transc
    pip install -r requirements.txt
    ```
 
-2. Set your environment variables (defaults to local Ollama):
+2. Set your environment variables (defaults to Nebius Token Factory):
    ```bash
-   # Example for Ollama
-   export OPENAI_API_BASE="http://localhost:11434/v1"
-   export MODEL_NAME="llama3"
-   
-   # Example for OpenAI
-   # export OPENAI_API_KEY="sk-..."
-   # export OPENAI_API_BASE="https://api.openai.com/v1"
-   # export MODEL_NAME="gpt-4o-mini"
+   # Required for the Nebius default provider
+   export NEBIUS_API_KEY="your-api-key-here"
    ```
 
 3. Run the agent:

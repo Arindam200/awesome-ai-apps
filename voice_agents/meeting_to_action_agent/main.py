@@ -92,8 +92,10 @@ def transcribe_audio(audio_path: str) -> str:
 
 
 def main():
+    # Sentinel so we can tell whether the user explicitly passed --transcript.
+    _sentinel = object()
     parser = argparse.ArgumentParser(description="Meeting-to-Action Voice Agent")
-    parser.add_argument("--transcript", type=str, default="sample_transcript.txt", help="Path to transcript file")
+    parser.add_argument("--transcript", type=str, default=_sentinel, help="Path to transcript file")
     parser.add_argument("--audio", type=str, help="Path to audio file (optional)")
     args = parser.parse_args()
 
@@ -106,9 +108,12 @@ def main():
         transcript = transcribe_audio(args.audio)
         print(f"Transcription complete. {len(transcript)} characters.")
     else:
-        transcript_path = args.transcript
-        if not os.path.isabs(transcript_path):
-            transcript_path = os.path.join(script_dir, transcript_path)
+        # Honor an explicitly-provided --transcript (resolved relative to the cwd);
+        # otherwise fall back to the bundled sample_transcript.txt next to this script.
+        if args.transcript is not None and args.transcript != _sentinel:
+            transcript_path = args.transcript
+        else:
+            transcript_path = os.path.join(script_dir, "sample_transcript.txt")
 
 
         print(f"Reading transcript from {transcript_path}...")
