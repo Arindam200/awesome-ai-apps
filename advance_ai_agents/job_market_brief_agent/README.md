@@ -43,7 +43,7 @@ Copy `.env.example` to `.env` and fill in what you have:
 ```
 APIFY_API_TOKEN=...
 NEBIUS_API_KEY=...        # optional
-NEBIUS_MODEL=Qwen/Qwen3-30B-A3B
+NEBIUS_MODEL=Qwen/Qwen3-30B-A3B-Instruct-2507
 ```
 
 The script reads plain environment variables. If you keep a `.env` file, load it with your shell or `python-dotenv` before running.
@@ -79,7 +79,7 @@ export NEBIUS_API_KEY=...
 python main.py "machine learning engineer" --location "Berlin" --posted-within 30d
 ```
 
-Options: `--posted-within {any,24h,3d,7d,30d}`, `--limit 10..100` (values outside the range are rejected before anything is spent), `--no-model`, `--json` to print the normalized records. The posted-within window is applied by the Actor, so a fixture run says so in its heading instead of claiming a window.
+Options: `--posted-within {any,24h,3d,7d,30d}`, `--limit 10..100` (values outside the range are rejected before anything is spent), `--no-model`, `--json` to print the normalized records. The posted-within window is applied by the Actor, so a fixture run says so in its intro line instead of claiming a window.
 
 Run the tests:
 

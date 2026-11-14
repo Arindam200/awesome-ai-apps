@@ -63,6 +63,7 @@ def test_extensions_fallback_and_url_cleaning():
 def test_url_keeps_fragment_and_fields_stay_on_one_line():
     assert main.clean_url("https://example.com/apply?utm_source=jobs#opening/123") == "https://example.com/apply#opening/123"
     assert main.clean_url("https://example.com/apply?utm_source=jobs") == "https://example.com/apply"
+    assert main.clean_url("https://example.com/apply#step?utm_source=x") == "https://example.com/apply#step?utm_source=x"
     rows = [{
         "title": "Data\nEngineer",
         "company_name": "  Acme\n  Corp ",
@@ -137,6 +138,7 @@ def test_live_path_sends_actor_input_and_cuts_rows_to_limit(monkeypatch, capsys)
 
     def fake_urlopen(req, timeout=None):
         seen["url"] = req.full_url
+        seen["auth"] = req.get_header("Authorization")
         seen["payload"] = json.loads(req.data.decode())
         return FakeResponse()
 
@@ -144,7 +146,8 @@ def test_live_path_sends_actor_input_and_cuts_rows_to_limit(monkeypatch, capsys)
     code = main.main(["data engineer", "--location", "Austin, TX", "--posted-within", "3d", "--limit", "10", "--json"])
     assert code == 0
     assert seen["payload"] == {"query": "data engineer", "location": "Austin, TX", "posted_within": "3d", "num_results": 10, "max_pagination": 1}
-    assert seen["url"].startswith(main.APIFY_RUN_URL) and "token=test-token" in seen["url"]
+    assert seen["url"].startswith(main.APIFY_RUN_URL) and "token=" not in seen["url"]
+    assert seen["auth"] == "Bearer test-token"
     printed = capsys.readouterr().out
     assert "10 postings from the last 3 days" in printed
     tail = printed[printed.index("[\n"):]

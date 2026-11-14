@@ -30,7 +30,7 @@ from pathlib import Path
 ACTOR_ID = "johnvc~Google-Jobs-Scraper"
 APIFY_RUN_URL = f"https://api.apify.com/v2/acts/{ACTOR_ID}/run-sync-get-dataset-items"
 NEBIUS_CHAT_URL = "https://api.tokenfactory.nebius.com/v1/chat/completions"
-DEFAULT_NEBIUS_MODEL = "Qwen/Qwen3-30B-A3B"
+DEFAULT_NEBIUS_MODEL = "Qwen/Qwen3-30B-A3B-Instruct-2507"
 POSTED_WITHIN = ("any", "24h", "3d", "7d", "30d")
 WINDOW_LABELS = {"any": "any time", "24h": "the last 24 hours", "3d": "the last 3 days", "7d": "the last 7 days", "30d": "the last 30 days"}
 
@@ -78,10 +78,10 @@ SCHEDULE_WORDS = {"full-time", "part-time", "contractor", "internship", "tempora
 
 def clean_url(url: str) -> str:
     """Drop tracking parameters (utm_*) so citations stay short and stable. The fragment stays."""
+    url, hash_sign, fragment = url.partition("#")
     if "?" not in url:
-        return url
-    base, _, rest = url.partition("?")
-    query, hash_sign, fragment = rest.partition("#")
+        return url + hash_sign + fragment
+    base, _, query = url.partition("?")
     kept = [p for p in query.split("&") if p and not p.lower().startswith("utm_")]
     return base + ("?" + "&".join(kept) if kept else "") + hash_sign + fragment
 
@@ -188,7 +188,7 @@ def render_brief(
     model_text: str | None = None,
     from_fixture: bool = False,
 ) -> str:
-    """Write the Markdown brief. from_fixture=True says so in the heading, since the
+    """Write the Markdown brief. from_fixture=True says so in the intro line, since the
     posted-within window is applied by the Actor and not to fixture rows."""
     lines = [f"# Job market brief: {role} in {location}", ""]
     window = WINDOW_LABELS[posted_within]
@@ -243,11 +243,11 @@ def fetch_jobs(role: str, location: str, posted_within: str, limit: int, token: 
         "num_results": max(10, min(limit, 100)),
         "max_pagination": max(1, -(-limit // 10)),
     }
-    query = urllib.parse.urlencode({"token": token, "timeout": timeout, "format": "json", "clean": "true"})
+    query = urllib.parse.urlencode({"timeout": timeout, "format": "json", "clean": "true"})
     req = urllib.request.Request(
         f"{APIFY_RUN_URL}?{query}",
         data=json.dumps(payload).encode(),
-        headers={"Content-Type": "application/json"},
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {token}"},
         method="POST",
     )
     try:
@@ -332,7 +332,7 @@ def main(argv: list[str] | None = None) -> int:
         model = read_key("NEBIUS_MODEL") or DEFAULT_NEBIUS_MODEL
         try:
             narrative = model_brief(args.role, args.location, records, nebius_key, model)
-        except (urllib.error.URLError, TimeoutError, KeyError, json.JSONDecodeError) as e:
+        except (urllib.error.URLError, TimeoutError, KeyError, IndexError, TypeError, json.JSONDecodeError) as e:
             print(f"Nebius step skipped: {e}", file=sys.stderr)
 
     brief = render_brief(args.role, args.location, args.posted_within, records, narrative, from_fixture=bool(args.fixture))
