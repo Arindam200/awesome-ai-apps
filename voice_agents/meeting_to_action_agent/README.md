@@ -20,7 +20,8 @@ A self-contained Python example that takes a meeting transcript (or audio transc
 
 If you prefer to run the agent locally with Ollama, set the corresponding Nebius-style environment variables:
 ```bash
-export NEBIUS_API_BASE="http://host.docker.internal:11434/v1"
+# (If running inside Docker, use http://host.docker.internal:11434/v1 instead)
+export NEBIUS_API_BASE="http://localhost:11434/v1"
 export NEBIUS_API_KEY="not-needed"
 export MODEL_NAME="qwen2.5-coder:14b"   # or your preferred model
 ```
