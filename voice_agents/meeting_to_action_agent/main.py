@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 from openai import OpenAI
 
@@ -23,6 +24,7 @@ def process_transcript(transcript_text: str) -> dict:
     4. Risks
     5. Blockers
     6. Follow-ups
+    7. Open Questions
     
     Do NOT guess or invent owners or dates. If the transcript does not explicitly say who owns a task or when it is due, label it "Uncertain".
     
@@ -31,7 +33,8 @@ def process_transcript(transcript_text: str) -> dict:
         "action_items": [{"task": "string", "owner": "string", "deadline": "string"}],
         "risks": ["string"],
         "blockers": ["string"],
-        "follow_ups": ["string"]
+        "follow_ups": ["string"],
+        "open_questions": ["string"]
     }
     """
 
@@ -45,14 +48,29 @@ def process_transcript(transcript_text: str) -> dict:
             response_format={"type": "json_object"},
             temperature=0.1
         )
-        return json.loads(response.choices[0].message.content)
+        result = json.loads(response.choices[0].message.content)
+        
+        # Ensure required keys exist
+        for key in ["action_items", "risks", "blockers", "follow_ups", "open_questions"]:
+            if key not in result:
+                result[key] = []
+                
+        # Handle missing/null owners or deadlines
+        for item in result.get("action_items", []):
+            if not item.get("owner") or item.get("owner") == "null":
+                item["owner"] = "Uncertain"
+            if not item.get("deadline") or item.get("deadline") == "null":
+                item["deadline"] = "Uncertain"
+                
+        return result
     except Exception as e:
         print(f"Error calling LLM: {e}")
         return {}
 
 def main():
-    transcript_path = "sample_transcript.txt"
-    output_path = "output.json"
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    transcript_path = os.path.join(script_dir, "sample_transcript.txt")
+    output_path = os.path.join(script_dir, "output.json")
 
     print(f"Reading transcript from {transcript_path}...")
     with open(transcript_path, "r", encoding="utf-8") as f:
@@ -68,6 +86,7 @@ def main():
         print("✅ Success! Check output.json")
     else:
         print("❌ Failed to process transcript.")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

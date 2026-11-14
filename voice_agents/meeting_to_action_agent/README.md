@@ -8,6 +8,13 @@ A self-contained Python example that takes a meeting transcript (or audio transc
 - **Uncertainty Handling:** Explicitly marks missing owners or deadlines as "Uncertain" instead of hallucinating.
 - Exports pure JSON for downstream enterprise tools.
 
+## Prerequisites
+
+
+1. Install Ollama from https://ollama.com/
+2. Pull the default model by running: `ollama run llama3`
+
+
 ## Setup & Run
 
 1. Install dependencies:
