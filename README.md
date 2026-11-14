@@ -7,7 +7,7 @@
 
 # Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-**141 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
+**143 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
 
 [![GitHub stars](https://img.shields.io/github/stars/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Stars&color=yellow)](https://github.com/Arindam200/awesome-ai-apps/stargazers)
 [![Forks](https://img.shields.io/github/forks/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Forks)](https://github.com/Arindam200/awesome-ai-apps/network/members)
@@ -128,11 +128,11 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | :-- | :-- | :-: |
 | [🧩 Starter Agents](#-starter-agents) | One minimal agent per framework: Agno, LangGraph, CrewAI, OpenAI Agents SDK, Google ADK, Mastra and more | 22 |
 | [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 21 |
-| [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 9 |
+| [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 10 |
 | [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
 | [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
-| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 38 |
+| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 39 |
 | [🧬 Fine-Tuning](#-fine-tuning) | LoRA fine-tuning, distillation and deployment of open models | 6 |
 
 **Also here:** [Tutorials & Videos](#-tutorials--videos) · [Quick Start](#-quick-start) · [Contributing](#-contributing) · [Contributors](#-contributors) · [Maintainers](#-maintainers) · [License](#-license)
@@ -194,7 +194,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🎙️ Voice Agents
 
-**Real-time voice assistants and streaming speech pipelines**, including LiveKit, Pipecat, Gradium, and [VoxCode](voice_agents/Cursor_code_editor) (Deepgram + Cursor SDK). _9 projects_
+**Real-time voice assistants and streaming speech pipelines**, including LiveKit, Pipecat, Gradium, and [VoxCode](voice_agents/Cursor_code_editor) (Deepgram + Cursor SDK). _10 projects_
 
 - [AI Pitch Coach (Gradium + Nebius)](voice_agents/voice-agent-gradium-nebius-langchain): Conversational pitch coach using Gradium STT/TTS, LangChain orchestration, and Nebius reasoning
 - [Customer Support Voice Agent (LiveKit)](voice_agents/customer_support_agent): Nebius-powered voice support agent with context-preserving AI manager handoff, noise cancellation, and inactivity handling
@@ -205,6 +205,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Speed-to-Lead Sales Voice Agent](voice_agents/speed_to_lead_agent): LiveKit-based voice agent that calls inbound leads instantly, routes them to specialists, and logs to a mock CRM
 - [VoxCode: Deepgram + Cursor Voice Coding Agent](voice_agents/Cursor_code_editor): Local voice workspace for codebase summaries and architecture Q&A; Deepgram Voice Agent orchestration, Nebius reasoning, and optional Cursor SDK file inspection and edits
 - [Web-Search Voice Agent (LiveKit)](voice_agents/livekit_web_search_agent): LiveKit + Gemini realtime voice agent with an Olostep-backed `web_search` tool for fresh, source-cited answers
+- [Meeting-to-Action Voice Agent](voice_agents/meeting_to_action_agent/): Extracts structured action items, risks, and blockers from meeting transcripts using LLMs
 
 ### 🗂️ MCP Agents
 
