@@ -1,14 +1,22 @@
 import os
 import sys
 import json
+import argparse
+from dotenv import load_dotenv
 from openai import OpenAI
 
-# Configuration - works with OpenAI, Ollama, or vLLM
-API_BASE = os.getenv("OPENAI_API_BASE", "http://localhost:11434/v1") # Defaults to Ollama
-API_KEY = os.getenv("OPENAI_API_KEY", "not-needed")
-MODEL_NAME = os.getenv("MODEL_NAME", "llama3")
+
+load_dotenv()
+
+
+# Configuration - defaults to Nebius Token Factory
+API_BASE = os.getenv("NEBIUS_API_BASE", "https://api.tokenfactory.nebius.com/v1/")
+API_KEY = os.getenv("NEBIUS_API_KEY", "not-needed")
+MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen3-30B-A3B-Instruct-2507")
+
 
 client = OpenAI(base_url=API_BASE, api_key=API_KEY)
+
 
 def process_transcript(transcript_text: str) -> dict:
     """Processes a meeting transcript and extracts structured action items."""
@@ -37,6 +45,7 @@ def process_transcript(transcript_text: str) -> dict:
         "open_questions": ["string"]
     }
     """
+
 
     try:
         response = client.chat.completions.create(
@@ -67,17 +76,53 @@ def process_transcript(transcript_text: str) -> dict:
         print(f"Error calling LLM: {e}")
         return {}
 
+
+def transcribe_audio(audio_path: str) -> str:
+    """Transcribes audio using faster-whisper."""
+    try:
+        from faster_whisper import WhisperModel
+        print(f"Loading Whisper model and transcribing {audio_path}...")
+        model = WhisperModel("base", device="cpu", compute_type="int8")
+        segments, _ = model.transcribe(audio_path, beam_size=5)
+        text = " ".join([segment.text for segment in segments])
+        return text
+    except Exception as e:
+        print(f"Error transcribing audio: {e}")
+        sys.exit(1)
+
+
 def main():
+    parser = argparse.ArgumentParser(description="Meeting-to-Action Voice Agent")
+    parser.add_argument("--transcript", type=str, default="sample_transcript.txt", help="Path to transcript file")
+    parser.add_argument("--audio", type=str, help="Path to audio file (optional)")
+    args = parser.parse_args()
+
+
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    transcript_path = os.path.join(script_dir, "sample_transcript.txt")
     output_path = os.path.join(script_dir, "output.json")
 
-    print(f"Reading transcript from {transcript_path}...")
-    with open(transcript_path, "r", encoding="utf-8") as f:
-        transcript = f.read()
+
+    if args.audio:
+        transcript = transcribe_audio(args.audio)
+        print(f"Transcription complete. {len(transcript)} characters.")
+    else:
+        transcript_path = args.transcript
+        if not os.path.isabs(transcript_path):
+            transcript_path = os.path.join(script_dir, transcript_path)
+
+
+        print(f"Reading transcript from {transcript_path}...")
+        try:
+            with open(transcript_path, "r", encoding="utf-8") as f:
+                transcript = f.read()
+        except FileNotFoundError:
+            print(f"❌ Error: Transcript file not found at {transcript_path}")
+            sys.exit(1)
+
 
     print(f"Processing with model: {MODEL_NAME}...")
     result = process_transcript(transcript)
+
 
     if result:
         print(f"Writing structured output to {output_path}...")
@@ -87,6 +132,7 @@ def main():
     else:
         print("❌ Failed to process transcript.")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
