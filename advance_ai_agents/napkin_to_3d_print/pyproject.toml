@@ -1,0 +1,15 @@
+[project]
+name = "napkin-to-3d-print"
+version = "0.1.0"
+description = "Sketch a part on paper; Kimi K3.1 Pro on Nebius Token Factory turns it into parametric CadQuery, checks its own render against the sketch, and exports a printable STL"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "streamlit>=1.50.0",
+    "openai>=1.50.0",
+    "python-dotenv>=1.1.1",
+    "cadquery>=2.5.2",
+    "trimesh>=4.4.0",
+    "matplotlib>=3.9.0",
+    "pillow>=10.4.0",
+]

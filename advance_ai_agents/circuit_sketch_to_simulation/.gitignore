@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.env*.local
+.env
+*.tsbuildinfo
+next-env.d.ts
+data/
+# The demo video is for sharing, not for the repository.
+docs/demo.mp4
+# Root repo .gitignore ignores lib/ — keep this project's src/lib tracked
+!src/lib/
+!src/lib/**

@@ -1,6 +1,6 @@
 # 📚 Chat with Multiple PDFs
 
-Interact with multiple PDF files using powerful AI models like **Gemini 1.5 (Google AI)** to extract insights, analyze financial data, and answer questions based on uploaded documents. This app is especially useful for analyzing **annual reports** and **financial statements** of Indian stock market companies.
+Interact with multiple PDF files using powerful AI models like **Gemini 3.8 (Google AI)** to extract insights, analyze financial data, and answer questions based on uploaded documents. This app is especially useful for analyzing **annual reports** and **financial statements** of Indian stock market companies.
 
 ![Streamlit](https://img.shields.io/badge/Built%20with-Streamlit-orange?style=flat-square&logo=streamlit)
 
@@ -10,7 +10,7 @@ Interact with multiple PDF files using powerful AI models like **Gemini 1.5 (Goo
 
 - 📄 Upload multiple PDF files
 - 🤖 Ask questions based on the content of the PDFs
-- 🧠 Uses LangChain and Google Gemini 1.5 (`gemini-1.5-flash`) for contextual answers
+- 🧠 Uses LangChain and Google Gemini 3.8 (`gemini-3.8-flash`) for contextual answers
 - 🗃️ Embeds content using `GoogleGenerativeAIEmbeddings` and stores in FAISS vector database
 - 📊 Specialized for analyzing financial reports, related-party transactions, and remuneration
 - 🗨️ Chat-like interface with user/bot avatars
@@ -68,7 +68,7 @@ To use Gemini models and embeddings:
 | ---------- | ---------------------------------------- |
 | Streamlit  | UI framework for interactive web apps    |
 | LangChain  | Managing LLM chains and embeddings       |
-| Gemini 1.5 | Large Language Model (via Google AI API) |
+| Gemini 3.8 | Large Language Model (via Google AI API) |
 | PyPDF2     | PDF text extraction                      |
 | FAISS      | Vector database for similarity search    |
 | Pandas     | Exporting conversation as CSV            |
