@@ -72,6 +72,7 @@ class FakeStructured:
         if self.schema is g.ReviewerFindings:
             for name, findings in self.llm.reviewer_findings.items():
                 if name in messages[0].content:
+                    self.llm.reviewer_inputs[name] = messages[1].content
                     return g.ReviewerFindings(findings=findings)
             raise AssertionError("unknown reviewer prompt")
         if self.schema is g.RiskReport:
@@ -86,6 +87,7 @@ class FakeLLM:
     def __init__(self, reviewer_findings=CANNED, report=MERGED):
         self.reviewer_findings = reviewer_findings
         self.report = report
+        self.reviewer_inputs = {}
         self.coordinator_inputs = []
 
     def with_structured_output(self, schema):
@@ -99,11 +101,20 @@ def test_reviewers_run_and_coordinator_sees_every_finding():
     ids = sorted(f["id"] for f in final["findings"])
     assert ids == ["FIN-1", "LEG-1", "OPS-1", "SEC-1", "SEC-2"], ids
     assert {f["role"] for f in final["findings"]} == set(g.REVIEWERS)
+    # Every reviewer read the submitted document.
+    assert llm.reviewer_inputs == {name: "a deployment plan" for name in CANNED}
 
-    # The coordinator ran once, after all four reviewers, with every ID.
+    # The coordinator ran once, after all four reviewers, with every finding
+    # in full, not only its ID.
     assert len(llm.coordinator_inputs) == 1
-    for finding_id in ids:
-        assert f"[{finding_id}]" in llm.coordinator_inputs[0]
+    for f in final["findings"]:
+        block = (
+            f"[{f['id']}] ({f['role']}, {f['risk_level']}) {f['title']}\n"
+            f"Evidence: {f['evidence']}\n"
+            f"Reasoning: {f['reasoning']}\n"
+            f"Recommendation: {f['recommendation']}"
+        )
+        assert block in llm.coordinator_inputs[0], f["id"]
     print("graph test OK: four reviewers fan in to one coordinator call")
 
 
