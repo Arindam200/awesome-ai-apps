@@ -20,7 +20,7 @@ Uses a 5-agent sequential pipeline:
 2. **TavilyAgent**: Retrieves AI benchmarks and analysis
 3. **SummaryAgent**: Combines and formats information from the first two agents
 4. **FirecrawlAgent**: Scrapes Nebius Token Factory website for model information
-5. **AnalysisAgent**: Performs deep analysis using Llama-3.1-Nemotron-Ultra-253B model
+5. **AnalysisAgent**: Performs deep analysis using gpt-oss-120b model
 
 ## Installation
 
@@ -63,7 +63,7 @@ Run with ADK CLI:
 
 ```bash
 # Terminal - Run directly in the terminal
-adk run analyzer_agent
+adk run trend_analyzer_agent
 
 # Dev UI - Visual interface for testing and debugging
 adk web

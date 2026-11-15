@@ -11,6 +11,7 @@ from exa_py import Exa
 from tavily import TavilyClient
 from firecrawl import Firecrawl
 from dotenv import load_dotenv
+import asyncio
 import os
 
 # Load environment variables from .env file
@@ -20,7 +21,7 @@ api_key = os.getenv("NEBIUS_API_KEY")
 
 # Model configuration
 nebius_model = LiteLlm(
-    model="openai/meta-llama/Meta-Llama-3.1-8B-Instruct",
+    model="openai/Qwen/Qwen3-30B-A3B-Instruct-2507",
     api_base=api_base,
     api_key=api_key
 )
@@ -151,7 +152,7 @@ firecrawl_agent = LlmAgent(
 analysis_agent = LlmAgent(  
     name="AnalysisAgent",
     model=LiteLlm(
-        model="openai/nvidia/Llama-3_1-Nemotron-Ultra-253B-v1",  # New Nebius model
+        model="openai/openai/gpt-oss-120b",  # New Nebius model
         api_base=api_base,
         api_key=api_key
     ),
@@ -192,19 +193,19 @@ USER_ID = "colab_user"
 SESSION_ID = "ai_analysis_session"
 
 session_service = InMemorySessionService()
-session_service.create_session(app_name=APP_NAME, user_id=USER_ID, session_id=SESSION_ID)
 runner = Runner(agent=pipeline, app_name=APP_NAME, session_service=session_service)
 
 # --- Run it ---
-def run_ai_analysis():
+async def run_ai_analysis():
+    await session_service.create_session(app_name=APP_NAME, user_id=USER_ID, session_id=SESSION_ID)
     content = types.Content(role="user", parts=[types.Part(text="Start the AI analysis")])
-    events = runner.run(user_id=USER_ID, session_id=SESSION_ID, new_message=content)
-    for event in events:
+    events = runner.run_async(user_id=USER_ID, session_id=SESSION_ID, new_message=content)
+    async for event in events:
         if event.is_final_response():
             print("📢 AI News Analysis and Insights:\n")
             print(event.content.parts[0].text)
 
 if __name__ == "__main__":
-    run_ai_analysis()
+    asyncio.run(run_ai_analysis())
 
 root_agent = pipeline
