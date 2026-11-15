@@ -139,6 +139,8 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ## 🚀 Featured AI Apps
 
+- [No Stairs Please MCP](https://nostairsplease.com/mcp) - Remote Model Context Protocol (MCP) server for touring musicians and AI assistants to search 2,200+ North American live-music venues, load-in accessibility details, drive-time routing, and booking contacts.
+
 ### 🧩 Starter Agents
 
 **Quick-start agents for learning and extending different AI frameworks.** _22 projects_
