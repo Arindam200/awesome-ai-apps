@@ -54,7 +54,7 @@ DOMAIN = os.getenv("MNEMOVERSE_DEMO_DOMAIN", "project:release-assistant-mcp")
 QUESTION = "how do we ship a release?"
 
 NEBIUS_BASE_URL = "https://api.tokenfactory.nebius.com/v1"
-NEBIUS_MODEL = os.getenv("NEBIUS_MODEL", "Qwen/Qwen3-30B-A3B-Instruct-2507")
+NEBIUS_MODEL = os.getenv("NEBIUS_MODEL") or "Qwen/Qwen3-30B-A3B-Instruct-2507"
 
 DECISIONS = [
     (
@@ -359,12 +359,17 @@ async def main() -> bool:
     server = StdioServerParameters(
         command=npx_path(),
         args=["-y", MEMORY_SERVER],
-        # The child gets the SDK's default environment (PATH, HOME and the like)
-        # plus the MNEMOVERSE_* settings, and nothing else from this shell, so
-        # the model key and any other secrets never reach it.
+        # The child gets the SDK's default environment (PATH, HOME and the like),
+        # the MNEMOVERSE_* settings and NODE_EXTRA_CA_CERTS (a certificate file
+        # path, for TLS-intercepting proxies), and nothing else from this shell,
+        # so the model key and any other secrets never reach it.
         env={
             **get_default_environment(),
-            **{k: v for k, v in os.environ.items() if k.startswith("MNEMOVERSE_")},
+            **{
+                k: v
+                for k, v in os.environ.items()
+                if k.startswith("MNEMOVERSE_") or k == "NODE_EXTRA_CA_CERTS"
+            },
         },
     )
     try:
