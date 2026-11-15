@@ -108,9 +108,12 @@ def main() -> None:
     parser.add_argument("--reviewer-url", default="http://127.0.0.1:8002")
     parser.add_argument("--timeout", type=float, default=120.0, help="Seconds per task")
     args = parser.parse_args()
-    asyncio.run(
-        run(args.topic, args.architect_url, args.reviewer_url, timeout=args.timeout)
-    )
+    try:
+        asyncio.run(
+            run(args.topic, args.architect_url, args.reviewer_url, timeout=args.timeout)
+        )
+    except RuntimeError as exc:
+        parser.exit(1, f"error: {exc}\n")
 
 
 if __name__ == "__main__":

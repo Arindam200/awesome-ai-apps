@@ -3,6 +3,7 @@
 import asyncio
 import logging
 import socket
+import sys
 from contextlib import AsyncExitStack, asynccontextmanager
 from pathlib import Path
 
@@ -23,8 +24,56 @@ from agno.run.agent import RunOutput
 from fastapi import FastAPI, Request
 
 import agents
+import client
 from client import delegate, read_response, run
 from server import create_app
+
+
+def test_cli_reports_task_failure_without_traceback(monkeypatch, capsys):
+    async def fail(*args, **kwargs):
+        raise RuntimeError("Agno Architect ended in TASK_STATE_FAILED")
+
+    monkeypatch.setattr(client, "run", fail)
+    monkeypatch.setattr(sys, "argv", ["client.py", "a search tool"])
+
+    with pytest.raises(SystemExit) as exc:
+        client.main()
+
+    assert exc.value.code == 1
+    output = capsys.readouterr()
+    assert output.out == ""
+    assert output.err == "error: Agno Architect ended in TASK_STATE_FAILED\n"
+
+
+def test_cli_success_preserves_arguments(monkeypatch, capsys):
+    calls = []
+
+    async def succeed(topic, architect_url, reviewer_url, *, timeout):
+        calls.append((topic, architect_url, reviewer_url, timeout))
+        return "Reviewed plan"
+
+    monkeypatch.setattr(client, "run", succeed)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "client.py",
+            "a search tool",
+            "--architect-url",
+            "http://localhost:9001",
+            "--reviewer-url",
+            "http://localhost:9002",
+            "--timeout",
+            "5",
+        ],
+    )
+
+    client.main()
+
+    assert calls == [
+        ("a search tool", "http://localhost:9001", "http://localhost:9002", 5.0)
+    ]
+    assert capsys.readouterr().err == ""
 
 
 @asynccontextmanager
