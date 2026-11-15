@@ -223,6 +223,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Secure Database MCP Agent (MCP Toolbox)](mcp_ai_agents/mcp_toolbox_security_agent): Secure ecommerce agent over PostgreSQL and MongoDB; MCP Toolbox enforces per-user data access, least-privilege roles, and authorized tools
 - [Secure MCP Access Agent (ScaleKit + Exa)](mcp_ai_agents/scalekit-exa-mcp-security): Security-focused MCP integration with Exa search
 - [Self-Healing Text-to-SQL Agent (Okahu)](mcp_ai_agents/telemetry-mcp-okahu): Self-healing Text-to-SQL demo using Okahu Cloud traces via hosted MCP
+- [No Stairs Please MCP](https://nostairsplease.com/mcp): Remote MCP server for [No Stairs Please](https://nostairsplease.com/) exposing live-music venue, capacity, and booking contact tools across all 50 US states
 - [Taskade MCP Agent](mcp_ai_agents/taskade_mcp_agent): AI-powered workspace agent for managing projects, tasks, and workflows via Taskade MCP
 
 ### 🧠 Memory Agents
