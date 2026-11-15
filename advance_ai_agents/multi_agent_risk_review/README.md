@@ -73,7 +73,7 @@ uv run python main.py samples/vendor_rollout_plan.md
 Pass any text or Markdown file the same way, and choose another model with `--model`.
 The report prints to stdout as Markdown, so `> report.md` saves it.
 
-[`examples/sample_report.md`](examples/sample_report.md) is the unedited output of one run on the sample, made with a small local model; its header says which.
+[`examples/sample_report.md`](examples/sample_report.md) is the unedited output of one run on the sample, made on Nebius Token Factory with the default model; its header gives the date and lists errors the model made.
 
 Run the tests, which use a fake model and make no API calls:
 
