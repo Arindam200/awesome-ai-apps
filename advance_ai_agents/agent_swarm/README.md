@@ -176,7 +176,7 @@ agent_swarm/
 
 ## 🔒 Safety notes
 
-- `fetch_url` only fetches public `http(s)` URLs. It refuses hosts, including redirect targets, that resolve to private, loopback or link-local addresses.
+- `fetch_url` only fetches public `http(s)` URLs. It resolves each host once and refuses any private, loopback, link-local or metadata address. It then connects to the exact address it checked, so DNS rebinding can't swap in a local one, while TLS is still verified against the real hostname. Every redirect hop is checked again.
 - Worker prompts tell the model to treat tool output as data, never as instructions. Kimi's review is a second check, not a guarantee. Verify important facts before you rely on them.
 - The Streamlit server binds to `localhost` only.
 

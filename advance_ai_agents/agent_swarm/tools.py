@@ -11,7 +11,7 @@ import html
 import ipaddress
 import re
 import socket
-from urllib.parse import quote, urlparse
+from urllib.parse import quote, urljoin, urlparse
 
 import httpx
 from langchain_core.tools import tool
@@ -19,6 +19,7 @@ from langchain_core.tools import tool
 USER_AGENT = "awesome-ai-apps-agent-swarm/0.1 (https://github.com/Arindam200/awesome-ai-apps)"
 WIKI_API = "https://en.wikipedia.org/w/api.php"
 MAX_PAGE_CHARS = 6000
+MAX_REDIRECTS = 5
 
 
 @tool
@@ -59,15 +60,28 @@ def wikipedia_search(query: str) -> str:
     return "\n\n".join(blocks)
 
 
-def _ensure_public(url: str) -> None:
-    """Refuse non-HTTP schemes and hosts that resolve to private, loopback or link-local addresses."""
+def _pinned_request(url: str) -> tuple[str, dict, dict]:
+    """Resolve the host once, refuse anything non-public, and target the checked IP directly.
+
+    Workers pick URLs themselves and read untrusted pages, so a prompt-injected page
+    could point them at local services. Checking DNS and then letting httpx resolve
+    the name again would leave a DNS-rebinding gap, so the request connects to the
+    exact address that was validated. The Host header and the TLS SNI and certificate
+    check still use the original hostname.
+    """
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https") or not parsed.hostname:
         raise ValueError("only public http(s) URLs are allowed")
-    for info in socket.getaddrinfo(parsed.hostname, None):
-        ip = ipaddress.ip_address(info[4][0])
-        if not ip.is_global:
-            raise ValueError(f"{parsed.hostname} resolves to a non-public address")
+    if parsed.username or parsed.password:
+        raise ValueError("URLs with credentials are not allowed")
+    host = parsed.hostname
+    port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    addrs = sorted({str(info[4][0]) for info in socket.getaddrinfo(host, port, type=socket.SOCK_STREAM)})
+    if not addrs or not all(ipaddress.ip_address(a).is_global for a in addrs):
+        raise ValueError(f"{host} resolves to a non-public address")
+    ip = next((a for a in addrs if ":" not in a), addrs[0])  # prefer IPv4
+    ip_netloc = f"[{ip}]:{port}" if ":" in ip else f"{ip}:{port}"
+    return parsed._replace(netloc=ip_netloc).geturl(), {"Host": parsed.netloc}, {"sni_hostname": host}
 
 
 def _html_to_text(raw: str) -> str:
@@ -82,15 +96,17 @@ def _html_to_text(raw: str) -> str:
 def fetch_url(url: str) -> str:
     """Fetch a public web page and return its readable text (first ~6000 characters).
     Use it for a specific page you already know the URL of, such as official docs or a Wikipedia article."""
+    current = url
     try:
-        _ensure_public(url)
-        with httpx.Client(
-            timeout=20,
-            follow_redirects=True,
-            headers={"User-Agent": USER_AGENT},
-            event_hooks={"request": [lambda req: _ensure_public(str(req.url))]},
-        ) as client:
-            r = client.get(url)
+        with httpx.Client(timeout=20, follow_redirects=False, headers={"User-Agent": USER_AGENT}) as client:
+            for _ in range(MAX_REDIRECTS + 1):
+                target, headers, extensions = _pinned_request(current)  # re-checked on every hop
+                r = client.get(target, headers=headers, extensions=extensions)
+                if not (r.is_redirect and r.headers.get("location")):
+                    break
+                current = urljoin(current, r.headers["location"])
+            else:
+                raise ValueError("too many redirects")
         r.raise_for_status()
     except Exception as e:
         return f"Could not fetch {url}: {e}"
@@ -104,7 +120,7 @@ def fetch_url(url: str) -> str:
         return f"{url} returned {ctype or 'unknown content'}, which this tool can't read."
     if len(text) > MAX_PAGE_CHARS:
         text = text[:MAX_PAGE_CHARS] + "\n\n[truncated]"
-    return f"Source: {r.url}\n\n{text}"
+    return f"Source: {current}\n\n{text}"
 
 
 TOOLS = [wikipedia_search, fetch_url]
