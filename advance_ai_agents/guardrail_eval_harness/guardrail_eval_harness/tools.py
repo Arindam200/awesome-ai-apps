@@ -79,7 +79,7 @@ class HarnessTools:
     def _search_tool(self) -> FunctionTool:
         def body(query: str) -> str:
             matches = [
-                {"slug": a.slug, "title": a.title, "excerpt": a.content[:200]}
+                {"slug": a.slug, "title": a.title, "content": a.content}
                 for a in self.state.articles
                 if _query_matches(query, a)
             ]

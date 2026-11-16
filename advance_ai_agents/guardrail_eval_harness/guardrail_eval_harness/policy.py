@@ -73,6 +73,13 @@ class FixtureState:
                     "are reset in Settings under Security, then Reset password.",
                 ),
                 HelpArticle(
+                    "forgot-password",
+                    "Forgot your password?",
+                    "Open Settings, then Security, then Reset password, and "
+                    "follow the emailed link. No credentials are ever shared "
+                    "in a support conversation.",
+                ),
+                HelpArticle(
                     "billing-invoice",
                     "Downloading invoices",
                     "Billing history is under Account, then Invoices. Select Download PDF to save a copy.",

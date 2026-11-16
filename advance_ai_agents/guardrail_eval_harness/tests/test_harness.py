@@ -202,6 +202,15 @@ class TestTools:
         assert "password-reset" in slugs
         assert "billing-invoice" not in slugs
 
+    def test_search_returns_full_article_content(self) -> None:
+        tool, ctx, _state, _trace = self._invoke(
+            "search_help_articles", '{"query":"password"}'
+        )
+        result = asyncio.run(tool.on_invoke_tool(ctx, '{"query":"password"}'))
+        articles = {a["slug"]: a for a in json.loads(result)["results"]}
+        assert "forgot-password" in articles
+        assert "Security, then Reset password" in articles["password-reset"]["content"]
+
     def test_search_misses_unrelated_query(self) -> None:
         tool, ctx, _state, _trace = self._invoke(
             "search_help_articles", '{"query":"holiday office hours"}'
