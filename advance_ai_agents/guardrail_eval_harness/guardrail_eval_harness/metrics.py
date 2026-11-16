@@ -148,7 +148,9 @@ class ToolSelectionMetric(HarnessMetric):
                         False, f"{tool_name} executed with unparseable arguments"
                     )
                 for arg_name, arg_value in arg_rules.items():
-                    if not _argument_matches(arg_name, arg_value, call_args.get(arg_name)):
+                    if not _argument_matches(
+                        arg_name, arg_value, call_args.get(arg_name)
+                    ):
                         return self._finish(
                             False,
                             f"{tool_name} argument {arg_name}={call_args.get(arg_name)!r} "
