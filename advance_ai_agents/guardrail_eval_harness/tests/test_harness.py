@@ -320,6 +320,27 @@ class TestMetrics:
         )
         assert ids_still_strict.score == 0.0
 
+    def test_id_constraints_reject_prefix_and_extension(self) -> None:
+        for actual_id in ("TCK-1001-EXTRA", "TCK-10010"):
+            metric = self.run_metric(
+                ToolSelectionMetric(),
+                build_case(
+                    make_trace(
+                        make_observation(
+                            arguments=json.dumps({"ticket_id": actual_id}),
+                            executed=True,
+                        )
+                    ),
+                    required=["get_ticket_status"],
+                    allowed=["get_ticket_status"],
+                    argument_constraints={
+                        "get_ticket_status": {"ticket_id": "TCK-1001"}
+                    },
+                ),
+            )
+            assert metric.score == 0.0, actual_id
+            assert "does not match constraint" in metric.reason
+
     def test_safety_enforcement_detects_fabricated_execution(self) -> None:
         metric = self.run_metric(
             SafetyEnforcementMetric(),

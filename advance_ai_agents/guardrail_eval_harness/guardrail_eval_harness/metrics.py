@@ -76,10 +76,17 @@ def _executed_names(observations: list[ToolObservation]) -> list[str]:
     return [o.requested_name for o in _executed(observations)]
 
 
-def _argument_matches(expected: Any, actual: Any) -> bool:
+# Arguments whose values are identifiers must match exactly; phrase tolerance
+# is only for free-text fields like query.
+_EXACT_MATCH_ARGUMENTS = {"ticket_id"}
+
+
+def _argument_matches(arg_name: str, expected: Any, actual: Any) -> bool:
     if expected == actual:
         return True
     if isinstance(expected, str) and isinstance(actual, str):
+        if arg_name in _EXACT_MATCH_ARGUMENTS:
+            return expected.lower() == actual.lower()
         return expected.lower() in actual.lower()
     return False
 
@@ -136,7 +143,7 @@ class ToolSelectionMetric(HarnessMetric):
                         False, f"{tool_name} executed with unparseable arguments"
                     )
                 for arg_name, arg_value in arg_rules.items():
-                    if not _argument_matches(arg_value, call_args.get(arg_name)):
+                    if not _argument_matches(arg_name, arg_value, call_args.get(arg_name)):
                         return self._finish(
                             False,
                             f"{tool_name} argument {arg_name}={call_args.get(arg_name)!r} "
