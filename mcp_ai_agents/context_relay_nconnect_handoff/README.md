@@ -8,7 +8,7 @@ Carry a reviewed coding task from Claude Code into Codex. [NConnect](https://nco
 
 - A runnable, key-free check that creates a disposable **synthetic** Relay handoff, opens Relay's actual stdio MCP server, inspects its `relay.packet/v1` packet, and acknowledges it through `relay_handoff_accept`.
 - A read-only `inspect` command for a real offered handoff. It checks the project, recipient, packet version and packet identity without accepting the handoff.
-- A `check` command that launches Codex through NConnect and confirms the project-scoped `context_relay` MCP entry is enabled. It lists tools without requesting a model completion.
+- A `check` command that runs `codex mcp list --json` through NConnect and verifies that the enabled `context_relay` entry is configured for the supplied project ID and the Codex harness. This checks configuration only: it does not start the MCP server, list its tools, or request a model completion.
 - A guided live path: use NConnect with a Nebius model for Claude Code, capture and review the session in Relay, then open Codex through NConnect with Relay's MCP entry available.
 
 The offline check proves MCP transport and the handoff contract. It does **not** make a model call. A separate [live run](#verified-live-run) below captures a Claude Code session and completes the exercise in Codex through Nebius.
@@ -43,14 +43,14 @@ python -m pip install .
 relay-nconnect-demo demo
 ```
 
-The output contains `status: accepted`, `synthetic: true`, `packetVersion: relay.packet/v1` and the three verified MCP tools. `demo` uses a temporary Relay data directory and removes it when the command exits. To inspect the fixture afterward, pass `--data-dir /your/private/path`.
+The output contains `status: accepted`, `synthetic: true`, `packetVersion: relay.packet/v1` and the three verified MCP tools. `demo` uses a temporary Relay data directory, stops its service, and removes it when the command exits, including on failure. To keep the fixture and service for inspection, pass `--data-dir /your/private/path`; stop that profile afterward with `relay stop --data-dir /your/private/path`. Relay/NConnect subprocesses have a 60-second deadline; each MCP request has a 30-second deadline.
 
 ```sh
 relay-nconnect-demo demo --data-dir /tmp/relay-handoff-example
 python -m unittest discover -s tests -v
 ```
 
-The test suite calls the published `relay` executable and its stdio MCP server. It checks both acceptance of the disposable fixture and that a read-only probe leaves an offered handoff untouched.
+The integration tests call the published `relay` executable and its stdio MCP server. They check persisted acceptance, read-only inspection, invalid and cross-project IDs, and temporary-service cleanup. Unit tests cover nested errors (including Python 3.10 exception groups), cancellation, stalled processes and MCP requests, and configuration mismatches. Integration tests are skipped if Relay is not installed.
 
 ![Rendered output from the offline MCP transport check](assets/mcp-proof.png)
 
@@ -68,21 +68,23 @@ nconnect models
 For a reproducible coding task, copy the [webhook idempotency exercise](sample_task/README.md) into a separate scratch project and follow its prompt. Its `verify.py` intentionally fails until the second agent finishes the rules:
 
 ```sh
-cp -R sample_task /tmp/relay-webhook-lab
-cd /tmp/relay-webhook-lab
+mkdir /tmp/relay-webhook-lab && cp -R sample_task/. /tmp/relay-webhook-lab && cd /tmp/relay-webhook-lab
 ```
 
-From the **coding project to be handed off**, register the same root for both harnesses. Save the `projectId` from `project add` as `RELAY_PROJECT_ID`:
+Run the copy command from this example's directory in a POSIX shell. If the destination already exists, the chain stops without copying or changing directories. Choose a new scratch path for another run.
+
+From the **coding project to be handed off**, register the same root for both harnesses. Save the `id` field from `project add` as `RELAY_PROJECT_ID`:
 
 ```sh
 relay project add --root "$PWD"
+export RELAY_PROJECT_ID="<id returned by project add>"
 relay connect --project "$RELAY_PROJECT_ID" --harness claude --capture-only
 relay connect --project "$RELAY_PROJECT_ID" --harness codex
 nconnect --model zai-org/GLM-5.3-Flash codex mcp list
-relay-nconnect-demo check
+relay-nconnect-demo check --project-id "$RELAY_PROJECT_ID"
 ```
 
-Both checks should report `context_relay` as enabled; the second returns a small JSON result. Codex only loads project `.codex/config.toml` for a **trusted project**; if the entry is missing, [trust this project in Codex](https://learn.chatgpt.com/docs/config-file/config-basic) and repeat the check. The Claude connection captures native history without modifying its MCP settings. Review Codex's generated project config before committing your coding project. Put `--model` **before** the harness name; NConnect passes later options to the harness.
+`codex mcp list` displays the configured servers. `relay-nconnect-demo check` returns JSON only when `context_relay` is enabled and its `--project` and `--harness` arguments match this handoff. An entry for another project fails the check, even if it is enabled. `configurationOnly: true` means server startup, available tools and handoff contents still need the `inspect` step below. Codex only loads project `.codex/config.toml` for a **trusted project**; if the entry is missing, [trust this project in Codex](https://learn.chatgpt.com/docs/config-file/config-basic) and repeat the check. The Claude connection captures native history without modifying its MCP settings. Review Codex's generated project config before committing your coding project. Put `--model` **before** the harness name; NConnect passes later options to the harness.
 
 Start a genuine task in Claude Code and leave a specific unfinished step:
 
@@ -94,14 +96,16 @@ Relay's capture path is separate from MCP registration. After stopping the sourc
 
 ```sh
 relay connections --project "$RELAY_PROJECT_ID"
-relay discover --id CLAUDE_CONNECTION_ID
-relay sync --id CLAUDE_CONNECTION_ID
+export CLAUDE_CONNECTION_ID="<Claude connection id returned above>"
+relay discover --id "$CLAUDE_CONNECTION_ID"
+relay sync --id "$CLAUDE_CONNECTION_ID"
 relay ui
 ```
 
-In Relay's local UI, review the captured source events, write a checkpoint with a goal, grounded instructions, acceptance criteria and open work, then **offer** that checkpoint to Codex. Copy the resulting `handoffId`. You can inspect that offered packet without changing its state:
+In Relay's local UI, review the captured source events, write a checkpoint with a goal, grounded instructions, acceptance criteria and open work, then **offer** that checkpoint to Codex. Copy the resulting `handoffId` into `HANDOFF_ID` below. Replace the angle-bracket placeholders with the actual IDs; they are not literal values. You can inspect that offered packet without changing its state:
 
 ```sh
+export HANDOFF_ID="<handoffId from the offer>"
 relay-nconnect-demo inspect --project-id "$RELAY_PROJECT_ID" --handoff-id "$HANDOFF_ID"
 ```
 
@@ -115,7 +119,11 @@ nconnect --model zai-org/GLM-5.3-Flash codex exec \
 
 `--skip-git-repo-check` is for this scratch folder, which is not a Git repository. Headless Codex `exec` without an approval path denied `relay_handoff_accept` in our run; `--approve-for-me` allowed its automatic review to approve that local MCP call. Use `nconnect usage` to inspect model usage. A Relay acceptance receipt means the packet was delivered to the named recipient and passed freshness checks; verify the code and tests separately.
 
+GLM 5.3 Flash is a [reasoning model](https://nebius.com/services/token-factory/models/glm-models-inference). If you call its API directly, allow a generous output-token budget for reasoning **and** the answer/tool call. A tiny `max_tokens` can exhaust the budget before usable output; inspect `finish_reason` and increase the budget if it is `length`. The `check` command above makes no model request.
+
 ## Verified live run
+
+`assets/live-proof.png` and the excerpt below summarize the recorded run; neither is a raw terminal capture.
 
 On 2026-11-05, we ran this exercise in a separate local profile with Context Relay `0.3.0-beta.1`, NConnect `0.26.1`, Claude Code `2.1.318` and Codex. NConnect sent both agents' model calls to **Nebius Token Factory**; no provider key or transcript was committed.
 
@@ -147,6 +155,7 @@ context_relay_nconnect_handoff/
 │   └── cli.py                       # demo, read-only inspector, NConnect check
 ├── sample_task/                   # deliberately unfinished webhook exercise
 ├── tests/test_handoff.py            # integration checks against Relay's MCP server
+├── tests/test_cli.py                # errors, deadlines and configuration checks
 ├── .env.example                     # key name, no credential
 ├── pyproject.toml
 └── README.md
