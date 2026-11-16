@@ -7,7 +7,7 @@
 
 # Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-**142 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
+**145 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
 
 [![GitHub stars](https://img.shields.io/github/stars/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Stars&color=yellow)](https://github.com/Arindam200/awesome-ai-apps/stargazers)
 [![Forks](https://img.shields.io/github/forks/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Forks)](https://github.com/Arindam200/awesome-ai-apps/network/members)
@@ -132,7 +132,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 15 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
 | [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
-| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 38 |
+| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 41 |
 | [🧬 Fine-Tuning](#-fine-tuning) | LoRA fine-tuning, distillation and deployment of open models | 6 |
 
 **Also here:** [Tutorials & Videos](#-tutorials--videos) · [Quick Start](#-quick-start) · [Contributing](#-contributing) · [Contributors](#-contributors) · [Maintainers](#-maintainers) · [License](#-license)
@@ -269,7 +269,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _38 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _41 projects_
 
 - [AI Hedge Fund Research Team](advance_ai_agents/ai-hedgefund): Agentic workflow for comprehensive financial analysis
 - [AI Trend Research Agent](advance_ai_agents/trend_analyzer_agent): AI trend mining and analysis with Google ADK
@@ -288,16 +288,19 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Financial Market Data Service](advance_ai_agents/finance_service_agent): FastAPI server for stock data and predictions with Agno
 - [Financial Research Agent (AgentField)](advance_ai_agents/agentfield_finance_research_agent): Financial research agent with AgentField
 - [GitHub and LinkedIn Job Finder](advance_ai_agents/job_finder_agent): LinkedIn job search automation with Bright Data integration
+- [Inkwire: Circuit Sketch → Live Simulation](advance_ai_agents/circuit_sketch_to_simulation): Inkling 2 Small on [Nebius Token Factory](https://dub.sh/nebius) turns a photo of a hand-drawn circuit into a working interactive simulation, finds the mistakes, reviews screenshots of its own page, and a circuit solver checks every number
 - [Jev Social Research Agent](advance_ai_agents/jev_social_research_agent): Typed Jev routing, local socai CLI evidence, and evidence-linked Nebius synthesis for Instagram, TikTok, and LinkedIn research
 - [Local File-Editing Agent Prototype](advance_ai_agents/coding_harness_agent): Local coding-agent prototype with file discovery, reading, and editing tools
 - [Maintainer Intelligence Brief](advance_ai_agents/maintainer_brief): Weekly open-source intelligence briefs from community, security, and document signals with source citations
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent): Automated meeting notes and task creation from conversations
 - [Multi-Agent Coding Harness](advance_ai_agents/coding_agent_harness): Deep LangGraph coding crew with planning, repository exploration, human-gated file edits, and E2B-sandboxed test loops
+- [Multi-Agent Orchestrator](advance_ai_agents/multi_agent_orchestrator): LangGraph orchestrator-worker multi-agent system where Kimi K3.1 Pro plans, reviews and synthesizes while Inkling 2 Small and cheaper models on [Nebius Token Factory](https://dub.sh/nebius) work in parallel, with a live cost ledger
 - [Napkin → 3D Print](advance_ai_agents/napkin_to_3d_print): Kimi K3.1 Pro on [Nebius Token Factory](https://dub.sh/nebius) turns a photo of a hand sketch into parametric CadQuery, checks its own render against the drawing, and exports a printable STL with live dimension sliders
 - [Nebius Autonomous Pipeline Optimizer](advance_ai_agents/nebius-autoresearch-autoresearch-mar30): NYC taxi analytics pipeline optimizer with iterative code search using real-time or batch Nebius Token Factory inference
 - [Paper → Interactive Explainer](advance_ai_agents/paper_to_interactive_explainer): Kimi K3.1 Pro on Nebius reads a whole research paper, figures included, and builds a self-tested, Distill-style interactive explainer as a single HTML page
 - [Pre-Meeting Intel Agent (Briefing Room)](advance_ai_agents/meeting_briefing_agent): LangGraph plan-research-reflect loop with Tavily web search that turns a company name into a cited one-page meeting brief
 - [Price Monitoring Agent](advance_ai_agents/price_monitoring_agent): Price monitoring and alerting agent powered by CrewAI, Twilio, and Nebius
+- [Proactive On-Call Agent](advance_ai_agents/proactive_oncall_agent): LangChain proactive agent on Kimi K3.1 Pro via [Nebius Token Factory](https://dub.sh/nebius) that a cron server wakes to triage events; it pages you, requests human-approved rollbacks, and schedules its own follow-ups without ever being prompted
 - [Prompt Format Benchmark](advance_ai_agents/context_engineering_pipeline): Benchmark harness for comparing XML, JSON, and Markdown prompt formats across accuracy, latency, and token usage
 - [Sandboxed Browser Game Generator](advance_ai_agents/pydantic_game_agent): FastAPI multi-agent studio that generates sandboxed browser games from one prompt using Pydantic AI and GLM-5.2 on Nebius
 - [SEO Content Strategy Team](advance_ai_agents/content_team_agent): SEO content optimization workflow with Agno and SerpAPI for Google AI Search ranking

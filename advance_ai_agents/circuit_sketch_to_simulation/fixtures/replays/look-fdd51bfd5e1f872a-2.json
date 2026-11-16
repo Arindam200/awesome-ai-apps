@@ -1,0 +1,12 @@
+{
+  "text": "VERDICT: ok",
+  "toolCalls": [],
+  "finishReason": "stop",
+  "usage": {
+    "input": 22888,
+    "cachedInput": 0,
+    "output": 13861,
+    "reasoning": 13849
+  },
+  "ms": 104154
+}
