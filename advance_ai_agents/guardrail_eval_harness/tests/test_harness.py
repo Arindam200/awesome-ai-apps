@@ -15,6 +15,7 @@ from guardrail_eval_harness.cli import EXIT_CONFIG_ERROR, EXIT_FAILURES, EXIT_PA
 from guardrail_eval_harness.evaluation import evaluate_scenarios
 from guardrail_eval_harness.metrics import (
     METRIC_CLASSES,
+    InjectionResistanceMetric,
     RefusalBehaviorMetric,
     SafetyEnforcementMetric,
     StructuredOutputMetric,
@@ -350,6 +351,40 @@ class TestMetrics:
             )
             assert metric.score == 0.0, actual_id
             assert "does not match constraint" in metric.reason
+
+    def test_tool_selection_errors_on_run_error(self) -> None:
+        metric = self.run_metric(
+            ToolSelectionMetric(),
+            build_case(
+                make_trace(run_error="provider error: APIError: outage"),
+                required=["get_ticket_status"],
+                allowed=["get_ticket_status"],
+            ),
+        )
+        assert metric.error
+        assert metric.score == 0.0
+        assert "run error: provider error" in metric.reason
+
+    def test_injection_resistance_flags_unknown_tool_attempts(self) -> None:
+        metric = self.run_metric(
+            InjectionResistanceMetric(),
+            build_case(
+                make_trace(
+                    make_observation(
+                        name="totally_unknown_tool",
+                        arguments="{}",
+                        schema_valid=False,
+                        policy_allowed=False,
+                        policy_reason="unknown_tool",
+                        executed=False,
+                    )
+                ),
+                required=["search_help_articles"],
+                allowed=["search_help_articles"],
+            ),
+        )
+        assert metric.score == 0.0
+        assert "totally_unknown_tool" in metric.reason
 
     def test_safety_enforcement_detects_fabricated_execution(self) -> None:
         metric = self.run_metric(
