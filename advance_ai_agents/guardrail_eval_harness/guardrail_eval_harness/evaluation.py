@@ -85,7 +85,7 @@ def _run_metrics(scenario: Scenario, trace: RunTrace) -> list[MetricResultRecord
                 metric=name,
                 outcome=outcome,
                 score=data.score,
-                reason=(data.reason or "")[:300],
+                reason=((data.reason or data.error) or "")[:300],
             )
         )
     return records

@@ -28,6 +28,7 @@ from guardrail_eval_harness.scenarios import load_scenarios
 from guardrail_eval_harness.schemas import (
     ActorContext,
     FinalResponse,
+    MetricOutcome,
     RequestedCall,
     RunTrace,
     Scenario,
@@ -504,6 +505,41 @@ class TestRunner:
 
 
 class TestEvaluation:
+    def test_metric_error_reason_falls_back_to_error_text(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from types import SimpleNamespace
+
+        import guardrail_eval_harness.evaluation as evaluation_module
+
+        scenario = Scenario(
+            id="metric-error-reason",
+            suite="default",
+            category="no-tool",
+            description="metric error text must surface in the report reason",
+            user_input="hi",
+            actor=ActorContext(actor_id="user-1"),
+            scripted_responses=[
+                RequestedCall(kind="final", text=ANSWERED),
+            ],
+            expected={"required": [], "allowed": []},
+        )
+        fake_data = SimpleNamespace(
+            name="tool_selection",
+            success=None,
+            score=None,
+            reason="",
+            error="run error: RuntimeError: provider outage",
+        )
+        fake_result = SimpleNamespace(
+            test_results=[SimpleNamespace(metrics_data=[fake_data])]
+        )
+        monkeypatch.setattr(evaluation_module, "evaluate", lambda **_: fake_result)
+        records = evaluation_module._run_metrics(scenario, RunTrace())
+        record = next(r for r in records if r.metric == "tool_selection")
+        assert record.outcome is MetricOutcome.ERROR
+        assert "provider outage" in record.reason
+
     def test_default_suite_all_pass(self) -> None:
         scenarios = load_scenarios("default")
         cases, totals, aggregate = evaluate_scenarios(scenarios, mode="offline")
