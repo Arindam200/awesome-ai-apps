@@ -5,6 +5,7 @@ from datetime import datetime
 
 class WebhookLedger:
     def __init__(self) -> None:
+        """Start an empty ledger for the unfinished exercise."""
         self.total_cents = 0
 
     def apply(self, event_id: str, amount_cents: int, now: datetime) -> int:

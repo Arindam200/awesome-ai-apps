@@ -2,9 +2,15 @@
 
 This **exercise fixture** is deliberately incomplete. Copy this directory to a fresh scratch folder, then register that folder with Context Relay. Do not solve the task in this collection's checkout.
 
+From `mcp_ai_agents/context_relay_nconnect_handoff` in a POSIX shell:
+
 ```sh
-cp -R sample_task /tmp/relay-webhook-lab
-cd /tmp/relay-webhook-lab
+mkdir /tmp/relay-webhook-lab && cp -R sample_task/. /tmp/relay-webhook-lab && cd /tmp/relay-webhook-lab
+```
+
+If the directory already exists, the chain stops without copying or changing directories. Choose a new scratch path. After a successful copy, run:
+
+```sh
 python3 verify.py  # fails until the idempotency rule is implemented
 ```
 

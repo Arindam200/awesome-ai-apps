@@ -6,6 +6,7 @@ from webhook_ledger import WebhookLedger
 
 
 def main() -> None:
+    """Check original-result replay, conflicting amounts and the seven-day boundary."""
     ledger = WebhookLedger()
     start = datetime(2026, 1, 1, tzinfo=timezone.utc)
 
