@@ -1,0 +1,18 @@
+[project]
+name = "nemo-guardrails-arena"
+version = "0.1.0"
+description = "Jailbreak Arena — attack an unguarded bot vs. a NeMo Guardrails-protected Nemotron bot (via Nebius Token Factory)"
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "nemoguardrails>=0.16.0",
+    "langchain-openai>=0.2.0",
+    "streamlit>=1.40.0",
+    "python-dotenv>=1.0.1",
+    "pydantic>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Arindam200/awesome-ai-apps"
+Repository = "https://github.com/Arindam200/awesome-ai-apps"
+Issues = "https://github.com/Arindam200/awesome-ai-apps/issues"

@@ -1,0 +1,20 @@
+[project]
+name = "proactive-oncall-agent"
+version = "0.1.0"
+description = "A proactive on-call agent: a cron server wakes Kimi K3.1 Pro on Nebius Token Factory to triage events, page a human, request rollbacks and schedule its own follow-ups, all without being asked"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "langchain>=1.0.0",
+    "langchain-openai>=1.0.0",
+    "langgraph>=1.0.0",
+    "croniter>=6.0.0",
+    "python-dotenv>=1.0.1",
+    "rich>=13.7.0",
+    "streamlit>=1.40.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Arindam200/awesome-ai-apps"
+Repository = "https://github.com/Arindam200/awesome-ai-apps"
+Issues = "https://github.com/Arindam200/awesome-ai-apps/issues"
