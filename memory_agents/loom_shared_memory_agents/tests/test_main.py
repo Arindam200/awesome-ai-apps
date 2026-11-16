@@ -6,11 +6,19 @@ python -m unittest discover -s tests
 from __future__ import annotations
 
 import asyncio
+import contextlib
+import io
 import json
+import os
 import sys
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from typing import Self
+from unittest import mock
+
+from loom.errors import BackendUnavailable
+from openai import OpenAIError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
@@ -126,6 +134,58 @@ class SharedMemoryTest(unittest.TestCase):
 
     def test_an_empty_search_says_so(self) -> None:
         self.assertEqual(asyncio.run(main.recall(FakeMemory(), "x", set())), "no memories match")
+
+
+class FakeAgent:
+    """Stands in for `loom.Agent`; raises `fail` on entry when it is set."""
+
+    fail: Exception | None = None
+
+    def __init__(self, **identity: str) -> None:
+        self.memory = FakeMemory()
+
+    async def __aenter__(self) -> Self:
+        if self.fail:
+            raise self.fail
+        return self
+
+    async def __aexit__(self, *exc: object) -> None:
+        return None
+
+
+def run_main(llm: FakeLLM, fail: Exception | None = None) -> tuple[int, str]:
+    stderr = io.StringIO()
+    FakeAgent.fail = fail
+    argv = ["main.py", "--agent", "reviewer", "When do we deploy?"]
+    with (
+        mock.patch.object(sys, "argv", argv),
+        mock.patch.dict(os.environ, {"NEBIUS_API_KEY": "test"}),
+        mock.patch.object(main, "load_dotenv"),
+        mock.patch.object(main, "Agent", FakeAgent),
+        mock.patch.object(main, "AsyncOpenAI", lambda **kw: llm),
+        contextlib.redirect_stderr(stderr),
+        contextlib.redirect_stdout(io.StringIO()),
+    ):
+        code = asyncio.run(main.main())
+    return code, stderr.getvalue()
+
+
+class RefusingLLM(FakeLLM):
+    async def create(self, model: str, messages: list, tools: list):
+        raise OpenAIError("invalid api key")
+
+
+class ErrorTest(unittest.TestCase):
+    def test_a_refused_model_request_is_one_line(self) -> None:
+        code, err = run_main(RefusingLLM([]))
+        self.assertEqual(
+            (code, err), (1, "The model endpoint refused the request: invalid api key\n")
+        )
+
+    def test_loom_down_is_one_line(self) -> None:
+        code, err = run_main(FakeLLM([]), fail=BackendUnavailable("cannot reach"))
+        self.assertEqual(code, 1)
+        self.assertIn("Loom is not reachable at", err)
 
 
 if __name__ == "__main__":

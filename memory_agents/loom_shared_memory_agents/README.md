@@ -54,7 +54,7 @@ Copy `.env.example` to `.env` and add your key:
 
 ```env
 NEBIUS_API_KEY="your_nebius_token_factory_api_key"
-NEBIUS_MODEL="Qwen/Qwen3-235B-A22B-Instruct-2507"
+NEBIUS_MODEL="Qwen/Qwen3-30B-A3B-Instruct-2507"
 LOOM_BASE_URL="http://localhost:7777"
 ```
 

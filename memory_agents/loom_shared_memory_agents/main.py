@@ -21,10 +21,10 @@ from typing import Any
 from dotenv import load_dotenv
 from loom import Agent
 from loom.errors import BackendUnavailable
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI, OpenAIError
 
 DEFAULT_BASE_URL = "https://api.tokenfactory.nebius.com/v1/"
-DEFAULT_MODEL = "Qwen/Qwen3-235B-A22B-Instruct-2507"
+DEFAULT_MODEL = "Qwen/Qwen3-30B-A3B-Instruct-2507"
 MAX_TURNS = 6
 
 INSTRUCTIONS = {
@@ -162,6 +162,9 @@ async def main() -> int:
     except BackendUnavailable:
         url = os.environ.get("LOOM_BASE_URL") or "http://localhost:7777"
         print(f"Loom is not reachable at {url}: start it with the installer.", file=sys.stderr)
+        return 1
+    except OpenAIError as exc:
+        print(f"The model endpoint refused the request: {exc}", file=sys.stderr)
         return 1
     print(f"{args.agent}: {answer}")
     return 0
