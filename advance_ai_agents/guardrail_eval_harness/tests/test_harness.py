@@ -576,6 +576,25 @@ class TestCli:
         assert self._run(None, "--report", str(report)) == EXIT_CONFIG_ERROR
         assert self._run(None, "--report", str(report), "--overwrite") == EXIT_PASS
 
+    def test_existing_report_blocks_live_run_before_backend(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        import guardrail_eval_harness.live as live_module
+
+        report = tmp_path / "live.json"
+        report.write_text("{}", encoding="utf-8")
+
+        def _fail(*_args, **_kwargs):
+            raise AssertionError("backend must not run when the report path exists")
+
+        monkeypatch.setattr(live_module, "live_report", _fail)
+        monkeypatch.setenv("NEBIUS_API_KEY", "test-key")
+        monkeypatch.setenv("EXAMPLE_MODEL_NAME", "test-model")
+        assert (
+            self._run(tmp_path, "--mode", "live", "--report", str(report))
+            == EXIT_CONFIG_ERROR
+        )
+
     def test_live_without_model_exit_two(self) -> None:
         assert self._run(None, "--mode", "live") == EXIT_CONFIG_ERROR
 
