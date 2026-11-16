@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
+import io
 
 from deepeval.evaluate.configs import (
     AsyncConfig,
@@ -38,19 +40,24 @@ def _run_metrics(scenario: Scenario, trace: RunTrace) -> list[MetricResultRecord
     metric_names = applicable_metrics(scenario.category)
     metrics: list[BaseMetric] = [METRIC_CLASSES[name]() for name in metric_names]
     try:
-        results = evaluate(
-            test_cases=[test_case],
-            metrics=metrics,
-            async_config=AsyncConfig(run_async=False),
-            cache_config=CacheConfig(write_cache=False, use_cache=False),
-            display_config=DisplayConfig(
-                show_indicator=False,
-                print_results=False,
-                verbose_mode=False,
-                inspect_after_run=False,
-            ),
-            error_config=ErrorConfig(ignore_errors=False, skip_on_missing_params=False),
-        )
+        # DeepEval prints a per-case banner regardless of DisplayConfig; keep
+        # console output limited to the harness's own report.
+        with contextlib.redirect_stdout(io.StringIO()):
+            results = evaluate(
+                test_cases=[test_case],
+                metrics=metrics,
+                async_config=AsyncConfig(run_async=False),
+                cache_config=CacheConfig(write_cache=False, use_cache=False),
+                display_config=DisplayConfig(
+                    show_indicator=False,
+                    print_results=False,
+                    verbose_mode=False,
+                    inspect_after_run=False,
+                ),
+                error_config=ErrorConfig(
+                    ignore_errors=False, skip_on_missing_params=False
+                ),
+            )
     except (AssertionError, RuntimeError, ValueError) as exc:
         for name in metric_names:
             records.append(
