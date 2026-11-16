@@ -7,7 +7,7 @@
 
 # Awesome AI Apps [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
-**144 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
+**145 runnable LLM apps and agents, from 5-minute framework starters to production-grade multi-agent systems.**
 
 [![GitHub stars](https://img.shields.io/github/stars/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Stars&color=yellow)](https://github.com/Arindam200/awesome-ai-apps/stargazers)
 [![Forks](https://img.shields.io/github/forks/Arindam200/awesome-ai-apps?style=flat&logo=github&label=Forks)](https://github.com/Arindam200/awesome-ai-apps/network/members)
@@ -130,7 +130,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 21 |
 | [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 9 |
 | [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
-| [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
+| [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 14 |
 | [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
 | [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 41 |
 | [🧬 Fine-Tuning](#-fine-tuning) | LoRA fine-tuning, distillation and deployment of open models | 6 |
@@ -227,7 +227,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🧠 Memory Agents
 
-**Agents with advanced memory capabilities for context retention and personalization.** _13 projects_
+**Agents with advanced memory capabilities for context retention and personalization.** _14 projects_
 
 - [AI Research Consultant with Long-Term Memory](memory_agents/ai_consultant_agent/): AI-powered consulting agent using **Memori v3** as a long-term memory fabric and **ExaAI** for research
 - [arXiv Researcher Agent with Memori](memory_agents/arxiv_researcher_agent_with_memori): Research assistant using OpenAI Agents and GibsonAI Memori
@@ -239,6 +239,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Job Search Agent](memory_agents/job_search_agent): Job search agent with memory for preference tracking
 - [Persistent Memory Agent (Agno)](memory_agents/agno_memory_agent): Agno-based agent with persistent memory capabilities
 - [Product Launch Agent](memory_agents/product_launch_agent): Competitive intelligence tool for analyzing competitor product launches
+- [Shared Memory Agents with ClickHouse Loom](memory_agents/loom_shared_memory_agents): Two agents, run separately, that share one ClickHouse Loom memory, with a Nebius model saving facts and answering with the keys it cites
 - [Social Media Agent](memory_agents/social_media_agent): Social media automation agent with memory for brand voice
 - [Study Coach Agent](memory_agents/study_coach_agent): AI-powered study coach with Memori v3 and LangGraph for multi-step verification of understanding
 - [YouTube Trend Agent](memory_agents/youtube_trend_agent): YouTube channel analysis agent with Memori, Agno, and Exa for trend analysis and video ideas

@@ -1,0 +1,11 @@
+[project]
+name = "loom-shared-memory-agents"
+version = "0.1.0"
+description = "Two agents that share one memory through ClickHouse Loom."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "clickhouse-loom==1.2.0",
+    "openai>=1.40",
+    "python-dotenv>=1.0",
+]
