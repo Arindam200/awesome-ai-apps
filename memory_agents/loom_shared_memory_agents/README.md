@@ -26,7 +26,7 @@ A `planner` agent takes notes from the user and saves each durable fact as a mem
 ![Workflow](./assets/workflow.svg)
 
 1. You tell the planner something. The model calls `remember` once per fact, and each call writes one memory to Loom.
-2. The process exits, and nothing of the conversation is kept outside Loom.
+2. The planner process exits. The reviewer starts in a new process with no planner chat history.
 3. You ask the reviewer a question. The model calls `recall`, Loom returns the closest memories with their keys, and the model answers from them.
 4. Before the answer is printed, every cited key is checked against the keys the searches returned.
 
