@@ -4,7 +4,7 @@
 
 > Two agents that never talk to each other share what they learn: one saves facts, the other answers from them in a later run.
 
-A `planner` agent takes notes from the user and saves each durable fact as a memory. A `reviewer` agent, started later in a separate process with no chat history, searches those memories before it answers and cites the key of each memory it used. Both agents keep their memory in [ClickHouse Loom](https://github.com/ClickHouse/loom), a self-hosted memory server for agents, through its Python SDK. A Nebius Token Factory model decides when to save and when to search.
+A `planner` agent takes notes from the user and saves each durable fact as a memory. A `reviewer` agent, started later in a separate process with no chat history, searches those memories before it answers and cites the key of each memory it used. Both agents keep their memory in [ClickHouse Loom](https://github.com/ClickHouse/loom), an open-source (Apache-2.0), self-hosted memory server for agents, through its Python SDK. A Nebius Token Factory model decides when to save and when to search.
 
 ## 🚀 Features
 
@@ -118,7 +118,7 @@ LOOM_BASE_URL="http://localhost:7777"
 
    A question the memory cannot answer gets a plain "not recorded" reply. The exact wording and keys depend on the model.
 
-3. **Look at the memories** in Loom's dashboard at `http://localhost:7777`.
+3. **Look at the memories** in Loom's dashboard at `http://localhost:7777`: each one shows the agent that wrote it.
 
 4. **Run the offline tests**, which stub the model and Loom:
 
