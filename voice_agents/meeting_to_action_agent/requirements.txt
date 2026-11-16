@@ -1,0 +1,4 @@
+openai>=1.1.0
+python-dotenv
+faster-whisper
+av<18
