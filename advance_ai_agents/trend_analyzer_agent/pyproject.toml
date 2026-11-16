@@ -5,9 +5,9 @@ description = "AI trend mining with Google ADK"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "google-adk",
+    "google-adk[extensions]",
     "exa-py",
     "tavily-python",
-    "firecrawl-py",
+    "firecrawl-py>=3.1",
     "python-dotenv",
 ]
