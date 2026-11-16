@@ -1,4 +1,4 @@
-"""Run the agent swarm from the terminal.
+"""Run the multi-agent orchestrator from the terminal.
 
 uv run main.py "Compare Postgres, SQLite and DuckDB for a solo developer's analytics app"
 uv run main.py --max-tasks 4 --revisions 0 --no-tools --out report.md "Your goal"
@@ -16,7 +16,7 @@ from rich.panel import Panel
 from rich.table import Table
 
 from models import FAST_WORKER_MODEL, WORKER_MODEL, catalog, label
-from swarm import cost_summary, make_settings, run
+from orchestrator import cost_summary, make_settings, run
 
 DEFAULT_GOAL = (
     "Compare Postgres, SQLite, DuckDB and MongoDB for a solo developer building a SaaS analytics "
@@ -27,7 +27,7 @@ console = Console()
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="Kimi K3.1 Pro orchestrates a swarm of cheap workers on Nebius.")
+    ap = argparse.ArgumentParser(description="Kimi K3.1 Pro orchestrates cheap worker agents on Nebius.")
     ap.add_argument("goal", nargs="?", default=DEFAULT_GOAL)
     ap.add_argument("--worker", default=WORKER_MODEL, help="standard-tier worker and every revision")
     ap.add_argument("--fast-worker", default=FAST_WORKER_MODEL, help="fast-tier worker, first attempt")
@@ -53,7 +53,7 @@ def main() -> None:
             f"[green]{label(settings['fast_worker'])}[/] (fast)\n"
             f"Tools {'on' if settings['tools'] else 'off'} · up to {settings['max_tasks']} subtasks · "
             f"{settings['max_revisions']} review round(s) · {pricing}",
-            title="Agent Swarm",
+            title="Multi-Agent Orchestrator",
             border_style="magenta",
         )
     )

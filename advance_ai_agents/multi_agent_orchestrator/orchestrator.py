@@ -1,4 +1,4 @@
-"""Agent swarm on LangGraph: one expensive orchestrator, many cheap parallel workers.
+"""Multi-agent orchestrator on LangGraph: one expensive orchestrator, many cheap parallel workers.
 
     START -> plan        (Kimi K3.1 Pro splits the goal into independent subtasks)
           -> worker x N  (Inkling 2 Small or a cheaper model, all in parallel via Send)
@@ -48,7 +48,7 @@ class Subtask(BaseModel):
     tier: Literal["fast", "standard"] = Field(description="fast for lookups and summaries, standard for analysis")
 
 
-class SwarmPlan(BaseModel):
+class TaskPlan(BaseModel):
     approach: str = Field(description="One or two sentences on how the work is split")
     tasks: list[Subtask]
     final_format: str = Field(description="Sections, length and tone of the final deliverable")
@@ -82,7 +82,7 @@ def _merge(left: dict | None, right: dict | None) -> dict:
     return {**(left or {}), **(right or {})}
 
 
-class SwarmState(TypedDict, total=False):
+class OrchestratorState(TypedDict, total=False):
     goal: str
     settings: Settings
     plan: dict
@@ -184,7 +184,7 @@ def _clean_tasks(tasks: list[Subtask], limit: int) -> list[dict]:
 
 
 def _worker_input(
-    state: SwarmState, task: dict, feedback: str = "", previous: str = "", attempt: int = 1
+    state: OrchestratorState, task: dict, feedback: str = "", previous: str = "", attempt: int = 1
 ) -> WorkerInput:
     s = state["settings"]
     # Fast tasks start on the cheapest model. Anything sent back goes to the standard worker.
@@ -227,14 +227,14 @@ def _outputs_for_synthesis(tasks: list[dict], results: dict) -> str:
 # ---------------------------------------------------------------- nodes
 
 
-def plan(state: SwarmState) -> dict:
+def plan(state: OrchestratorState) -> dict:
     s = state["settings"]
     get_stream_writer()({"event": "planning", "model": s["orchestrator"]})
     system = prompts.PLAN_SYSTEM.format(
         max_tasks=s["max_tasks"],
         tools_note=prompts.TOOLS_ON if s["tools"] else prompts.TOOLS_OFF,
     )
-    parsed, ledger = _structured(s["orchestrator"], SwarmPlan, system, state["goal"], "plan")
+    parsed, ledger = _structured(s["orchestrator"], TaskPlan, system, state["goal"], "plan")
     return {
         "plan": {
             "approach": parsed.approach,
@@ -246,7 +246,7 @@ def plan(state: SwarmState) -> dict:
     }
 
 
-def dispatch(state: SwarmState):
+def dispatch(state: OrchestratorState):
     tasks = state["plan"]["tasks"]
     if not tasks:
         return "synthesize"
@@ -263,7 +263,7 @@ def worker(inp: WorkerInput) -> dict:
     try:
         output, tool_calls = _run_worker(inp, ledger, write)
         status = "done" if output else "empty"
-    except Exception as e:  # one failed worker shouldn't sink the swarm; review will retry it
+    except Exception as e:  # one failed worker shouldn't sink the run; review will retry it
         output, tool_calls, status = f"Worker error: {type(e).__name__}: {e}", 0, "error"
 
     result = {
@@ -330,7 +330,7 @@ def _run_worker(inp: WorkerInput, ledger: list, write) -> tuple[str, int]:
     return text, tool_calls
 
 
-def review(state: SwarmState) -> dict:
+def review(state: OrchestratorState) -> dict:
     s = state["settings"]
     round_no = state.get("review_round", 0)
     if round_no >= s["max_revisions"]:
@@ -365,7 +365,7 @@ def review(state: SwarmState) -> dict:
     }
 
 
-def after_review(state: SwarmState):
+def after_review(state: OrchestratorState):
     revisions = state.get("revisions") or []
     if not revisions:
         return "synthesize"
@@ -382,7 +382,7 @@ def after_review(state: SwarmState):
     return sends
 
 
-def synthesize(state: SwarmState) -> dict:
+def synthesize(state: OrchestratorState) -> dict:
     s = state["settings"]
     model = s["orchestrator"]
     write = get_stream_writer()
@@ -406,7 +406,7 @@ def synthesize(state: SwarmState) -> dict:
 
 
 def build_graph():
-    g = StateGraph(SwarmState)
+    g = StateGraph(OrchestratorState)
     g.add_node("plan", plan)
     g.add_node("worker", worker)
     g.add_node("review", review)
@@ -423,7 +423,7 @@ GRAPH = build_graph()
 
 
 def run(goal: str, settings: Settings, max_concurrency: int = 8) -> Iterator[dict]:
-    """Run the swarm and yield flat events for a UI. The last event is {"event": "done", "state": ...}."""
+    """Run the graph and yield flat events for a UI. The last event is {"event": "done", "state": ...}."""
     state: dict = {}
     config = {"max_concurrency": max_concurrency, "recursion_limit": 50}
     stream = GRAPH.stream({"goal": goal, "settings": settings}, config, stream_mode=["custom", "updates", "values"])

@@ -1,6 +1,6 @@
 """Prompts for the orchestrator (plan, review, synthesize) and the workers."""
 
-PLAN_SYSTEM = """You are the orchestrator of an agent swarm. You are the expensive, careful model.
+PLAN_SYSTEM = """You are the orchestrator of a multi-agent system. You are the expensive, careful model.
 Your workers are cheaper, faster models. They run in parallel and can't see each other's work.
 
 Split the user's goal into independent subtasks for the workers.
@@ -26,7 +26,7 @@ TOOLS_ON = (
 )
 TOOLS_OFF = "Workers have no tools, so they answer from their own knowledge. Keep briefs to things a model can know."
 
-WORKER_SYSTEM = """You are a worker in an agent swarm. You handle one focused subtask.
+WORKER_SYSTEM = """You are a worker in a multi-agent system. You handle one focused subtask.
 An orchestrator will merge your output with other workers' outputs, so:
 - Stay inside your brief. Don't write an introduction or conclusion for the overall goal.
 - Be concrete: names, numbers, examples, trade-offs. No filler.
@@ -58,7 +58,7 @@ Feedback:
 Your previous attempt:
 {previous}"""
 
-REVIEW_SYSTEM = """You are the orchestrator of an agent swarm, reviewing your workers' outputs.
+REVIEW_SYSTEM = """You are the orchestrator of a multi-agent system, reviewing your workers' outputs.
 
 For every task, decide "accept" or "revise".
 Send a task back only when the output:
@@ -78,7 +78,7 @@ Plan: {approach}
 Worker outputs:
 {outputs}"""
 
-SYNTH_SYSTEM = """You are the orchestrator of an agent swarm. Your workers have finished their subtasks.
+SYNTH_SYSTEM = """You are the orchestrator of a multi-agent system. Your workers have finished their subtasks.
 Write the final deliverable for the user.
 
 - Merge the workers' outputs into one coherent document that fully answers the goal.
@@ -86,7 +86,7 @@ Write the final deliverable for the user.
 - Resolve contradictions, remove repetition, and fill small gaps with your own knowledge.
 - Keep the specific facts and numbers the workers found. Don't invent new precise figures.
 - Keep a "Sources" section at the end if workers cited URLs.
-- Write in Markdown. Don't mention the swarm, the workers or how the document was made."""
+- Write in Markdown. Don't mention the orchestrator, the workers or how the document was made."""
 
 SYNTH_TASK = """Goal:
 {goal}

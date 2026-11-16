@@ -1,12 +1,12 @@
-# Agent Swarm: Kimi K3.1 Pro + cheap workers
+# Multi-Agent Orchestrator: Kimi K3.1 Pro + cheap workers
 
-> One frontier model thinks, a swarm of cheap models works. A LangGraph orchestrator-worker swarm on [Nebius Token Factory](https://dub.sh/nebius), with a live cost ledger that shows what you saved.
+> One frontier model thinks, a team of cheap models works. A LangGraph orchestrator-worker multi-agent system on [Nebius Token Factory](https://dub.sh/nebius), with a live cost ledger that shows what you saved.
 
-Give the swarm a goal. **Kimi K3.1 Pro** splits it into independent subtasks and routes each one to a tier: **Inkling 2 Small** for analysis, or **Nemotron 3.5 Lightning** for lookups and summaries. The workers run in parallel and check facts with Wikipedia and public web pages. Kimi then reviews every output and sends weak or wrong work back with specific feedback, and a cheap-tier task that gets sent back is redone on Inkling. Finally Kimi writes the deliverable. Kimi only does the three steps that need judgment, so most tokens are billed at worker prices.
+Give the orchestrator a goal. **Kimi K3.1 Pro** splits it into independent subtasks and routes each one to a tier: **Inkling 2 Small** for analysis, or **Nemotron 3.5 Lightning** for lookups and summaries. The workers run in parallel and check facts with Wikipedia and public web pages. Kimi then reviews every output and sends weak or wrong work back with specific feedback, and a cheap-tier task that gets sent back is redone on Inkling. Finally Kimi writes the deliverable. Kimi only does the three steps that need judgment, so most tokens are billed at worker prices.
 
 ## 🚀 Features
 
-- **Orchestrator-worker swarm in LangGraph**: `Send` fans subtasks out to parallel workers, and a single review node waits for all of them
+- **Orchestrator-worker multi-agent system in LangGraph**: `Send` fans subtasks out to parallel workers, and a single review node waits for all of them
 - **Tiered routing**: Kimi tags each subtask `fast` or `standard`, so cheap work goes to the cheapest model
 - **Review loop that catches mistakes**: Kimi accepts each output or sends it back with actionable feedback. Failed or empty work always goes back
 - **Escalation**: a `fast` task that gets sent back is retried on the standard worker
@@ -17,7 +17,7 @@ Give the swarm a goal. **Kimi K3.1 Pro** splits it into independent subtasks and
 ## 🛠️ Tech Stack
 
 - **Python 3.10+**
-- **LangGraph**: the swarm graph, parallel fan-out with `Send`, custom stream events
+- **LangGraph**: the orchestrator graph, parallel fan-out with `Send`, custom stream events
 - **LangChain + `langchain-nebius`**: `ChatNebius` for every model, tool calling, structured output
 - **Nebius Token Factory**: Kimi K3.1 Pro, Inkling 2 Small, Nemotron 3.5 Lightning (or any cheaper worker you pick)
 - **Streamlit** and **Rich**: web UI and terminal UI
@@ -51,7 +51,7 @@ One real run with the default settings, using the five-database example goal (pr
 - **Plan**: Kimi split the goal into 4 subtasks in 17 s. It gave three to Inkling 2 Small and the MongoDB assessment, as a fast-tier task, to Nemotron 3.5 Lightning.
 - **Work**: the 4 workers ran in parallel and checked facts against sqlite.org, postgresql.org, duckdb.org, clickhouse.com, mongodb.com and Wikipedia. All four finished within 15 s of starting.
 - **Review**: Kimi accepted three outputs and sent the MongoDB one back. Nemotron had written "max 64MB document size" and listed needing multi-document ACID transactions as a reason to leave MongoDB. Kimi's feedback: the maximum BSON document size is 16MB, and MongoDB does support multi-document ACID transactions. The retry escalated to Inkling 2 Small, which fixed both claims in 6.5 s.
-- **Result**: 20 model calls, 50,079 tokens, **$0.085**, 109 s end to end. The same tokens all on Kimi would cost $0.19, so the swarm cost 56% less. Workers handled 74% of the tokens.
+- **Result**: 20 model calls, 50,079 tokens, **$0.085**, 109 s end to end. The same tokens all on Kimi would cost $0.19, so the run cost 56% less. Workers handled 74% of the tokens.
 
 ## 📦 Getting Started
 
@@ -78,7 +78,7 @@ NEBIUS_API_KEY="your_nebius_token_factory_api_key"
 # WORKER_REASONING="low"
 ```
 
-If your key can't call Kimi K3.1 Pro, the swarm falls back to Kimi K3 automatically.
+If your key can't call Kimi K3.1 Pro, the orchestrator falls back to Kimi K3 automatically.
 
 ### Installation
 
@@ -86,7 +86,7 @@ If your key can't call Kimi K3.1 Pro, the swarm falls back to Kimi K3 automatica
 
    ```bash
    git clone https://github.com/Arindam200/awesome-ai-apps.git
-   cd awesome-ai-apps/advance_ai_agents/agent_swarm
+   cd awesome-ai-apps/advance_ai_agents/multi_agent_orchestrator
    ```
 
 2. **Install dependencies:**
@@ -110,7 +110,7 @@ If your key can't call Kimi K3.1 Pro, the swarm falls back to Kimi K3 automatica
 uv run streamlit run app.py
 ```
 
-Open http://localhost:8501, pick an example goal or write your own, and click **Run the swarm**. You'll see the plan, a live card per worker with its latest tool call, Kimi's review verdicts, the final answer streaming in, and the cost ledger. The sidebar lets you pick the orchestrator, both worker tiers, the number of subtasks, the number of review rounds and whether workers can use tools.
+Open http://localhost:8501, pick an example goal or write your own, and click **Run the agents**. You'll see the plan, a live card per worker with its latest tool call, Kimi's review verdicts, the final answer streaming in, and the cost ledger. The sidebar lets you pick the orchestrator, both worker tiers, the number of subtasks, the number of review rounds and whether workers can use tools.
 
 ### Terminal
 
@@ -147,7 +147,7 @@ Other worker options in the app: MiniMax M3.1 Flash, GPT-OSS 120B, GLM-5.3 Flash
 
 Kimi K3.1 Pro supports tool calling but not JSON mode, so plans and reviews use structured output through tool calling.
 
-The default models all reason before they answer, so the swarm sets `reasoning_effort` per role:
+The default models all reason before they answer, so the app sets `reasoning_effort` per role:
 
 - **Orchestrator, `medium`**: in our runs a review took 16 to 40 s and used 0.8k to 2.3k reasoning tokens. Without a limit, one review of four outputs took over two minutes and 9k reasoning tokens.
 - **Workers, `low`**: workers do focused, tool-backed subtasks and Kimi checks them. At the default effort, Inkling 2 Small once spent its entire 8k-token budget reasoning about a revision and returned nothing. With `low`, a typical answer takes about 3 s instead of 15 s. If a worker still returns an empty reply, it gets one short retry.
@@ -155,8 +155,8 @@ The default models all reason before they answer, so the swarm sets `reasoning_e
 ## 📂 Project Structure
 
 ```
-agent_swarm/
-├── swarm.py          # LangGraph graph: plan -> Send workers -> review loop -> synthesize, plus the event stream
+multi_agent_orchestrator/
+├── orchestrator.py   # LangGraph graph: plan -> Send workers -> review loop -> synthesize, plus the event stream
 ├── prompts.py        # Orchestrator and worker prompts
 ├── models.py         # ChatNebius factory, model roster, live pricing, orchestrator fallback
 ├── tools.py          # wikipedia_search and fetch_url (public URLs only)
@@ -190,6 +190,6 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 
 ## 🙏 Acknowledgments
 
-- [Nebius Token Factory](https://dub.sh/nebius) for serving every model in the swarm
+- [Nebius Token Factory](https://dub.sh/nebius) for serving every model in the system
 - [LangGraph](https://langchain-ai.github.io/langgraph/) for the orchestration runtime
 - Moonshot AI (Kimi K3.1 Pro), Thinking Machines (Inkling 2 Small) and NVIDIA (Nemotron 3.5 Lightning) for the models

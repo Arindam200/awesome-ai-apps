@@ -1,4 +1,4 @@
-"""Model roster, Nebius Token Factory clients and live pricing for the swarm.
+"""Model roster, Nebius Token Factory clients and live pricing for the orchestrator and its workers.
 
 One expensive model thinks (plans, reviews, writes the final answer). Cheap
 models do the work. Prices come from the live Token Factory catalog, so the

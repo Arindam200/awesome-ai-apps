@@ -270,7 +270,6 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 **Complex multi-agent pipelines for production-ready end-to-end workflows.** _41 projects_
 
-- [Agent Swarm](advance_ai_agents/agent_swarm): LangGraph orchestrator-worker swarm where Kimi K3.1 Pro plans, reviews and synthesizes while Inkling 2 Small and cheaper models on [Nebius Token Factory](https://dub.sh/nebius) work in parallel, with a live cost ledger
 - [AI Hedge Fund Research Team](advance_ai_agents/ai-hedgefund): Agentic workflow for comprehensive financial analysis
 - [AI Trend Research Agent](advance_ai_agents/trend_analyzer_agent): AI trend mining and analysis with Google ADK
 - [Candidate Profile Analyzer (Candilyzer)](advance_ai_agents/candidate_analyser): Candidate analysis tool for GitHub and LinkedIn profiles
@@ -294,6 +293,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Maintainer Intelligence Brief](advance_ai_agents/maintainer_brief): Weekly open-source intelligence briefs from community, security, and document signals with source citations
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent): Automated meeting notes and task creation from conversations
 - [Multi-Agent Coding Harness](advance_ai_agents/coding_agent_harness): Deep LangGraph coding crew with planning, repository exploration, human-gated file edits, and E2B-sandboxed test loops
+- [Multi-Agent Orchestrator](advance_ai_agents/multi_agent_orchestrator): LangGraph orchestrator-worker multi-agent system where Kimi K3.1 Pro plans, reviews and synthesizes while Inkling 2 Small and cheaper models on [Nebius Token Factory](https://dub.sh/nebius) work in parallel, with a live cost ledger
 - [Napkin → 3D Print](advance_ai_agents/napkin_to_3d_print): Kimi K3.1 Pro on [Nebius Token Factory](https://dub.sh/nebius) turns a photo of a hand sketch into parametric CadQuery, checks its own render against the drawing, and exports a printable STL with live dimension sliders
 - [Nebius Autonomous Pipeline Optimizer](advance_ai_agents/nebius-autoresearch-autoresearch-mar30): NYC taxi analytics pipeline optimizer with iterative code search using real-time or batch Nebius Token Factory inference
 - [Paper → Interactive Explainer](advance_ai_agents/paper_to_interactive_explainer): Kimi K3.1 Pro on Nebius reads a whole research paper, figures included, and builds a self-tested, Distill-style interactive explainer as a single HTML page

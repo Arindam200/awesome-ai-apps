@@ -1,7 +1,7 @@
 [project]
-name = "agent-swarm"
+name = "multi-agent-orchestrator"
 version = "0.1.0"
-description = "LangGraph agent swarm on Nebius Token Factory: Kimi K3.1 Pro plans, reviews and synthesizes while Inkling 2 Small and cheaper workers do the work in parallel"
+description = "LangGraph multi-agent orchestrator on Nebius Token Factory: Kimi K3.1 Pro plans, reviews and synthesizes while Inkling 2 Small and cheaper workers do the work in parallel"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

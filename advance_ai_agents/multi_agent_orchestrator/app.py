@@ -1,4 +1,4 @@
-"""Streamlit UI: watch Kimi K3.1 Pro run a swarm of cheap workers, live.
+"""Streamlit UI: watch Kimi K3.1 Pro orchestrate cheap worker agents, live.
 
 uv run streamlit run app.py
 """
@@ -21,7 +21,7 @@ from models import (
     price,
     resolve_orchestrator,
 )
-from swarm import cost_summary, make_settings, run
+from orchestrator import cost_summary, make_settings, run
 
 EXAMPLES = {
     "Database decision": (
@@ -47,7 +47,7 @@ STATUS = {
     "empty": ":red[empty]",
 }
 
-st.set_page_config(page_title="Agent Swarm", page_icon=":material/hub:", layout="wide")
+st.set_page_config(page_title="Multi-Agent Orchestrator", page_icon=":material/hub:", layout="wide")
 
 
 def model_select(title: str, options: list[str], default: str, key: str) -> str:
@@ -65,7 +65,7 @@ def model_select(title: str, options: list[str], default: str, key: str) -> str:
 # ---------------------------------------------------------------- sidebar
 
 with st.sidebar:
-    st.header("Swarm settings")
+    st.header("Orchestrator settings")
     try:
         live = bool(catalog())
     except RuntimeError as e:
@@ -91,7 +91,7 @@ with st.sidebar:
 
 # ---------------------------------------------------------------- header
 
-st.title("Agent Swarm")
+st.title("Multi-Agent Orchestrator")
 st.markdown(
     f"**{label(orchestrator)}** plans the work, reviews it and writes the answer. "
     f"**{label(worker)}** and **{label(fast_worker)}** do the work in parallel. "
@@ -105,7 +105,7 @@ for col, (name, text) in zip(cols, EXAMPLES.items()):
     if col.button(name, width="stretch"):
         st.session_state.goal = text
 goal = st.text_area("Goal", key="goal", height=100)
-start = st.button("Run the swarm", type="primary", disabled=not goal.strip())
+start = st.button("Run the agents", type="primary", disabled=not goal.strip())
 
 # ---------------------------------------------------------------- rendering
 
@@ -290,7 +290,7 @@ if start:
                 render_all(view, orchestrator, ph)
                 last_paint = time.time()
     except Exception as e:
-        st.error(f"The swarm stopped: {type(e).__name__}: {e}")
+        st.error(f"The run stopped: {type(e).__name__}: {e}")
     view["elapsed"] = time.time() - started
     render_all(view, orchestrator, ph)
     st.session_state.last = {"view": view, "orchestrator": orchestrator, "goal": goal}
@@ -302,6 +302,6 @@ if "last" in st.session_state and st.session_state.last["view"]["final"]:
     st.download_button(
         "Download as Markdown",
         st.session_state.last["view"]["final"],
-        file_name="swarm-report.md",
+        file_name="orchestrator-report.md",
         mime="text/markdown",
     )

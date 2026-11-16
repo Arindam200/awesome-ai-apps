@@ -16,7 +16,7 @@ from urllib.parse import quote, urljoin, urlparse
 import httpx
 from langchain_core.tools import tool
 
-USER_AGENT = "awesome-ai-apps-agent-swarm/0.1 (https://github.com/Arindam200/awesome-ai-apps)"
+USER_AGENT = "awesome-ai-apps-multi-agent-orchestrator/0.1 (https://github.com/Arindam200/awesome-ai-apps)"
 WIKI_API = "https://en.wikipedia.org/w/api.php"
 MAX_PAGE_CHARS = 6000
 MAX_REDIRECTS = 5
