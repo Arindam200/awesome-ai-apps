@@ -9,10 +9,10 @@ An advanced AI agent project that runs a fictional customer-support agent (built
 - **Offline by default**: Scripted model responses exercise the real agent loop (tool calls, policy gates, final output) with zero credentials and networking denied under pytest.
 - **Three safe mock tools**: `search_help_articles`, `get_ticket_status` (ownership-authorized), and `create_ticket_draft` (in-memory only; there is no way to submit or send anything).
 - **Policy enforced at the tool boundary**: Schema validation, tool allowlists, ticket-ownership authorization, and argument bounds run before any tool body executes; blocked and undispatched attempts are recorded as evidence.
-- **Five deterministic DeepEval metrics**: Plain custom metrics with threshold 1.0 — no LLM judges, no cloud calls, no flaky scores.
+- **Five deterministic DeepEval metrics**: Plain custom metrics with threshold 1.0: no LLM judges, no cloud calls, no flaky scores.
 - **Negative controls**: A dedicated suite of intentionally bad behaviors (wrong arguments, refusal masking an executed action, over-refusal, malformed JSON, injection abandonment) proves the evaluators can fail. The CLI exits 1 there by design while pytest stays green.
 - **Bounded CLI reporting**: Compact per-case output, exit codes 0/1/2 (pass / behavioral failures / configuration or runner errors), and optional schema-versioned JSON reports with overwrite protection.
-- **Live evaluation on Nebius Token Factory**: The agent under test runs on a real Nebius model via the OpenAI-compatible API — lazy client initialization, model chosen via `--live-model` or `EXAMPLE_MODEL_NAME`, a per-case timeout, and no silent offline fallback.
+- **Live evaluation on Nebius Token Factory**: The agent under test runs on a real Nebius model via the OpenAI-compatible API: lazy client initialization, model chosen via `--live-model` or `EXAMPLE_MODEL_NAME`, a per-case timeout, and no silent offline fallback.
 
 ## 🛠️ Tech Stack
 
@@ -27,7 +27,7 @@ An advanced AI agent project that runs a fictional customer-support agent (built
 
 `scenario → input + trusted actor context → SDK runner → validated, policy-gated mock tools → recorded trace → DeepEval metrics → console/JSON report`
 
-Scenario files split execution inputs from scoring expectations: the agent never sees what it is supposed to do. Every tool attempt (accepted, blocked, or undispatched) is recorded in a trace with the raw arguments, schema outcome, policy outcome, and execution evidence. Metrics score that evidence deterministically. Offline scripted responses establish harness correctness and enforcement behavior — they do not measure real-model prompt-injection robustness; use live mode (with bounded expectations) for behavioral observation.
+Scenario files split execution inputs from scoring expectations: the agent never sees what it is supposed to do. Every tool attempt (accepted, blocked, or undispatched) is recorded in a trace with the raw arguments, schema outcome, policy outcome, and execution evidence. Metrics score that evidence deterministically. Offline scripted responses establish harness correctness and enforcement behavior; they do not measure real-model prompt-injection robustness, so use live mode (with bounded expectations) for behavioral observation.
 
 ## 📦 Getting Started
 
@@ -36,7 +36,7 @@ Scenario files split execution inputs from scoring expectations: the agent never
 - Python 3.11+
 - [uv](https://github.com/astral-sh/uv) or pip
 - No API keys needed for offline runs
-- A free [Nebius Token Factory](https://tokenfactory.nebius.com/) API key for live evaluation only
+- A [Nebius Token Factory](https://tokenfactory.nebius.com/) API key for live evaluation only
 
 ### Environment Variables
 
@@ -125,9 +125,10 @@ Live mode sends each selected scenario's input to a real model hosted on Nebius 
 
 1. **Get a key**: sign up at [tokenfactory.nebius.com](https://tokenfactory.nebius.com/). A full live suite here costs only a few thousand tokens (fractions of a cent).
 2. **Configure**: `cp .env.example .env`, then set `NEBIUS_API_KEY`.
-3. **Pick a tool-calling model** (required — the mock tools are the point of the harness). List current IDs:
+3. **Pick a tool-calling model** (required; the mock tools are the point of the harness). `.env` is loaded by the CLI but not exported to your shell, so export the values first, then list current IDs:
 
    ```bash
+   set -a && source .env && set +a
    curl -s "$EXAMPLE_BASE_URL/models" -H "Authorization: Bearer $NEBIUS_API_KEY"
    ```
 
@@ -142,14 +143,14 @@ Notes:
 
 - The JSON report records `provider: "nebius"` and the exact `model` used, so every result is attributable and reproducible.
 - Scenarios marked `"live_suitable": false` are skipped in live mode; everything else runs against the real model.
-- A live model can genuinely fail adversarial cases — that is the harness measuring real guardrail behavior, not a bug. Offline runs prove harness correctness and policy enforcement; live runs show how a real model behaves against the same policy.
+- A live model can genuinely fail adversarial cases; that is the harness measuring real guardrail behavior, not a bug. Offline runs prove harness correctness and policy enforcement; live runs show how a real model behaves against the same policy.
 
 ### Interpreting results
 
 Each case prints per-metric lines: `PASS`, `FAIL`, `N/A`, or `ERROR`, with expected-versus-observed reasons. Metric semantics are deliberately separated:
 
 - A model **attempting** a forbidden call can fail tool-selection or injection checks while safety enforcement passes, because execution was blocked. Both findings are printed; a blocked attempt is not proof the model is safe.
-- A refusal after a prohibited executed action fails refusal behavior — refusal text does not undo execution.
+- A refusal after a prohibited executed action fails refusal behavior: refusal text does not undo execution.
 - Errors (timeouts, scripted-response exhaustion, evaluator exceptions) are reported separately and never counted as passes.
 - Offline results prove harness correctness and policy enforcement; they do not claim real-model security. Live output may still contain sensitive user-supplied text.
 
