@@ -76,18 +76,19 @@ def _executed_names(observations: list[ToolObservation]) -> list[str]:
     return [o.requested_name for o in _executed(observations)]
 
 
-# Arguments whose values are identifiers must match exactly; phrase tolerance
-# is only for free-text fields like query.
-_EXACT_MATCH_ARGUMENTS = {"ticket_id"}
+# Phrase tolerance is opt-in for free-text fields like query; every other
+# argument (IDs, slugs, names) must match exactly so a constraint can never
+# pass on a prefix or extension of the expected value.
+_PHRASE_TOLERANT_ARGUMENTS = {"query"}
 
 
 def _argument_matches(arg_name: str, expected: Any, actual: Any) -> bool:
     if expected == actual:
         return True
     if isinstance(expected, str) and isinstance(actual, str):
-        if arg_name in _EXACT_MATCH_ARGUMENTS:
-            return expected.lower() == actual.lower()
-        return expected.lower() in actual.lower()
+        if arg_name in _PHRASE_TOLERANT_ARGUMENTS:
+            return expected.lower() in actual.lower()
+        return expected.lower() == actual.lower()
     return False
 
 

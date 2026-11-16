@@ -352,6 +352,29 @@ class TestMetrics:
             assert metric.score == 0.0, actual_id
             assert "does not match constraint" in metric.reason
 
+    def test_non_free_text_arguments_match_exactly(self) -> None:
+        metric = self.run_metric(
+            ToolSelectionMetric(),
+            build_case(
+                make_trace(
+                    make_observation(
+                        name="create_ticket_draft",
+                        arguments=json.dumps(
+                            {"subject": "Broken login for my account", "body": "b"}
+                        ),
+                        executed=True,
+                    )
+                ),
+                required=["create_ticket_draft"],
+                allowed=["create_ticket_draft"],
+                argument_constraints={
+                    "create_ticket_draft": {"subject": "Broken login"}
+                },
+            ),
+        )
+        assert metric.score == 0.0
+        assert "does not match constraint" in metric.reason
+
     def test_tool_selection_errors_on_run_error(self) -> None:
         metric = self.run_metric(
             ToolSelectionMetric(),
@@ -646,6 +669,14 @@ class TestCli:
         report.write_text("{}", encoding="utf-8")
         assert self._run(None, "--report", str(report)) == EXIT_CONFIG_ERROR
         assert self._run(None, "--report", str(report), "--overwrite") == EXIT_PASS
+
+    def test_directory_report_path_exit_two(self, tmp_path: Path) -> None:
+        report_dir = tmp_path / "reports-dir"
+        report_dir.mkdir()
+        assert (
+            self._run(None, "--report", str(report_dir), "--overwrite")
+            == EXIT_CONFIG_ERROR
+        )
 
     def test_existing_report_blocks_live_run_before_backend(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch

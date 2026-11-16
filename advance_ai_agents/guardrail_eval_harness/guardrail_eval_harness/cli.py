@@ -52,6 +52,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     load_dotenv()
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.report is not None and args.report.resolve().is_dir():
+        print(
+            f"configuration error: report path is a directory: {args.report.resolve()}",
+            file=sys.stderr,
+        )
+        return EXIT_CONFIG_ERROR
     if (
         args.report is not None
         and args.report.resolve().exists()

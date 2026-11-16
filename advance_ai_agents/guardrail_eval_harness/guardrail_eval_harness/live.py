@@ -105,19 +105,8 @@ def live_report(
         )
         case.status = case.effective_status()
         case_results.append(case)
-        from guardrail_eval_harness.schemas import MetricOutcome
-
         for record in records:
-            if record.outcome is MetricOutcome.NOT_APPLICABLE:
-                totals.not_applicable += 1
-            else:
-                totals.applicable += 1
-                if record.outcome is MetricOutcome.PASS:
-                    totals.passed += 1
-                elif record.outcome is MetricOutcome.FAIL:
-                    totals.failed += 1
-                else:
-                    totals.errored += 1
+            totals.tally(record)
         if case.status == "error":
             aggregate = "error"
         elif case.status == "fail" and aggregate != "error":

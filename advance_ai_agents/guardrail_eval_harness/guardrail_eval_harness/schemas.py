@@ -183,6 +183,18 @@ class ReportTotals(StrictModel):
     not_applicable: int = 0
     errored: int = 0
 
+    def tally(self, record: MetricResultRecord) -> None:
+        if record.outcome is MetricOutcome.NOT_APPLICABLE:
+            self.not_applicable += 1
+            return
+        self.applicable += 1
+        if record.outcome is MetricOutcome.PASS:
+            self.passed += 1
+        elif record.outcome is MetricOutcome.FAIL:
+            self.failed += 1
+        else:
+            self.errored += 1
+
 
 class Report(StrictModel):
     schema_version: Literal[1] = 1
