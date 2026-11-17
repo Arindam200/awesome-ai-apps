@@ -1,0 +1,6 @@
+[
+  {"id": "ALT-1001", "service": "checkout-api", "severity": "critical", "title": "p99 latency above 4s", "fired_at": "2025-01-15T09:02:00Z", "status": "firing"},
+  {"id": "ALT-1002", "service": "checkout-api", "severity": "high", "title": "5xx error rate above 8%", "fired_at": "2025-01-15T09:04:00Z", "status": "firing"},
+  {"id": "ALT-1003", "service": "payments-db", "severity": "high", "title": "Connection pool 95% saturated", "fired_at": "2025-01-15T08:58:00Z", "status": "firing"},
+  {"id": "ALT-1004", "service": "search-api", "severity": "low", "title": "Disk usage above 70%", "fired_at": "2025-01-15T07:30:00Z", "status": "firing"}
+]
