@@ -126,10 +126,10 @@ Failures are counted at the span level. A tool exception therefore marks both th
 After setting `NEBIUS_API_KEY`:
 
 ```bash
-uv run python main.py --llm-analysis
+uv run python main.py --trace-file traces/nebius_runs.jsonl --llm-analysis
 ```
 
-The local analyzer creates a compact metrics summary first. The Nebius model receives that summary and returns three prioritized recommendations grounded in it.
+This keeps the earlier local trace file unchanged. When repeating the Nebius run, add `--overwrite` to explicitly replace `traces/nebius_runs.jsonl`. The local analyzer creates a compact metrics summary first. The Nebius model receives that summary and returns three prioritized recommendations grounded in it.
 
 ### Analyze the committed sample data
 
