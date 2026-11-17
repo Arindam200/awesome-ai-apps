@@ -129,7 +129,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | [🧩 Starter Agents](#-starter-agents) | One minimal agent per framework: Agno, LangGraph, CrewAI, OpenAI Agents SDK, Google ADK, Mastra and more | 22 |
 | [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 21 |
 | [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 9 |
-| [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
+| [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 15 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
 | [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
 | [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 41 |
@@ -210,6 +210,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 **Examples using Model Context Protocol for external tool integration.** _14 projects_
 
+- [Compliance Evidence Collector](mcp_ai_agents/compliance_evidence_collector): MCP agent that maps mock enterprise evidence to audit controls, flags gaps and writes a cited report
 - [Couchbase LangGraph MCP Agent](mcp_ai_agents/langchain_langgraph_mcp_agent): LangChain ReAct agent with Couchbase integration
 - [Couchbase MCP Server](mcp_ai_agents/couchbase_mcp_server): Couchbase database integration with MCP protocol
 - [Custom MCP Server Starter](mcp_ai_agents/custom_mcp_server): Custom MCP server implementation example

@@ -1,0 +1,5 @@
+[
+  {"deploy_id": "D-9001", "service": "payments-api", "date": "2025-02-03", "change_ticket": "CHG-101"},
+  {"deploy_id": "D-9002", "service": "payments-api", "date": "2025-02-10", "change_ticket": "CHG-102"},
+  {"deploy_id": "D-9003", "service": "fraud-engine", "date": "2025-02-12", "change_ticket": null}
+]

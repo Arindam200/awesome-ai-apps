@@ -1,0 +1,5 @@
+[
+  {"id": "AC-1", "title": "Quarterly user access review", "requirement": "Privileged access is reviewed and signed off at least once per quarter, with removals completed within 7 days.", "evidence_needed": ["policy", "access_review"]},
+  {"id": "CM-1", "title": "Change management approval", "requirement": "Every production deployment is linked to an approved change ticket reviewed by someone other than the author.", "evidence_needed": ["policy", "tickets", "deploy_logs"]},
+  {"id": "IR-1", "title": "Incident response testing", "requirement": "The incident response plan is tested at least annually and results are documented.", "evidence_needed": ["policy", "tickets"]}
+]
