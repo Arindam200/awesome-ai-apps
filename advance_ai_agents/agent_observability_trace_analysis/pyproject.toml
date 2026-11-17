@@ -1,0 +1,33 @@
+[project]
+name = "agent-observability-trace-analysis"
+version = "0.1.0"
+description = "Local agent tracing and optional LLM-powered failure analysis"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openai>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.8.0",
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["agent_observability*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
