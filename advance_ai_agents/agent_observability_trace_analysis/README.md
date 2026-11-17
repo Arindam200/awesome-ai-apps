@@ -100,6 +100,12 @@ uv run python main.py
 
 The command runs two successful support-agent requests and one simulated tool failure, writes `traces/agent_runs.jsonl`, and prints an analysis similar to:
 
+Existing trace files are preserved by default. To intentionally replace the output from an earlier run, pass `--overwrite`:
+
+```bash
+uv run python main.py --overwrite
+```
+
 ```json
 {
   "trace_count": 3,

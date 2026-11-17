@@ -14,6 +14,11 @@ from agent_observability import JsonlTraceRecorder, SupportAgentWorkflow, TraceA
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--trace-file", type=Path, default=Path("traces/agent_runs.jsonl"))
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="replace an existing trace file instead of preserving it",
+    )
     parser.add_argument("--llm-analysis", action="store_true")
     return parser.parse_args()
 
@@ -22,6 +27,10 @@ def main() -> None:
     load_dotenv()
     args = parse_args()
     if args.trace_file.exists():
+        if not args.overwrite:
+            raise SystemExit(
+                f"Trace file already exists: {args.trace_file}. Pass --overwrite to replace it."
+            )
         args.trace_file.unlink()
 
     workflow = SupportAgentWorkflow(JsonlTraceRecorder(args.trace_file))

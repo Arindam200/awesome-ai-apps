@@ -1,0 +1,19 @@
+[project]
+name = "multi-agent-orchestrator"
+version = "0.1.0"
+description = "LangGraph multi-agent orchestrator on Nebius Token Factory: Kimi K3.1 Pro plans, reviews and synthesizes while Inkling 2 Small and cheaper workers do the work in parallel"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "langgraph>=1.0",
+    "langchain-core>=1.0",
+    "langchain-nebius>=0.1.3",
+    "pydantic>=2.7",
+    "python-dotenv>=1.0.1",
+    "httpx>=0.27",
+    "rich>=13.9",
+    "streamlit>=1.40",
+]
+
+[tool.ruff]
+line-length = 120

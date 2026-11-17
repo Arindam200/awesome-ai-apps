@@ -66,6 +66,8 @@ class JsonlTraceRecorder:
         """Capture timing, hierarchy, attributes, and exception details for one span."""
 
         parent = self._current_span.get()
+        if trace_id is not None and parent is not None and trace_id != parent[0]:
+            parent = None
         resolved_trace_id = trace_id or (parent[0] if parent else uuid.uuid4().hex)
         span_id = uuid.uuid4().hex[:16]
         handle = Span(dict(attributes or {}))
@@ -77,7 +79,7 @@ class JsonlTraceRecorder:
 
         try:
             yield handle
-        except Exception as exc:
+        except BaseException as exc:
             status = "error"
             error = {"type": type(exc).__name__, "message": str(exc)}
             raise

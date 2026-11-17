@@ -1,0 +1,7 @@
+[theme]
+# Nebius Token Factory palette: navy surface, deep blue panels, lime accent.
+base = "dark"
+primaryColor = "#DAFF33"
+backgroundColor = "#001A2B"
+secondaryBackgroundColor = "#052B42"
+textColor = "#FFFFFF"

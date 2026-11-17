@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import json
+import sys
 
 import pytest
 
 from agent_observability import JsonlTraceRecorder, SupportAgentWorkflow, TraceAnalysisAgent
 from agent_observability.tracing import load_spans
+from main import main
 
 
 def test_workflow_records_agent_tool_retrieval_and_model_spans(tmp_path):
@@ -47,3 +49,40 @@ def test_sample_trace_schema_is_json_serializable(tmp_path):
     assert record["name"] == "demo"
     assert record["attributes"] == {"prompt": "hello", "output": "world"}
     assert record["parent_span_id"] is None
+
+
+def test_explicit_trace_id_does_not_inherit_a_parent_from_another_trace(tmp_path):
+    trace_file = tmp_path / "traces.jsonl"
+    recorder = JsonlTraceRecorder(trace_file)
+
+    with recorder.span("outer", kind="agent", trace_id="outer-trace"):
+        with recorder.span("inner", kind="tool", trace_id="inner-trace"):
+            pass
+
+    inner = next(span for span in load_spans(trace_file) if span["name"] == "inner")
+    assert inner["trace_id"] == "inner-trace"
+    assert inner["parent_span_id"] is None
+
+
+def test_recorder_captures_base_exceptions(tmp_path):
+    trace_file = tmp_path / "traces.jsonl"
+    recorder = JsonlTraceRecorder(trace_file)
+
+    with pytest.raises(KeyboardInterrupt):
+        with recorder.span("interrupted", kind="agent"):
+            raise KeyboardInterrupt
+
+    record = load_spans(trace_file)[0]
+    assert record["status"] == "error"
+    assert record["error"] == {"type": "KeyboardInterrupt", "message": ""}
+
+
+def test_main_preserves_an_existing_trace_without_overwrite(tmp_path, monkeypatch):
+    trace_file = tmp_path / "traces.jsonl"
+    trace_file.write_text("existing\n", encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", ["main.py", "--trace-file", str(trace_file)])
+
+    with pytest.raises(SystemExit, match="Pass --overwrite"):
+        main()
+
+    assert trace_file.read_text(encoding="utf-8") == "existing\n"
