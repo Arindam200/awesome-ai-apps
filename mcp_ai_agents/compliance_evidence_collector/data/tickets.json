@@ -1,0 +1,5 @@
+[
+  {"id": "CHG-101", "type": "change", "title": "Upgrade payments-api to v2.4", "approved_by": "m.lee", "author": "a.khan", "status": "approved"},
+  {"id": "CHG-102", "type": "change", "title": "Rotate database credentials", "approved_by": "r.wong", "author": "r.wong", "status": "approved"},
+  {"id": "CHG-103", "type": "change", "title": "Enable new fraud rule set", "approved_by": "m.lee", "author": "a.khan", "status": "approved"}
+]

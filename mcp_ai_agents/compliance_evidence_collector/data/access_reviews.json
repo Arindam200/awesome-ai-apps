@@ -1,0 +1,4 @@
+[
+  {"id": "AR-2024-Q3", "quarter": "2024-Q3", "reviewer": "j.smith", "completed": "2024-10-02", "signed_off": true, "removals_requested": 4, "removals_completed_within_7d": 4},
+  {"id": "AR-2024-Q4", "quarter": "2024-Q4", "reviewer": "j.smith", "completed": "2025-01-20", "signed_off": false, "removals_requested": 6, "removals_completed_within_7d": 3}
+]

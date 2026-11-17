@@ -1,0 +1,4 @@
+openai-agents
+fastmcp
+python-dotenv
+openai

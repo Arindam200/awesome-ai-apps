@@ -1,0 +1,7 @@
+[project]
+name = "compliance-evidence-collector"
+version = "0.1.0"
+description = "Maps mock enterprise evidence to audit controls and writes a cited report"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["openai-agents", "fastmcp", "python-dotenv", "openai"]
