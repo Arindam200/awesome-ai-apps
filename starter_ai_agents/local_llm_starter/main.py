@@ -60,6 +60,8 @@ def calculate(expression):
 
             result = OPS[type(node.op)](left, right)
 
+            if not isinstance(result, (int, float)):
+                raise ValueError("Result must be a real number.")
             if isinstance(result, int) and result.bit_length() > 4096:
                 raise ValueError("Result too large.")
             if isinstance(result, float) and not math.isfinite(result):

@@ -159,7 +159,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [LangGraph ReAct Agent Starter](starter_ai_agents/langgraph_starter): LangGraph prebuilt ReAct agent (`create_react_agent`) with custom tools, powered by Nebius
 - [Letta Stateful Memory Agent](starter_ai_agents/letta_starter): Stateful agent with persistent long-term memory across sessions
 - [LlamaIndex Task Manager](starter_ai_agents/llamaindex_starter): LlamaIndex-powered task assistant
-- [Local LLM Starter](starter_ai_agents/local_llm_starter): Tool-calling agent on local Ollama with a one-line switch to Nebius Token Factory
+- [Local LLM Starter](starter_ai_agents/local_llm_starter): Tool-calling agent that runs on local Ollama or Nebius Token Factory with no code changes
 - [Mastra Tool-Calling Starter](starter_ai_agents/mastra_starter): TypeScript-first agent with a custom tool powered by Nebius Token Factory
 - [Microsoft Agent Framework Starter](starter_ai_agents/microsoft_agents_starter): Multi-agent travel planning demos built on Microsoft Agent Framework
 - [OpenAI Agents SDK Starter](starter_ai_agents/openai_agents_sdk): OpenAI Agents SDK with email helper and haiku writer examples
