@@ -44,6 +44,8 @@ def calculate(expression):
 
     def visit(node):
         if isinstance(node, ast.Constant) and type(node.value) in (int, float):
+            if isinstance(node.value, float) and not math.isfinite(node.value):
+                raise ValueError("Result is not finite.")
             return node.value
 
         if isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.UAdd, ast.USub)):
@@ -128,18 +130,23 @@ def run_agent(client, model, prompt):
         {"role": "user", "content": prompt},
     ]
 
-    for _ in range(MAX_ROUNDS):
+    def request(with_tools=True):
+        kwargs = {"model": model, "messages": messages}
+        if with_tools:
+            kwargs["tools"] = TOOLS
+
         try:
-            response = client.chat.completions.create(
-                model=model, messages=messages, tools=TOOLS
-            )
+            response = client.chat.completions.create(**kwargs)
         except OpenAIError as exc:
             raise RuntimeError(f"LLM request failed: {exc}") from exc
 
         if not response.choices:
             raise RuntimeError("Model returned no response.")
 
-        msg = response.choices[0].message
+        return response.choices[0].message
+
+    for _ in range(MAX_ROUNDS):
+        msg = request()
 
         if not msg.tool_calls:
             return msg.content or "The model returned an empty response."
@@ -168,7 +175,8 @@ def run_agent(client, model, prompt):
                 }
             )
 
-    raise RuntimeError(f"Reached the {MAX_ROUNDS}-round tool-call limit.")
+    msg = request(with_tools=False)
+    return msg.content or "The model returned an empty response."
 
 
 def main():

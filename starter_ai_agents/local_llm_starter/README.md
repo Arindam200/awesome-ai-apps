@@ -59,7 +59,7 @@ This project uses the OpenAI-compatible Chat Completions API. It can work with s
 - [LM Studio](https://lmstudio.ai/)
 - [vLLM](https://docs.vllm.ai/)
 - [OpenAI](https://platform.openai.com/)
-- [Nebius Token Factory](https://tokenfactory.nebius.com/)
+- [Nebius Token Factory](https://dub.sh/nebius)
 - Other services that expose an OpenAI-compatible Chat Completions interface
 
 These are examples, not a guarantee of universal compatibility.
@@ -134,12 +134,12 @@ LLM_MODEL=your-model-id
 
 ### Hosted example: Nebius Token Factory
 
-Nebius Token Factory is an optional hosted OpenAI-compatible backend. Hosted usage may require an account and may be billed. Replace the placeholder key and model with the values from your account:
+Nebius Token Factory is an optional hosted OpenAI-compatible backend. The [Nebius Builder program](https://dub.sh/nebius) includes free credits; check the provider for current terms and usage limits. Replace the placeholder key and model with the values from your account:
 
 ```env
 LLM_BASE_URL=https://api.tokenfactory.nebius.com/v1/
 LLM_API_KEY=your_nebius_api_key
-LLM_MODEL=Qwen/Qwen3-30B-A3B
+LLM_MODEL=Qwen/Qwen3-30B-A3B-Instruct-2507
 ```
 
 Switching between local Ollama and a hosted endpoint only requires changing these three values; no code changes are needed.
@@ -224,14 +224,14 @@ This starter is intentionally small. It is a single-user command-line example, n
 - **Only Chat Completions is used.** Native provider APIs, the OpenAI Responses API, streaming, vision, embeddings, and other endpoint types are not implemented.
 - **No conversation history.** Each prompt starts a new conversation. The starter does not persist or resume chat history.
 - **No streaming.** The client waits for a complete response before printing the answer.
-- **No retries or backoff.** API errors and rate limits are surfaced to the user; the starter does not retry automatically.
+- **SDK default retries.** The OpenAI SDK retries failed requests twice by default. This starter does not add custom retry or backoff logic.
 - **No fallback endpoint.** The starter uses the single configured endpoint and does not switch to another provider or model automatically.
 - **One API key only.** Authentication is a single `LLM_API_KEY` value. Custom headers, OAuth, proxies, and provider-specific auth flows are not included.
 - **No server management.** The starter does not install, start, or download models. You must run the compatible server and pull or load the model yourself.
-- **Tool calls are limited.** The loop stops after five rounds. Tool arguments must be JSON objects with the exact string arguments defined in `main.py`; complex or nested argument types are not supported.
+- **Tool calls are limited.** The tool-calling loop stops after five rounds, followed by one final model call without tools. Tool arguments must be JSON objects with the exact string arguments defined in `main.py`; complex or nested argument types are not supported.
 - **Calculator limits.** Expressions are limited to 200 characters; exponents above 20, integer results above 4096 bits, and non-finite float results are rejected.
 - **Empty responses are surfaced as text.** If the model returns no final content, the starter prints `The model returned an empty response.` instead of guessing an answer.
-- **No observability.** Tool errors and final answers are printed to the terminal. Logging, tracing, metrics, and evaluation are not included.
+- **No observability.** Tool errors are sent back to the model, and final answers are printed to the terminal. Logging, tracing, metrics, and evaluation are not included.
 
 ## Troubleshooting
 
