@@ -6,13 +6,13 @@ The capture uses `gpt-4.1-mini` through an alternative OpenAI-compatible endpoin
 
 > Two agents that never talk to each other share what they learn: one saves facts, the other answers from them in a later run.
 
-A `planner` agent takes notes from the user and saves each durable fact as a memory. A `reviewer` agent, started later in a separate process with no chat history, searches those memories before it answers and cites the key of each memory it used. Both agents keep their memory in [ClickHouse Loom](https://github.com/ClickHouse/loom), an open-source (Apache-2.0), self-hosted memory server for agents, through its Python SDK. A tool-calling model decides when to save and when to search.
+A `planner` agent takes notes from the user and saves each durable fact as a memory. A `reviewer` agent, started later in a separate process with no chat history, searches those memories before it answers and cites the key of each memory it used. Both agents keep their memory in [ClickHouse Loom](https://github.com/ClickHouse/loom), an open-source (Apache-2.0), self-hosted memory server for agents, through its Python SDK. A tool-calling model decides when to save and when to search. A reviewer answer is rejected if no recall has completed successfully.
 
 ## 🚀 Features
 
 - **Memory shared between agents**: both agents read and write one Loom namespace, and Loom records each memory under the agent that wrote it.
 - **Two small tools**: `remember` saves one fact with `memory.set`, and `recall` searches by meaning with `memory.search`, across every agent in the namespace.
-- **Duplicates merged**: when the planner saves a fact Loom already holds, Loom keeps one memory and the tool reports the existing key.
+- **Write outcomes**: the tool reports when Loom merges a fact, finds a duplicate or skips a write. It does not invent a surviving key for a no-op response.
 - **Retrieval confidence**: an abstaining search supplies no memories to the model, and below-threshold hits are excluded from results and citation keys.
 - **Checked citations**: the reviewer cites memory keys, and a key that no search returned is flagged in the answer instead of being passed on as a source.
 - **Memory on your machine**: Loom runs locally in Docker, needs no account, and stores the memories in ClickHouse.
@@ -126,8 +126,10 @@ For another OpenAI-compatible endpoint with tool calling, put that provider's ke
 4. **Run the offline tests**, which stub the model and Loom:
 
    ```bash
-   python -m unittest discover -s tests
+   uv run python -m unittest discover -s tests
    ```
+
+   With pip, activate the virtual environment from the installation step and run `python -m unittest discover -s tests`.
 
 Loom is also an MCP server: an agent framework or coding agent with an MCP client can use the same memories over MCP instead of the SDK ([Loom's MCP client setup](https://clickhouse.github.io/loom/features/integrations/mcp-clients/)).
 

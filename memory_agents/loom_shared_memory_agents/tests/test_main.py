@@ -33,17 +33,23 @@ class FakeMemory:
         self.rows: dict[str, str] = {}
 
     async def set(self, memory_key: str, value: str) -> dict:
-        for key, held in self.rows.items():
+        for held in self.rows.values():
             if held == value:
-                return {"memory_key": memory_key, "merged_into_key": key}
+                return {
+                    "memory_key": memory_key,
+                    "noop": True,
+                    "conflict_verdict": "duplicate",
+                }
         self.rows[memory_key] = value
-        return {"memory_key": memory_key, "merged_into_key": ""}
+        return {"memory_key": memory_key, "noop": False, "conflict_verdict": "clear"}
 
     async def search(self, query: str, top_k: int = 5) -> MemorySearchResult:
         words = set(query.lower().split())
         return MemorySearchResult(
             [
-                MemorySearchHit(memory_key=key, memory_type="fact", content_excerpt=value)
+                MemorySearchHit(
+                    memory_key=key, memory_type="fact", content_excerpt=value
+                )
                 for key, value in self.rows.items()
                 if words & set(value.lower().split())
             ][:top_k]
@@ -83,14 +89,18 @@ DEPLOY = {"key": "deploy_days", "fact": "The team deploys on Tuesdays and Thursd
 class SharedMemoryTest(unittest.TestCase):
     def test_the_reviewer_reads_what_the_planner_saved(self) -> None:
         memory = FakeMemory()
-        planner = FakeLLM([reply(tool_calls=[tool_call("1", "remember", DEPLOY)]), reply("Saved.")])
+        planner = FakeLLM(
+            [reply(tool_calls=[tool_call("1", "remember", DEPLOY)]), reply("Saved.")]
+        )
         run(planner, memory, "planner", "We deploy on Tuesdays and Thursdays.")
         self.assertEqual(memory.rows, {"deploy_days": DEPLOY["fact"]})
 
         reviewer = FakeLLM(
             [
                 reply(
-                    tool_calls=[tool_call("2", "recall", {"query": "when does the team deploy"})]
+                    tool_calls=[
+                        tool_call("2", "recall", {"query": "when does the team deploy"})
+                    ]
                 ),
                 reply("Tuesdays and Thursdays [deploy_days]."),
             ]
@@ -125,24 +135,33 @@ class SharedMemoryTest(unittest.TestCase):
         answer = run(FakeLLM(looping), FakeMemory(), "reviewer", "loop")
         self.assertEqual(answer, "Stopped after too many tool calls.")
 
-    def test_a_fact_already_held_reports_the_existing_key(self) -> None:
+    def test_a_fact_already_held_does_not_invent_a_surviving_key(self) -> None:
         memory = FakeMemory()
         memory.rows["deploy_days"] = DEPLOY["fact"]
         result = asyncio.run(main.remember(memory, "deploy_schedule", DEPLOY["fact"]))
-        self.assertEqual(result, "already saved as deploy_days")
+        self.assertEqual(result, "already held in memory (duplicate)")
 
     def test_bad_arguments_go_back_to_the_model(self) -> None:
-        result = asyncio.run(main.call_tool(FakeMemory(), "remember", "{}", set()))
+        result, recalled = asyncio.run(
+            main.call_tool(FakeMemory(), "remember", "{}", set())
+        )
         self.assertTrue(result.startswith("bad arguments for remember"))
+        self.assertFalse(recalled)
 
     def test_an_empty_search_says_so(self) -> None:
-        self.assertEqual(asyncio.run(main.recall(FakeMemory(), "x", set())), "no memories match")
+        self.assertEqual(
+            asyncio.run(main.recall(FakeMemory(), "x", set())), "no memories match"
+        )
 
     def test_abstention_with_rows_does_not_supply_or_admit_memories(self) -> None:
         memory = FakeMemory()
         memory.search = mock.AsyncMock(
             return_value=MemorySearchResult(
-                [MemorySearchHit("rejected", "fact", "A fact the search declined to support.")],
+                [
+                    MemorySearchHit(
+                        "rejected", "fact", "A fact the search declined to support."
+                    )
+                ],
                 abstain=True,
             )
         )
@@ -150,14 +169,18 @@ class SharedMemoryTest(unittest.TestCase):
         result = asyncio.run(main.recall(memory, "an unrelated question", seen))
         self.assertEqual(result, "no memories match")
         self.assertEqual(seen, {"earlier_accepted"})
-        self.assertEqual(main.unknown_citations("Answer (#rejected)", seen), ["rejected"])
+        self.assertEqual(
+            main.unknown_citations("Answer (#rejected)", seen), ["rejected"]
+        )
 
     def test_mixed_search_only_exposes_accepted_memories_and_citations(self) -> None:
         memory = FakeMemory()
         memory.search = mock.AsyncMock(
             return_value=MemorySearchResult(
                 [
-                    MemorySearchHit("weak", "fact", "Do not use this.", below_threshold=True),
+                    MemorySearchHit(
+                        "weak", "fact", "Do not use this.", below_threshold=True
+                    ),
                     MemorySearchHit("deploy_days", "fact", DEPLOY["fact"]),
                 ]
             )
@@ -166,18 +189,123 @@ class SharedMemoryTest(unittest.TestCase):
         result = asyncio.run(main.recall(memory, "when do we deploy", seen))
         self.assertEqual(result, "[deploy_days] " + DEPLOY["fact"])
         self.assertEqual(seen, {"deploy_days"})
-        self.assertEqual(main.unknown_citations("Answer (#deploy_days) (#weak)", seen), ["weak"])
+        self.assertEqual(
+            main.unknown_citations("Answer (#deploy_days) (#weak)", seen), ["weak"]
+        )
 
     def test_only_below_threshold_rows_return_no_match(self) -> None:
         memory = FakeMemory()
         memory.search = mock.AsyncMock(
             return_value=MemorySearchResult(
-                [MemorySearchHit("weak", "fact", "Do not use this.", below_threshold=True)]
+                [
+                    MemorySearchHit(
+                        "weak", "fact", "Do not use this.", below_threshold=True
+                    )
+                ]
             )
         )
         seen: set[str] = set()
-        self.assertEqual(asyncio.run(main.recall(memory, "anything", seen)), "no memories match")
+        self.assertEqual(
+            asyncio.run(main.recall(memory, "anything", seen)), "no memories match"
+        )
         self.assertEqual(seen, set())
+
+
+class WriteAndRecallContractTest(unittest.TestCase):
+    def test_a_merge_noop_does_not_claim_the_requested_key_was_saved(self) -> None:
+        memory = FakeMemory()
+        memory.set = mock.AsyncMock(
+            return_value={
+                "memory_key": "new_key",
+                "noop": True,
+                "conflict_verdict": "merge",
+            }
+        )
+        self.assertEqual(
+            asyncio.run(main.remember(memory, "new_key", "A fact.")),
+            "already held in memory (merge)",
+        )
+
+    def test_a_skipped_write_does_not_claim_a_merge_or_saved_key(self) -> None:
+        memory = FakeMemory()
+        memory.set = mock.AsyncMock(
+            return_value={
+                "memory_key": "new_key",
+                "noop": True,
+                "conflict_verdict": "clear",
+            }
+        )
+        self.assertEqual(
+            asyncio.run(main.remember(memory, "new_key", "A fact.")),
+            "not written (clear)",
+        )
+
+    def test_reviewer_cannot_answer_without_recall(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "recall"):
+            run(
+                FakeLLM([reply("You can deploy on Friday.")]),
+                FakeMemory(),
+                "reviewer",
+                "Ship?",
+            )
+
+    def test_bad_recall_arguments_do_not_authorize_an_answer(self) -> None:
+        llm = FakeLLM(
+            [
+                reply(tool_calls=[tool_call("1", "recall", {})]),
+                reply("You can deploy on Friday."),
+            ]
+        )
+        with self.assertRaisesRegex(RuntimeError, "recall"):
+            run(llm, FakeMemory(), "reviewer", "Ship?")
+
+    def test_a_remember_call_does_not_authorize_a_reviewer_answer(self) -> None:
+        llm = FakeLLM(
+            [
+                reply(tool_calls=[tool_call("1", "remember", DEPLOY)]),
+                reply("Saved."),
+            ]
+        )
+        with self.assertRaisesRegex(RuntimeError, "recall"):
+            run(llm, FakeMemory(), "reviewer", "Ship?")
+
+    def test_a_successful_empty_recall_allows_not_recorded(self) -> None:
+        llm = FakeLLM(
+            [
+                reply(tool_calls=[tool_call("1", "recall", {"query": "x"})]),
+                reply("The team has not recorded it."),
+            ]
+        )
+        self.assertEqual(
+            run(llm, FakeMemory(), "reviewer", "Ship?"), "The team has not recorded it."
+        )
+
+    def test_an_abstaining_recall_allows_not_recorded(self) -> None:
+        memory = FakeMemory()
+        memory.search = mock.AsyncMock(
+            return_value=MemorySearchResult([], abstain=True)
+        )
+        llm = FakeLLM(
+            [
+                reply(tool_calls=[tool_call("1", "recall", {"query": "x"})]),
+                reply("The team has not recorded it."),
+            ]
+        )
+        self.assertEqual(
+            run(llm, memory, "reviewer", "Ship?"), "The team has not recorded it."
+        )
+
+    def test_planner_text_acknowledgement_does_not_require_recall(self) -> None:
+        self.assertEqual(
+            run(FakeLLM([reply("Hello.")]), FakeMemory(), "planner", "Hi"), "Hello."
+        )
+
+    def test_recall_backend_failure_is_not_swallowed(self) -> None:
+        memory = FakeMemory()
+        memory.search = mock.AsyncMock(side_effect=BackendUnavailable("cannot reach"))
+        llm = FakeLLM([reply(tool_calls=[tool_call("1", "recall", {"query": "x"})])])
+        with self.assertRaises(BackendUnavailable):
+            run(llm, memory, "reviewer", "Ship?")
 
 
 class FakeAgent:
@@ -223,7 +351,8 @@ class ErrorTest(unittest.TestCase):
     def test_a_refused_model_request_is_one_line(self) -> None:
         code, err = run_main(RefusingLLM([]))
         self.assertEqual(
-            (code, err), (1, "The model endpoint refused the request: invalid api key\n")
+            (code, err),
+            (1, "The model endpoint refused the request: invalid api key\n"),
         )
 
     def test_loom_down_is_one_line(self) -> None:
