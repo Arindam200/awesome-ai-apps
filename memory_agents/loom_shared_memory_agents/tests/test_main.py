@@ -18,6 +18,7 @@ from typing import Self
 from unittest import mock
 
 from loom.errors import BackendUnavailable
+from loom.memory import MemorySearchHit, MemorySearchResult
 from openai import OpenAIError
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -38,13 +39,15 @@ class FakeMemory:
         self.rows[memory_key] = value
         return {"memory_key": memory_key, "merged_into_key": ""}
 
-    async def search(self, query: str, top_k: int = 5) -> list[SimpleNamespace]:
+    async def search(self, query: str, top_k: int = 5) -> MemorySearchResult:
         words = set(query.lower().split())
-        return [
-            SimpleNamespace(memory_key=key, content_excerpt=value)
-            for key, value in self.rows.items()
-            if words & set(value.lower().split())
-        ][:top_k]
+        return MemorySearchResult(
+            [
+                MemorySearchHit(memory_key=key, memory_type="fact", content_excerpt=value)
+                for key, value in self.rows.items()
+                if words & set(value.lower().split())
+            ][:top_k]
+        )
 
 
 def tool_call(call_id: str, name: str, arguments: dict) -> SimpleNamespace:
@@ -134,6 +137,47 @@ class SharedMemoryTest(unittest.TestCase):
 
     def test_an_empty_search_says_so(self) -> None:
         self.assertEqual(asyncio.run(main.recall(FakeMemory(), "x", set())), "no memories match")
+
+    def test_abstention_with_rows_does_not_supply_or_admit_memories(self) -> None:
+        memory = FakeMemory()
+        memory.search = mock.AsyncMock(
+            return_value=MemorySearchResult(
+                [MemorySearchHit("rejected", "fact", "A fact the search declined to support.")],
+                abstain=True,
+            )
+        )
+        seen = {"earlier_accepted"}
+        result = asyncio.run(main.recall(memory, "an unrelated question", seen))
+        self.assertEqual(result, "no memories match")
+        self.assertEqual(seen, {"earlier_accepted"})
+        self.assertEqual(main.unknown_citations("Answer (#rejected)", seen), ["rejected"])
+
+    def test_mixed_search_only_exposes_accepted_memories_and_citations(self) -> None:
+        memory = FakeMemory()
+        memory.search = mock.AsyncMock(
+            return_value=MemorySearchResult(
+                [
+                    MemorySearchHit("weak", "fact", "Do not use this.", below_threshold=True),
+                    MemorySearchHit("deploy_days", "fact", DEPLOY["fact"]),
+                ]
+            )
+        )
+        seen: set[str] = set()
+        result = asyncio.run(main.recall(memory, "when do we deploy", seen))
+        self.assertEqual(result, "[deploy_days] " + DEPLOY["fact"])
+        self.assertEqual(seen, {"deploy_days"})
+        self.assertEqual(main.unknown_citations("Answer (#deploy_days) (#weak)", seen), ["weak"])
+
+    def test_only_below_threshold_rows_return_no_match(self) -> None:
+        memory = FakeMemory()
+        memory.search = mock.AsyncMock(
+            return_value=MemorySearchResult(
+                [MemorySearchHit("weak", "fact", "Do not use this.", below_threshold=True)]
+            )
+        )
+        seen: set[str] = set()
+        self.assertEqual(asyncio.run(main.recall(memory, "anything", seen)), "no memories match")
+        self.assertEqual(seen, set())
 
 
 class FakeAgent:

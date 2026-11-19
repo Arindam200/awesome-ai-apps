@@ -84,7 +84,8 @@ async def remember(memory: Any, key: str, fact: str) -> str:
 
 async def recall(memory: Any, query: str, seen: set[str]) -> str:
     # memory.search reads what every agent in the namespace wrote, not only this agent.
-    hits = await memory.search(query, top_k=5)
+    result = await memory.search(query, top_k=5)
+    hits = [] if result.abstain else [hit for hit in result if not hit.below_threshold]
     seen.update(hit.memory_key for hit in hits)
     lines = [f"[{hit.memory_key}] {hit.content_excerpt}" for hit in hits]
     return "\n".join(lines) or "no memories match"

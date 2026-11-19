@@ -1,6 +1,6 @@
 ![A run of the planner and the reviewer](./assets/demo.png)
 
-The capture uses `gpt-4.1-mini` through an alternative OpenAI-compatible endpoint, against Loom 1.2.0. The Nebius Token Factory default below has not been tested end to end.
+The capture uses `gpt-4.1-mini` through an alternative OpenAI-compatible endpoint, against Loom 1.2.0. The capture predates the recall confidence filter, which is covered by offline tests. The Nebius Token Factory default below has not been tested end to end.
 
 # Shared Memory Agents with ClickHouse Loom
 
@@ -13,6 +13,7 @@ A `planner` agent takes notes from the user and saves each durable fact as a mem
 - **Memory shared between agents**: both agents read and write one Loom namespace, and Loom records each memory under the agent that wrote it.
 - **Two small tools**: `remember` saves one fact with `memory.set`, and `recall` searches by meaning with `memory.search`, across every agent in the namespace.
 - **Duplicates merged**: when the planner saves a fact Loom already holds, Loom keeps one memory and the tool reports the existing key.
+- **Retrieval confidence**: an abstaining search supplies no memories to the model, and below-threshold hits are excluded from results and citation keys.
 - **Checked citations**: the reviewer cites memory keys, and a key that no search returned is flagged in the answer instead of being passed on as a source.
 - **Memory on your machine**: Loom runs locally in Docker, needs no account, and stores the memories in ClickHouse.
 
