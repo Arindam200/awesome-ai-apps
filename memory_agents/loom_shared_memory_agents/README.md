@@ -1,10 +1,12 @@
 ![A run of the planner and the reviewer](./assets/demo.png)
 
+The capture uses `gpt-4.1-mini` through an alternative OpenAI-compatible endpoint, against Loom 1.2.0. The Nebius Token Factory default below has not been tested end to end.
+
 # Shared Memory Agents with ClickHouse Loom
 
 > Two agents that never talk to each other share what they learn: one saves facts, the other answers from them in a later run.
 
-A `planner` agent takes notes from the user and saves each durable fact as a memory. A `reviewer` agent, started later in a separate process with no chat history, searches those memories before it answers and cites the key of each memory it used. Both agents keep their memory in [ClickHouse Loom](https://github.com/ClickHouse/loom), an open-source (Apache-2.0), self-hosted memory server for agents, through its Python SDK. A Nebius Token Factory model decides when to save and when to search.
+A `planner` agent takes notes from the user and saves each durable fact as a memory. A `reviewer` agent, started later in a separate process with no chat history, searches those memories before it answers and cites the key of each memory it used. Both agents keep their memory in [ClickHouse Loom](https://github.com/ClickHouse/loom), an open-source (Apache-2.0), self-hosted memory server for agents, through its Python SDK. A tool-calling model decides when to save and when to search.
 
 ## 🚀 Features
 
@@ -18,7 +20,7 @@ A `planner` agent takes notes from the user and saves each durable fact as a mem
 
 - **Python**: core language (3.11 or newer, the Loom SDK's minimum)
 - **[ClickHouse Loom](https://github.com/ClickHouse/loom)**: memory server, used through the [`clickhouse-loom`](https://pypi.org/project/clickhouse-loom/) SDK
-- **[Nebius Token Factory](https://dub.sh/nebius)**: the LLM, through its OpenAI-compatible API and the `openai` client
+- **[Nebius Token Factory](https://dub.sh/nebius)**: the default model endpoint, through its OpenAI-compatible API and the `openai` client; other tool-calling endpoints can be configured
 - **ClickHouse**: where Loom stores the memories
 
 ## Workflow
@@ -36,7 +38,7 @@ A `planner` agent takes notes from the user and saves each durable fact as a mem
 
 - Python 3.11 or newer
 - Docker with the Compose plugin, for Loom
-- A [Nebius Token Factory](https://dub.sh/nebius) API key
+- An API key for [Nebius Token Factory](https://dub.sh/nebius) or another OpenAI-compatible endpoint with tool calling
 
 ### Start Loom
 
@@ -58,7 +60,7 @@ NEBIUS_MODEL="Qwen/Qwen3-30B-A3B-Instruct-2507"
 LOOM_BASE_URL="http://localhost:7777"
 ```
 
-`NEBIUS_BASE_URL` and `NEBIUS_MODEL` also point the example at any other OpenAI-compatible endpoint whose model supports tool calling. For a team Loom server, set `LOOM_BASE_URL`, `LOOM_ORG`, `LOOM_NAMESPACE` and a `LOOM_API_KEY` from its dashboard.
+For another OpenAI-compatible endpoint with tool calling, put that provider's key in `NEBIUS_API_KEY`, and set `NEBIUS_BASE_URL` and `NEBIUS_MODEL` to its URL and model. The variable names stay the same for either provider. The recorded run used this configuration route; the default Nebius endpoint and model are unverified. For a team Loom server, set `LOOM_BASE_URL`, `LOOM_ORG`, `LOOM_NAMESPACE` and a `LOOM_API_KEY` from its dashboard.
 
 ### Installation
 
@@ -154,4 +156,4 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 ## 🙏 Acknowledgments
 
 - [ClickHouse Loom](https://github.com/ClickHouse/loom) for the memory server and SDK.
-- [Nebius Token Factory](https://dub.sh/nebius) for the model.
+- [Nebius Token Factory](https://dub.sh/nebius) for the default model API configuration.

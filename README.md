@@ -239,7 +239,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Job Search Agent](memory_agents/job_search_agent): Job search agent with memory for preference tracking
 - [Persistent Memory Agent (Agno)](memory_agents/agno_memory_agent): Agno-based agent with persistent memory capabilities
 - [Product Launch Agent](memory_agents/product_launch_agent): Competitive intelligence tool for analyzing competitor product launches
-- [Shared Memory Agents with ClickHouse Loom](memory_agents/loom_shared_memory_agents): Two agents, run separately, that share one ClickHouse Loom memory, with a Nebius model saving facts and answering with the keys it cites
+- [Shared Memory Agents with ClickHouse Loom](memory_agents/loom_shared_memory_agents): Two agents, run separately, that share one ClickHouse Loom memory, with a tool-calling model saving facts and answering with the keys it cites
 - [Social Media Agent](memory_agents/social_media_agent): Social media automation agent with memory for brand voice
 - [Study Coach Agent](memory_agents/study_coach_agent): AI-powered study coach with Memori v3 and LangGraph for multi-step verification of understanding
 - [YouTube Trend Agent](memory_agents/youtube_trend_agent): YouTube channel analysis agent with Memori, Agno, and Exa for trend analysis and video ideas
