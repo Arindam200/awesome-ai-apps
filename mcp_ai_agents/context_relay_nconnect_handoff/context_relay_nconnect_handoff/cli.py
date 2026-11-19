@@ -89,13 +89,26 @@ def _stop_relay(relay_bin: str, data_dir: Path) -> None:
 
 @contextmanager
 def _temporary_profile(relay_bin: str):
-    """Release the temporary service before removing its files, including on failure."""
-    with tempfile.TemporaryDirectory(prefix="relay-nconnect-") as directory:
-        data_dir = Path(directory)
+    """Remove the profile only after shutdown, preserving any original failure."""
+    data_dir = Path(tempfile.mkdtemp(prefix="relay-nconnect-"))
+    body_failed = False
+    try:
+        yield data_dir
+    except BaseException:
+        body_failed = True
+        raise
+    finally:
         try:
-            yield data_dir
-        finally:
             _stop_relay(relay_bin, data_dir)
+            shutil.rmtree(data_dir)
+        except BaseException as exc:
+            print(
+                f"relay-nconnect-demo: Temporary profile retained at {data_dir}; "
+                f"cleanup failed: {exc}",
+                file=sys.stderr,
+            )
+            if not body_failed:
+                raise
 
 
 async def probe_handoff(

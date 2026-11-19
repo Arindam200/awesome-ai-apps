@@ -108,6 +108,113 @@ class ErrorReportingTest(unittest.TestCase):
         self.assertNotIn("Traceback", stderr.getvalue())
 
 
+class TemporaryProfileTest(unittest.TestCase):
+    def setUp(self):
+        """Keep fake service files in an owned directory; never start Relay."""
+        directory = tempfile.TemporaryDirectory()
+        self.addCleanup(directory.cleanup)
+        self.directory = directory.name
+
+    def run_demo(self, error=None, stop_error=None):
+        """Exercise the default CLI path with real files and controlled failures."""
+        self.stdout, self.stderr = io.StringIO(), io.StringIO()
+
+        def demo(relay_bin, data_dir):
+            self.profile = data_dir
+            (data_dir / "service.lock").write_text("fake service")
+            (data_dir / "relay.db").write_text("recoverable data")
+            if error is not None:
+                raise error
+            return {"status": "accepted"}
+
+        def stop(relay_bin, data_dir):
+            self.assertEqual((data_dir / "relay.db").read_text(), "recoverable data")
+            if stop_error is not None:
+                raise stop_error
+            (data_dir / "service.lock").unlink()
+
+        with (
+            patch.object(cli.tempfile, "tempdir", self.directory),
+            patch.object(cli, "_demo", side_effect=demo),
+            patch.object(cli, "_stop_relay", side_effect=stop),
+            contextlib.redirect_stdout(self.stdout),
+            contextlib.redirect_stderr(self.stderr),
+        ):
+            return cli.main(["demo"])
+
+    def assert_retained_profile(self):
+        """A failed stop must leave both the lock and database available."""
+        self.assertEqual((self.profile / "service.lock").read_text(), "fake service")
+        self.assertEqual((self.profile / "relay.db").read_text(), "recoverable data")
+        self.assertIn(str(self.profile), self.stderr.getvalue())
+        self.assertEqual(self.stdout.getvalue(), "")
+
+    def test_success_stops_service_before_removing_profile(self):
+        """Successful shutdown permits removal and normal JSON output."""
+        self.assertEqual(self.run_demo(), 0)
+        self.assertFalse(self.profile.exists())
+        self.assertEqual(json.loads(self.stdout.getvalue()), {"status": "accepted"})
+        self.assertEqual(self.stderr.getvalue(), "")
+
+    def test_demo_failure_still_removes_profile_after_successful_stop(self):
+        """Cleanup must also work on an exceptional exit from the demo."""
+        error = AssertionError("demo failed")
+        with self.assertRaises(AssertionError) as caught:
+            self.run_demo(error=error)
+        self.assertIs(caught.exception, error)
+        self.assertFalse(self.profile.exists())
+
+    def test_failed_stop_retains_profile_and_reports_recovery_path(self):
+        """A shutdown error or timeout must not delete a running service's files."""
+        for error in [RuntimeError("stop failed"), subprocess.TimeoutExpired("relay stop", 60)]:
+            with self.subTest(error=type(error).__name__):
+                self.assertEqual(self.run_demo(stop_error=error), 1)
+                self.assert_retained_profile()
+                self.assertIn(str(error), self.stderr.getvalue())
+
+    def test_failed_stop_preserves_unexpected_errors_and_process_control(self):
+        """The cleanup failure must not replace the original exception."""
+        for error in [AssertionError("demo failed"), KeyboardInterrupt(), asyncio.CancelledError()]:
+            with self.subTest(error=type(error).__name__):
+                with self.assertRaises(type(error)) as caught:
+                    self.run_demo(error=error, stop_error=RuntimeError("stop failed"))
+                self.assertIs(caught.exception, error)
+                self.assert_retained_profile()
+                self.assertIn("stop failed", self.stderr.getvalue())
+
+    def test_both_expected_failures_are_reported(self):
+        """Keep the primary CLI diagnostic as well as the cleanup diagnostic."""
+        self.assertEqual(
+            self.run_demo(error=ValueError("bad handoff"), stop_error=RuntimeError("stop failed")),
+            1,
+        )
+        self.assert_retained_profile()
+        self.assertIn("bad handoff", self.stderr.getvalue())
+        self.assertIn("stop failed", self.stderr.getvalue())
+
+    def test_directory_removal_failure_preserves_the_demo_error(self):
+        """A filesystem cleanup failure must not hide the original error either."""
+        error = AssertionError("demo failed")
+        with (
+            patch.object(cli.shutil, "rmtree", side_effect=PermissionError("file busy")),
+            self.assertRaises(AssertionError) as caught,
+        ):
+            self.run_demo(error=error)
+        self.assertIs(caught.exception, error)
+        self.assertFalse((self.profile / "service.lock").exists())
+        self.assertEqual((self.profile / "relay.db").read_text(), "recoverable data")
+        self.assertIn(str(self.profile), self.stderr.getvalue())
+        self.assertIn("file busy", self.stderr.getvalue())
+
+    def test_interrupt_during_shutdown_still_propagates(self):
+        """Without an earlier error, a cleanup interrupt must reach the caller."""
+        error = KeyboardInterrupt()
+        with self.assertRaises(KeyboardInterrupt) as caught:
+            self.run_demo(stop_error=error)
+        self.assertIs(caught.exception, error)
+        self.assert_retained_profile()
+
+
 class NConnectConfigurationTest(unittest.TestCase):
     def server(self, **overrides):
         """Match the JSON schema emitted by Codex's mcp list command."""

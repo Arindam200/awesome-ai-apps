@@ -43,7 +43,7 @@ python -m pip install .
 relay-nconnect-demo demo
 ```
 
-The output contains `status: accepted`, `synthetic: true`, `packetVersion: relay.packet/v1` and the three verified MCP tools. `demo` uses a temporary Relay data directory, stops its service, and removes it when the command exits, including on failure. To keep the fixture and service for inspection, pass `--data-dir /your/private/path`; stop that profile afterward with `relay stop --data-dir /your/private/path`. Relay/NConnect subprocesses have a 60-second deadline; each MCP request has a 30-second deadline.
+The output contains `status: accepted`, `synthetic: true`, `packetVersion: relay.packet/v1` and the three verified MCP tools. `demo` uses a temporary Relay data directory and removes it only after its service stops, including when the demo fails. If shutdown fails, the profile is retained and its path is printed on stderr; retry `relay stop --data-dir <reported-path>` before removing it. Cleanup errors are reported separately so the original error or interrupt still propagates. To keep the fixture and service for inspection, pass `--data-dir /your/private/path`; stop that profile afterward with `relay stop --data-dir /your/private/path`. Relay/NConnect subprocesses have a 60-second deadline; each MCP request has a 30-second deadline.
 
 ```sh
 relay-nconnect-demo demo --data-dir /tmp/relay-handoff-example
