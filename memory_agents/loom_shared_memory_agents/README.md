@@ -1,6 +1,6 @@
 ![A run of the planner and the reviewer](./assets/demo.png)
 
-The capture uses `gpt-4.1-mini` through an alternative OpenAI-compatible endpoint, against Loom 1.2.0. The capture predates the recall confidence filter, which is covered by offline tests. The Nebius Token Factory default below has not been tested end to end.
+The capture uses `gpt-4.1-mini` through an alternative OpenAI-compatible endpoint, against Loom 1.2.0. The capture predates the recall confidence filter and enforced reviewer recall, which are covered by offline tests. The Nebius Token Factory default below has not been tested end to end.
 
 # Shared Memory Agents with ClickHouse Loom
 

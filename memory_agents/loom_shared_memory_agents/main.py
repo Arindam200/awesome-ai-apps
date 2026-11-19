@@ -54,10 +54,7 @@ TOOLS = [
                 "type": "object",
                 "properties": {
                     "key": {"type": "string", "description": "A short snake_case name"},
-                    "fact": {
-                        "type": "string",
-                        "description": "The fact as one sentence",
-                    },
+                    "fact": {"type": "string", "description": "The fact as one sentence"},
                 },
                 "required": ["key", "fact"],
             },
@@ -97,9 +94,7 @@ async def recall(memory: Any, query: str, seen: set[str]) -> str:
     return "\n".join(lines) or "no memories match"
 
 
-async def call_tool(
-    memory: Any, name: str, arguments: str, seen: set[str]
-) -> tuple[str, bool]:
+async def call_tool(memory: Any, name: str, arguments: str, seen: set[str]) -> tuple[str, bool]:
     """Return tool text and whether a recall completed successfully."""
     try:
         args = json.loads(arguments or "{}")
@@ -118,9 +113,7 @@ def unknown_citations(answer: str, seen: set[str]) -> list[str]:
     return [key for key in dict.fromkeys(cited) if key not in seen]
 
 
-async def run_agent(
-    llm: Any, model: str, memory: Any, agent_name: str, prompt: str
-) -> str:
+async def run_agent(llm: Any, model: str, memory: Any, agent_name: str, prompt: str) -> str:
     """The tool-calling loop: the model calls the tools until it answers in text."""
     seen: set[str] = set()
     has_recalled = False
@@ -129,9 +122,7 @@ async def run_agent(
         {"role": "user", "content": prompt},
     ]
     for _ in range(MAX_TURNS):
-        response = await llm.chat.completions.create(
-            model=model, messages=messages, tools=TOOLS
-        )
+        response = await llm.chat.completions.create(model=model, messages=messages, tools=TOOLS)
         message = response.choices[0].message
         if not message.tool_calls:
             answer = (message.content or "").strip()
@@ -151,27 +142,20 @@ async def run_agent(
             )
             has_recalled = has_recalled or recalled
             print(f"  {agent_name} -> {call.function.name}: {result.splitlines()[0]}")
-            messages.append(
-                {"role": "tool", "tool_call_id": call.id, "content": result}
-            )
+            messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
     return "Stopped after too many tool calls."
 
 
 async def main() -> int:
     load_dotenv()
-    parser = argparse.ArgumentParser(
-        description="Two agents that share one Loom memory."
-    )
+    parser = argparse.ArgumentParser(description="Two agents that share one Loom memory.")
     parser.add_argument("--agent", choices=sorted(INSTRUCTIONS), required=True)
     parser.add_argument("prompt")
     args = parser.parse_args()
 
     api_key = os.environ.get("NEBIUS_API_KEY", "")
     if not api_key:
-        print(
-            "NEBIUS_API_KEY is not set: copy .env.example to .env and add it.",
-            file=sys.stderr,
-        )
+        print("NEBIUS_API_KEY is not set: copy .env.example to .env and add it.", file=sys.stderr)
         return 2
     base_url = os.environ.get("NEBIUS_BASE_URL") or DEFAULT_BASE_URL
     llm = AsyncOpenAI(api_key=api_key, base_url=base_url)
@@ -188,10 +172,7 @@ async def main() -> int:
             answer = await run_agent(llm, model, loom.memory, args.agent, args.prompt)
     except BackendUnavailable:
         url = os.environ.get("LOOM_BASE_URL") or "http://localhost:7777"
-        print(
-            f"Loom is not reachable at {url}: start it with the installer.",
-            file=sys.stderr,
-        )
+        print(f"Loom is not reachable at {url}: start it with the installer.", file=sys.stderr)
         return 1
     except OpenAIError as exc:
         print(f"The model endpoint refused the request: {exc}", file=sys.stderr)
