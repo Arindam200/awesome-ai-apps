@@ -316,6 +316,38 @@ class RefusingLLM(FakeLLM):
 
 
 class ErrorTest(unittest.TestCase):
+    def test_reviewer_protocol_rejection_is_a_normal_cli_error(self) -> None:
+        code, err = run_main(FakeLLM([reply("You can deploy on Friday.")]))
+        self.assertEqual((code, err), (1, "The reviewer answered without a successful recall\n"))
+        self.assertNotIn("Traceback", err)
+
+    def test_empty_model_reply_is_a_normal_cli_error(self) -> None:
+        code, err = run_main(FakeLLM([reply("")]))
+        self.assertEqual(code, 1)
+        self.assertTrue(err.endswith(" returned an empty reply\n"))
+        self.assertNotIn("Traceback", err)
+
+    def test_programming_runtime_error_is_not_swallowed(self) -> None:
+        with (
+            mock.patch.object(main, "run_agent", side_effect=RuntimeError("programming bug")),
+            self.assertRaisesRegex(RuntimeError, "programming bug"),
+        ):
+            run_main(FakeLLM([]))
+
+    def test_successful_recall_does_not_enforce_citation_presence(self) -> None:
+        memory = FakeMemory()
+        memory.rows["deploy_days"] = DEPLOY["fact"]
+        llm = FakeLLM(
+            [
+                reply(tool_calls=[tool_call("1", "recall", {"query": "deploys"})]),
+                reply("The team deploys on Tuesdays."),
+            ]
+        )
+        self.assertEqual(
+            run(llm, memory, "reviewer", "When do we deploy?"),
+            "The team deploys on Tuesdays.",
+        )
+
     def test_a_refused_model_request_is_one_line(self) -> None:
         code, err = run_main(RefusingLLM([]))
         self.assertEqual(

@@ -4,9 +4,9 @@ The capture uses `gpt-4.1-mini` through an alternative OpenAI-compatible endpoin
 
 # Shared Memory Agents with ClickHouse Loom
 
-> Two agents that never talk to each other share what they learn: one saves facts, the other answers from them in a later run.
+> Two agents that never talk to each other share what they learn: one saves facts, the other searches them in a later run.
 
-A `planner` agent takes notes from the user and saves each durable fact as a memory. A `reviewer` agent, started later in a separate process with no chat history, searches those memories before it answers and cites the key of each memory it used. Both agents keep their memory in [ClickHouse Loom](https://github.com/ClickHouse/loom), an open-source (Apache-2.0), self-hosted memory server for agents, through its Python SDK. A tool-calling model decides when to save and when to search. A reviewer answer is rejected if no recall has completed successfully.
+A `planner` agent takes notes from the user and saves each durable fact as a memory. A `reviewer` agent, started later in a separate process with no chat history, must search those memories before it answers and is instructed to cite the keys it uses. Both agents keep their memory in [ClickHouse Loom](https://github.com/ClickHouse/loom), an open-source (Apache-2.0), self-hosted memory server for agents, through its Python SDK. A tool-calling model decides when to save and when to search. A reviewer answer is rejected if no recall has completed successfully.
 
 ## 🚀 Features
 
@@ -14,7 +14,7 @@ A `planner` agent takes notes from the user and saves each durable fact as a mem
 - **Two small tools**: `remember` saves one fact with `memory.set`, and `recall` searches by meaning with `memory.search`, across every agent in the namespace.
 - **Write outcomes**: the tool reports when Loom merges a fact, finds a duplicate or skips a write. It does not invent a surviving key for a no-op response.
 - **Retrieval confidence**: an abstaining search supplies no memories to the model, and below-threshold hits are excluded from results and citation keys.
-- **Checked citations**: the reviewer cites memory keys, and a key that no search returned is flagged in the answer instead of being passed on as a source.
+- **Citation checks**: the reviewer is instructed to cite memory keys. Any cited key that no search returned is flagged. Citation presence and whether a memory supports the answer are not enforced.
 - **Memory on your machine**: Loom runs locally in Docker, needs no account, and stores the memories in ClickHouse.
 
 ## 🛠️ Tech Stack
@@ -28,9 +28,9 @@ A `planner` agent takes notes from the user and saves each durable fact as a mem
 
 ![Workflow](./assets/workflow.svg)
 
-1. You tell the planner something. The model calls `remember` once per fact, and each call writes one memory to Loom.
+1. You tell the planner something. Its instructions ask it to call `remember` once per fact. Each call reports whether Loom wrote, merged or skipped the fact.
 2. The planner process exits. The reviewer starts in a new process with no planner chat history.
-3. You ask the reviewer a question. The model calls `recall`, Loom returns the closest memories with their keys, and the model answers from them.
+3. You ask the reviewer a question. The model calls `recall`, and Loom returns matching memories with their keys. The model is instructed to answer from those results and cite the keys it uses.
 4. Before the answer is printed, every cited key is checked against the keys the searches returned.
 
 ## 📦 Getting Started
@@ -108,7 +108,7 @@ For another OpenAI-compatible endpoint with tool calling, put that provider's ke
    uv run main.py --agent reviewer "Can I ship the billing fix to production this Friday, and who should review it?"
    ```
 
-   The reviewer searches the memory and answers with the keys it used, for example (the tool line shows the first result of each search):
+   The reviewer must search memory and is instructed to cite the keys it uses, for example (the tool line shows the first result of each search):
 
    ```text
      reviewer -> recall: [billing_service_owner] "Priya owns the billing service." (#billing_service_owner)
@@ -119,7 +119,7 @@ For another OpenAI-compatible endpoint with tool calling, put that provider's ke
    (#staging_requirement).
    ```
 
-   A question the memory cannot answer gets a plain "not recorded" reply. The exact wording and keys depend on the model.
+   The model is instructed to say "not recorded" when memory cannot answer the question. The exact wording and any citations depend on the model.
 
 3. **Look at the memories** in Loom's dashboard at `http://localhost:7777`: each one shows the agent that wrote it.
 

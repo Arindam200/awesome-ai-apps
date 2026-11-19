@@ -2,7 +2,7 @@
 
 The planner saves what the user tells it with a `remember` tool. The reviewer, run later
 in another process with no chat history, answers with a `recall` tool that searches the
-same Loom namespace, and cites the memory keys it used.
+same Loom namespace. Its instructions ask it to cite the memory keys it uses.
 
     python main.py --agent planner "We deploy on Tuesdays and Thursdays, never on Fridays."
     python main.py --agent reviewer "Can I ship the billing fix on Friday?"
@@ -26,6 +26,11 @@ from openai import AsyncOpenAI, OpenAIError
 DEFAULT_BASE_URL = "https://api.tokenfactory.nebius.com/v1/"
 DEFAULT_MODEL = "Qwen/Qwen3-30B-A3B-Instruct-2507"
 MAX_TURNS = 6
+
+
+class AgentProtocolError(RuntimeError):
+    """The model returned a reply the agent cannot accept."""
+
 
 INSTRUCTIONS = {
     "planner": (
@@ -127,9 +132,9 @@ async def run_agent(llm: Any, model: str, memory: Any, agent_name: str, prompt: 
         if not message.tool_calls:
             answer = (message.content or "").strip()
             if not answer:
-                raise RuntimeError(f"{model} returned an empty reply")
+                raise AgentProtocolError(f"{model} returned an empty reply")
             if agent_name == "reviewer" and not has_recalled:
-                raise RuntimeError("The reviewer answered without a successful recall")
+                raise AgentProtocolError("The reviewer answered without a successful recall")
             unknown = unknown_citations(answer, seen)
             if unknown:
                 # A model can invent a key; say so instead of passing it on as a source.
@@ -173,6 +178,9 @@ async def main() -> int:
     except BackendUnavailable:
         url = os.environ.get("LOOM_BASE_URL") or "http://localhost:7777"
         print(f"Loom is not reachable at {url}: start it with the installer.", file=sys.stderr)
+        return 1
+    except AgentProtocolError as exc:
+        print(str(exc), file=sys.stderr)
         return 1
     except OpenAIError as exc:
         print(f"The model endpoint refused the request: {exc}", file=sys.stderr)

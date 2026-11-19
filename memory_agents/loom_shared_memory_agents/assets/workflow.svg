@@ -13,7 +13,7 @@
   <rect x="20" y="170" width="200" height="90" rx="8" fill="#eef4ff" stroke="#3b6fd8"/>
   <text x="120" y="200" text-anchor="middle" font-weight="bold">reviewer (run 2)</text>
   <text x="120" y="224" text-anchor="middle">Nebius model</text>
-  <text x="120" y="244" text-anchor="middle">calls recall, cites keys</text>
+  <text x="120" y="244" text-anchor="middle">recalls; asked to cite</text>
   <rect x="440" y="90" width="300" height="120" rx="8" fill="#fff8e6" stroke="#d89b00"/>
   <text x="590" y="122" text-anchor="middle" font-weight="bold">ClickHouse Loom</text>
   <text x="590" y="146" text-anchor="middle">one namespace, rows by agent</text>
