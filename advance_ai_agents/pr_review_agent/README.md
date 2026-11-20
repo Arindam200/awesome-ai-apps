@@ -15,7 +15,8 @@ evidence that a real PR was reviewed.
 
 - **Preview by default:** a normal run prints JSON and performs no GitHub writes.
 - **Explicit publication:** `--post` creates one `COMMENT` review, never an approval.
-- **Diff locations:** only added RIGHT-side lines in fetched patches can receive findings.
+- **Diff locations:** numbered patches identify new-file lines for the model. Findings outside
+  added RIGHT-side lines are dropped; findings sharing a line become one inline comment.
 - **Snapshot checks:** reject changed head/base commits before posting; pin the review to the head.
 - **Bounded context:** reject more than 60 files, missing/incomplete patches, or over 100,000
   patch characters rather than silently reviewing a partial selection.
@@ -32,8 +33,9 @@ evidence that a real PR was reviewed.
 
 1. Parse a canonical `https://github.com/OWNER/REPO/pull/NUMBER` URL.
 2. Read the open PR and changed-file patches; check patch size/completeness and snapshot stability.
-3. Send the title and patches to one tool-free Agno reviewer, using your configured Nebius model.
-4. Validate the structured response and every inline location. Invalid output aborts the review.
+3. Send the title and numbered patches to one tool-free Agno reviewer, using your Nebius model.
+4. Validate the structured response, drop invalid locations, and merge findings on the same line.
+   The preview shows exactly the comments eligible for posting and the dropped/merged counts.
 5. Print the review. With `--post`, refresh the PR and submit the comments on the inspected SHA.
 
 PR content is untrusted data. The model has no execution or GitHub tools; the Python
@@ -66,13 +68,19 @@ Copy `.env.example` to `.env` in this directory and configure:
 ```dotenv
 GITHUB_TOKEN=your_repository_scoped_token
 NEBIUS_API_KEY=your_nebius_key
-NEBIUS_MODEL=your_available_model_id
+NEBIUS_MODEL=Qwen/Qwen3-30B-A3B-Instruct-2507
 ```
 
 Existing environment variables take precedence. Keep the file local and never share real
 keys in logs or reviews. The root `.gitignore` excludes `.env` and virtual environments.
 PR code and title are sent to Nebius during live analysis: use repositories whose contents
 you are authorized to send to that provider.
+
+The default model returned structured findings in the maintainer's
+[live tests of an earlier revision](https://github.com/Arindam200/awesome-ai-apps/pull/380#issuecomment-6882534899).
+Those runs failed location validation before a preview could be shown. The current revision's
+numbering and filtering changes have offline regression coverage; a new live preview is still
+pending. Verify model availability in your account before running.
 
 ## Usage
 
@@ -91,7 +99,11 @@ neither GitHub nor a model and cannot be combined with `--post`.
 uv run python main.py https://github.com/OWNER/REPO/pull/123
 ```
 
-Inspect the JSON summary/findings. No review is posted. A model can miss defects or give
+Inspect the JSON summary/comments and dropped/merged finding counts. No review is posted.
+A structurally invalid response still fails with a validation message; an invalid location
+does not discard the remaining valid findings. If every location is dropped, the summary
+can still be reviewed and explicitly posted without inline comments.
+A model can miss defects or give
 false positives; only diff context is available, not full files or repository history.
 
 ### Publish explicitly
@@ -116,9 +128,10 @@ credentials accidentally committed in a target diff would be included with that 
 
 Missing/binary patches or truncated additions are rejected. GitHub can omit deletion context
 without an additions mismatch; manual review is still needed for API-truncated/large diffs.
-No live Nebius model quality, external test sandbox, or real GitHub write was tested during
-development. Offline tests exercise real adapter parsing through a mock HTTP transport and
-the write boundary using mocks.
+The maintainer tested an earlier revision against real Nebius models, as linked above; this
+revision has not yet been validated with a live model. No external test sandbox or real
+GitHub publication was exercised by the author. Offline tests exercise real adapter parsing
+through a mock HTTP transport and the write boundary using mocks.
 
 ## Development
 
@@ -130,8 +143,9 @@ uv run pytest -q
 ```
 
 Tests cover diff offsets, added-line validation, missing/truncated patches, size limits,
-moving/closed PRs, duplicate locations, default preview, the explicit posting gate, exception
-redaction, and Agno/Nebius request construction with an offline HTTP response fixture.
+moving/closed PRs, mixed valid/invalid findings, duplicate merging, numbered multi-hunk patches,
+default preview, the explicit posting gate, useful validation errors without credentials or
+model input, and Agno/Nebius request construction with an offline HTTP response fixture.
 
 ## Project Structure
 

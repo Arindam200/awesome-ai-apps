@@ -8,8 +8,21 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
+from pydantic import ValidationError
 
-from review import Review, Snapshot, analyze, fetch_snapshot, inline_comments, publish
+from review import Review, Snapshot, analyze, fetch_snapshot, prepare_review, publish
+
+
+def preview(snapshot: Snapshot, review: Review) -> dict:
+    """Show exactly the inline comments that can be submitted, with filtering counts."""
+    prepared = prepare_review(snapshot, review)
+    return {
+        "head": snapshot.head_sha,
+        "summary": review.summary,
+        "comments": prepared.comments,
+        "dropped_findings": prepared.dropped_findings,
+        "merged_findings": prepared.merged_findings,
+    }
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -31,10 +44,8 @@ def main(argv: list[str] | None = None) -> int:
         demo = json.loads(Path(__file__).with_name("demo.json").read_text(encoding="utf-8"))
         snapshot = Snapshot(**demo["snapshot"])
         review = Review.model_validate(demo["review"])
-        preview = {"mode": "offline fixture (not model inference)", "head": snapshot.head_sha}
-        preview["comments"] = inline_comments(snapshot, review)
-        preview["summary"] = review.summary
-        print(json.dumps(preview, indent=2, ensure_ascii=False))
+        result = {"mode": "offline fixture (not model inference)", **preview(snapshot, review)}
+        print(json.dumps(result, indent=2, ensure_ascii=False))
         return 0
 
     token = os.getenv("GITHUB_TOKEN")
@@ -50,12 +61,27 @@ def main(argv: list[str] | None = None) -> int:
         with Github(auth=Auth.Token(token), timeout=30, retry=1) as client:
             snapshot, pull = fetch_snapshot(client, args.url)
             review = analyze(snapshot, api_key, model)
-            comments = inline_comments(snapshot, review)
-            print(json.dumps({"head": snapshot.head_sha, **review.model_dump()}, indent=2))
+            result = preview(snapshot, review)
+            print(json.dumps(result, indent=2))
             if args.post:
                 print(publish(client, pull, snapshot, review))
             else:
-                print(f"Preview only: {len(comments)} inline comments. No GitHub writes performed.")
+                print(
+                    f"Preview only: {len(result['comments'])} inline comments. "
+                    "No GitHub writes performed."
+                )
+    except ValueError as error:
+        if isinstance(error, ValidationError):
+            message = json.dumps(
+                error.errors(include_input=False, include_context=False, include_url=False)
+            )
+        else:
+            message = str(error)
+        for secret in (token, api_key):
+            if secret:
+                message = message.replace(secret, "[redacted]")
+        print(f"Review failed ({type(error).__name__}): {message[:2000]}")
+        return 1
     except Exception as error:
         # Provider/HTTP exceptions may include credentials or private request context.
         print(

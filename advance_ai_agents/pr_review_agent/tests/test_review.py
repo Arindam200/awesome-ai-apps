@@ -63,8 +63,7 @@ def test_diff_preserves_source_separators(separator):
     assert added_lines(patch) == {1, 2}
     changed = Snapshot("owner/repo", 1, "head", "base", "title", {"code.py": patch})
     finding = Finding(path="code.py", line=3, category="bug", explanation="Not an added line")
-    with pytest.raises(ValueError, match="outside"):
-        inline_comments(changed, Review(summary="s", findings=[finding]))
+    assert inline_comments(changed, Review(summary="s", findings=[finding])) == []
 
 
 @pytest.mark.parametrize(
@@ -120,7 +119,7 @@ def test_reject_incomplete_or_moving_snapshot(github_client, change):
 
 
 def test_validate_only_added_right_side_and_no_duplicate_locations(snapshot, finding):
-    """Reject nonexistent locations and duplicate inline findings."""
+    """Drop nonexistent locations and merge duplicate inline findings."""
     review = Review(summary="summary", findings=[finding])
     assert inline_comments(snapshot, review)[0] == {
         "path": "code.py",
@@ -132,10 +131,10 @@ def test_validate_only_added_right_side_and_no_duplicate_locations(snapshot, fin
         finding.model_copy(update={"path": "absent.py"}),
         finding.model_copy(update={"line": 10}),
     ]:
-        with pytest.raises(ValueError, match="outside"):
-            inline_comments(snapshot, Review(summary="s", findings=[invalid]))
-    with pytest.raises(ValueError, match="Duplicate"):
-        inline_comments(snapshot, Review(summary="s", findings=[finding, finding]))
+        assert inline_comments(snapshot, Review(summary="s", findings=[invalid])) == []
+    assert inline_comments(snapshot, Review(summary="s", findings=[finding, finding])) == (
+        inline_comments(snapshot, review)
+    )
 
 
 @pytest.mark.parametrize("change", ["head", "base", "closed"])
