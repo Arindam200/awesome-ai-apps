@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="300" viewBox="0 0 760 300" font-family="Helvetica, Arial, sans-serif" font-size="14">
+  <title>Two agents share one Loom memory</title>
+  <rect width="760" height="300" fill="#ffffff"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333333"/>
+    </marker>
+  </defs>
+  <rect x="20" y="40" width="200" height="90" rx="8" fill="#eef4ff" stroke="#3b6fd8"/>
+  <text x="120" y="70" text-anchor="middle" font-weight="bold">planner (run 1)</text>
+  <text x="120" y="94" text-anchor="middle">Nebius model</text>
+  <text x="120" y="114" text-anchor="middle">calls remember</text>
+  <rect x="20" y="170" width="200" height="90" rx="8" fill="#eef4ff" stroke="#3b6fd8"/>
+  <text x="120" y="200" text-anchor="middle" font-weight="bold">reviewer (run 2)</text>
+  <text x="120" y="224" text-anchor="middle">Nebius model</text>
+  <text x="120" y="244" text-anchor="middle">recalls; asked to cite</text>
+  <rect x="440" y="90" width="300" height="120" rx="8" fill="#fff8e6" stroke="#d89b00"/>
+  <text x="590" y="122" text-anchor="middle" font-weight="bold">ClickHouse Loom</text>
+  <text x="590" y="146" text-anchor="middle">one namespace, rows by agent</text>
+  <text x="590" y="170" text-anchor="middle">deploy_schedule, billing_service_owner, ...</text>
+  <text x="590" y="194" text-anchor="middle">stored in ClickHouse</text>
+  <line x1="220" y1="85" x2="436" y2="125" stroke="#333333" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="330" y="92" text-anchor="middle">memory.set</text>
+  <line x1="436" y1="180" x2="224" y2="215" stroke="#333333" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="224" y1="200" x2="436" y2="165" stroke="#333333" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="330" y="236" text-anchor="middle">memory.search, memories with keys</text>
+</svg>
