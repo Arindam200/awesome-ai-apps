@@ -14,7 +14,7 @@ A `planner` agent takes notes from the user and saves each durable fact as a mem
 - **Two small tools**: `remember` saves one fact with `memory.set`, and `recall` searches by meaning with `memory.search`, across every agent in the namespace.
 - **Write outcomes**: the tool reports when Loom merges a fact, finds a duplicate or skips a write. It does not invent a surviving key for a no-op response.
 - **Retrieval confidence**: an abstaining search supplies no memories to the model, and below-threshold hits are excluded from results and citation keys.
-- **Citation checks**: the reviewer is instructed to cite memory keys. Any cited key that no search returned is flagged. Citation presence and whether a memory supports the answer are not enforced.
+- **Citation checks**: the reviewer is instructed to cite memory keys. Unknown-key checks cover `[key]` and `(#key)` forms whose keys use ASCII letters, digits, `_`, `.`, `/` and `-`. Other forms, such as bare `#made_up`, may not trigger a warning. Citation presence and whether a memory supports the answer are not enforced.
 - **Memory on your machine**: Loom runs locally in Docker, needs no account, and stores the memories in ClickHouse.
 
 ## 🛠️ Tech Stack
@@ -31,7 +31,7 @@ A `planner` agent takes notes from the user and saves each durable fact as a mem
 1. You tell the planner something. Its instructions ask it to call `remember` once per fact. Each call reports whether Loom wrote, merged or skipped the fact.
 2. The planner process exits. The reviewer starts in a new process with no planner chat history.
 3. You ask the reviewer a question. The model calls `recall`, and Loom returns matching memories with their keys. The model is instructed to answer from those results and cite the keys it uses.
-4. Before the answer is printed, every cited key is checked against the keys the searches returned.
+4. Before the answer is printed, recognized citation keys are checked against the keys the searches returned.
 
 ## 📦 Getting Started
 
