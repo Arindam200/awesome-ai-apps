@@ -190,7 +190,6 @@ pipeline = SequentialAgent(
 # --- Runner setup ---
 APP_NAME = "ai_analysis_pipeline"
 USER_ID = "colab_user"
-SESSION_ID = "ai_analysis_session"
 
 session_service = InMemorySessionService()
 runner = Runner(agent=pipeline, app_name=APP_NAME, session_service=session_service)
@@ -199,19 +198,23 @@ runner = Runner(agent=pipeline, app_name=APP_NAME, session_service=session_servi
 # --- Run it ---
 async def run_ai_analysis():
     """Create a session and print the sequential pipeline's final responses."""
-    await session_service.create_session(
-        app_name=APP_NAME, user_id=USER_ID, session_id=SESSION_ID
-    )
+    session = await session_service.create_session(app_name=APP_NAME, user_id=USER_ID)
     content = types.Content(
         role="user", parts=[types.Part(text="Start the AI analysis")]
     )
     events = runner.run_async(
-        user_id=USER_ID, session_id=SESSION_ID, new_message=content
+        user_id=USER_ID, session_id=session.id, new_message=content
     )
     async for event in events:
-        if event.is_final_response():
-            print("📢 AI News Analysis and Insights:\n")
-            print(event.content.parts[0].text)
+        if event.is_final_response() and event.content:
+            answer = "".join(
+                part.text
+                for part in (event.content.parts or [])
+                if part.text and not part.thought
+            )
+            if answer:
+                print("📢 AI News Analysis and Insights:\n")
+                print(answer)
 
 
 if __name__ == "__main__":

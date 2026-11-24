@@ -42,6 +42,12 @@ class ServiceHandler(BaseHTTPRequestHandler):
                 finish_reason = "tool_calls"
             else:
                 message = {"role": "assistant", "content": "Analysis complete"}
+                if (
+                    self.server.reasoning_response
+                    and payload["model"] == "openai/gpt-oss-120b"
+                ):
+                    message["reasoning_content"] = "Private reasoning"
+                    message["content"] = "Final answer after reasoning"
                 finish_reason = "stop"
             response = {
                 "id": "chatcmpl-local",
@@ -102,6 +108,27 @@ class AgentTests(unittest.IsolatedAsyncioTestCase):
 
     def setUp(self):
         self.server.requests = []
+        self.server.reasoning_response = False
+        service = type(self.agent.session_service)()
+        runner = type(self.agent.runner)(
+            agent=self.agent.pipeline,
+            app_name=self.agent.APP_NAME,
+            session_service=service,
+        )
+        for name, value in (("session_service", service), ("runner", runner)):
+            component_patch = patch.object(self.agent, name, value)
+            component_patch.start()
+            self.addCleanup(component_patch.stop)
+        exa_patch = patch.object(self.agent, "Exa")
+        self.exa = exa_patch.start()
+        self.addCleanup(exa_patch.stop)
+        self.exa.return_value.search_and_contents.return_value = SimpleNamespace(
+            results=[]
+        )
+        tavily_patch = patch.object(self.agent, "TavilyClient")
+        self.tavily = tavily_patch.start()
+        self.addCleanup(tavily_patch.stop)
+        self.tavily.return_value.search.return_value = {"results": []}
         self.server.scrape_response = (
             200,
             {
@@ -172,8 +199,6 @@ class AgentTests(unittest.IsolatedAsyncioTestCase):
     async def test_pipeline_creates_session_and_executes_all_stages(self):
         output = io.StringIO()
         with (
-            patch.object(self.agent, "Exa") as exa,
-            patch.object(self.agent, "TavilyClient") as tavily,
             patch.object(
                 self.agent.session_service,
                 "create_session",
@@ -182,18 +207,13 @@ class AgentTests(unittest.IsolatedAsyncioTestCase):
             ) as create_session,
             contextlib.redirect_stdout(output),
         ):
-            exa.return_value.search_and_contents.return_value = SimpleNamespace(
-                results=[]
-            )
-            tavily.return_value.search.return_value = {"results": []}
             await self.agent.run_ai_analysis()
         create_session.assert_awaited_once_with(
             app_name=self.agent.APP_NAME,
             user_id=self.agent.USER_ID,
-            session_id=self.agent.SESSION_ID,
         )
-        exa.return_value.search_and_contents.assert_called_once()
-        tavily.return_value.search.assert_called_once()
+        self.exa.return_value.search_and_contents.assert_called_once()
+        self.tavily.return_value.search.assert_called_once()
         requests = [
             p for path, p in self.server.requests if path == "/v1/chat/completions"
         ]
@@ -205,11 +225,12 @@ class AgentTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(
             sum(path == "/v2/scrape" for path, _ in self.server.requests), 1
         )
-        session = await self.agent.session_service.get_session(
+        sessions = await self.agent.session_service.list_sessions(
             app_name=self.agent.APP_NAME,
             user_id=self.agent.USER_ID,
-            session_id=self.agent.SESSION_ID,
         )
+        self.assertEqual(len(sessions.sessions), 1)
+        session = sessions.sessions[0]
         for key in (
             "exa_results",
             "tavily_results",
@@ -219,6 +240,50 @@ class AgentTests(unittest.IsolatedAsyncioTestCase):
         ):
             self.assertEqual(session.state[key], "Analysis complete")
         self.assertIn("Analysis complete", output.getvalue())
+
+    async def test_repeated_analysis_uses_separate_sessions(self):
+        with contextlib.redirect_stdout(io.StringIO()):
+            await self.agent.run_ai_analysis()
+            await self.agent.run_ai_analysis()
+        sessions = await self.agent.session_service.list_sessions(
+            app_name=self.agent.APP_NAME, user_id=self.agent.USER_ID
+        )
+        self.assertEqual(len(sessions.sessions), 2)
+        self.assertNotEqual(sessions.sessions[0].id, sessions.sessions[1].id)
+        self.assertTrue(
+            all(
+                s.state["analysis_results"] == "Analysis complete"
+                for s in sessions.sessions
+            )
+        )
+
+    async def test_analysis_can_retry_after_runner_failure(self):
+        with (
+            patch.object(
+                self.agent.runner,
+                "run_async",
+                side_effect=RuntimeError("Inference failed"),
+            ),
+            self.assertRaisesRegex(RuntimeError, "Inference failed"),
+        ):
+            await self.agent.run_ai_analysis()
+        with contextlib.redirect_stdout(io.StringIO()):
+            await self.agent.run_ai_analysis()
+        sessions = await self.agent.session_service.list_sessions(
+            app_name=self.agent.APP_NAME, user_id=self.agent.USER_ID
+        )
+        self.assertEqual(len(sessions.sessions), 2)
+        self.assertEqual(
+            sum("analysis_results" in s.state for s in sessions.sessions), 1
+        )
+
+    async def test_reasoning_response_prints_only_answer(self):
+        self.server.reasoning_response = True
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            await self.agent.run_ai_analysis()
+        self.assertIn("Final answer after reasoning", output.getvalue())
+        self.assertNotIn("Private reasoning", output.getvalue())
 
 
 if __name__ == "__main__":
