@@ -1,18 +1,17 @@
-from google.adk.agents.sequential_agent import SequentialAgent
-from google.adk.agents.llm_agent import LlmAgent
-from google.adk.sessions import InMemorySessionService
-from google.adk.runners import Runner
-from google.adk.models.lite_llm import LiteLlm
-from google.adk.agents import Agent
-from datetime import datetime, timedelta
-from google.genai import types
-
-from exa_py import Exa
-from tavily import TavilyClient
-from firecrawl import Firecrawl
-from dotenv import load_dotenv
 import asyncio
 import os
+from datetime import datetime, timedelta
+
+from dotenv import load_dotenv
+from exa_py import Exa
+from firecrawl import Firecrawl
+from google.adk.agents.llm_agent import LlmAgent
+from google.adk.agents.sequential_agent import SequentialAgent
+from google.adk.models.lite_llm import LiteLlm
+from google.adk.runners import Runner
+from google.adk.sessions import InMemorySessionService
+from google.genai import types
+from tavily import TavilyClient
 
 # Load environment variables from .env file
 load_dotenv()
@@ -21,13 +20,13 @@ api_key = os.getenv("NEBIUS_API_KEY")
 
 # Model configuration
 nebius_model = LiteLlm(
-    model="openai/Qwen/Qwen3-30B-A3B-Instruct-2507",
-    api_base=api_base,
-    api_key=api_key
+    model="openai/Qwen/Qwen3-30B-A3B-Instruct-2507", api_base=api_base, api_key=api_key
 )
+
 
 # --- Tool 1: Exa Search ---
 def exa_search_ai(_: str) -> dict:
+    """Fetch recent AI news from Twitter and X, returning results or an error."""
     try:
         results = Exa(api_key=os.getenv("EXA_API_KEY")).search_and_contents(
             query="Latest AI news OR new LLM models OR AI/Agents advancements",
@@ -36,60 +35,55 @@ def exa_search_ai(_: str) -> dict:
             text=True,
             type="auto",
             highlights={"highlights_per_url": 2, "num_sentences": 3},
-            start_published_date=(datetime.now() - timedelta(days=30)).isoformat()
+            start_published_date=(datetime.now() - timedelta(days=30)).isoformat(),
         )
-        return {
-            "type": "exa",
-            "results": [r.__dict__ for r in results.results]
-        }
-    except Exception as e:
-        return {
-            "type": "exa",
-            "error": f"Exa search failed: {str(e)}",
-            "results": []
-        }
+        return {"type": "exa", "results": [r.__dict__ for r in results.results]}
+    except Exception as e:  # noqa: BLE001 - Return tool failures to the pipeline.
+        return {"type": "exa", "error": f"Exa search failed: {e!s}", "results": []}
+
 
 # --- Tool 2: Tavily Search ---
 def tavily_search_ai_analysis(_: str) -> dict:
+    """Fetch recent AI benchmarks and analysis, returning results or an error."""
     try:
         client = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
         response = client.search(
             query="AI benchmarks OR AI/LLM statistics OR AI providers analysis",
             search_depth="advanced",  # search depth for more comprehensive results
-            time_range="week",        # time range one week
-            include_domains=["artificialanalysis.ai"]  # Replace with relevant websites
+            time_range="week",  # time range one week
+            include_domains=["artificialanalysis.ai"],  # Replace with relevant websites
         )
+        return {"type": "tavily", "results": response.get("results", [])}
+    except Exception as e:  # noqa: BLE001 - Return tool failures to the pipeline.
         return {
             "type": "tavily",
-            "results": response.get("results", [])
+            "error": f"Tavily search failed: {e!s}",
+            "results": [],
         }
-    except Exception as e:
-        return {
-            "type": "tavily",
-            "error": f"Tavily search failed: {str(e)}",
-            "results": []
-        }
+
 
 # --- Tool 3: Firecrawl scrapper ---
 def firecrawl_scrape_nebius(_: str) -> dict:
-    firecrawl = Firecrawl(api_key=os.getenv("FIRECRAWL_API_KEY"))
+    """Scrape the Nebius homepage as Markdown, returning content or an error."""
     try:
+        firecrawl = Firecrawl(api_key=os.getenv("FIRECRAWL_API_KEY"))
         scrape_result = firecrawl.scrape(
             url="https://tokenfactory.nebius.com/",
             formats=["markdown"],
-            only_main_content=True
+            only_main_content=True,
         )
-        
-        return {
-            "type": "firecrawl",
-            "markdown": scrape_result.markdown
-        }
 
-    except Exception as e:
-        return {
-            "type": "firecrawl",
-            "error": str(e)
-        }
+        if scrape_result.markdown is None:
+            return {
+                "type": "firecrawl",
+                "error": "Scraping returned no markdown content.",
+            }
+
+        return {"type": "firecrawl", "markdown": scrape_result.markdown}
+
+    except Exception as e:  # noqa: BLE001 - Return tool failures to the pipeline.
+        return {"type": "firecrawl", "error": str(e)}
+
 
 # --- Agent 1: Exa AI News ---
 exa_agent = LlmAgent(
@@ -101,7 +95,7 @@ exa_agent = LlmAgent(
        Prefix your response with "**🔥ExaAgent:**" to clearly identify your output.
        """,
     tools=[exa_search_ai],
-    output_key="exa_results"
+    output_key="exa_results",
 )
 
 # --- Agent 2: Tavily AI Analysis ---
@@ -114,7 +108,7 @@ tavily_agent = LlmAgent(
     Prefix your response with "**🐳TavilyAgent:**" to clearly identify your output.
     """,
     tools=[tavily_search_ai_analysis],
-    output_key="tavily_results"
+    output_key="tavily_results",
 )
 
 # --- Agent 3: Summary & Formatting ---
@@ -132,7 +126,7 @@ You are a summarizer and formatter.
 - Prefix your response with "**🍥SummaryAgent:**" to clearly identify your output.
 """,
     tools=[],
-    output_key="final_summary"
+    output_key="final_summary",
 )
 
 # --- Agent 4: Firecrawl Scrape ---
@@ -145,16 +139,16 @@ firecrawl_agent = LlmAgent(
     Prefix your response with "**🔥FirecrawlAgent:**"
     """,
     tools=[firecrawl_scrape_nebius],
-    output_key="firecrawl_content"
+    output_key="firecrawl_content",
 )
 
 # --- Agent 5: Analysis & Stats ---
-analysis_agent = LlmAgent(  
+analysis_agent = LlmAgent(
     name="AnalysisAgent",
     model=LiteLlm(
         model="openai/openai/gpt-oss-120b",  # New Nebius model
         api_base=api_base,
-        api_key=api_key
+        api_key=api_key,
     ),
     instruction="""
 You are an AI analyst specializing in the latest AI trends and Large Language Models (LLMs).
@@ -173,18 +167,24 @@ You are an AI analyst specializing in the latest AI trends and Large Language Mo
 | Metric | Value |
 |---|---|
 | Growth Rate | 25% |
-| Market Size | \$100 Billion |
+| Market Size | $100 Billion |
 
 - Always prefix your response with "**🔍AnalysisAgent:**" for clear identification.
 """,
     description="Analyzes the summary and presents insights and statistics.",
-    output_key="analysis_results"
+    output_key="analysis_results",
 )
 
 # --- Agent 6: Sequential pipeline (Orchestrator Agent) ---
 pipeline = SequentialAgent(
     name="AIPipelineAgent",
-    sub_agents=[exa_agent, tavily_agent, summary_agent, firecrawl_agent, analysis_agent]
+    sub_agents=[
+        exa_agent,
+        tavily_agent,
+        summary_agent,
+        firecrawl_agent,
+        analysis_agent,
+    ],
 )
 
 # --- Runner setup ---
@@ -195,15 +195,24 @@ SESSION_ID = "ai_analysis_session"
 session_service = InMemorySessionService()
 runner = Runner(agent=pipeline, app_name=APP_NAME, session_service=session_service)
 
+
 # --- Run it ---
 async def run_ai_analysis():
-    await session_service.create_session(app_name=APP_NAME, user_id=USER_ID, session_id=SESSION_ID)
-    content = types.Content(role="user", parts=[types.Part(text="Start the AI analysis")])
-    events = runner.run_async(user_id=USER_ID, session_id=SESSION_ID, new_message=content)
+    """Create a session and print the sequential pipeline's final responses."""
+    await session_service.create_session(
+        app_name=APP_NAME, user_id=USER_ID, session_id=SESSION_ID
+    )
+    content = types.Content(
+        role="user", parts=[types.Part(text="Start the AI analysis")]
+    )
+    events = runner.run_async(
+        user_id=USER_ID, session_id=SESSION_ID, new_message=content
+    )
     async for event in events:
         if event.is_final_response():
             print("📢 AI News Analysis and Insights:\n")
             print(event.content.parts[0].text)
+
 
 if __name__ == "__main__":
     asyncio.run(run_ai_analysis())

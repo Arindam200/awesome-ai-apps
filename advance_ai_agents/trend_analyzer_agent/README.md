@@ -28,7 +28,7 @@ Uses a 5-agent sequential pipeline:
 
 ```bash
 git clone https://github.com/Arindam200/awesome-ai-apps.git
-cd advance_ai_agents/trend_analyzer_agent
+cd awesome-ai-apps/advance_ai_agents/trend_analyzer_agent
 ```
 
 2. Install dependencies:
@@ -39,6 +39,7 @@ pip install -r requirements.txt
 
 # Or using uv (recommended)
 uv sync
+source .venv/bin/activate
 ```
 
 3. Set up environment variables:
@@ -51,7 +52,7 @@ cp .env.example .env
 
 ```
 NEBIUS_API_KEY="your_nebius_api_key_here"
-NEBIUS_API_BASE="https://api.studio.nebius.ai/v1"
+NEBIUS_API_BASE="https://api.tokenfactory.nebius.com/v1"
 EXA_API_KEY="your_exa_api_key_here"
 TAVILY_API_KEY="your_tavily_api_key_here"
 FIRECRAWL_API_KEY="your_firecrawl_api_key_here"
@@ -63,11 +64,21 @@ Run with ADK CLI:
 
 ```bash
 # Terminal - Run directly in the terminal
-adk run trend_analyzer_agent
+adk run .
 
 # Dev UI - Visual interface for testing and debugging
 adk web
 ```
+
+## Tests
+
+After installing dependencies, run the offline regression tests from this directory:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The tests use local HTTP responses for Firecrawl and model inference, plus stubbed search results. No provider keys or credits are needed.
 
 ## Required API Keys
 

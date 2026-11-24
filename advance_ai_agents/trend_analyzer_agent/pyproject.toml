@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
     "google-adk[extensions]",
+    "litellm[mcp]",
     "exa-py",
     "tavily-python",
     "firecrawl-py>=3.1",
