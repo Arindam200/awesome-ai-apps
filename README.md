@@ -301,6 +301,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Pre-Meeting Intel Agent (Briefing Room)](advance_ai_agents/meeting_briefing_agent): LangGraph plan-research-reflect loop with Tavily web search that turns a company name into a cited one-page meeting brief
 - [Price Monitoring Agent](advance_ai_agents/price_monitoring_agent): Price monitoring and alerting agent powered by CrewAI, Twilio, and Nebius
 - [Proactive On-Call Agent](advance_ai_agents/proactive_oncall_agent): LangChain proactive agent on Kimi K3.1 Pro via [Nebius Token Factory](https://dub.sh/nebius) that a cron server wakes to triage events; it pages you, requests human-approved rollbacks, and schedules its own follow-ups without ever being prompted
+- [PR Review Agent](advance_ai_agents/pr_review_agent): Preview-first Agno/Nebius GitHub diff review with validated inline comments and an explicit publishing gate
 - [Prompt Format Benchmark](advance_ai_agents/context_engineering_pipeline): Benchmark harness for comparing XML, JSON, and Markdown prompt formats across accuracy, latency, and token usage
 - [Sandboxed Browser Game Generator](advance_ai_agents/pydantic_game_agent): FastAPI multi-agent studio that generates sandboxed browser games from one prompt using Pydantic AI and GLM-5.2 on Nebius
 - [SEO Content Strategy Team](advance_ai_agents/content_team_agent): SEO content optimization workflow with Agno and SerpAPI for Google AI Search ranking
