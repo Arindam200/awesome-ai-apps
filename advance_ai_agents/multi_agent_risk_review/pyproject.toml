@@ -1,0 +1,22 @@
+[project]
+name = "multi-agent-risk-review"
+version = "0.1.0"
+description = "Multi-agent risk review of a proposal, contract or deployment plan - LangGraph + Pydantic + Nebius Token Factory"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "langgraph>=1.0.0",
+    "langchain-core>=1.0.0",
+    "langchain-openai>=1.0.0",
+    "pydantic>=2.7.0",
+    "python-dotenv>=1.0.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/Arindam200/awesome-ai-apps"
+Repository = "https://github.com/Arindam200/awesome-ai-apps"
+Issues = "https://github.com/Arindam200/awesome-ai-apps/issues"
+
+# Flat layout: name the one importable module so `pip install -e .` works.
+[tool.setuptools]
+py-modules = ["graph"]
