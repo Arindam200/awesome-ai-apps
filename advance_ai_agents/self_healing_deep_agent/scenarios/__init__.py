@@ -51,9 +51,24 @@ def check_report(root) -> tuple[bool, str]:
     rows = list(csv.reader(path.open(encoding="utf-8", newline="")))
     if rows[0] != REPORT_COLUMNS:
         return False, f"wrong header {rows[0]}"
-    got = {r[0]: float(r[5]) for r in rows[1:]}
-    want = expected_costs()
-    total_ok = abs(sum(got.values()) - sum(want.values())) < 1e-5
-    if len(got) != len(want) or not total_ok:
-        return False, f"costs differ: got {json.dumps(got)} want {json.dumps(want)}"
-    return True, f"3 models, total ${sum(got.values()):.6f} matches the API data"
+    return compare_costs({r[0]: float(r[5]) for r in rows[1:]})
+
+
+def compare_costs(got: dict[str, float], tolerance: float = 1e-5) -> tuple[bool, str]:
+    """Every model's cost must match the API data on its own, not just the total.
+
+    A retired model may appear under its old id (as in the logs) or its new id (as billed),
+    so both sides are compared under the id the model is billed as."""
+    billed = lambda m: RETIRED.get(m, m)  # noqa: E731
+    want: dict[str, float] = {}
+    for m, cost in expected_costs().items():
+        want[billed(m)] = want.get(billed(m), 0.0) + cost
+    have: dict[str, float] = {}
+    for m, cost in got.items():
+        have[billed(m)] = have.get(billed(m), 0.0) + cost
+    if set(have) != set(want):
+        return False, f"models differ: got {sorted(have)} want {sorted(want)}"
+    wrong = {m: (round(have[m], 6), round(want[m], 6)) for m in want if abs(have[m] - want[m]) >= tolerance}
+    if wrong:
+        return False, f"per-model costs differ (got, want): {json.dumps(wrong)}"
+    return True, f"{len(want)} models, each cost matches the API data (total ${sum(have.values()):.6f})"

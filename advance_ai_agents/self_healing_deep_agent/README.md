@@ -145,7 +145,7 @@ uv run run_benchmark.py --trials 3 --plain    # a default Deep Agent, same task,
 ```
 
 A run passes only if both are true:
-- **The outcome is right.** The report's costs match the true costs, computed straight from the API's data without any tool. For S7, it stops without a report and says what to do about the key.
+- **The outcome is right.** Every model's cost in the report matches the true cost, computed straight from the API's data without any tool. For S7, it stops without a report and says what to do about the key.
 - **The action is right.** Exactly the broken tools were repaired and no other file changed.
 
 ## 📊 Results
@@ -185,7 +185,13 @@ Every run writes `runs/<run>/events.jsonl`: each tool call, failure and its labe
 uv run pytest
 ```
 
-19 tests, no model calls. They cover each tool's own tests, every guardrail (allowlist, open-bug rule, syntax check, rollback, repair budget) and the failure sorting (429 retried, 401 needs a human, 404 is a bad argument, wrong output is a code bug).
+26 tests, no model calls. They cover:
+- each tool's own tests
+- every guardrail: allowlist, open-bug rule, syntax check, rollback, repair budget, repairs of one tool taking turns, and rollback when the checks can't even start
+- the failure sorting: 429 retried, 401 needs a human, 404 is a bad argument, wrong output is a code bug, and a tool file that doesn't compile is a code bug
+- the benchmark's check: every model's cost must match the API data, not just the total
+
+The tests swap tool files in and out, and put your own versions back afterwards.
 
 ## 📂 Project Structure
 

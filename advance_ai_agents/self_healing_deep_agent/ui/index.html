@@ -213,7 +213,7 @@ function setMode(m) {
 
 function reset() {
   S = {steps: Object.fromEntries(STEPS.map((n) => [n, ["", "waiting"]])), pending: {}, says: {}, usage: {calls: 0, fx: 0, in: 0, cached: 0, out: 0},
-       mainTok: 0, fixTok: 0, mainAtHandoff: null, t: 0, failedTool: null, thinking: {}, lastSays: {}, saidSinceTool: false, t0: null, running: false};
+       mainTok: 0, fixTok: 0, mainAtHandoff: null, t: 0, failedTool: null, thinking: {}, lastSays: {}, saidSinceTool: false, t0: null, running: false, patched: 0};
   $("feed").innerHTML = ""; $("ffeed").innerHTML = ""; $("fixer").classList.remove("on"); $("has").style.display = "";
   $("tok").innerHTML = ""; $("fxtok").textContent = ""; $("fxstate").textContent = "· its own separate conversation";
   drawPipe(); drawMeters();
@@ -224,14 +224,33 @@ async function start() {
   S.t0 = performance.now(); S.running = true;
   $("go").disabled = true;
   document.querySelectorAll(".pill").forEach((p) => (p.disabled = true));
-  const r = await fetch("/api/run", {method: "POST", headers: {"Content-Type": "application/json"},
-                                     body: JSON.stringify({scenario: $("scenario").value, mode})});
-  if (!r.ok) { caption("BUSY", (await r.json()).error); $("go").disabled = false; return; }
+  let r;
+  try {
+    r = await fetch("/api/run", {method: "POST", headers: {"Content-Type": "application/json"},
+                                 body: JSON.stringify({scenario: $("scenario").value, mode})});
+  } catch (err) {
+    idle();
+    caption("OFFLINE", "Couldn't reach the local server. Is uv run app.py still running?", "var(--bad)");
+    return;
+  }
+  if (!r.ok) {
+    const body = await r.json().catch(() => ({}));
+    idle();
+    caption("BUSY", body.error || `The server said no (HTTP ${r.status}).`, "var(--bad)");
+    return;
+  }
   caption("RUNNING", "Starting a fresh run. The tools are reset and the situation's fault is switched on.");
   if (!CFG.replay) $("src").textContent = `${$("scenario").value} · ${mode === "plain" ? "plain Deep Agent" : "self-healing agent"} · real run`;
   es = new EventSource("/api/stream");
   es.onmessage = (m) => handle(JSON.parse(m.data));
-  es.addEventListener("end", () => { es.close(); S.running = false; drawMeters(); $("go").disabled = false; if (!CFG.replay) document.querySelectorAll(".pill").forEach((p) => (p.disabled = false)); });
+  es.addEventListener("end", () => { es.close(); idle(); drawMeters(); });
+}
+
+// Back to "ready": used when a run ends, and when a run could not start at all.
+function idle() {
+  S.running = false;
+  $("go").disabled = false;
+  if (!CFG.replay) document.querySelectorAll(".pill").forEach((p) => (p.disabled = false));
 }
 
 function caption(step, text, color) {
@@ -292,7 +311,26 @@ function handle(e) {
       if (STEPS.includes(e.name) && S.steps[e.name][0] !== "fixing") setStep(e.name, "run", "running");
       break;
     }
-    case "tool_ok": case "recovered": case "tool_error_msg": {
+    case "tool_error_msg": {
+      // The plain agent got the error back as a message (e.g. invalid arguments). It is a failure.
+      const p = S.pending[e.name];
+      if (p) {
+        p.bad = (p.bad || 0) + 1;
+        const ok = p.ok || 0;
+        const res = p.el.querySelector(".res");
+        if (ok === 0) {
+          p.done = true;
+          res.outerHTML = `<div class="res bad"><span class="ic">✕</span><span class="txt">${esc(String(e.result).slice(0, 160))}${p.n > 1 ? `  (${p.bad} of ${p.n} calls)` : ""}</span></div>`;
+        } else {
+          res.outerHTML = `<div class="res ok"><span class="ic">✓</span><span class="txt">${ok} of ${p.n} calls worked, ${p.bad} failed</span></div>`;
+        }
+      }
+      if (STEPS.includes(e.name)) setStep(e.name, "fail", "error");
+      caption("TOOL ERROR", "The tool call came back as an error. Nothing sorts it or fixes it.", "var(--bad)");
+      thinking("agent", true);
+      break;
+    }
+    case "tool_ok": case "recovered": {
       const p = S.pending[e.name];
       const fixed = e.type === "recovered";
       if (p) {
@@ -309,30 +347,42 @@ function handle(e) {
     }
     case "tool_raise": case "tool_error": {
       const p = S.pending[e.name];
-      if (p && !p.done) {
-        p.done = true;
-        p.el.querySelector(".res").outerHTML = `<div class="res bad"><span class="ic">✕</span><span class="txt">${esc(e.error)}${p.n > 1 ? `  (all ${p.n} calls)` : ""}</span></div>`;
-        if (e.type === "tool_raise") {
-          add("feed", `<div class="error"><div class="row"><span class="tag err">ERROR</span><span class="title">${esc(e.error)}</span>${T(e.t)}</div>
-                       <div style="margin-top:6px;color:#7F1D1D;font-size:15px">Raised inside tools/${e.name}.py. Nothing catches it.</div></div>`);
-          setStep(e.name, "fail", "crashed");
-          caption("CRASHED", "An error inside a tool, and nothing catches it. The whole run stops here.", "var(--bad)");
+      if (p) {
+        // mark the call group: all failed, or some worked and some were rejected
+        p.bad = (p.bad || 0) + 1;
+        const ok = p.ok || 0;
+        const res = p.el.querySelector(".res");
+        if (ok === 0) {
+          p.done = true;
+          res.outerHTML = `<div class="res bad"><span class="ic">✕</span><span class="txt">${esc(e.error)}${p.n > 1 ? `  (${p.bad} of ${p.n} calls)` : ""}</span></div>`;
         } else {
-          add("feed", `<div class="label"><div class="row"><span style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em">MIDDLEWARE SORTED IT AS</span><span class="chip ${e.kind}">${e.kind}</span>${T(e.t)}</div>
-                       <div class="why">${KIND[e.kind] || e.explanation}</div><div class="rep">${esc(e.error)}${e.report ? `  ·  report: ${esc(e.report)}` : ""}</div></div>`);
-          if (STEPS.includes(e.name)) setStep(e.name, e.kind === "CODE_BUG" ? "fail" : e.kind === "NEEDS_HUMAN" ? "fail" : "retry", e.kind === "CODE_BUG" ? "code bug" : e.kind.replace("_", " ").toLowerCase());
-          S.failedTool = e.name;
-          const msg = {CODE_BUG: "A real bug in the tool's code. It goes to the tool-fixer, with a failure report.",
-                       NEEDS_HUMAN: "The API key was rejected. No code change can fix that, so the agent will stop and say what to do.",
-                       BAD_ARGUMENTS: "The API rejected the input and said why. The agent will call again with better input.",
-                       TEMPORARY: "The API is still busy after the retries. The code is fine."}[e.kind];
-          caption(e.kind.replace("_", " "), msg, "var(--bad)");
+          res.outerHTML = `<div class="res ok"><span class="ic">✓</span><span class="txt">${ok} of ${p.n} calls worked, ${p.bad} rejected</span></div>`;
         }
+      }
+      if (p && p.bad > 1 && e.type === "tool_error" && p.lastKind === e.kind) break;   // same label already shown for this group
+      if (p) p.lastKind = e.kind;
+      if (e.type === "tool_raise") {
+        if (p && p.bad > 1) break;
+        add("feed", `<div class="error"><div class="row"><span class="tag err">ERROR</span><span class="title">${esc(e.error)}</span>${T(e.t)}</div>
+                     <div style="margin-top:6px;color:#7F1D1D;font-size:15px">Raised inside tools/${e.name}.py. Nothing catches it.</div></div>`);
+        setStep(e.name, "fail", "crashed");
+        caption("CRASHED", "An error inside a tool, and nothing catches it. The whole run stops here.", "var(--bad)");
+      } else {
+        add("feed", `<div class="label"><div class="row"><span style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em">MIDDLEWARE SORTED IT AS</span><span class="chip ${e.kind}">${e.kind}</span>${T(e.t)}</div>
+                     <div class="why">${KIND[e.kind] || e.explanation}</div><div class="rep">${esc(e.error)}${e.report ? `  ·  report: ${esc(e.report)}` : ""}</div></div>`);
+        if (STEPS.includes(e.name)) setStep(e.name, e.kind === "CODE_BUG" || e.kind === "NEEDS_HUMAN" ? "fail" : "retry",
+                                            e.kind === "CODE_BUG" ? "code bug" : e.kind.replace("_", " ").toLowerCase());
+        S.failedTool = e.name;
+        const msg = {CODE_BUG: "A real bug in the tool's code. It goes to the tool-fixer, with a failure report.",
+                     NEEDS_HUMAN: "The API key was rejected. No code change can fix that, so the agent will stop and say what to do.",
+                     BAD_ARGUMENTS: "The API rejected the input and said why. The agent will call again with better input.",
+                     TEMPORARY: "The API is still busy after the retries. The code is fine."}[e.kind];
+        caption(e.kind.replace("_", " "), msg, e.kind === "BAD_ARGUMENTS" ? "var(--agent)" : "var(--bad)");
       }
       break;
     }
     case "retry": {
-      add("feed", `<div class="retry">HTTP 429 from ${e.name}: waiting ${e.wait}s, then retry ${e.attempt} of ${e.max}. The code isn't touched.</div>`);
+      add("feed", `<div class="retry">HTTP 429 on a ${e.name} call: the middleware waits ${e.wait}s and tries again (attempt ${e.attempt} of ${e.max}). The code isn't touched.</div>`);
       setStep(e.name, "retry", `429 · retry ${e.attempt}`);
       caption("RETRYING", "The API says it's busy (429). The middleware waits and tries again by itself.", "var(--warn)");
       break;
@@ -358,6 +408,7 @@ function handle(e) {
       S.repair = e;
       break;
     case "patch": {
+      S.patched++;
       const lines = e.diff.split("\n").filter((l) => /^[+-]/.test(l) && !/^(\+\+\+|---)/.test(l));
       const ind = Math.min(...lines.map((l) => l.slice(1).length - l.slice(1).trimStart().length));
       add("ffeed", `<div class="diff"><div class="h">repair_tool → ${e.tool}.py <span class="tag" style="background:var(--warn-soft);color:var(--warn)">attempt ${e.attempt}</span>${T(e.t)}</div>
@@ -402,8 +453,8 @@ function handle(e) {
       const crashed = !good && document.querySelector("#feed .error") && !document.querySelector("#feed .label");
       add("feed", `<div class="banner ${good ? "good" : "bad"}"><span class="big">${good ? "✓" : "■"}</span><div>
                    <h3>${good ? esc(cap1(e.note || "Run passed")) : crashed ? `Run ended at ${S.t.toFixed(1)}s` : esc(e.note || "Run did not pass")}</h3>
-                   <p>${S.t.toFixed(1)}s · ${S.usage.calls} model calls · $${cost().toFixed(4)}${e.events_file ? ` · ${esc(e.events_file)}` : ""}</p></div></div>`);
-      caption(good ? "DONE" : "ENDED", good ? (e.note === "stopped without a report" ? "The agent stopped and told the user what to do. No code was changed." : "Done. The report's total matches the true cost from the API data.")
+                   <p>${S.t.toFixed(1)}s · ${S.usage.calls} model calls · $${cost().toFixed(4)}${good && !S.patched ? " · no code changed" : ""}${e.events_file ? ` · ${esc(e.events_file)}` : ""}</p></div></div>`);
+      caption(good ? "DONE" : "ENDED", good ? (e.note === "stopped without a report" ? "The agent stopped and told the user what to do. No code was changed." : S.patched ? "Done. The report's total matches the true cost from the API data." : "Done. The report's total matches the true cost, and no code was changed.")
                                           : crashed ? "No answer, no report. Someone has to fix the tool by hand." : "The run didn't pass.", good ? "var(--ok)" : "var(--bad)");
       break;
     }

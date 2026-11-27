@@ -76,8 +76,11 @@ def replay_feed(path: Path):
     for e in events:
         time.sleep(max(0.0, e["t"] - (time.perf_counter() - start)))
         yield e
-    yield {"t": events[-1]["t"], "type": "summary", "replay": True, "passed": events[-1].get("passed"),
-           "events_file": str(path)}
+    saved = path.with_name("summary.json")   # written next to every recorded run
+    summary = json.loads(saved.read_text(encoding="utf-8")) if saved.exists() else {}
+    yield {"t": events[-1]["t"], "type": "summary", "replay": True,
+           "passed": summary.get("passed", events[-1].get("passed")), "note": summary.get("note"),
+           "files_changed": summary.get("files_changed"), "events_file": str(path)}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -127,20 +130,29 @@ class Handler(BaseHTTPRequestHandler):
         self._json({"run": run_id})
 
     def _stream(self):
-        """Server-sent events: every event of the current run, then new ones as they arrive."""
+        """Server-sent events: every event of the current run, then new ones as they arrive.
+
+        Each event carries an id "<run>:<index>". If the connection drops, the browser reconnects
+        with the last id it received, and the stream resumes right after it instead of resending
+        the whole run (which would double-count tokens and cost on the page)."""
         self.send_response(200)
         self.send_header("Content-Type", "text/event-stream")
         self.send_header("Cache-Control", "no-cache")
         self.end_headers()
         run_id, sent = RUN.id, 0
+        last = self.headers.get("Last-Event-ID", "")
+        if ":" in last:
+            last_run, last_index = last.split(":", 1)
+            if last_run == str(run_id) and last_index.isdigit():
+                sent = int(last_index) + 1
         try:
             while True:
                 with RUN.lock:
                     if RUN.id != run_id:
                         break
                     batch, running = RUN.events[sent:], RUN.running
-                for e in batch:
-                    self.wfile.write(f"data: {json.dumps(e, ensure_ascii=False)}\n\n".encode())
+                for i, e in enumerate(batch, start=sent):
+                    self.wfile.write(f"id: {run_id}:{i}\ndata: {json.dumps(e, ensure_ascii=False)}\n\n".encode())
                 sent += len(batch)
                 self.wfile.flush()
                 if not running and not batch:

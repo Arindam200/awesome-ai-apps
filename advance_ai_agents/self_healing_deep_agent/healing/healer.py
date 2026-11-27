@@ -45,6 +45,9 @@ class Healer:
         self.failed_calls: dict[str, list] = {}      # tool -> args that broke it (replayed in verify)
         self.repairs_used: dict[str, int] = {}
         self.local_check_seconds = 0.0
+        # One repair at a time: the budget check, backup, write, checks and rollback must never
+        # interleave, or two repairs of the same tool could share (and corrupt) one backup file.
+        self._repair_lock = threading.Lock()
 
     # ------------------------------------------------------------------ business tools
     def langchain_tools(self) -> list[StructuredTool]:
@@ -75,7 +78,7 @@ class Healer:
         report = (
             f"# Failure report: tools/{name}.py\n\n"
             f"error: {type(exc).__name__}: {exc}\n"
-            f"kind: {'wrong output (contract check failed)' if isinstance(exc, ContractError) else 'crash'}\n"
+            f"kind: {'wrong output (contract check failed)' if isinstance(exc, ContractError) else 'syntax error (the file does not compile)' if _tool_syntax_error(exc) else 'crash'}\n"
             f"args: {_trim(json.dumps(args), 1200)}\n\n"
             f"## Traceback (tail)\n{tb}\n"
             f"## Values at the crashing line\n{_crash_locals(exc)}\n\n"
@@ -104,6 +107,10 @@ class Healer:
         return StructuredTool.from_function(repair_tool)
 
     def repair(self, tool_name: str, reason: str, edits: list) -> str:
+        with self._repair_lock:
+            return self._repair(tool_name, reason, edits)
+
+    def _repair(self, tool_name: str, reason: str, edits: list) -> str:
         rec = self.rec
         if tool_name not in self.open_bugs:                                    # guardrail 1
             msg = (f"{tool_name} has no open code bug. Only tools that crashed or returned wrong "
@@ -132,10 +139,16 @@ class Healer:
         rec.emit("patch", tool=tool_name, attempt=used + 1, diff=diff)
         backup = path.with_suffix(".py.bak")
         shutil.copy2(path, backup)                                             # guardrail 5
-        path.write_text(new, encoding="utf-8")
-
-        tests_ok, tests_out = self.run_tests(tool_name)                        # guardrail 6
-        replay_ok, replay_out = self.replay(tool_name)
+        try:
+            path.write_text(new, encoding="utf-8")
+            tests_ok, tests_out = self.run_tests(tool_name)                    # guardrail 6
+            replay_ok, replay_out = self.replay(tool_name)
+        except Exception as exc:   # e.g. the check process could not start: never keep an unchecked patch
+            shutil.move(backup, path)
+            msg = (f"checks could not run ({type(exc).__name__}: {exc}); "
+                   f"restored tools/{tool_name}.py from backup")
+            rec.emit("rollback", tool=tool_name, tests="", replay="", message=msg)
+            return f"REPAIR FAILED VERIFICATION (rolled back, file unchanged): {msg}"
         if not (tests_ok and replay_ok):
             shutil.move(backup, path)
             rec.emit("rollback", tool=tool_name, tests=tests_out, replay=replay_out,
@@ -313,7 +326,18 @@ def unified_diff(old: str, new: str, name: str) -> str:
                                         fromfile=f"a/{name}", tofile=f"b/{name}", n=1))
 
 
+def _tool_syntax_error(exc: Exception) -> bool:
+    """A tool file that doesn't compile fails while loading, before any tools/ frame runs.
+    Python records the broken file on the SyntaxError itself."""
+    if not isinstance(exc, SyntaxError) or not exc.filename:
+        return False
+    f = Path(exc.filename).resolve()
+    return f.parent == TOOLS_DIR.resolve() and f.name != "__init__.py"
+
+
 def _raised_in_tools(exc: Exception) -> bool:
+    if _tool_syntax_error(exc):
+        return True
     tb = exc.__traceback__
     while tb:
         f = Path(tb.tb_frame.f_code.co_filename).resolve()
@@ -331,6 +355,8 @@ def _crash_locals(exc: Exception) -> str:
         if f.parent == TOOLS_DIR.resolve() and f.name != "__init__.py":
             frame = tb.tb_frame
         tb = tb.tb_next
+    if _tool_syntax_error(exc):
+        return f"(the file does not compile: line {exc.lineno}: {(exc.text or '').strip()})"
     if frame is None:
         return "(the tool returned normally; its output failed the contract check)"
     return "\n".join(f"{k} = {_trim(repr(v), 400)}" for k, v in frame.f_locals.items() if not k.startswith("__"))

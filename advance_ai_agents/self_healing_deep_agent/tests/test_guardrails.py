@@ -4,6 +4,7 @@ Guardrails: allowlist, open-bug rule, syntax check, rollback, repair budget.
 Sorting: each kind of failure gets the right label, and only CODE_BUG opens a repair."""
 import os
 import shutil
+import threading
 from types import SimpleNamespace
 
 import pytest
@@ -23,12 +24,23 @@ ARGS = {"model_id": "meta-llama/Llama-3.3-70B-Instruct"}
 
 
 @pytest.fixture
-def healer(provider_api):
+def keep_tools():
+    """Tests swap tool files in and out. Afterwards, put back exactly what was there before,
+    even if a test fails, so running the tests never overwrites your own edits."""
+    saved = {p: p.read_bytes() for p in TOOLS_DIR.glob("*.py")}
+    yield
+    for p, data in saved.items():
+        p.write_bytes(data)
+    for bak in TOOLS_DIR.glob("*.bak"):
+        bak.unlink()
+
+
+@pytest.fixture
+def healer(provider_api, keep_tools):
     shutil.copy(BROKEN, TARGET)
     os.chdir(ROOT)
     h = Healer(Recorder(live=False), provider_api)
     yield h
-    shutil.copy(WORKING, TARGET)
     shutil.rmtree(ROOT / "failures", ignore_errors=True)
 
 
@@ -118,9 +130,48 @@ def test_retired_model_is_a_bad_argument(healer):
 def test_wrong_output_is_a_code_bug(healer):
     shutil.copy(WORKING, TARGET)
     shutil.copy(ROOT / "scenarios" / "broken" / "fetch_usage.py", TOOLS_DIR / "fetch_usage.py")
-    try:
-        out = call(healer, "fetch_usage", {"month": "2026-11"})
-        assert out.content.startswith("CODE_BUG")
-        assert "API reported total=26" in (ROOT / "failures" / "fetch_usage.md").read_text()
-    finally:
-        shutil.copy(ROOT / "scenarios" / "working" / "fetch_usage.py", TOOLS_DIR / "fetch_usage.py")
+    out = call(healer, "fetch_usage", {"month": "2026-11"})
+    assert out.content.startswith("CODE_BUG")
+    assert "API reported total=26" in (ROOT / "failures" / "fetch_usage.md").read_text()
+
+
+# ---------------------------------------------------------------- edge cases from review
+def test_syntax_error_in_a_tool_is_a_code_bug(healer):
+    TARGET.write_text(WORKING.read_text().replace("def fetch_pricing(model_id: str) -> dict:",
+                                                  "def fetch_pricing(model_id: str) -> dict"), encoding="utf-8")
+    out = call(healer)
+    assert out.content.startswith("CODE_BUG")
+    report = (ROOT / "failures" / "fetch_pricing.md").read_text()
+    assert "syntax error" in report and "does not compile" in report
+    fix = [{"find": "def fetch_pricing(model_id: str) -> dict\n", "replace": "def fetch_pricing(model_id: str) -> dict:\n"}]
+    assert healer.repair("fetch_pricing", "missing colon", fix).startswith("REPAIR VERIFIED")
+
+
+def test_patch_is_rolled_back_if_the_checks_cannot_run(healer, monkeypatch):
+    open_bug(healer)
+
+    def broken_runner(name):
+        raise OSError("could not start the test process")
+
+    monkeypatch.setattr(healer, "run_tests", broken_runner)
+    out = healer.repair("fetch_pricing", "x", FIX)
+    assert "rolled back" in out
+    assert TARGET.read_text() == BROKEN.read_text()
+    assert not TARGET.with_suffix(".py.bak").exists()
+
+
+def test_parallel_repairs_of_one_tool_take_turns(healer):
+    open_bug(healer)
+    bad = [{"find": 'float(data["price_usd"])', "replace": "1.0"}]
+    results = []
+    threads = [threading.Thread(target=lambda e=e: results.append(healer.repair("fetch_pricing", "x", e)))
+               for e in (bad, FIX)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert len(results) == 2                                  # neither raised
+    assert not TARGET.with_suffix(".py.bak").exists()
+    src = TARGET.read_text()
+    assert src == BROKEN.read_text() or 'data["pricing"]["unit_usd"]' in src
+    assert any(r.startswith("REPAIR VERIFIED") for r in results) == ('data["pricing"]["unit_usd"]' in src)
