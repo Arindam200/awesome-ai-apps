@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="960" viewBox="0 0 1600 960" role="img" aria-labelledby="title desc">
+  <title id="title">Context Relay, NConnect and Nebius Token Factory workflow</title>
+  <desc id="desc">Two separate paths: Claude Code history is captured and reviewed by Context Relay before a packet reaches Codex through MCP. Claude Code and Codex each send model requests through Studio1 OSS NConnect to Nebius Token Factory. The verified run captured eleven source events, recorded an accepted MCP receipt and passed the webhook verifier.</desc>
+  <defs>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#e8e7e1" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#7066c5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrow-teal" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#138c82" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <rect width="1600" height="960" fill="#f5f3ee"/>
+  <rect width="1600" height="960" fill="url(#grid)" opacity="0.48"/>
+
+  <rect x="64" y="48" width="193" height="34" rx="17" fill="#1d292c"/>
+  <text x="87" y="70" fill="#d6e9df" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="2">ARCHITECTURE</text>
+  <text x="64" y="146" fill="#1b292c" font-family="Arial, sans-serif" font-size="52" font-weight="700" letter-spacing="-1.7">One task. Two coding agents.</text>
+  <text x="64" y="185" fill="#52615e" font-family="Arial, sans-serif" font-size="21">NConnect routes model calls to Nebius. Context Relay carries reviewed work through MCP.</text>
+  <text x="1536" y="69" text-anchor="end" fill="#687772" font-family="Arial, sans-serif" font-size="16" font-weight="700">VERIFIED LOCAL RUN · 05 NOV 2026</text>
+
+  <rect x="64" y="224" width="1472" height="342" rx="26" fill="#ffffff" stroke="#d9ded9" stroke-width="2"/>
+  <text x="98" y="266" fill="#524ba8" font-family="Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="1.8">01  CONTEXT PATH</text>
+  <rect x="1334" y="243" width="169" height="32" rx="16" fill="#eeecf9"/>
+  <text x="1418" y="264" text-anchor="middle" fill="#625ab4" font-family="Arial, sans-serif" font-size="14" font-weight="700">REVIEWED HANDOFF</text>
+
+  <rect x="98" y="301" width="250" height="208" rx="20" fill="#1d292c"/>
+  <rect x="120" y="324" width="40" height="40" rx="11" fill="#d6efdf"/>
+  <text x="140" y="351" text-anchor="middle" fill="#2d5145" font-family="Arial, sans-serif" font-size="21" font-weight="700">C</text>
+  <text x="174" y="348" fill="#b5c7c1" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.2">SOURCE HARNESS</text>
+  <text x="120" y="404" fill="#ffffff" font-family="Arial, sans-serif" font-size="31" font-weight="700">Claude Code</text>
+  <text x="120" y="437" fill="#c1d0cb" font-family="Arial, sans-serif" font-size="17">Native session history</text>
+  <text x="120" y="482" fill="#b3e2c4" font-family="Arial, sans-serif" font-size="17" font-weight="700">11 events captured</text>
+
+  <path d="M 350 406 L 382 406" fill="none" stroke="#7066c5" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-purple)"/>
+
+  <rect x="390" y="301" width="820" height="208" rx="20" fill="#eeecf9" stroke="#d6d1f1" stroke-width="2"/>
+  <rect x="415" y="323" width="39" height="39" rx="11" fill="#7469c8"/>
+  <text x="434" y="349" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="20" font-weight="700">R</text>
+  <text x="468" y="349" fill="#29245c" font-family="Arial, sans-serif" font-size="27" font-weight="700">Context Relay</text>
+  <text x="468" y="374" fill="#676195" font-family="Arial, sans-serif" font-size="15">Local capture · human review · versioned continuation</text>
+  <rect x="415" y="400" width="237" height="77" rx="14" fill="#ffffff"/>
+  <text x="434" y="428" fill="#625ab4" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1">CAPTURE</text>
+  <text x="434" y="456" fill="#2f3351" font-family="Arial, sans-serif" font-size="17">Native session</text>
+  <path d="M 655 438 L 669 438" fill="none" stroke="#7066c5" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <rect x="674" y="400" width="237" height="77" rx="14" fill="#ffffff"/>
+  <text x="693" y="428" fill="#625ab4" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1">HUMAN REVIEW</text>
+  <text x="693" y="456" fill="#2f3351" font-family="Arial, sans-serif" font-size="17">Select evidence + rules</text>
+  <path d="M 914 438 L 928 438" fill="none" stroke="#7066c5" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <rect x="933" y="400" width="252" height="77" rx="14" fill="#ffffff"/>
+  <text x="952" y="428" fill="#625ab4" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1">PACKET</text>
+  <text x="952" y="456" fill="#2f3351" font-family="Arial, sans-serif" font-size="17">relay.packet/v1</text>
+
+  <path d="M 1212 406 L 1247 406" fill="none" stroke="#7066c5" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-purple)"/>
+  <text x="1230" y="387" text-anchor="middle" fill="#7066c5" font-family="Arial, sans-serif" font-size="12" font-weight="700">MCP</text>
+  <rect x="1254" y="301" width="248" height="208" rx="20" fill="#1d292c"/>
+  <rect x="1276" y="324" width="40" height="40" rx="11" fill="#d6efdf"/>
+  <text x="1296" y="351" text-anchor="middle" fill="#2d5145" font-family="Arial, sans-serif" font-size="21" font-weight="700">X</text>
+  <text x="1330" y="348" fill="#b5c7c1" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="1.2">RECEIVER</text>
+  <text x="1276" y="404" fill="#ffffff" font-family="Arial, sans-serif" font-size="31" font-weight="700">Codex</text>
+  <text x="1276" y="437" fill="#c1d0cb" font-family="Arial, sans-serif" font-size="17">Inspect → accept</text>
+  <text x="1276" y="482" fill="#b3e2c4" font-family="Arial, sans-serif" font-size="17" font-weight="700">Continue the task</text>
+  <text x="98" y="542" fill="#697772" font-family="Arial, sans-serif" font-size="16">Only selected, reviewed context crosses the harness boundary.</text>
+
+  <rect x="64" y="590" width="1472" height="236" rx="26" fill="#eaf4f1" stroke="#d3e3dd" stroke-width="2"/>
+  <text x="98" y="632" fill="#13766e" font-family="Arial, sans-serif" font-size="17" font-weight="700" letter-spacing="1.8">02  MODEL PATH</text>
+  <text x="1502" y="632" text-anchor="end" fill="#51867c" font-family="Arial, sans-serif" font-size="15" font-weight="700">BOTH HARNESSES · ONE PROVIDER</text>
+  <rect x="98" y="663" width="222" height="49" rx="13" fill="#ffffff" stroke="#c4ddd3" stroke-width="2"/>
+  <text x="121" y="695" fill="#1d3732" font-family="Arial, sans-serif" font-size="21" font-weight="700">Claude Code</text>
+  <rect x="98" y="730" width="222" height="49" rx="13" fill="#ffffff" stroke="#c4ddd3" stroke-width="2"/>
+  <text x="121" y="762" fill="#1d3732" font-family="Arial, sans-serif" font-size="21" font-weight="700">Codex</text>
+  <path d="M 321 687 L 407 687 L 407 720 L 450 720" fill="none" stroke="#138c82" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow-teal)"/>
+  <path d="M 321 754 L 407 754 L 407 720" fill="none" stroke="#138c82" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="407" cy="720" r="5" fill="#138c82"/>
+
+  <rect x="459" y="661" width="448" height="120" rx="20" fill="#ffffff" stroke="#9ccdc4" stroke-width="2"/>
+  <text x="487" y="713" fill="#116e67" font-family="Arial, sans-serif" font-size="36" font-weight="700" letter-spacing="-1">nconnect</text>
+  <text x="489" y="744" fill="#4f7970" font-family="Arial, sans-serif" font-size="17" font-weight="700">by Studio1 OSS</text>
+  <text x="704" y="708" fill="#27554d" font-family="Arial, sans-serif" font-size="17">Protocol translation</text>
+  <text x="704" y="739" fill="#58756d" font-family="Arial, sans-serif" font-size="16">Claude + Codex model I/O</text>
+  <path d="M 909 721 L 996 721" fill="none" stroke="#138c82" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-teal)"/>
+  <text x="953" y="700" text-anchor="middle" fill="#13766e" font-family="Arial, sans-serif" font-size="13" font-weight="700">INFERENCE</text>
+
+  <rect x="1005" y="661" width="497" height="120" rx="20" fill="#fff7ee" stroke="#e7c6a8" stroke-width="2"/>
+  <rect x="1033" y="688" width="61" height="61" rx="17" fill="#f1c595"/>
+  <text x="1063" y="727" text-anchor="middle" fill="#5e3a21" font-family="Arial, sans-serif" font-size="22" font-weight="700">TF</text>
+  <text x="1113" y="712" fill="#50351f" font-family="Arial, sans-serif" font-size="27" font-weight="700">Nebius Token Factory</text>
+  <text x="1113" y="745" fill="#856147" font-family="Arial, sans-serif" font-size="17">Kimi K3.1 Pro  ·  GLM 5.3 Flash</text>
+
+  <rect x="64" y="852" width="460" height="74" rx="18" fill="#ffffff" stroke="#d9ded9" stroke-width="2"/>
+  <text x="88" y="883" fill="#1d292c" font-family="Arial, sans-serif" font-size="24" font-weight="700">11 source events</text>
+  <text x="88" y="908" fill="#65736d" font-family="Arial, sans-serif" font-size="16">Captured from the native Claude session</text>
+  <rect x="570" y="852" width="460" height="74" rx="18" fill="#ffffff" stroke="#d9ded9" stroke-width="2"/>
+  <text x="594" y="883" fill="#1d292c" font-family="Arial, sans-serif" font-size="24" font-weight="700">Accepted</text>
+  <text x="594" y="908" fill="#65736d" font-family="Arial, sans-serif" font-size="16">Codex recorded the MCP receipt</text>
+  <rect x="1076" y="852" width="460" height="74" rx="18" fill="#ffffff" stroke="#d9ded9" stroke-width="2"/>
+  <text x="1100" y="883" fill="#1d292c" font-family="Arial, sans-serif" font-size="24" font-weight="700">Verifier passed</text>
+  <text x="1100" y="908" fill="#65736d" font-family="Arial, sans-serif" font-size="16">Webhook exercise completed in Codex</text>
+</svg>
