@@ -1,0 +1,7 @@
+[project]
+name = "mcp-incident-response-agent"
+version = "0.1.0"
+description = "SRE incident triage agent over a local mock MCP server"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["openai-agents", "fastmcp", "python-dotenv", "openai"]

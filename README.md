@@ -129,7 +129,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | [🧩 Starter Agents](#-starter-agents) | One minimal agent per framework: Agno, LangGraph, CrewAI, OpenAI Agents SDK, Google ADK, Mastra and more | 22 |
 | [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 21 |
 | [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 9 |
-| [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 14 |
+| [🗂️ MCP Agents](#️-mcp-agents) | Model Context Protocol servers and agents wired to external tools | 15 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
 | [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
 | [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 42 |
@@ -218,6 +218,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [GibsonAI Database MCP Agent](mcp_ai_agents/database_mcp_agent): Conversational AI agent for managing GibsonAI database projects and schemas
 - [GitHub MCP Agent](mcp_ai_agents/github_mcp_agent): Repository insights and analysis via MCP
 - [GitHub MCP Agent Starter](mcp_ai_agents/mcp_starter): GitHub repository analyzer starter template
+- [Incident Response MCP Agent](mcp_ai_agents/mcp_incident_response_agent): SRE agent that triages mock alerts, checks service status, searches runbooks and drafts a status update via a local FastMCP server
 - [Hotel Finder Agent](mcp_ai_agents/hotel_finder_agent): Hotel search and booking using MCP integration
 - [Sandboxed Code Execution MCP Agent (Docker + E2B)](mcp_ai_agents/e2b_docker_mcp_agent): Secure AI agent for running agents in sandboxed Docker environments via MCP Gateway
 - [Secure Database MCP Agent (MCP Toolbox)](mcp_ai_agents/mcp_toolbox_security_agent): Secure ecommerce agent over PostgreSQL and MongoDB; MCP Toolbox enforces per-user data access, least-privilege roles, and authorized tools

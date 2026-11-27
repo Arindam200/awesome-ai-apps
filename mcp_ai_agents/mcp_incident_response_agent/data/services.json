@@ -1,0 +1,6 @@
+{
+  "checkout-api": {"status": "degraded", "owner": "team-commerce", "depends_on": ["payments-db", "inventory-api"], "customer_facing": true, "last_deploy": "2025-01-15T08:45:00Z"},
+  "payments-db": {"status": "degraded", "owner": "team-data", "depends_on": [], "customer_facing": false, "last_deploy": "2024-12-20T10:00:00Z"},
+  "inventory-api": {"status": "healthy", "owner": "team-commerce", "depends_on": [], "customer_facing": false, "last_deploy": "2025-01-10T14:00:00Z"},
+  "search-api": {"status": "healthy", "owner": "team-discovery", "depends_on": [], "customer_facing": true, "last_deploy": "2025-01-12T11:00:00Z"}
+}
