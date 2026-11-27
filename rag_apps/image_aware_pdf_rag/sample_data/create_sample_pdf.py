@@ -99,7 +99,7 @@ def generate_sample_pdf(output_path: str = "sample_document.pdf") -> str:
     p2 = doc.new_page(width=595, height=842)
     p2.insert_text(
         (50, 50),
-        "Figure 1 — Quarterly Revenue ($ millions)",
+        "Figure 1: Quarterly Revenue ($ millions)",
         fontsize=14,
         color=(0.1, 0.1, 0.3),
     )

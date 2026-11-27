@@ -272,7 +272,7 @@ class NebiusVisionModel:
 
             if width == 1 and height == 1:
                 raise VisionImageTooLargeError(
-                    "Page image cannot be reduced below Groq's request limit"
+                    "Page image cannot be reduced below Nebius's request limit"
                 )
 
             width = max(1, int(width * 0.75))

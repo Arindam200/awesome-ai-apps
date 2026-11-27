@@ -1,7 +1,7 @@
 [project]
 name = "image-aware-pdf-rag"
 version = "0.1.0"
-description = "Multimodal RAG for PDFs — text, charts, tables, and diagrams with page-level citations."
+description = "Multimodal RAG for PDFs: text, charts, tables, and diagrams with page-level citations."
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

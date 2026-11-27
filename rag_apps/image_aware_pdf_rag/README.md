@@ -12,8 +12,8 @@ Image-Aware PDF RAG bridges the gap between unstructured text search and visual 
 - **Visual Understanding**: Answers questions about charts, statistical plots, tables, and system architecture diagrams.
 - **Grounded Citations**: Grounded answers with exact page numbers and evidence summaries for fast verification.
 - **Interactive Document Preview**: Side-by-side Streamlit dashboard to preview the cited PDF page directly.
-- **Fast Inference**: Powered by Groq for high-speed multimodal understanding and conversational responses.
-- **Provider Agnostic**: Clean interfaces supporting Groq, OpenAI, and Anthropic Claude vision and chat backends.
+- **Fast Inference**: Powered by Nebius Token Factory for high-speed multimodal understanding and conversational responses.
+- **Provider Agnostic**: Clean interfaces supporting Nebius Token Factory and OpenAI-compatible vision and chat backends.
 
 ## 🛠️ Tech Stack
 
@@ -53,7 +53,7 @@ flowchart TD
 
 - Python 3.10+
 - [uv](https://github.com/astral-sh/uv) or `pip`
-- A [Nebius API Key](https://nebius.com/services/studio) for inference.
+- A [Nebius API Key](https://dub.sh/nebius) via the Nebius Builder program (includes free credits) for inference.
 
 ### Environment Variables
 

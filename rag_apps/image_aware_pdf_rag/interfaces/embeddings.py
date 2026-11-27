@@ -4,7 +4,7 @@
 Potential adapters:
 - Local sentence-transformers models
 - Hugging Face embedding models
-- OpenAI embedding models
+- OpenAI-compatible embedding models
 - Other compatible embedding providers
 
 No provider-specific SDK dependencies belong in this module.

@@ -5,10 +5,9 @@ Provider adapters should implement this contract without changing
 the core RAG pipeline.
 
 Potential adapters:
-- Hugging Face
-- Groq
-- OpenAI
-- Anthropic Claude
+- Nebius Token Factory
+- Hugging Face models
+- OpenAI-compatible endpoints
 - Local chat models
 """
 

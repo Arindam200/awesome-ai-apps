@@ -9,9 +9,13 @@ Nebius chat, and Nebius vision modules.
 
 from __future__ import annotations
 
+import os
+
+# Prevent OpenMP / PyTorch segfaults on Apple Silicon / multi-threaded environments.
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+
 import hashlib
 import html
-import os
 from typing import Any
 
 import streamlit as st
@@ -856,7 +860,7 @@ with col_center:
     # Try an example section with the 4 exact requested examples
     st.markdown('<div style="font-size:0.78rem; color:#64748b; font-weight:600; margin: 4px 0 6px 0;">Try an example:</div>', unsafe_allow_html=True)
     example_questions = [
-        "What is the main contribution of this paper?",
+        "What is this document about?",
         "What does the chart on page 2 show?",
         "What was the Q4 revenue in the chart on page 2?",
         "What are the key results in the table on page 3?",

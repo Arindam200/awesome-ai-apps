@@ -2,10 +2,9 @@
 """Provider-independent interface for PDF page visual analysis.
 
 Provider adapters may use:
+- Nebius Token Factory multimodal models
 - Hugging Face vision models
-- Groq models that support image input
-- OpenAI vision models
-- Anthropic Claude vision models
+- OpenAI-compatible vision models
 - Local vision-language models
 
 This module contains no provider-specific SDK dependencies.
