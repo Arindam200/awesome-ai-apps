@@ -1,0 +1,7 @@
+John: Alright team, let's kick off the Q3 planning meeting. First, we need to finalize the budget.
+Sarah: I can handle the budget. I'll have the final numbers ready by Friday.
+John: Great. What about the new landing page?
+Mike: I'm still waiting on the design assets from the agency. It's a blocker for the frontend work.
+John: Okay, Mike, keep chasing them. We also need to figure out the migration plan for the legacy database.
+Sarah: I'm not sure who should own that. It's a high risk if we mess it up.
+John: Let's table the database migration for now and follow up next week. Finally, we need to order more swag for the conference.
