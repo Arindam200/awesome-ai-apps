@@ -330,6 +330,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 ### 🎓 Course Playlists
 
 - [**AWS Strands Course**](course/aws_strands): Complete 8-lesson course on building AI agents with AWS Strands SDK ([watch the playlist](https://www.youtube.com/playlist?list=PLMZM1DAlf0Lrc43ZtUXAwYu9DhnqxzRKZ))
+- [AshuTeacher](https://ashuteacher.vercel.app) - AI-powered learning PWA & Android app (freemium) with an interactive voice blackboard tutor in 24+ languages, exam paper solver, adaptive quizzes, and a Project, Thesis & Research Studio.
 - [**Voice Agents Playlist**](https://www.youtube.com/watch?v=c6t4q0tE61E&list=PLKCdxubW1354): Tutorials on building voice agents
 
 ### 🔧 Framework Tutorials
