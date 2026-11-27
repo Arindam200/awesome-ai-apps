@@ -1,0 +1,21 @@
+[project]
+name = "self-healing-deep-agent"
+version = "0.1.0"
+description = "A LangChain Deep Agents agent that repairs its own broken tools, and knows when not to"
+requires-python = ">=3.11"
+dependencies = [
+    "deepagents>=0.7.42",
+    "langchain-openai>=1.8.5",
+    "python-dotenv>=1.2.4",
+    "rich>=15.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider"
