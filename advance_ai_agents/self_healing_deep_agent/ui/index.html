@@ -1,0 +1,511 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Self-healing agent · live</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #EEF1F5; --panel: #fff; --line: #E2E6EC; --text: #121620; --muted: #6B7380; --faint: #A2A9B4;
+    --agent: #2563EB; --agent-soft: #EAF1FF; --fixer: #7C3AED; --fixer-soft: #F3EDFF;
+    --ok: #15803D; --ok-soft: #E8F7EE; --bad: #DC2626; --bad-soft: #FDECEC; --warn: #B45309; --warn-soft: #FFF4E0; --ink: #0F172A;
+    --mono: "JetBrains Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--text); font-family: Inter, "Segoe UI", sans-serif; }
+  .app { height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr) 520px; grid-template-rows: auto minmax(0, 1fr) auto;
+         gap: 18px 22px; padding: 22px 28px; max-width: 1700px; margin: 0 auto; }
+
+  header { grid-column: 1 / 3; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .pill { display: flex; align-items: center; gap: 10px; padding: 9px 18px 9px 10px; border-radius: 999px; border: 2px solid var(--line);
+          background: transparent; color: var(--muted); font: 600 17px Inter, sans-serif; cursor: pointer; }
+  .pill b { width: 26px; height: 26px; border-radius: 13px; display: grid; place-items: center; font-size: 14px; background: var(--line); color: var(--muted); }
+  .pill.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .pill.on b { background: #fff; color: var(--ink); }
+  .pill:disabled { cursor: default; opacity: .6; }
+  .arrow { color: var(--faint); font-size: 20px; }
+  .badge { margin-left: auto; text-align: right; line-height: 1.35; }
+  .badge .a { font-size: 15px; font-weight: 600; } .badge .a i { display: inline-block; width: 9px; height: 9px; border-radius: 5px; background: var(--bad); margin-right: 8px; }
+  .badge .b { font-size: 13px; color: var(--muted); }
+
+  .card { background: var(--panel); border: 2px solid var(--line); border-radius: 18px; }
+  .main { display: flex; flex-direction: column; min-height: 0; }
+  .bar { height: 54px; border-bottom: 2px solid var(--line); display: flex; align-items: center; gap: 10px; padding: 0 20px; flex: none; }
+  .bar .dot { width: 12px; height: 12px; border-radius: 6px; background: var(--agent); }
+  .bar h2 { font-size: 18px; } .bar span { color: var(--muted); font-size: 15px; }
+  .bar .tok { margin-left: auto; font: 500 14px var(--mono); color: var(--muted); display: flex; gap: 8px; align-items: center; }
+  .plus { background: var(--ok-soft); color: var(--ok); border-radius: 7px; padding: 2px 8px; font-weight: 600; }
+  .feed { flex: 1; overflow-y: auto; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+  .empty { margin: auto; text-align: center; color: var(--muted); font-size: 17px; line-height: 1.6; max-width: 460px; }
+  .empty b { display: block; color: var(--text); font-size: 22px; margin-bottom: 6px; }
+
+  .item { animation: in .35s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .t { font: 500 12px var(--mono); color: var(--faint); white-space: nowrap; margin-left: auto; }
+  .user { align-self: flex-end; display: flex; gap: 10px; align-items: center; }
+  .user .bubble { background: var(--agent); color: #fff; font-size: 17px; padding: 12px 18px; border-radius: 16px 16px 4px 16px; }
+  .av { width: 32px; height: 32px; border-radius: 9px; flex: none; display: grid; place-items: center; font-size: 12px; font-weight: 700; }
+  .av.agent { background: var(--agent-soft); color: var(--agent); } .av.fixer { background: var(--fixer-soft); color: var(--fixer); }
+  .av.you { background: var(--ink); color: #fff; border-radius: 16px; }
+  .says { display: flex; gap: 12px; align-items: flex-start; font-size: 17px; line-height: 1.5; }
+  .says div { padding-top: 4px; white-space: pre-wrap; flex: 1; }
+  .box { border: 2px solid var(--line); border-radius: 12px; padding: 12px 16px; background: #FAFBFC; }
+  .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .tag { font-size: 11.5px; font-weight: 700; letter-spacing: .04em; border-radius: 6px; padding: 3px 7px; }
+  .tag.call { color: var(--agent); background: var(--agent-soft); }
+  .fn { font: 600 16px var(--mono); } .args { color: var(--muted); font-size: 14px; font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 46ch; }
+  .res { margin-top: 8px; font-size: 15px; display: flex; gap: 8px; align-items: flex-start; }
+  .res .ic { width: 22px; height: 22px; border-radius: 11px; color: #fff; display: grid; place-items: center; font-size: 13px; flex: none; }
+  .res.ok { color: var(--ok); } .res.ok .ic { background: var(--ok); }
+  .res.bad { color: var(--bad); font-family: var(--mono); } .res.bad .ic { background: var(--bad); }
+  .res.wait { color: var(--muted); } .res.wait .ic { background: var(--line); }
+  .res span.txt { word-break: break-word; }
+  .error { border: 2px solid var(--bad); background: var(--bad-soft); border-radius: 12px; padding: 12px 16px; }
+  .error .title { font: 600 19px var(--mono); color: var(--bad); }
+  .tag.err { color: #fff; background: var(--bad); }
+  .label { border: 2px solid var(--line); border-radius: 12px; padding: 12px 16px; background: #fff; }
+  .chip { font: 700 15px var(--mono); color: #fff; border-radius: 7px; padding: 3px 10px; }
+  .chip.CODE_BUG { background: var(--bad); } .chip.TEMPORARY { background: var(--warn); }
+  .chip.BAD_ARGUMENTS { background: var(--agent); } .chip.NEEDS_HUMAN { background: var(--fixer); }
+  .label .why { font-size: 16px; font-weight: 600; margin-top: 8px; } .label .rep { font: 500 13px var(--mono); color: var(--muted); margin-top: 4px; }
+  .retry { border: 2px solid #F2C46D; background: var(--warn-soft); border-radius: 12px; padding: 10px 16px; color: var(--warn); font-weight: 600; font-size: 15px; }
+  .handoff { border: 2px solid var(--fixer); background: var(--fixer-soft); border-radius: 12px; padding: 12px 16px; }
+  .tag.fx { color: #fff; background: var(--fixer); } .handoff .fn { color: var(--fixer); } .handoff p { margin-top: 6px; font-size: 14px; color: #4C1D95; }
+  .answer { border: 2px solid var(--line); border-radius: 12px; padding: 12px 16px; background: #FAFBFC; font-size: 16px; line-height: 1.55; white-space: pre-wrap; }
+  .banner { border-radius: 12px; padding: 14px 18px; display: flex; gap: 14px; align-items: center; }
+  .banner .big { width: 42px; height: 42px; border-radius: 21px; color: #fff; display: grid; place-items: center; font-size: 22px; flex: none; }
+  .banner.good { background: var(--ok-soft); border: 2px solid var(--ok); } .banner.good .big { background: var(--ok); } .banner.good h3 { color: var(--ok); }
+  .banner.bad { background: #7F1D1D; color: #fff; } .banner.bad .big { background: #fff; color: var(--bad); }
+  .banner h3 { font-size: 19px; } .banner p { font: 500 13.5px var(--mono); opacity: .85; margin-top: 3px; }
+
+  .input { flex: none; margin: 0 20px 18px; border: 2px solid var(--line); border-radius: 14px; display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 16px; }
+  .input .q { flex: 1; font-size: 17px; }
+  select { font: 600 15px Inter, sans-serif; padding: 9px 10px; border-radius: 10px; border: 2px solid var(--line); background: #F6F7F9; color: var(--text); max-width: 330px; }
+  .go { font: 700 15px Inter, sans-serif; padding: 11px 20px; border-radius: 10px; border: 0; background: var(--agent); color: #fff; cursor: pointer; }
+  .go:disabled { background: var(--faint); cursor: default; }
+
+  .side { display: flex; flex-direction: column; gap: 18px; min-height: 0; }
+  .side .card { padding: 16px 18px; }
+  .side h4 { font-size: 12.5px; letter-spacing: .1em; color: var(--muted); margin-bottom: 12px; }
+  .step { display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 14px; border-radius: 10px; border: 2px solid var(--line); margin-bottom: 7px; }
+  .step i { width: 12px; height: 12px; border-radius: 6px; background: var(--faint); }
+  .step .n { font: 600 16px var(--mono); } .step .s { margin-left: auto; font-size: 12.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--faint); }
+  .step.run { border-color: var(--agent); background: var(--agent-soft); } .step.run i { background: var(--agent); } .step.run .s { color: var(--agent); }
+  .step.ok i { background: var(--ok); } .step.ok .s { color: var(--ok); }
+  .step.fail { border-color: var(--bad); background: var(--bad-soft); } .step.fail i, .step.never i { background: var(--bad); } .step.fail .s { color: var(--bad); }
+  .step.fixing { border-color: var(--fixer); background: var(--fixer-soft); } .step.fixing i { background: var(--fixer); } .step.fixing .s { color: var(--fixer); }
+  .step.fixed { border-color: var(--ok); background: var(--ok-soft); } .step.fixed i { background: var(--ok); } .step.fixed .s { color: var(--ok); }
+  .step.retry { border-color: #F2C46D; background: var(--warn-soft); } .step.retry i { background: var(--warn); } .step.retry .s { color: var(--warn); }
+  .step.never .n { color: var(--faint); } .step.never i { background: var(--faint); }
+  .meters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 12px; }
+  .meters .v { font: 700 20px var(--mono); } .meters .l { font-size: 12px; color: var(--muted); }
+  .has div { display: flex; gap: 10px; align-items: center; font-size: 15.5px; margin-bottom: 9px; }
+  .has div b { width: 24px; height: 24px; border-radius: 12px; color: #fff; display: grid; place-items: center; font-size: 13px; flex: none; }
+
+  .fixer { border-color: var(--fixer); box-shadow: 0 0 0 4px rgba(124,58,237,.12); display: none; flex-direction: column; min-height: 0; flex: 1; padding: 0 !important; overflow: hidden; animation: slide .45s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes slide { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+  .fixer.on { display: flex; }
+  .fixer .bar { background: var(--fixer-soft); border-color: rgba(124,58,237,.2); }
+  .fixer .bar .dot { background: var(--fixer); } .fixer .bar h2 { color: var(--fixer); } .fixer .bar span { color: #6D28D9; }
+  .fixer .feed { padding: 14px; gap: 10px; }
+  .file { font: 500 13.5px var(--mono); padding: 8px 12px; border: 2px solid var(--line); border-radius: 10px; }
+  .file b { color: var(--fixer); font-weight: 600; }
+  .diff { border: 2px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .diff .h { background: #F6F7F9; padding: 8px 12px; font: 600 13.5px var(--mono); color: var(--warn); display: flex; gap: 8px; align-items: center; }
+  .diff pre { font: 500 12.5px/1.75 var(--mono); overflow-x: auto; }
+  .diff pre span { display: block; padding: 0 10px; white-space: pre; }
+  .diff .a { background: var(--ok-soft); color: var(--ok); } .diff .d { background: var(--bad-soft); color: var(--bad); text-decoration: line-through; }
+  .check { border: 2px solid var(--line); border-radius: 10px; padding: 10px 12px; display: flex; gap: 10px; align-items: center; font-size: 14.5px; font-weight: 600; }
+  .check.ok { border-color: var(--ok); background: var(--ok-soft); color: var(--ok); }
+  .check.bad { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); }
+  .spin { width: 22px; height: 22px; border-radius: 11px; border: 3px solid rgba(124,58,237,.2); border-top-color: var(--fixer); animation: rot .8s linear infinite; flex: none; }
+  @keyframes rot { to { transform: rotate(360deg); } }
+  .back { background: var(--fixer); color: #fff; border-radius: 10px; padding: 10px 12px; font-size: 14.5px; line-height: 1.45; }
+  .back small { display: block; font-size: 11px; font-weight: 700; letter-spacing: .06em; opacity: .85; margin-bottom: 3px; }
+  .thinking { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 15px; }
+  .thinking i { width: 8px; height: 8px; border-radius: 4px; background: var(--agent); animation: blink 1s infinite; }
+  .thinking i:nth-child(3) { animation-delay: .2s; } .thinking i:nth-child(4) { animation-delay: .4s; }
+  .fixer .thinking i { background: var(--fixer); }
+  @keyframes blink { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+
+  footer { grid-column: 1 / 3; display: flex; align-items: center; gap: 14px; background: var(--panel); border: 2px solid var(--line); border-radius: 14px; padding: 12px 20px; }
+  footer .st { font: 700 12px Inter; letter-spacing: .08em; background: var(--warn); color: #fff; border-radius: 6px; padding: 5px 9px; white-space: nowrap; }
+  footer .cap { font-size: 18px; font-weight: 600; }
+  footer .src { margin-left: auto; font: 500 12px var(--mono); color: var(--faint); text-align: right; }
+  @media (max-width: 1100px) { .app { grid-template-columns: 1fr; height: auto; } .main { height: 70vh; } header, footer { grid-column: 1; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <button class="pill" id="m-plain" data-mode="plain"><b>1</b>Plain Deep Agent</button>
+    <span class="arrow">→</span>
+    <button class="pill on" id="m-healing" data-mode="healing"><b>2</b>With the self-healing layer</button>
+    <div class="badge"><div class="a"><i></i><span id="kind">Live runs</span></div><div class="b" id="model"></div></div>
+  </header>
+
+  <section class="card main">
+    <div class="bar"><span class="dot"></span><h2 id="title">Main agent</h2><span>· conversation</span><span class="tok" id="tok"></span></div>
+    <div class="feed" id="feed">
+      <div class="empty"><b>Pick a situation and press Run</b>Every situation runs the same task with one thing broken. Switch between the plain Deep Agent and the self-healing one at the top.</div>
+    </div>
+    <div class="input">
+      <span class="q" id="task"></span>
+      <select id="scenario"></select>
+      <button class="go" id="go">Run ↵</button>
+    </div>
+  </section>
+
+  <aside class="side">
+    <div class="card"><h4>THE TASK, STEP BY STEP</h4><div id="pipe"></div></div>
+    <div class="card"><h4>LIVE COST</h4><div class="meters" id="meters"></div></div>
+    <div class="card has" id="has"></div>
+    <div class="card fixer" id="fixer">
+      <div class="bar"><span class="dot"></span><h2>tool-fixer</h2><span id="fxstate">· its own separate conversation</span><span class="tok" id="fxtok"></span></div>
+      <div class="feed" id="ffeed"></div>
+    </div>
+  </aside>
+
+  <footer><span class="st" id="st">READY</span><span class="cap" id="cap">Nothing running yet.</span><span class="src" id="src"></span></footer>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const STEPS = ["fetch_usage", "summarize_usage", "fetch_pricing", "export_report"];
+let CFG = null, mode = "healing", S = null, es = null;
+
+const KIND = {
+  CODE_BUG: "The tool's own code is wrong",
+  TEMPORARY: "The API is busy right now. Not a code bug",
+  BAD_ARGUMENTS: "The input was wrong. The code is fine",
+  NEEDS_HUMAN: "An access problem. A person has to act",
+};
+
+async function boot() {
+  CFG = await (await fetch("/api/scenarios")).json();
+  $("task").textContent = CFG.task;
+  $("model").textContent = `LangChain Deep Agents · ${CFG.model} on Nebius`;
+  $("scenario").innerHTML = CFG.scenarios.map((s) => `<option value="${s.id}" ${s.id === "S1" ? "selected" : ""}>${s.id} · ${esc(s.name)}</option>`).join("");
+  if (CFG.replay) {
+    $("kind").textContent = "Replay of a recorded run";
+    $("src").textContent = CFG.replay;
+    $("scenario").style.display = "none";
+    document.querySelectorAll(".pill").forEach((p) => (p.disabled = true));
+  }
+  document.querySelectorAll(".pill").forEach((p) => p.addEventListener("click", () => setMode(p.dataset.mode)));
+  $("go").addEventListener("click", start);
+  setMode("healing");
+  reset();
+}
+
+function setMode(m) {
+  mode = m;
+  $("m-plain").classList.toggle("on", m === "plain");
+  $("m-healing").classList.toggle("on", m === "healing");
+  $("title").textContent = m === "plain" ? "Plain Deep Agent" : "Main agent";
+  $("has").innerHTML = m === "plain"
+    ? `<h4>WHAT THIS AGENT HAS</h4><div><b style="background:var(--bad)">✕</b>An error inside a tool ends the run</div><div><b style="background:var(--bad)">✕</b>No way to fix a broken tool</div>`
+    : `<h4>WHAT WE ADDED</h4><div><b style="background:var(--ok)">✓</b>Middleware sorts every failure</div><div><b style="background:var(--ok)">✓</b>tool-fixer sub-agent, on standby</div><div><b style="background:var(--ok)">✓</b>Patches kept only if tests pass</div>`;
+}
+
+function reset() {
+  S = {steps: Object.fromEntries(STEPS.map((n) => [n, ["", "waiting"]])), pending: {}, says: {}, usage: {calls: 0, fx: 0, in: 0, cached: 0, out: 0},
+       mainTok: 0, fixTok: 0, mainAtHandoff: null, t: 0, failedTool: null, thinking: {}, lastSays: {}, saidSinceTool: false, t0: null, running: false, patched: 0};
+  $("feed").innerHTML = ""; $("ffeed").innerHTML = ""; $("fixer").classList.remove("on"); $("has").style.display = "";
+  $("tok").innerHTML = ""; $("fxtok").textContent = ""; $("fxstate").textContent = "· its own separate conversation";
+  drawPipe(); drawMeters();
+}
+
+async function start() {
+  reset();
+  S.t0 = performance.now(); S.running = true;
+  $("go").disabled = true;
+  document.querySelectorAll(".pill").forEach((p) => (p.disabled = true));
+  let r;
+  try {
+    r = await fetch("/api/run", {method: "POST", headers: {"Content-Type": "application/json"},
+                                 body: JSON.stringify({scenario: $("scenario").value, mode})});
+  } catch (err) {
+    idle();
+    caption("OFFLINE", "Couldn't reach the local server. Is uv run app.py still running?", "var(--bad)");
+    return;
+  }
+  if (!r.ok) {
+    const body = await r.json().catch(() => ({}));
+    idle();
+    caption("BUSY", body.error || `The server said no (HTTP ${r.status}).`, "var(--bad)");
+    return;
+  }
+  caption("RUNNING", "Starting a fresh run. The tools are reset and the situation's fault is switched on.");
+  if (!CFG.replay) $("src").textContent = `${$("scenario").value} · ${mode === "plain" ? "plain Deep Agent" : "self-healing agent"} · real run`;
+  es = new EventSource("/api/stream");
+  es.onmessage = (m) => handle(JSON.parse(m.data));
+  es.addEventListener("end", () => { es.close(); idle(); drawMeters(); });
+}
+
+// Back to "ready": used when a run ends, and when a run could not start at all.
+function idle() {
+  S.running = false;
+  $("go").disabled = false;
+  if (!CFG.replay) document.querySelectorAll(".pill").forEach((p) => (p.disabled = false));
+}
+
+function caption(step, text, color) {
+  $("st").textContent = step; $("st").style.background = color || "var(--warn)"; $("cap").textContent = text;
+}
+
+function add(feed, html, cls = "") {
+  const el = document.createElement("div");
+  el.className = "item " + cls; el.innerHTML = html;
+  const f = $(feed); f.appendChild(el); f.scrollTop = f.scrollHeight;
+  return el;
+}
+
+function thinking(who, on) {
+  const feed = who === "tool-fixer" ? "ffeed" : "feed";
+  if (S.thinking[feed]) { S.thinking[feed].remove(); S.thinking[feed] = null; }
+  if (on) S.thinking[feed] = add(feed, `<div class="thinking"><span class="av ${who === "tool-fixer" ? "fixer" : "agent"}">${who === "tool-fixer" ? "FX" : "AI"}</span>Model is thinking<i></i><i></i><i></i></div>`);
+}
+
+const T = (t) => `<span class="t">at ${Number(t).toFixed(1)}s</span>`;
+
+function handle(e) {
+  S.t = e.t;
+  const fx = e.agent === "tool-fixer";
+  const feed = fx ? "ffeed" : "feed";
+  switch (e.type) {
+    case "run_start":
+      add("feed", `<div class="user"><span class="t">at 0.0s</span><div class="bubble">${esc(e.task)}</div><span class="av you">You</span></div>`);
+      thinking("agent", true);
+      caption("RUNNING", `${e.scenario.replace(/^\S+\s+/, "")}: the agent starts on the task.`);
+      break;
+    case "token": {
+      thinking(e.agent, false);
+      let s = S.says[e.agent];
+      if (!fx) S.saidSinceTool = true;
+      if (!s) { s = S.says[e.agent] = S.lastSays[e.agent] = add(feed, `<div class="says"><span class="av ${fx ? "fixer" : "agent"}">${fx ? "FX" : "AI"}</span><div></div>${T(e.t)}</div>`); }
+      s.dataset.raw = (s.dataset.raw || "") + e.text;
+      s.querySelector(".says > div").textContent = s.dataset.raw.replace(/[*`]/g, "");
+      $(feed).scrollTop = $(feed).scrollHeight;
+      break;
+    }
+    case "llm_end":
+      S.says[e.agent] = null;
+      S.usage.calls++; if (fx) S.usage.fx++;
+      S.usage.in += e.input; S.usage.cached += e.cached; S.usage.out += e.output;
+      if (fx) S.fixTok = e.input; else S.mainTok = e.input;
+      if (!fx && S.fixDone && S.mainAfterFix === undefined) S.mainAfterFix = e.input;
+      drawMeters(); drawTokens();
+      thinking(e.agent, false);
+      break;
+    case "tool_call": {
+      thinking("agent", false); S.says.agent = null; S.saidSinceTool = false;
+      const key = e.name, p = S.pending[key];
+      if (p && !p.done) { p.n++; p.el.querySelector(".args").textContent = `${p.n} calls in parallel`; break; }
+      const el = add("feed", `<div class="box"><div class="row"><span class="tag call">TOOL CALL</span><span class="fn">${e.name}</span><span class="args">${esc(argText(e.args))}</span>${T(e.t)}</div>
+                              <div class="res wait"><span class="ic">…</span><span class="txt">running</span></div></div>`);
+      S.pending[key] = {el, n: 1, done: false};
+      if (STEPS.includes(e.name) && S.steps[e.name][0] !== "fixing") setStep(e.name, "run", "running");
+      break;
+    }
+    case "tool_error_msg": {
+      // The plain agent got the error back as a message (e.g. invalid arguments). It is a failure.
+      const p = S.pending[e.name];
+      if (p) {
+        p.bad = (p.bad || 0) + 1;
+        const ok = p.ok || 0;
+        const res = p.el.querySelector(".res");
+        if (ok === 0) {
+          p.done = true;
+          res.outerHTML = `<div class="res bad"><span class="ic">✕</span><span class="txt">${esc(String(e.result).slice(0, 160))}${p.n > 1 ? `  (${p.bad} of ${p.n} calls)` : ""}</span></div>`;
+        } else {
+          res.outerHTML = `<div class="res ok"><span class="ic">✓</span><span class="txt">${ok} of ${p.n} calls worked, ${p.bad} failed</span></div>`;
+        }
+      }
+      if (STEPS.includes(e.name)) setStep(e.name, "fail", "error");
+      caption("TOOL ERROR", "The tool call came back as an error. Nothing sorts it or fixes it.", "var(--bad)");
+      thinking("agent", true);
+      break;
+    }
+    case "tool_ok": case "recovered": {
+      const p = S.pending[e.name];
+      const fixed = e.type === "recovered";
+      if (p) {
+        p.done = true;
+        p.ok = (p.ok || 0) + 1;
+        const txt = p.n > 1 ? `${p.ok} of ${p.n} calls worked` : resultText(e.name, e.result);
+        p.el.querySelector(".res").outerHTML = `<div class="res ok"><span class="ic">✓</span><span class="txt">${esc(txt)}</span>${fixed ? '<span class="tag" style="background:var(--ok-soft);color:var(--ok)">WORKS NOW</span>' : ""}</div>`;
+      }
+      if (STEPS.includes(e.name)) setStep(e.name, fixed || S.steps[e.name][0] === "fixed" ? "fixed" : "ok", fixed || S.steps[e.name][0] === "fixed" ? "fixed ✓" : "done");
+      if (fixed) caption("RECOVERED", "Same call as before. It works now, and the task carries on.", "var(--ok)");
+      else if (!fx) caption("RUNNING", `${e.name} worked. On to the next step.`);
+      thinking("agent", true);
+      break;
+    }
+    case "tool_raise": case "tool_error": {
+      const p = S.pending[e.name];
+      if (p) {
+        // mark the call group: all failed, or some worked and some were rejected
+        p.bad = (p.bad || 0) + 1;
+        const ok = p.ok || 0;
+        const res = p.el.querySelector(".res");
+        if (ok === 0) {
+          p.done = true;
+          res.outerHTML = `<div class="res bad"><span class="ic">✕</span><span class="txt">${esc(e.error)}${p.n > 1 ? `  (${p.bad} of ${p.n} calls)` : ""}</span></div>`;
+        } else {
+          res.outerHTML = `<div class="res ok"><span class="ic">✓</span><span class="txt">${ok} of ${p.n} calls worked, ${p.bad} rejected</span></div>`;
+        }
+      }
+      if (p && p.bad > 1 && e.type === "tool_error" && p.lastKind === e.kind) break;   // same label already shown for this group
+      if (p) p.lastKind = e.kind;
+      if (e.type === "tool_raise") {
+        if (p && p.bad > 1) break;
+        add("feed", `<div class="error"><div class="row"><span class="tag err">ERROR</span><span class="title">${esc(e.error)}</span>${T(e.t)}</div>
+                     <div style="margin-top:6px;color:#7F1D1D;font-size:15px">Raised inside tools/${e.name}.py. Nothing catches it.</div></div>`);
+        setStep(e.name, "fail", "crashed");
+        caption("CRASHED", "An error inside a tool, and nothing catches it. The whole run stops here.", "var(--bad)");
+      } else {
+        add("feed", `<div class="label"><div class="row"><span style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em">MIDDLEWARE SORTED IT AS</span><span class="chip ${e.kind}">${e.kind}</span>${T(e.t)}</div>
+                     <div class="why">${KIND[e.kind] || e.explanation}</div><div class="rep">${esc(e.error)}${e.report ? `  ·  report: ${esc(e.report)}` : ""}</div></div>`);
+        if (STEPS.includes(e.name)) setStep(e.name, e.kind === "CODE_BUG" || e.kind === "NEEDS_HUMAN" ? "fail" : "retry",
+                                            e.kind === "CODE_BUG" ? "code bug" : e.kind.replace("_", " ").toLowerCase());
+        S.failedTool = e.name;
+        const msg = {CODE_BUG: "A real bug in the tool's code. It goes to the tool-fixer, with a failure report.",
+                     NEEDS_HUMAN: "The API key was rejected. No code change can fix that, so the agent will stop and say what to do.",
+                     BAD_ARGUMENTS: "The API rejected the input and said why. The agent will call again with better input.",
+                     TEMPORARY: "The API is still busy after the retries. The code is fine."}[e.kind];
+        caption(e.kind.replace("_", " "), msg, e.kind === "BAD_ARGUMENTS" ? "var(--agent)" : "var(--bad)");
+      }
+      break;
+    }
+    case "retry": {
+      add("feed", `<div class="retry">HTTP 429 on a ${e.name} call: the middleware waits ${e.wait}s and tries again (attempt ${e.attempt} of ${e.max}). The code isn't touched.</div>`);
+      setStep(e.name, "retry", `429 · retry ${e.attempt}`);
+      caption("RETRYING", "The API says it's busy (429). The middleware waits and tries again by itself.", "var(--warn)");
+      break;
+    }
+    case "delegate":
+      thinking("agent", false);
+      add("feed", `<div class="handoff"><div class="row"><span class="tag fx">HAND-OFF</span><span class="fn">task → tool-fixer</span>${T(e.t)}</div><p>${esc(e.description)}</p></div>`);
+      S.mainAtHandoff = S.mainTok;
+      $("has").style.display = "none"; $("fixer").classList.add("on"); $("ffeed").innerHTML = "";
+      if (S.failedTool) setStep(S.failedTool, "fixing", "being fixed");
+      thinking("tool-fixer", true);
+      caption("HAND-OFF", "The main agent hands the bug to a sub-agent that works in its own, separate conversation.", "var(--fixer)");
+      break;
+    case "file_read":
+      if (!fx) break;
+      thinking("tool-fixer", false); S.says["tool-fixer"] = null;
+      add("ffeed", `<div class="file"><b>read_file</b> ${esc(e.path)}</div>`);
+      caption("DIAGNOSING", "The fixer reads the failure report: the error, the inputs, what the API sent, the code and the tests.", "var(--fixer)");
+      thinking("tool-fixer", true);
+      break;
+    case "repair":
+      thinking("tool-fixer", false);
+      S.repair = e;
+      break;
+    case "patch": {
+      S.patched++;
+      const lines = e.diff.split("\n").filter((l) => /^[+-]/.test(l) && !/^(\+\+\+|---)/.test(l));
+      const ind = Math.min(...lines.map((l) => l.slice(1).length - l.slice(1).trimStart().length));
+      add("ffeed", `<div class="diff"><div class="h">repair_tool → ${e.tool}.py <span class="tag" style="background:var(--warn-soft);color:var(--warn)">attempt ${e.attempt}</span>${T(e.t)}</div>
+                    <pre>${lines.map((l) => `<span class="${l[0] === "+" ? "a" : "d"}">${esc(l[0] + " " + l.slice(1 + ind))}</span>`).join("")}</pre></div>`);
+      S.check = add("ffeed", `<div class="check"><span class="spin"></span>Testing the patch in a separate process: pytest, then the exact call that failed…</div>`);
+      caption("CHECKING", "The patch is tested before it's allowed to stay.", "var(--fixer)");
+      break;
+    }
+    case "verified":
+      if (S.check) S.check.outerHTML = `<div class="item check ok"><span class="res ok" style="margin:0"><span class="ic">✓</span></span>${esc(e.message)}</div>`;
+      caption("VERIFIED", "Tests pass and the failed call works. The patch is kept.", "var(--ok)");
+      thinking("tool-fixer", true);
+      break;
+    case "rollback": case "rejected": case "refused":
+      if (S.check && e.type === "rollback") S.check.outerHTML = `<div class="item check bad">✕ ${esc(e.message)}</div>`;
+      else add("ffeed", `<div class="check bad">✕ ${esc(e.message)}</div>`);
+      caption(e.type.toUpperCase(), e.type === "rollback" ? "The checks failed, so the old file is back. The fixer gets the test output and can try again." : e.message, "var(--bad)");
+      thinking("tool-fixer", true);
+      break;
+    case "delegate_done":
+      thinking("tool-fixer", false); S.says["tool-fixer"] = null;
+      let backText = e.summary;
+      const last = S.lastSays["tool-fixer"];
+      if (last && /REPAIR|could|fix/i.test(last.dataset.raw || "")) { backText = last.dataset.raw; last.remove(); }
+      S.fixDone = true;
+      add("ffeed", `<div class="back"><small>SENT BACK TO THE MAIN AGENT</small>${esc(backText.replace(/[*`]/g, "").trim())}</div>`);
+      $("fxstate").textContent = "· finished";
+      add("feed", `<div class="box"><div class="row"><span class="tag fx">TOOL-FIXER</span><span style="font-weight:600">${esc(e.summary.replace(/[*`]/g, "").split(/[.—;]/)[0])}</span>${T(e.t)}</div></div>`);
+      thinking("agent", true);
+      break;
+    case "final":
+      thinking("agent", false);
+      if (e.answer.startsWith("(no answer")) break;
+      if (!S.saidSinceTool) add("feed", `<div class="answer"><b>Final answer</b>\n${esc(e.answer.replace(/[*`]/g, ""))}</div>`);
+      break;
+    case "run_end":
+      thinking("agent", false); thinking("tool-fixer", false);
+      STEPS.forEach((n) => { if (S.steps[n][0] === "") setStep(n, "never", "never ran"); });
+      break;
+    case "summary": {
+      const good = e.passed;
+      const crashed = !good && document.querySelector("#feed .error") && !document.querySelector("#feed .label");
+      add("feed", `<div class="banner ${good ? "good" : "bad"}"><span class="big">${good ? "✓" : "■"}</span><div>
+                   <h3>${good ? esc(cap1(e.note || "Run passed")) : crashed ? `Run ended at ${S.t.toFixed(1)}s` : esc(e.note || "Run did not pass")}</h3>
+                   <p>${S.t.toFixed(1)}s · ${S.usage.calls} model calls · $${cost().toFixed(4)}${good && !S.patched ? " · no code changed" : ""}${e.events_file ? ` · ${esc(e.events_file)}` : ""}</p></div></div>`);
+      caption(good ? "DONE" : "ENDED", good ? (e.note === "stopped without a report" ? "The agent stopped and told the user what to do. No code was changed." : S.patched ? "Done. The report's total matches the true cost from the API data." : "Done. The report's total matches the true cost, and no code was changed.")
+                                          : crashed ? "No answer, no report. Someone has to fix the tool by hand." : "The run didn't pass.", good ? "var(--ok)" : "var(--bad)");
+      break;
+    }
+    case "crash":
+      add("feed", `<div class="error"><div class="title">The run process stopped</div><pre style="white-space:pre-wrap;font-size:12px;margin-top:6px">${esc(e.message)}</pre></div>`);
+      caption("ERROR", "Something went wrong outside the agent. Check your .env and the message above.", "var(--bad)");
+      break;
+  }
+}
+
+const cap1 = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+
+function argText(a) {
+  if (!a) return "";
+  if (a.rows) return `${a.rows.length} rows, one per model`;
+  return Object.entries(a).map(([k, v]) => `${k}=${JSON.stringify(v)}`).join(", ");
+}
+
+function resultText(name, raw) {
+  try {
+    const r = JSON.parse(raw);
+    if (name === "fetch_usage") return `${r.rows_fetched} of ${r.total_reported} request logs saved`;
+    if (name === "summarize_usage") return `${r.requests} requests across ${r.models.length} models`;
+    if (name === "fetch_pricing") return `${r.model.split("/").pop()}: $${r.input_usd_per_1m} in / $${r.output_usd_per_1m} out per 1M`;
+    if (name === "export_report") return `${r.rows} rows saved, total_cost_usd ${r.total_cost_usd}`;
+  } catch (_) { /* long results are cut short in the log, so read the key numbers from the text */
+    const m = String(raw).match(/"requests": (\d+)/);
+    if (name === "summarize_usage" && m) return `${m[1]} requests, totals per model`;
+  }
+  return String(raw).slice(0, 120);
+}
+
+function setStep(name, cls, label) { if (S.steps[name]) { S.steps[name] = [cls, label]; drawPipe(); } }
+function drawPipe() {
+  $("pipe").innerHTML = STEPS.map((n, i) => `<div class="step ${S.steps[n][0]}"><i></i><span class="n">${i + 1}. ${n}</span><span class="s">${S.steps[n][1]}</span></div>`).join("");
+}
+const cost = () => ((S.usage.in - S.usage.cached) * CFG.price.input + S.usage.cached * CFG.price.cached + S.usage.out * CFG.price.output) / 1e6;
+function drawMeters() {
+  const u = S.usage;
+  const el = S.running && S.t0 !== null && !CFG.replay ? Math.max(S.t, (performance.now() - S.t0) / 1000) : S.t;
+  $("meters").innerHTML = [[`${el.toFixed(1)}s`, "elapsed"], [`$${cost().toFixed(4)}`, "model cost so far"], [`${u.calls}`, `model calls (${u.fx} fixer)`],
+    [u.out.toLocaleString(), "output tokens"], [u.in.toLocaleString(), "input tokens"], [`${u.in ? Math.round(100 * u.cached / u.in) : 0}%`, "input from cache"]]
+    .map(([v, l]) => `<div><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+}
+function drawTokens() {
+  const plus = S.mainAtHandoff !== null && S.mainAfterFix !== undefined ? `<span class="plus">+${S.mainAfterFix - S.mainAtHandoff} from the whole fix</span>` : "";
+  $("tok").innerHTML = S.mainTok ? `${S.mainTok.toLocaleString()} tokens ${plus}` : "";
+  $("fxtok").textContent = S.fixTok ? `${S.fixTok.toLocaleString()} tokens` : "";
+}
+setInterval(() => { if (S && $("go").disabled) drawMeters(); }, 250);
+boot();
+</script>
+</body>
+</html>

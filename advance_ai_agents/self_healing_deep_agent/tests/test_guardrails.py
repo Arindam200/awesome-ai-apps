@@ -1,0 +1,177 @@
+"""Offline checks of the healing layer: no model calls.
+
+Guardrails: allowlist, open-bug rule, syntax check, rollback, repair budget.
+Sorting: each kind of failure gets the right label, and only CODE_BUG opens a repair."""
+import os
+import shutil
+import threading
+from types import SimpleNamespace
+
+import pytest
+
+from config import ROOT, TOOLS_DIR
+from healing.healer import Healer, HealingMiddleware, tool_path
+from healing.recorder import Recorder
+from provider_api.server import FAULTS
+
+BROKEN = ROOT / "scenarios" / "broken" / "fetch_pricing.py"
+WORKING = ROOT / "scenarios" / "working" / "fetch_pricing.py"
+TARGET = TOOLS_DIR / "fetch_pricing.py"
+FIX = [{"find": 'data["price_usd"]', "replace": 'data["pricing"]["unit_usd"]'},
+       {"find": 'data["cached_price_usd"]', "replace": 'data["pricing"]["cached_unit_usd"]'},
+       {"find": 'data["output_price_usd"]', "replace": 'data["pricing"]["output_unit_usd"]'}]
+ARGS = {"model_id": "meta-llama/Llama-3.3-70B-Instruct"}
+
+
+@pytest.fixture
+def keep_tools():
+    """Tests swap tool files in and out. Afterwards, put back exactly what was there before,
+    even if a test fails, so running the tests never overwrites your own edits."""
+    saved = {p: p.read_bytes() for p in TOOLS_DIR.glob("*.py")}
+    yield
+    for p, data in saved.items():
+        p.write_bytes(data)
+    for bak in TOOLS_DIR.glob("*.bak"):
+        bak.unlink()
+
+
+@pytest.fixture
+def healer(provider_api, keep_tools):
+    shutil.copy(BROKEN, TARGET)
+    os.chdir(ROOT)
+    h = Healer(Recorder(live=False), provider_api)
+    yield h
+    shutil.rmtree(ROOT / "failures", ignore_errors=True)
+
+
+def call(healer, name="fetch_pricing", args=ARGS):
+    """Run one tool call through the middleware, like the agent would."""
+    tool = next(t for t in healer.langchain_tools() if t.name == name)
+    request = SimpleNamespace(tool_call={"name": name, "args": args, "id": "call_1"})
+    return HealingMiddleware(healer).wrap_tool_call(request, lambda req: tool.func(**req.tool_call["args"]))
+
+
+def open_bug(healer):
+    out = call(healer)
+    assert out.content.startswith("CODE_BUG")
+    return out
+
+
+# ---------------------------------------------------------------- guardrails
+def test_allowlist_blocks_files_outside_tools():
+    for name in ("../contracts", "__init__", "../provider_api/client", "../tests/test_fetch_pricing"):
+        with pytest.raises(PermissionError):
+            tool_path(name)
+
+
+def test_no_repair_without_an_open_code_bug(healer):
+    assert healer.repair("fetch_pricing", "guess", FIX).startswith("REPAIR REFUSED")
+    assert TARGET.read_text() == BROKEN.read_text()
+
+
+def test_syntax_error_is_rejected_before_save(healer):
+    open_bug(healer)
+    out = healer.repair("fetch_pricing", "x", [{"find": 'data["price_usd"]', "replace": 'data["pricing"'}])
+    assert out.startswith("REPAIR REJECTED")
+    assert TARGET.read_text() == BROKEN.read_text()
+
+
+def test_patch_that_fails_checks_is_rolled_back(healer):
+    open_bug(healer)
+    out = healer.repair("fetch_pricing", "x", [{"find": 'float(data["price_usd"])', "replace": "1.0"}])
+    assert "rolled back" in out
+    assert TARGET.read_text() == BROKEN.read_text()
+    assert not TARGET.with_suffix(".py.bak").exists()
+
+
+def test_repair_budget_is_two_per_tool(healer):
+    open_bug(healer)
+    bad = [{"find": 'float(data["price_usd"])', "replace": "1.0"}]
+    healer.repair("fetch_pricing", "x", bad)
+    healer.repair("fetch_pricing", "x", bad)
+    assert healer.repair("fetch_pricing", "x", FIX).startswith("REPAIR REFUSED")
+
+
+def test_correct_patch_is_kept_and_tool_recovers(healer):
+    open_bug(healer)
+    assert healer.repair("fetch_pricing", "API nests prices", FIX).startswith("REPAIR VERIFIED")
+    assert 'data["pricing"]["unit_usd"]' in TARGET.read_text()
+    call(healer)
+    assert any(e["type"] == "recovered" for e in healer.rec.events)
+
+
+# ---------------------------------------------------------------- sorting failures
+def test_rate_limit_is_retried_not_repaired(healer):
+    shutil.copy(WORKING, TARGET)
+    FAULTS.reset(rate_limit_pricing=2)
+    out = call(healer)
+    assert '"input_usd_per_1m": 0.13' in str(getattr(out, "content", out))
+    assert sum(e["type"] == "retry" for e in healer.rec.events) == 2
+    assert healer.open_bugs == {}
+
+
+def test_expired_key_needs_a_human(healer):
+    shutil.copy(WORKING, TARGET)
+    FAULTS.reset(expired_key=True)
+    out = call(healer)
+    assert out.content.startswith("NEEDS_HUMAN")
+    assert healer.open_bugs == {}
+    assert healer.repair("fetch_pricing", "x", FIX).startswith("REPAIR REFUSED")
+
+
+def test_retired_model_is_a_bad_argument(healer):
+    shutil.copy(WORKING, TARGET)
+    out = call(healer, args={"model_id": "Qwen/Qwen3-235B-A22B-Instruct"})
+    assert out.content.startswith("BAD_ARGUMENTS")
+    assert "Qwen/Qwen3-235B-A22B-Instruct-2507" in out.content
+    assert healer.open_bugs == {}
+
+
+def test_wrong_output_is_a_code_bug(healer):
+    shutil.copy(WORKING, TARGET)
+    shutil.copy(ROOT / "scenarios" / "broken" / "fetch_usage.py", TOOLS_DIR / "fetch_usage.py")
+    out = call(healer, "fetch_usage", {"month": "2026-11"})
+    assert out.content.startswith("CODE_BUG")
+    assert "API reported total=26" in (ROOT / "failures" / "fetch_usage.md").read_text()
+
+
+# ---------------------------------------------------------------- edge cases from review
+def test_syntax_error_in_a_tool_is_a_code_bug(healer):
+    TARGET.write_text(WORKING.read_text().replace("def fetch_pricing(model_id: str) -> dict:",
+                                                  "def fetch_pricing(model_id: str) -> dict"), encoding="utf-8")
+    out = call(healer)
+    assert out.content.startswith("CODE_BUG")
+    report = (ROOT / "failures" / "fetch_pricing.md").read_text()
+    assert "syntax error" in report and "does not compile" in report
+    fix = [{"find": "def fetch_pricing(model_id: str) -> dict\n", "replace": "def fetch_pricing(model_id: str) -> dict:\n"}]
+    assert healer.repair("fetch_pricing", "missing colon", fix).startswith("REPAIR VERIFIED")
+
+
+def test_patch_is_rolled_back_if_the_checks_cannot_run(healer, monkeypatch):
+    open_bug(healer)
+
+    def broken_runner(name):
+        raise OSError("could not start the test process")
+
+    monkeypatch.setattr(healer, "run_tests", broken_runner)
+    out = healer.repair("fetch_pricing", "x", FIX)
+    assert "rolled back" in out
+    assert TARGET.read_text() == BROKEN.read_text()
+    assert not TARGET.with_suffix(".py.bak").exists()
+
+
+def test_parallel_repairs_of_one_tool_take_turns(healer):
+    open_bug(healer)
+    bad = [{"find": 'float(data["price_usd"])', "replace": "1.0"}]
+    results = []
+    threads = [threading.Thread(target=lambda e=e: results.append(healer.repair("fetch_pricing", "x", e)))
+               for e in (bad, FIX)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert len(results) == 2                                  # neither raised
+    assert not TARGET.with_suffix(".py.bak").exists()
+    src = TARGET.read_text()
+    assert src == BROKEN.read_text() or 'data["pricing"]["unit_usd"]' in src
+    assert any(r.startswith("REPAIR VERIFIED") for r in results) == ('data["pricing"]["unit_usd"]' in src)

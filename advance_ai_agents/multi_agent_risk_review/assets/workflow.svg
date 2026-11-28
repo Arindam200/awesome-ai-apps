@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="320" viewBox="0 0 820 320" font-family="Helvetica, Arial, sans-serif" font-size="14">
+  <title>Multi-Agent Risk Review workflow</title>
+  <desc>A document goes to four reviewers in parallel (security, legal, finance, operations). Their findings go to a coordinator, a report check runs, and the result is one risk report.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+    </marker>
+  </defs>
+  <rect width="820" height="320" fill="#ffffff"/>
+  <g fill="none" stroke="#555" stroke-width="1.5" marker-end="url(#arrow)">
+    <path d="M150,160 C185,160 185,52 228,52"/>
+    <path d="M150,160 C185,160 185,124 228,124"/>
+    <path d="M150,160 C185,160 185,196 228,196"/>
+    <path d="M150,160 C185,160 185,268 228,268"/>
+    <path d="M388,52 C430,52 430,160 468,160"/>
+    <path d="M388,124 C430,124 430,160 468,160"/>
+    <path d="M388,196 C430,196 430,160 468,160"/>
+    <path d="M388,268 C430,268 430,160 468,160"/>
+    <path d="M618,160 L658,160"/>
+  </g>
+  <g stroke="#333" stroke-width="1.5">
+    <rect x="20" y="130" width="130" height="60" rx="6" fill="#f2f2f2"/>
+    <rect x="230" y="27" width="158" height="50" rx="6" fill="#e8f0fe"/>
+    <rect x="230" y="99" width="158" height="50" rx="6" fill="#fdf1e3"/>
+    <rect x="230" y="171" width="158" height="50" rx="6" fill="#e6f4ea"/>
+    <rect x="230" y="243" width="158" height="50" rx="6" fill="#f3e8fd"/>
+    <rect x="470" y="125" width="148" height="70" rx="6" fill="#fff8d6"/>
+    <rect x="660" y="130" width="140" height="60" rx="6" fill="#f2f2f2"/>
+  </g>
+  <g fill="#111" text-anchor="middle">
+    <text x="85" y="156">Document</text>
+    <text x="85" y="175" font-size="11" fill="#555">plan, contract, proposal</text>
+    <text x="309" y="49">Security reviewer</text>
+    <text x="309" y="66" font-size="11" fill="#555">SEC-n findings</text>
+    <text x="309" y="121">Legal reviewer</text>
+    <text x="309" y="138" font-size="11" fill="#555">LEG-n findings</text>
+    <text x="309" y="193">Finance reviewer</text>
+    <text x="309" y="210" font-size="11" fill="#555">FIN-n findings</text>
+    <text x="309" y="265">Operations reviewer</text>
+    <text x="309" y="282" font-size="11" fill="#555">OPS-n findings</text>
+    <text x="544" y="152">Coordinator</text>
+    <text x="544" y="170" font-size="11" fill="#555">merge, dedupe, settle</text>
+    <text x="544" y="185" font-size="11" fill="#555">+ report check</text>
+    <text x="730" y="156">Risk report</text>
+    <text x="730" y="175" font-size="11" fill="#555">issues + originals</text>
+  </g>
+</svg>

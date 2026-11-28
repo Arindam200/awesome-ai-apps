@@ -129,10 +129,10 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 | [🧩 Starter Agents](#-starter-agents) | One minimal agent per framework: Agno, LangGraph, CrewAI, OpenAI Agents SDK, Google ADK, Mastra and more | 22 |
 | [🪶 Simple Agents](#-simple-agents) | Single-purpose agents for everyday tasks: finance, calendars, browser automation, SQL | 21 |
 | [🎙️ Voice Agents](#️-voice-agents) | Real-time voice assistants with LiveKit, Pipecat, Gradium and Deepgram | 9 |
-| [🗂️ MCP Agents](#️-mcp-agents) | MCP tool integrations and A2A agent collaboration | 15 |
+| [🗂️ MCP Agents](#️-mcp-agents) | MCP tool integrations and A2A agent collaboration | 16 |
 | [🧠 Memory Agents](#-memory-agents) | Agents that remember users and context across sessions | 13 |
 | [📚 RAG Applications](#-rag-applications) | Retrieval, reranking, GraphRAG, OCR and citation checking | 18 |
-| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 41 |
+| [🔬 Advanced Agents](#-advanced-agents) | Multi-agent pipelines and production-shaped end-to-end workflows | 42 |
 | [🧬 Fine-Tuning](#-fine-tuning) | LoRA fine-tuning, distillation and deployment of open models | 6 |
 
 **Also here:** [Tutorials & Videos](#-tutorials--videos) · [Quick Start](#-quick-start) · [Contributing](#-contributing) · [Contributors](#-contributors) · [Maintainers](#-maintainers) · [License](#-license)
@@ -208,7 +208,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🗂️ MCP Agents
 
-**Examples using Model Context Protocol for external tool integration and A2A for agent collaboration.** _15 projects_
+**Examples using Model Context Protocol for external tool integration and A2A for agent collaboration.** _16 projects_
 
 - [A2A Multi-Agent Collaboration (Agno + LangGraph)](mcp_ai_agents/a2a_multi_agent): A client discovers an Agno architect and LangGraph reviewer through Agent Cards and delegates streamed A2A tasks
 - [Couchbase LangGraph MCP Agent](mcp_ai_agents/langchain_langgraph_mcp_agent): LangChain ReAct agent with Couchbase integration
@@ -220,6 +220,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [GitHub MCP Agent](mcp_ai_agents/github_mcp_agent): Repository insights and analysis via MCP
 - [GitHub MCP Agent Starter](mcp_ai_agents/mcp_starter): GitHub repository analyzer starter template
 - [Hotel Finder Agent](mcp_ai_agents/hotel_finder_agent): Hotel search and booking using MCP integration
+- [Mnemoverse MCP Agent](mcp_ai_agents/mnemoverse_mcp_agent): Agent memory over MCP with tool discovery: write, recall, and report which recalled memory helped so the next recall is ordered by outcome
 - [Sandboxed Code Execution MCP Agent (Docker + E2B)](mcp_ai_agents/e2b_docker_mcp_agent): Secure AI agent for running agents in sandboxed Docker environments via MCP Gateway
 - [Secure Database MCP Agent (MCP Toolbox)](mcp_ai_agents/mcp_toolbox_security_agent): Secure ecommerce agent over PostgreSQL and MongoDB; MCP Toolbox enforces per-user data access, least-privilege roles, and authorized tools
 - [Secure MCP Access Agent (ScaleKit + Exa)](mcp_ai_agents/scalekit-exa-mcp-security): Security-focused MCP integration with Exa search
@@ -246,7 +247,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 📚 RAG Applications
 
-**Retrieval-augmented generation examples for document understanding and knowledge bases.** _18 projects_
+**Retrieval-augmented generation examples for document understanding and knowledge bases.** _19 projects_
 
 - [Agentic RAG with Agno and GPT-5](rag_apps/agentic_rag): Agentic RAG implementation with Agno and GPT-5
 - [Agentic Typed RAG with LlamaIndex](rag_apps/agentic_typed_rag_llamaindex): Typed, citation-verified RAG with structured answers, local document parsing, and deterministic refusal for weak evidence
@@ -254,6 +255,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Enterprise Contextual RAG](rag_apps/contextual_ai_rag): Enterprise-level RAG with managed datastores and quality evaluation
 - [Gemma 3 Document OCR](rag_apps/gemma_ocr/): OCR-based document and image processor using the Gemma 3 model
 - [GraphRAG with Neo4j](rag_apps/graphrag_neo4j): Knowledge graph extraction and Cypher-backed retrieval with Neo4j and Nebius
+- [Image-Aware PDF RAG](rag_apps/image_aware_pdf_rag): Multimodal RAG system that understands text, charts, and diagrams in PDFs with page-level citations
 - [LiteParse Invoice & Receipt Auditor](rag_apps/liteparse_invoice_auditor): Local OCR with LiteParse bounding boxes, Nebius LLM audit for math errors and duplicate charges, evidence pinning on scans, and an LLM batch summary
 - [LlamaIndex RAG Starter](rag_apps/llamaIndex_starter): LlamaIndex and Nebius RAG starter template
 - [LLM and RAG Debugger (WFGY 16-Problem Map)](rag_apps/wfgy_llm_debugger): 16-mode map-based debugger for LLM and RAG bugs
@@ -269,7 +271,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 ### 🔬 Advanced Agents
 
-**Complex multi-agent pipelines for production-ready end-to-end workflows.** _41 projects_
+**Complex multi-agent pipelines for production-ready end-to-end workflows.** _42 projects_
 
 - [AI Hedge Fund Research Team](advance_ai_agents/ai-hedgefund): Agentic workflow for comprehensive financial analysis
 - [AI Trend Research Agent](advance_ai_agents/trend_analyzer_agent): AI trend mining and analysis with Google ADK
@@ -288,19 +290,23 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Financial Market Data Service](advance_ai_agents/finance_service_agent): FastAPI server for stock data and predictions with Agno
 - [Financial Research Agent (AgentField)](advance_ai_agents/agentfield_finance_research_agent): Financial research agent with AgentField
 - [GitHub and LinkedIn Job Finder](advance_ai_agents/job_finder_agent): LinkedIn job search automation with Bright Data integration
+- [Guardrail Evaluation Harness](advance_ai_agents/guardrail_eval_harness): Offline-first harness that scores guardrail behavior of an OpenAI Agents SDK agent with deterministic DeepEval metrics, with live evaluation on Nebius Token Factory models
 - [Inkwire: Circuit Sketch → Live Simulation](advance_ai_agents/circuit_sketch_to_simulation): Inkling 2 Small on [Nebius Token Factory](https://dub.sh/nebius) turns a photo of a hand-drawn circuit into a working interactive simulation, finds the mistakes, reviews screenshots of its own page, and a circuit solver checks every number
 - [Jev Social Research Agent](advance_ai_agents/jev_social_research_agent): Typed Jev routing, local socai CLI evidence, and evidence-linked Nebius synthesis for Instagram, TikTok, and LinkedIn research
+- [Job Market Brief Agent](advance_ai_agents/job_market_brief_agent): Google Jobs postings for one role and city turned into numbered evidence records and a brief that cites them, with an optional Nebius narrative
 - [Local File-Editing Agent Prototype](advance_ai_agents/coding_harness_agent): Local coding-agent prototype with file discovery, reading, and editing tools
 - [Maintainer Intelligence Brief](advance_ai_agents/maintainer_brief): Weekly open-source intelligence briefs from community, security, and document signals with source citations
 - [Meeting Assistant Agent](advance_ai_agents/meeting_assistant_agent): Automated meeting notes and task creation from conversations
 - [Multi-Agent Coding Harness](advance_ai_agents/coding_agent_harness): Deep LangGraph coding crew with planning, repository exploration, human-gated file edits, and E2B-sandboxed test loops
 - [Multi-Agent Orchestrator](advance_ai_agents/multi_agent_orchestrator): LangGraph orchestrator-worker multi-agent system where Kimi K3.1 Pro plans, reviews and synthesizes while Inkling 2 Small and cheaper models on [Nebius Token Factory](https://dub.sh/nebius) work in parallel, with a live cost ledger
+- [Multi-Agent Risk Review](advance_ai_agents/multi_agent_risk_review): Security, legal, finance and operations reviewers built with LangGraph and Pydantic on Nebius Token Factory, merged by a coordinator into one risk report that cites the findings it merges and warns about any it leaves out
 - [Napkin → 3D Print](advance_ai_agents/napkin_to_3d_print): Kimi K3.1 Pro on [Nebius Token Factory](https://dub.sh/nebius) turns a photo of a hand sketch into parametric CadQuery, checks its own render against the drawing, and exports a printable STL with live dimension sliders
 - [Nebius Autonomous Pipeline Optimizer](advance_ai_agents/nebius-autoresearch-autoresearch-mar30): NYC taxi analytics pipeline optimizer with iterative code search using real-time or batch Nebius Token Factory inference
 - [Paper → Interactive Explainer](advance_ai_agents/paper_to_interactive_explainer): Kimi K3.1 Pro on Nebius reads a whole research paper, figures included, and builds a self-tested, Distill-style interactive explainer as a single HTML page
 - [Pre-Meeting Intel Agent (Briefing Room)](advance_ai_agents/meeting_briefing_agent): LangGraph plan-research-reflect loop with Tavily web search that turns a company name into a cited one-page meeting brief
 - [Price Monitoring Agent](advance_ai_agents/price_monitoring_agent): Price monitoring and alerting agent powered by CrewAI, Twilio, and Nebius
 - [Proactive On-Call Agent](advance_ai_agents/proactive_oncall_agent): LangChain proactive agent on Kimi K3.1 Pro via [Nebius Token Factory](https://dub.sh/nebius) that a cron server wakes to triage events; it pages you, requests human-approved rollbacks, and schedules its own follow-ups without ever being prompted
+- [PR Review Agent](advance_ai_agents/pr_review_agent): Preview-first Agno/Nebius GitHub diff review with validated inline comments and an explicit publishing gate
 - [Prompt Format Benchmark](advance_ai_agents/context_engineering_pipeline): Benchmark harness for comparing XML, JSON, and Markdown prompt formats across accuracy, latency, and token usage
 - [Sandboxed Browser Game Generator](advance_ai_agents/pydantic_game_agent): FastAPI multi-agent studio that generates sandboxed browser games from one prompt using Pydantic AI and GLM-5.2 on Nebius
 - [SEO Content Strategy Team](advance_ai_agents/content_team_agent): SEO content optimization workflow with Agno and SerpAPI for Google AI Search ranking
