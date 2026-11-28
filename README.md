@@ -288,6 +288,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 - [Financial Market Data Service](advance_ai_agents/finance_service_agent): FastAPI server for stock data and predictions with Agno
 - [Financial Research Agent (AgentField)](advance_ai_agents/agentfield_finance_research_agent): Financial research agent with AgentField
 - [GitHub and LinkedIn Job Finder](advance_ai_agents/job_finder_agent): LinkedIn job search automation with Bright Data integration
+- [Guardrail Evaluation Harness](advance_ai_agents/guardrail_eval_harness): Offline-first harness that scores guardrail behavior of an OpenAI Agents SDK agent with deterministic DeepEval metrics, with live evaluation on Nebius Token Factory models
 - [Inkwire: Circuit Sketch → Live Simulation](advance_ai_agents/circuit_sketch_to_simulation): Inkling 2 Small on [Nebius Token Factory](https://dub.sh/nebius) turns a photo of a hand-drawn circuit into a working interactive simulation, finds the mistakes, reviews screenshots of its own page, and a circuit solver checks every number
 - [Jev Social Research Agent](advance_ai_agents/jev_social_research_agent): Typed Jev routing, local socai CLI evidence, and evidence-linked Nebius synthesis for Instagram, TikTok, and LinkedIn research
 - [Job Market Brief Agent](advance_ai_agents/job_market_brief_agent): Google Jobs postings for one role and city turned into numbered evidence records and a brief that cites them, with an optional Nebius narrative
