@@ -271,6 +271,7 @@ Awesome AI Apps is a hands-on collection of projects, tutorials and recipes for 
 
 **Complex multi-agent pipelines for production-ready end-to-end workflows.** _42 projects_
 
+- [Agent Observability and Trace Analysis](advance_ai_agents/agent_observability_trace_analysis): Local agent, tool, retrieval, and model traces with offline metrics and optional Nebius-powered failure analysis
 - [AI Hedge Fund Research Team](advance_ai_agents/ai-hedgefund): Agentic workflow for comprehensive financial analysis
 - [AI Trend Research Agent](advance_ai_agents/trend_analyzer_agent): AI trend mining and analysis with Google ADK
 - [Candidate Profile Analyzer (Candilyzer)](advance_ai_agents/candidate_analyser): Candidate analysis tool for GitHub and LinkedIn profiles
